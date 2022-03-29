@@ -1,0 +1,37 @@
+この記事はGoogle翻訳を使って翻訳された記事。
+
+一度に複数のページを読み込む機能がある、追加のサムネイルは動的に並べ替えられた順序でページに読み込まれます
+ページ下部のリンクはそれに応じてURLと表示方法を変更します。
+
+別のユーザースクリプト"Iwara Extension Script"と一緒に使うことができます。
+「sort」ボタンの横にあるテキスト入力欄にカスタムソート値を指定します。
+下記の変数を使用しています:
+index (並べ替え前の順番、最初からn番目のサムネイルは0〜(n-1))
+likes (like数)
+views (再生数)
+ratio (likes/views)
+gallery (複数の画像のギャラリーは1、それ以外は0)
+image (画像(galleryを含む)は1、それ以外は0)
+private (非公開投稿は1、それ以外は0)
+
+例えば、デフォルト値は '(Math.asinh(ratio * 15) / 15 / (private * 1.8 + 1) + Math.log(likes) / 230) / (image + 8)'です。
+
+Math.*は、JavaScriptの組み込みの数学関数です。
+
+「default」ボタンをクリックしてテキスト入力欄のデフォルト値に戻します。
+
+ちなみに、並べ替える前の最初の順序に戻す値は '-index'です。
+
+以前の設定を記憶します。
+
+Greasemonkey >= 4.0と互換性のあるユーザースクリプト拡張機能が必要です。
+複数のページを読み込むは以下のブラウザでテストされています。
+
+FirefoxでのTampermonkeyとGreasemonkey
+Chrome上のTampermonkey
+
+Images and galleries tend to have higher likes/views ratio, possibly due to their content being more in line with people's expectation from seeing their thumbnails.
+
+Privated posts with less views might have higher likes/views ratio due to the fact that a large portion of their views comes from the creator's friends.
+
+Likes/views ratio of a post tends to go down as it gains views, due to the fact that most of the views are from people outside of the creator's followers.

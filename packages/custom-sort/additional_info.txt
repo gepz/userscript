@@ -1,0 +1,35 @@
+Can load multiple pages at once, additional teasers will be dynamically loaded to the page with the sorted order
+, and the pagination links at the bottom of a page will change their URL and presentation accordingly.
+
+Can be used together with "Iwara Extension Script", another userscript.
+
+Spicify the custom sort value in the textbox next to the sort button, with following variables (and everything in javascript) available:
+index (0 ~ (n-1) for 1st to nth teaser in the initial order before sorting)
+likes
+views (再生数)
+ratio (likes/views)
+gallery (1 if it's a gallery of multiple images, 0 if not)
+image (1 if it's an image (including galleries), 0 if not)
+private (1 if it's privated, 0 if not)
+
+For example, the default value is '(Math.asinh(ratio * 15) / 15 / (private * 1.8 + 1) + Math.log(likes) / 230) / (image + 8)'
+Math.* are javascript built-in math functions.
+
+Click the "default" button to restore the default value of textbox.
+
+Use '-index' to restore the initial order before any sorting.
+
+The script will remember the setting you used before.
+
+Require a userscript extension competible with Greasemonkey >= 4.0.
+
+Multipage loading has been tested on:
+
+Tampermonkey and Greasemonkey on Firefox
+Tampermonkey on Chrome
+
+Images and galleries tend to have higher likes/views ratio, possibly due to their content being more in line with people's expectation from seeing their thumbnails.
+
+Privated posts with less views might have higher likes/views ratio due to the fact that a large portion of their views comes from the creator's friends.
+
+Likes/views ratio of a content tends to go down as it gains views, due to the fact that most of the views are from people outside of the creator's followers.
