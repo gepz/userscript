@@ -6,4 +6,4 @@ Make Youtube live chats flow on videos in danmaku-style.
 これはバグ修正済みの再アップ。
 
 <a href="https://pastebin.com/raw/uYFaiEMF">Changelog(更新履歴)</a>
-<a href="https://github.com/gepz/userscript/tree/main/packages/flow-youtube-chat">Source code</a>
+<a href="https://github.com/gepz/userscript/tree/main/packages/flow-youtube-chat">Source code(Github)</a>
