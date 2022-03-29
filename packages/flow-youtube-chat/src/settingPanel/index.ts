@@ -24,7 +24,7 @@ import {
 } from '@/TypeKey';
 import UserConfig from '@/UserConfig';
 import UserConfigSetter from '@/UserConfigSetter';
-import filterPanel from '@/filterPanel';
+// import filterPanel from '@/filterPanel';
 import fonts from '@/fonts';
 import getLang from '@/getLang';
 import textShadow from '@/textShadow';
@@ -547,34 +547,34 @@ export default (
       ]),
     ];
 
-    // const filterPanel = (): VNode<SettingState>[] => [
-    //   h('div', {
-    //     style: panelBoxStyle(212),
-    //   }, textAreaNode('bannedWords', 18)),
-    //   h('div', {
-    //     style: panelBoxStyle(212),
-    //   }, settingRow(getText('bannedWordRegexs'), [
-    //     h('span', {}, text(state.bannedWordRegexsValid ? ''
-    //     : `${getText('error')}: ${
-    //       state.bannedWordRegexsError
-    //     }`)),
-    //     textAreaRow(
-    //       18,
-    //       getEditValue<readonly string[]>(
-    //         state,
-    //         'bannedWordRegexs',
-    //         (x) => x.join('\n'),
-    //       ),
-    //       editAction(
-    //         'bannedWordRegexs',
-    //         updateStrings,
-    //       ),
-    //     ),
-    //   ])),
-    //   h('div', {
-    //     style: panelBoxStyle(212),
-    //   }, textAreaNode('bannedUsers', 18)),
-    // ];
+    const filterPanel = (): VNode<SettingState>[] => [
+      h('div', {
+        style: panelBoxStyle(212),
+      }, textAreaNode('bannedWords', 18)),
+      h('div', {
+        style: panelBoxStyle(212),
+      }, settingRow(getText('bannedWordRegexs'), [
+        h('span', {}, text(state.bannedWordRegexsValid ? ''
+        : `${getText('error')}: ${
+          state.bannedWordRegexsError
+        }`)),
+        textAreaRow(
+          18,
+          getEditValue<readonly string[]>(
+            state,
+            'bannedWordRegexs',
+            (x) => x.join('\n'),
+          ),
+          editAction(
+            'bannedWordRegexs',
+            updateStrings,
+          ),
+        ),
+      ])),
+      h('div', {
+        style: panelBoxStyle(212),
+      }, textAreaNode('bannedUsers', 18)),
+    ];
 
     const chatFieldPanel = (): VNode<SettingState>[] => [
       h('div', {
@@ -721,8 +721,8 @@ export default (
         ],
         [
           flowChatPanel,
-          // filterPanel,
-          () => filterPanel(state.filterExp),
+          filterPanel,
+          // () => filterPanel(state.filterExp),
           chatFieldPanel,
           feedbackPanel,
         ],
