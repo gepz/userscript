@@ -23,7 +23,8 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
     match: 'https://www.youtube.com/*',
     noframes: true,
     license: 'AGPL-3.0-or-later',
-    description: 'Youtubeのチャットをニコニコ風に画面上へ流すスクリプトです(再アップ，絵文字バグ修正済み)',
+    // eslint-disable-next-line max-len
+    description: 'Youtubeのチャットをニコニコ風に画面上へ流す(再アップ) Make youtube chats move in danmaku-style.',
     ...devMode ? {}
     : {
       require: [
