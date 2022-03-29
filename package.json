@@ -1,5 +1,12 @@
 {
   "name": "root",
-  "workspaces": ["./packages/*"],
-  "private": true
+  "workspaces": [
+    "./packages/*"
+  ],
+  "private": true,
+  "devDependencies": {
+    "@commitlint/cli": "^16.2.3",
+    "@commitlint/config-conventional": "^16.2.1",
+    "husky": "^7.0.4"
+  }
 }
