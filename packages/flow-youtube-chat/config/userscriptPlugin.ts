@@ -1,0 +1,56 @@
+import cdnFromDependency from '@userscript/cdn-from-dependency';
+import WebpackUserscript from 'webpack-userscript';
+
+import {
+  dependencies,
+} from '../package.json';
+
+const cdnSegment = cdnFromDependency.bind(undefined, dependencies);
+
+export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
+  headers: (data) => ({
+    name: 'Flow Youtube Chat',
+    namespace: 'FlowYoutubeChatScript',
+    version: `${data.version}${devMode ? `.${data.buildTime}` : ''}`,
+    'run-at': 'document-end',
+    grant: [
+      'GM.setValue',
+      'GM.getValue',
+      'GM.deleteValue',
+      'GM.listValues',
+      'GM.setClipboard',
+    ],
+    match: 'https://www.youtube.com/*',
+    noframes: true,
+    license: 'AGPL-3.0-or-later',
+    description: 'Youtubeのチャットをニコニコ風に画面上へ流すスクリプトです(再アップ，絵文字バグ修正済み)',
+    ...devMode ? {}
+    : {
+      require: [
+        (x = cdnSegment('sweetalert2')) => `${x.begin}cdn.jsdelivr.net/npm/${
+          x.nameVer}/dist/${x.name}.all${x.end}`,
+        (x = cdnSegment('loglevel')) => `${x.begin}unpkg.com/${
+          x.nameVer}/dist/${x.name}${x.end}`,
+        (x = cdnSegment('rxjs')) => `${x.begin}unpkg.com/${
+          x.nameVer}/dist/bundles/${x.name}.umd${x.end}`,
+        (x = cdnSegment('mithril')) => `${x.begin}unpkg.com/${
+          x.nameVer}/${x.name}${x.end}`,
+        (x = cdnSegment('check-types')) => `${x.begin}cdn.jsdelivr.net/npm/${
+          x.nameVer}/src/${x.name}${x.end}`,
+        (x = cdnSegment('deep-diff')) => `${x.begin}cdn.jsdelivr.net/npm/${
+          x.nameVer}/index${x.end}`,
+        (x = cdnSegment('astring')) => `${x.begin}cdn.jsdelivr.net/npm/${
+          x.nameVer}/dist/${x.name}${x.end}`,
+        (x = cdnSegment('jsep')) => `${x.begin}cdn.jsdelivr.net/npm/${
+          x.nameVer}/build/${x.name}${x.end}`,
+        (x = cdnSegment('hash-it')) => `${x.begin}cdn.jsdelivr.net/npm/${
+          x.nameVer}/dist/${x.name}${x.end}`,
+        (x = cdnSegment('micro-memoize')) => `${x.begin}cdn.jsdelivr.net/npm/${
+          x.nameVer}/dist/${x.name}${x.end}`,
+      ].map((x) => x()),
+    },
+  }),
+  ssri: {
+    algorithms: ['sha384'],
+  },
+});

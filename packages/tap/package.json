@@ -1,0 +1,37 @@
+{
+  "name": "@userscript/tap",
+  "description": "",
+  "version": "1.0.0",
+  "author": "",
+  "dependencies": {
+    "@userscript/assert": "^1.0.0"
+  },
+  "devDependencies": {
+    "@userscript/eslint-config": "^1.0.0",
+    "@userscript/webpack-config": "^1.0.0",
+    "cross-env": "^7.0.2",
+    "npm-run-all": "^4.1.5",
+    "ts-loader": "^9.2.5",
+    "ts-node": "^10.7.0",
+    "tsconfig-paths": "^3.9.0",
+    "ttypescript": "^1.5.12",
+    "typescript": "^4.7.0-dev.20220318"
+,
+    "webpack": "^5.64.4",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^4.6.0",
+    "webpack-merge": "^5.4.0"
+  },
+  "keywords": [],
+  "license": "AGPL-3.0-or-later",
+  "main": "./lib/index.js",
+  "scripts": {
+    "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.dev.conf.ts",
+    "prod": "run-s prod_webpack prod_lib",
+    "prod_lib": "ttsc --project tsconfig.build.json",
+    "prod_webpack": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.prod.conf.ts",
+    "start": "npm run dev"
+  },
+  "sideEffects": false,
+  "types": "./lib/index.d.ts"
+}

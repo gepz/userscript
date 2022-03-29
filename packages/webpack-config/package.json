@@ -1,0 +1,18 @@
+{
+  "name": "@userscript/webpack-config",
+  "description": "",
+  "version": "1.0.0",
+  "author": "",
+  "dependencies": {
+    "webpack-merge": "^5.4.0"
+  },
+  "keywords": [],
+  "license": "AGPL-3.0-or-later",
+  "peerDependencies": {
+    "ts-loader": "^9.2.5",
+    "webpack": "^5.64.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
