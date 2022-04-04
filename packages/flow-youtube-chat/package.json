@@ -18,7 +18,7 @@
     "fp-ts": "^2.11.8",
     "fp-ts-contrib": "^0.1.26",
     "hash-it": "^5.0.2",
-    "hyperapp": "^2.0.19",
+    "hyperapp": "^2.0.22",
     "jsep": "^0.4.0",
     "loglevel": "^1.7.0",
     "micro-memoize": "^4.0.9",
