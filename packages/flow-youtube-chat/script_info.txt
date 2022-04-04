@@ -1,0 +1,10 @@
+Youtubeのチャットをニコニコ風に画面上へ流すスクリプトです(再アップ)
+Make Youtube live chats flow on videos in danmaku-style.
+
+元スクリプト（バージョン1.12.2）の作成者（Emubure）じゃないです。
+元スクリプトはなんとなく削除されました…
+これはバグ修正済みの再アップ。
+
+<a href="https://github.com/gepz/userscript/blob/main/packages/flow-youtube-chat/CHANGELOG_JP.md">Changelog(更新履歴)(JP)</a>
+<a href="https://github.com/gepz/userscript/blob/main/packages/flow-youtube-chat/CHANGELOG_EN.md">Changelog(更新履歴)(EN)</a>
+<a href="https://github.com/gepz/userscript/tree/main/packages/flow-youtube-chat">Source code(Github)</a>
