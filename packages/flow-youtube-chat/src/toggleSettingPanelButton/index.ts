@@ -20,7 +20,7 @@ const togglePanel = (x: SettingState, e: MouseEvent): [
     showPanel: !x.showPanel,
   },
   [
-    x.showPanel ? () => tapIs(HTMLElement, e.currentTarget).blur()
+    x.showPanel ? () => tapIs(HTMLElement)(e.currentTarget).blur()
     : () => {},
     undefined,
   ],

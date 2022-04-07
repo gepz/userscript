@@ -88,8 +88,7 @@ export default class implements m.Component {
         this.conditionChange$,
         this.presetSelectChange$.pipe(
           tap((e) => {
-            this.state.condition = tapIs(
-              HTMLSelectElement,
+            this.state.condition = tapIs(HTMLSelectElement)(
               e.currentTarget,
             ).value;
           }),
@@ -151,7 +150,7 @@ export default class implements m.Component {
         'btn-info',
       ])}`, {
         onupdate: (vnode) => {
-          tapIs(HTMLSelectElement, vnode.dom).selectedIndex = 0;
+          tapIs(HTMLSelectElement)(vnode.dom).selectedIndex = 0;
         },
         style: {
           width: '95px',

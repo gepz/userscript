@@ -1,4 +1,4 @@
-import tapIs from "./tapIs/index";
-import tapNonNull from "./tapNonNull/index";
+import tapIs from "./tapIs";
+import tapNonNull from "./tapNonNull";
 export { tapIs, tapNonNull, };
 //# sourceMappingURL=index.js.map

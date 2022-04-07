@@ -5,7 +5,6 @@
   "dependencies": {
     "@userscript/assert": "^1.0.0",
     "@userscript/forward-to": "^1.0.0",
-    "@userscript/partial": "^1.0.0",
     "@userscript/tap": "^1.0.0",
     "astring": "^1.7.5",
     "broadcast-channel": "^3.7.0",

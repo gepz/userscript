@@ -1,5 +1,4 @@
 import assert from '@userscript/assert';
-import partial from '@userscript/partial';
 import {
   tapIs,
   tapNonNull,
@@ -180,6 +179,7 @@ const createPreloadPage = (
 
 const createPreloadUrl = (
   startURL: URL,
+) => (
   page: number,
 ) => {
   const preloadURL = new URL('', startURL);
@@ -189,6 +189,7 @@ const createPreloadUrl = (
 
 const preloadUrlStream = (
   startURL: URL,
+) => (
   pageCount$: Observable<number>,
 ) => pageCount$.pipe(
   scan((max, value) => Math.max(max, value), 1),
@@ -199,7 +200,7 @@ const preloadUrlStream = (
       (i) => getPageParam(startURL) + last + i,
     ),
   )),
-  map(partial(createPreloadUrl, startURL)),
+  map(createPreloadUrl(startURL)),
 );
 
 const trySortTeasers = (condition$: Observable<string>) => condition$.pipe(
@@ -244,7 +245,7 @@ export default async (): Promise<void> => {
   );
 
   const preloadUrl$ = (haveMorePages ? sortComponent.pageCount$ : of(1)).pipe(
-    partial(preloadUrlStream, new URL(window.location.href)),
+    preloadUrlStream(new URL(window.location.href)),
   );
 
   const channel = new BroadcastChannel(scriptIdentifier);
@@ -281,7 +282,7 @@ export default async (): Promise<void> => {
           pager.style.display = 'none';
         }),
         map((pager) => {
-          const clonedPager = tapIs(HTMLElement, pager.cloneNode(true));
+          const clonedPager = tapIs(HTMLElement)(pager.cloneNode(true));
           clonedPager.style.display = '';
           return [pager, clonedPager];
         }),
