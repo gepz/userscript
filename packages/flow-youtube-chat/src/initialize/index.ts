@@ -33,13 +33,14 @@ import {
   switchMap,
   startWith,
   observeOn,
-  retryWhen,
+  retry,
   throttleTime,
   distinctUntilChanged,
   skip,
   bufferCount,
   mapTo,
   defer,
+  of,
 } from 'rxjs';
 
 import packageJson from '@/../package.json';
@@ -590,13 +591,15 @@ export default (): Promise<unknown> => pipe(
           )),
         ),
       )),
-      retryWhen((e) => pipe(
-        e,
-        tap(ctx.mixLog(['Errored', e])),
-        delay(5000),
-        tap((x) => ctx.mixLog(x)()),
-        tap(ctx.reinitialize),
-      )),
+      retry({
+        delay: (e) => pipe(
+          e,
+          of,
+          tap(ctx.mixLog(['Errored', e])),
+          delay(5000),
+          tap(ctx.reinitialize),
+        ),
+      }),
     )),
     T.fromIO,
   )),
