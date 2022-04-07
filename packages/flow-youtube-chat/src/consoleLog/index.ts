@@ -7,7 +7,7 @@ import log from 'loglevel';
 import Logger from '@/Logger';
 
 export default (
-  ...[a, ...b]: Parameters<Logger>
+  ...[[a, ...b]]: Parameters<Logger>
 ): IO.IO<void> => pipe(
   () => log.info(
     ...(typeof a === 'string' ? [`【FYC】 ${a}`]
