@@ -1,4 +1,3 @@
-import partial from '@userscript/partial';
 import {
   tapIs,
 } from '@userscript/tap';
@@ -12,6 +11,6 @@ export default (
   event$: Observable<InputEvent>,
 ): Observable<string> => event$.pipe(
   pluck('currentTarget'),
-  map(partial(tapIs, HTMLInputElement)),
+  map(tapIs(HTMLInputElement)),
   pluck('value'),
 );
