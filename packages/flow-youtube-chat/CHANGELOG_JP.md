@@ -2,7 +2,6 @@
 このプロジェクトに対するすべての注目すべき変更は、このファイルに記録されます。
 
 フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に基づいています。
-で、このプロジェクトは [Semantic Versioning](https://semver.org/lang/ja/spec/v2.0.0.html) を遵守しています。
 
 ## Unreleased (未発表)
 ### 修正
