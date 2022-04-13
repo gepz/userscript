@@ -26,7 +26,6 @@ import {
   take,
   auditTime,
   map,
-  mapTo,
   startWith,
   withLatestFrom,
   filter,
@@ -266,7 +265,7 @@ export default async (): Promise<void> => {
   const pageFromUrl = new Map<string, PageContainer>();
 
   const unsortedTeasers$ = teaserPageLoad$.pipe(
-    mapTo(undefined),
+    map(() => undefined),
     startWith(undefined),
   );
 

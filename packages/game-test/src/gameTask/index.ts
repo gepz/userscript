@@ -179,7 +179,7 @@ export default (
     IO.bind('sub', (c) => () => pipe(
       (key: string) => (changes: Partial<GameState>) => flow(
         Rx.filter(equals(Str.Ord)(key)),
-        Rx.mapTo((x: GameState): GameState => ({
+        Rx.map(() => (x: GameState): GameState => ({
           ...x,
           ...changes,
         })),
