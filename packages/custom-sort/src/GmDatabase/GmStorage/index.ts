@@ -5,7 +5,7 @@ import {
   GmTable,
 } from '../GmTable';
 
-type GmStorageField = GmTable| GM.Value;
+type GmStorageField = GmTable | GM.Value;
 
 export type GmStorage<
   T = ExtendProperty<GmStorageField>,
