@@ -31,21 +31,18 @@ type StoragePairs<
 
 type StoragePair = [GmStorage | undefined, GmStorage];
 
-type Schema<T extends StoragePair[]> = T extends [infer U, ... infer V] ?
-  U extends StoragePair ?
-    V extends StoragePair[] ?
-      [
-        {
-          upgradeAlias?: U[0] extends GmStorage ?
-            UpgradeAlias<GmStorage<U[0]>, GmStorage<U[1]>>
-            : never,
-          defaultStorage: GmStorage<U[1]>,
-        },
-        ...Schema<V>,
-      ]
-      : never
-    : never
-  : [];
+type Schema<T extends StoragePair[]> = T extends [infer U extends StoragePair, ... infer V extends StoragePair[]] ?
+  [
+    {
+      upgradeAlias?: U[0] extends GmStorage ?
+        UpgradeAlias<GmStorage<U[0]>, GmStorage<U[1]>>
+        : never,
+      defaultStorage: GmStorage<U[1]>,
+    },
+    ...Schema<V>,
+  ]
+  : T extends [] ? []
+  : never;
 
 export type GmDatabaseSchema<
   T extends GmStorage[],
