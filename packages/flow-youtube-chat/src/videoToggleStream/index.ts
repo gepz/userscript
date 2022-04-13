@@ -5,20 +5,20 @@ import {
   fromEvent,
   merge,
   Observable,
-  mapTo,
+  map,
 } from 'rxjs';
 
 export default (video: HTMLVideoElement): Observable<boolean> => merge(
   pipe(
     fromEvent(video, 'playing'),
-    mapTo(true),
+    map(() => true),
   ),
   pipe(
     fromEvent(video, 'waiting'),
-    mapTo(false),
+    map(() => false),
   ),
   pipe(
     fromEvent(video, 'pause'),
-    mapTo(false),
+    map(() => false),
   ),
 );

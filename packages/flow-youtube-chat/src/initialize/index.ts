@@ -38,7 +38,6 @@ import {
   distinctUntilChanged,
   skip,
   bufferCount,
-  mapTo,
   defer,
   of,
 } from 'rxjs';
@@ -304,10 +303,10 @@ export default (): Promise<unknown> => pipe(
               ),
               cs.textOnly,
             ),
-            mapTo({
+            map(() => ({
               render: true,
               setAnimation: true,
-            }),
+            })),
           ),
           pipe(
             merge(
@@ -320,15 +319,15 @@ export default (): Promise<unknown> => pipe(
               cs.shadowFontWeight,
               cs.displayChats,
             ),
-            mapTo({
+            map(() => ({
               render: true,
-            }),
+            })),
           ),
           pipe(
             cs.flowSpeed,
-            mapTo({
+            map(() => ({
               setPlayState: true,
-            }),
+            })),
           ),
           pipe(
             merge(
@@ -339,9 +338,9 @@ export default (): Promise<unknown> => pipe(
               cs.noOverlap,
               cs.timingFunction,
             ),
-            mapTo({
+            map(() => ({
               setAnimation: true,
-            }),
+            })),
           ),
         ),
         throttleTime(180, undefined, {
