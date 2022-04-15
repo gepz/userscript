@@ -1,10 +1,16 @@
 export default (): HTMLElement => {
   const element = document.createElement('div');
-  element.style.pointerEvents = 'none';
-  element.style.zIndex = '30';
-  element.style.position = 'absolute';
-  element.style.overflow = 'hidden';
-  element.style.height = '100%';
-  element.style.width = '100%';
+  Object.assign<
+  CSSStyleDeclaration,
+  Partial<CSSStyleDeclaration>
+  >(element.style, {
+    pointerEvents: 'none',
+    zIndex: '30',
+    position: 'absolute',
+    overflow: 'hidden',
+    height: '100%',
+    width: '100%',
+  });
+
   return element;
 };
