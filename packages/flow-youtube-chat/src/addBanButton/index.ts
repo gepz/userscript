@@ -1,5 +1,5 @@
-import * as IOO from 'fp-ts-contrib/IOOption';
 import * as IO from 'fp-ts/IO';
+import * as IOO from 'fp-ts/IOOption';
 import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
