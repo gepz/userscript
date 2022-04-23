@@ -78,9 +78,7 @@ export default (
     'img',
   ].join(' '))?.src.match(/ytc\/(.*)=/);
 
-  const authorID = O.fromNullable(authorPhotoMatches?.[
-    authorPhotoMatches.length - 1
-  ]);
+  const authorID = O.fromNullable(authorPhotoMatches?.at(-1));
 
   const authorName = O.fromNullable(
     chat.querySelector<HTMLElement>(
