@@ -5,8 +5,8 @@ import {
   ISchema,
   IWorld,
 } from 'bitecs';
-import * as IOO from 'fp-ts-contrib/IOOption';
 import * as IO from 'fp-ts/IO';
+import * as IOO from 'fp-ts/IOOption';
 import * as R from 'fp-ts/Reader';
 import * as RM from 'fp-ts/ReadonlyMap';
 import {
