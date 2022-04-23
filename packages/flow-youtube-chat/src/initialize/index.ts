@@ -5,11 +5,11 @@ import {
 import {
   diff,
 } from 'deep-diff';
-import * as IOO from 'fp-ts-contrib/IOOption';
 import {
   eqStrict,
 } from 'fp-ts/Eq';
 import * as IO from 'fp-ts/IO';
+import * as IOO from 'fp-ts/IOOption';
 import * as O from 'fp-ts/Option';
 import * as R from 'fp-ts/Reader';
 import * as RA from 'fp-ts/ReadonlyArray';
