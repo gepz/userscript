@@ -87,60 +87,35 @@ export default (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   ): Effect<SettingState> => [() => setConfig[k](v as never), undefined];
 
+  const setRange = (
+    keyA: TypeKey<SettingState, number> & keyof UserConfig,
+  ) => (
+    keyB: TypeKey<SettingState, number> & keyof UserConfig,
+  ) => (
+    bFn: (vA: number) => (vB: number) => number,
+  ) => (s: SettingState, vA: number): SettingDispatchable => pipe(
+    bFn(vA)(s[keyB]),
+    (newB) => [
+      {
+        ...s,
+        [keyA]: vA,
+        [keyB]: newB,
+      },
+      configFx(keyA, vA),
+      configFx(keyB, newB),
+    ],
+  );
+
   const setState: Partial<{
     [K in keyof SettingState]: (
       s: SettingState,
       v: SettingState[K]
     ) => SettingDispatchable
   }> = {
-    flowY1: (s, v) => pipe(
-      Math.max(s.flowY2, v + 0.05),
-      (flowY2) => [
-        {
-          ...s,
-          flowY1: v,
-          flowY2,
-        },
-        configFx('flowY1', v),
-        configFx('flowY2', flowY2),
-      ],
-    ),
-    flowY2: (s, v) => pipe(
-      Math.min(s.flowY1, v - 0.05),
-      (flowY1) => [
-        {
-          ...s,
-          flowY2: v,
-          flowY1,
-        },
-        configFx('flowY2', v),
-        configFx('flowY1', flowY1),
-      ],
-    ),
-    flowX1: (s, v) => pipe(
-      Math.max(s.flowX2, v + 0.05),
-      (flowX2) => [
-        {
-          ...s,
-          flowX1: v,
-          flowX2,
-        },
-        configFx('flowX1', v),
-        configFx('flowX2', flowX2),
-      ],
-    ),
-    flowX2: (s, v) => pipe(
-      Math.min(s.flowX1, v - 0.05),
-      (flowX1) => [
-        {
-          ...s,
-          flowX2: v,
-          flowX1,
-        },
-        configFx('flowX2', v),
-        configFx('flowX1', flowX1),
-      ],
-    ),
+    flowY1: setRange('flowY1')('flowY2')((a) => (b) => Math.max(b, a + 0.05)),
+    flowY2: setRange('flowY2')('flowY1')((a) => (b) => Math.min(b, a - 0.05)),
+    flowX1: setRange('flowX1')('flowX2')((a) => (b) => Math.max(b, a + 0.05)),
+    flowX2: setRange('flowX2')('flowX1')((a) => (b) => Math.min(b, a - 0.05)),
     timingStepCount: (s, v) => pipe(
       stepTiming(v),
       (timingFunction) => [
