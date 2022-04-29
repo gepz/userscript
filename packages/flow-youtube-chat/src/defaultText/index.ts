@@ -1,6 +1,6 @@
-import SettingTextByLang from '@/SettingTextByLang';
+import TextByLang from '@/TextByLang';
 
-const defaultSettingText: Readonly<SettingTextByLang> = {
+const defaultText: Readonly<TextByLang> = {
   setting: ['Settings', '設定'],
   font: ['Font', 'フォント'],
   color: ['Color(Normal)', '色(通常)'],
@@ -55,4 +55,4 @@ const defaultSettingText: Readonly<SettingTextByLang> = {
   shadowColor: ['Color(Shadow)', '色(影)'],
 };
 
-export default defaultSettingText;
+export default defaultText;
