@@ -665,7 +665,7 @@ export default (
           onchange: updateString('lang'),
         }, pipe(
           languages,
-          RA.map((x) => option(...x, x[0] === state.lang)),
+          RA.map(([lang, label]) => option(lang, label, lang === state.lang)),
         )),
       ]),
       tabContainer(
