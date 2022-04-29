@@ -1,4 +1,4 @@
-export default interface SettingTextByLang {
+export default interface TextByLang {
   setting: string[],
   font: string[],
   color: string[],

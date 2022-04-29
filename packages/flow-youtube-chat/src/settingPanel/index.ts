@@ -18,7 +18,7 @@ import {
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import SettingTextByLang from '@/SettingTextByLang';
+import TextByLang from '@/TextByLang';
 import {
   TypeKey,
 } from '@/TypeKey';
@@ -337,7 +337,7 @@ export default (
   ): VNode<SettingState> => {
     const getText = getLang(state.lang);
     const checkboxNode = (
-      label: keyof SettingTextByLang
+      label: keyof TextByLang
       & StateKey<boolean>,
     ) => checkboxRow(
       getText(label),
@@ -346,7 +346,7 @@ export default (
     );
 
     const textColorNode = (
-      label: keyof SettingTextByLang
+      label: keyof TextByLang
       & StateKey<string>,
     ) => settingRow(getText(label), [
       textColorRow<SettingState>(pipe(
@@ -360,7 +360,7 @@ export default (
     ]);
 
     const colorNode = (
-      label: keyof SettingTextByLang
+      label: keyof TextByLang
       & StateKey<string>,
     ) => settingRow(getText(label), [
       textColorRow<SettingState>(pipe(
@@ -373,7 +373,7 @@ export default (
     ]);
 
     const intNode = (
-      label: keyof SettingTextByLang
+      label: keyof TextByLang
       & StateKey<number>,
       min: number,
       max: number,
@@ -390,7 +390,7 @@ export default (
     ]);
 
     const numberNode = (
-      label: keyof SettingTextByLang
+      label: keyof TextByLang
       & StateKey<number>,
       min: number,
       max: number,
@@ -407,7 +407,7 @@ export default (
     ]);
 
     const buttonNode = (
-      label: keyof SettingTextByLang
+      label: keyof TextByLang
       & TypeKey<typeof doAct, (s: SettingState) => Promise<void>>,
     ): VNode<SettingState> => h('button', {
       type: 'button',
@@ -418,7 +418,7 @@ export default (
     }, text(getText(label)));
 
     const textAreaNode = (
-      label: keyof SettingTextByLang
+      label: keyof TextByLang
       & StateKey<readonly string[]>,
       rows: number,
     ) => settingRow(getText(label), [
