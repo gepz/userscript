@@ -1,9 +1,9 @@
 import SettingTextByLang from '@/SettingTextByLang';
 import defaultSettingText from '@/defaultSettingText';
 
-export default (lang: string) => (
+export default (language: string) => (
   key: keyof SettingTextByLang,
 ): string => defaultSettingText[key][
-  lang === 'FYC_EN' ? 0
+  language === 'FYC_EN' ? 0
   : 1
 ];
