@@ -27,6 +27,7 @@ import UserConfigSetter from '@/UserConfigSetter';
 // import filterPanel from '@/filterPanel';
 import fonts from '@/fonts';
 import getLang from '@/getLang';
+import languages from '@/languages';
 import textShadow from '@/textShadow';
 import checkboxRow from '@/ui/checkboxRow';
 import colorInput from '@/ui/colorInput';
@@ -46,11 +47,6 @@ const textRowStyle: StyleProp = {
   width: '70%',
   boxSizing: 'border-box',
 };
-
-const langs: [string, string][] = [
-  ['FYC_EN', 'English'],
-  ['FYC_JA', '日本語'],
-];
 
 const exampleTextStyle = (s: SettingState): StyleProp => ({
   fontFamily: s.font,
@@ -668,7 +664,7 @@ export default (
         h('select', {
           onchange: updateString('lang'),
         }, pipe(
-          langs,
+          languages,
           RA.map((x) => option(...x, x[0] === state.lang)),
         )),
       ]),
