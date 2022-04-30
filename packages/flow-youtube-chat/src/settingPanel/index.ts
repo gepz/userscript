@@ -656,7 +656,6 @@ export default (
     }, [
       h('div', {
         style: {
-          float: 'right',
           position: 'absolute',
           inset: '3px 3px auto auto',
         },
