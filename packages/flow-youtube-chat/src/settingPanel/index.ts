@@ -657,7 +657,9 @@ export default (
       h('div', {
         style: {
           float: 'right',
-          margin: '3px 3px 0 0',
+          position: 'absolute',
+          top: '3px',
+          right: '3px',
         },
       }, [
         text('🌐'),
