@@ -479,10 +479,10 @@ export default (
       h('div', {
         style: panelBoxStyle(212),
       }, [
-        numberNode('flowY1', 0, 0.95, 0.05),
-        numberNode('flowY2', 0.05, 1, 0.05),
-        numberNode('flowX1', 0, 0.95, 0.05),
-        numberNode('flowX2', 0.05, 1, 0.05),
+        numberNode('flowY1', 0, 0.95, 0.01),
+        numberNode('flowY2', 0.05, 1, 0.01),
+        numberNode('flowX1', 0, 0.95, 0.01),
+        numberNode('flowX2', 0.05, 1, 0.01),
         numberNode('minSpacing', 0, 2.5, 0.1),
         checkboxNode('useStepTiming'),
         h('div', {
