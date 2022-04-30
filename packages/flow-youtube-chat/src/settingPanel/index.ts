@@ -658,7 +658,7 @@ export default (
         style: {
           float: 'right',
           position: 'absolute',
-          inset: '3px 3px 0 0',
+          inset: '3px 3px auto auto',
         },
       }, [
         text('🌐'),
