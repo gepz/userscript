@@ -9,6 +9,7 @@
 - banned lane
 - Sticker
 - Performance tab
+- Reset default settings
 - Shadow color V2
 
 ## Typescript 4.8
