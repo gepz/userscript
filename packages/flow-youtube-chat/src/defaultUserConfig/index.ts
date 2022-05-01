@@ -80,35 +80,35 @@ export default (): Promise<UserConfig> => pipe(
     flowX2: await sc<number>('flowX2', 1.0),
     shadowColor: await sc<string>('shadowColor', '#000000'),
   }),
-  T.bind(
-    'filterExp',
-    (x) => () => ic<string, expEval.parse.Expression>(
-      'filterExp',
-      expEval.parse(`,
-or([
-RA.some(
-  flip(flow([matchedByText, RA.some]))(${
-  JSON.stringify(x.bannedWordRegexs.val)
-})
-)(RA.compact([
-  messageText,
-  paymentInfo
-])),
-RA.some(
-  flip(flow([inText, RA.some]))(${JSON.stringify(x.bannedWords.val)})
-)(RA.compact([
-  messageText,
-  paymentInfo
-])),
-O.exists(
-  flip(flow([eqText, RA.some]))(${JSON.stringify(x.bannedUsers.val)})
-)(authorID)
-])
-      `),
-      expEval.parse,
-      generate,
-    ),
-  ),
+  //   T.bind(
+  //     'filterExp',
+  //     (x) => () => ic<string, expEval.parse.Expression>(
+  //       'filterExp',
+  //       expEval.parse(`,
+  // or([
+  // RA.some(
+  //   flip(flow([matchedByText, RA.some]))(${
+  //   JSON.stringify(x.bannedWordRegexs.val)
+  // })
+  // )(RA.compact([
+  //   messageText,
+  //   paymentInfo
+  // ])),
+  // RA.some(
+  //   flip(flow([inText, RA.some]))(${JSON.stringify(x.bannedWords.val)})
+  // )(RA.compact([
+  //   messageText,
+  //   paymentInfo
+  // ])),
+  // O.exists(
+  //   flip(flow([eqText, RA.some]))(${JSON.stringify(x.bannedUsers.val)})
+  // )(authorID)
+  // ])
+  //       `),
+  //       expEval.parse,
+  //       generate,
+  //     ),
+  //   ),
 
   // displayMatrix: await ic(
   //   'displayMatrix',
