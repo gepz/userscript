@@ -9,6 +9,7 @@ import {
 import ChatData from '@/ChatData';
 import Logger from '@/Logger';
 import UserConfigGetter from '@/UserConfigGetter';
+import defaultFilter from '@/defaultFilter';
 import filterContext from '@/filterContext';
 
 export default (
@@ -18,7 +19,8 @@ export default (
 ): boolean => pipe(
   data,
   O.fromPredicate(() => pipe(
-    getConfig.filterExp(),
+    defaultFilter(getConfig),
+    // getConfig.filterExp(),
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     (x) => expEval.eval(
       x,
