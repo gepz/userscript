@@ -36,6 +36,6 @@ export default interface UserConfig {
   flowX1: ConfigItem<number>,
   flowX2: ConfigItem<number>,
   shadowColor: ConfigItem<string>,
-  filterExp: ConfigItem<expEval.parse.Expression>,
+  // filterExp: ConfigItem<expEval.parse.Expression>,
   // displayMatrix: ConfigItem<readonly (readonly boolean[])[]>,
 }
