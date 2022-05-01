@@ -67,6 +67,14 @@ type StateKey<T> = TypeKey<SettingState, T>
 
 type SettingDispatchable = [s: SettingState, ...e: Effect<SettingState>[]];
 
+const configEffect = (
+  setConfig: UserConfigSetter,
+) => <T extends keyof UserConfig>(
+  k: T,
+  v: UserConfig[T]['val'],
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+): Effect<SettingState> => [() => setConfig[k](v as never), undefined];
+
 export default (
   command: AppCommander,
 ): (
@@ -77,11 +85,7 @@ export default (
     act,
   } = command;
 
-  const configFx = <T extends keyof UserConfig>(
-    k: T,
-    v: UserConfig[T]['val'],
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  ): Effect<SettingState> => [() => setConfig[k](v as never), undefined];
+  const configFx = configEffect(setConfig);
 
   const setRange = (
     keyA: TypeKey<SettingState, number> & keyof UserConfig,
