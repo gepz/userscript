@@ -22,6 +22,7 @@
     "loglevel": "^1.7.0",
     "micro-memoize": "^4.0.9",
     "mithril": "^2.0.4",
+    "monocle-ts": "^2.3.13",
     "rxjs": "^7.3.0",
     "sweetalert2": "^11.0.18",
     "ts-toolbelt": "^9.6.0",
