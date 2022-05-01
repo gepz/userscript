@@ -4,6 +4,8 @@
 フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に基づいています。
 
 ## Unreleased (未発表)
+
+## 1.15.9
 ### 修正
 - エラー発生時のスクリプトのリトライ方法を修正。
 - コンソールに記録される内容を修正。
