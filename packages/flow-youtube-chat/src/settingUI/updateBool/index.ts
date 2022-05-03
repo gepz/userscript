@@ -17,7 +17,7 @@ export default (
   SettingConfig,
   (s: SettingState, e: Event) => SettingDispatchable
   > => flip(
-  (s, e) => pipe(
+  (_, e) => pipe(
     getChecked(e),
     (x) => updateAt(key, x),
   ),
