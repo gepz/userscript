@@ -21,7 +21,7 @@ export default (
   SettingConfig,
   (s: SettingState, e: Event) => SettingDispatchable
   > => flip(
-  (s, e) => pipe(
+  (_, e) => pipe(
     getValue(e),
     flow(
       S.split(/\r\n|\n/),
