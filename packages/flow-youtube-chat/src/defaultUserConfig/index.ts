@@ -14,6 +14,7 @@ import * as S from 'fp-ts/string';
 import UserConfig from '@/UserConfig';
 import fycKey from '@/fycKey';
 import indirectConfig from '@/indirectConfig';
+import languages from '@/languages';
 import simpleConfig from '@/simpleConfig';
 
 const stringsArgs: [
@@ -43,7 +44,16 @@ const ic = <T1 extends GM.Value, T2>(
 
 export default (): Promise<UserConfig> => pipe(
   async () => ({
-    lang: await sc<string>('LANG', 'FYC_EN'),
+    lang: await ic<string, typeof languages[number]>(
+      'LANG',
+      'FYC_EN',
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      (x) => (languages.includes(x as typeof languages[number])
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        ? (x as typeof languages[number])
+        : 'FYC_EN'),
+      (x) => x,
+    ),
     font: await sc<string>('FONT', 'MS PGothic'),
     chatOpacity: await sc<number>('OPACITY', 0.8),
     color: await sc<string>('COLOR', '#ffffff'),

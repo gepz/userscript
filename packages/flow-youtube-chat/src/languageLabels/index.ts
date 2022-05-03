@@ -1,4 +1,4 @@
 export default [
-  'FYC_EN',
-  'FYC_JA',
+  'English',
+  '日本語',
 ] as const;

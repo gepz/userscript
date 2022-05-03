@@ -15,8 +15,8 @@ export default <T>(
   style: TabContainerStyle,
   labels: readonly string[],
   tabs: readonly (() => readonly VNode<T>[])[],
-  mainTab: number,
   ontabSelect: Action<T>,
+  mainTab: number,
 ): VNode<T> => h('div', {}, [
   h('div', {}, pipe(
     labels,

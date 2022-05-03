@@ -9,7 +9,7 @@ import {
 } from 'hyperapp';
 
 import SettingState from '@/SettingState';
-import getLang from '@/getLang';
+import getText from '@/getText';
 
 const togglePanel = (x: SettingState, e: MouseEvent): [
   s: SettingState,
@@ -65,5 +65,5 @@ export default (
       top: '-2px',
       marginLeft: '8px,',
     },
-  }, text(getLang(state.lang)('setting'))),
+  }, text(getText('setting')(state.lang))),
 ]);
