@@ -13,9 +13,13 @@ import TabContainerStyle from '../TabContainerStyle';
 
 export default <T>(
   style: TabContainerStyle,
-  labels: readonly string[],
-  tabs: readonly (() => readonly VNode<T>[])[],
+) => (
   ontabSelect: Action<T>,
+) => (
+  labels: readonly string[],
+) => (
+  tabs: readonly (() => readonly VNode<T>[])[],
+) => (
   mainTab: number,
 ): VNode<T> => h('div', {}, [
   h('div', {}, pipe(
