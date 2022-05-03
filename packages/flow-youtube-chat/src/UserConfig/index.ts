@@ -1,9 +1,10 @@
 import * as expEval from 'expression-eval';
 
 import ConfigItem from '@/ConfigItem';
+import languages from '@/languages';
 
 export default interface UserConfig {
-  lang: ConfigItem<string>,
+  lang: ConfigItem<typeof languages[number]>,
   font: ConfigItem<string>,
   color: ConfigItem<string>,
   ownerColor: ConfigItem<string>,

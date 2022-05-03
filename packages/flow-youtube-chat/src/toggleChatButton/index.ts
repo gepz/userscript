@@ -1,29 +1,28 @@
 import {
+  pipe,
+} from 'fp-ts/function';
+import {
   h,
 } from 'hyperapp';
 
 import RootComponent from '@/RootComponent';
 import UserConfigSetter from '@/UserConfigSetter';
-import getLang from '@/getLang';
+import getText from '@/getText';
 
 type State = {
   displayChats: boolean,
   lang: string,
 };
 
-export default (setConfig: UserConfigSetter): RootComponent<State> => {
-  const tag = 'button';
-  return {
+export default (setConfig: UserConfigSetter): RootComponent<State> => pipe(
+  'button',
+  (tag: keyof HTMLElementTagNameMap) => ({
     tag,
-    view: (
-      state,
-    ) => {
-      const getText = getLang(state.lang);
-      const label = getText(
+    view: (state) => pipe(
+      getText(
         state.displayChats ? 'hideChat' : 'showChat',
-      );
-
-      return h(tag, {
+      )(state.lang),
+      (label) => h(tag, {
         class: 'ytp-button',
         style: {
           background: 'none',
@@ -41,16 +40,16 @@ export default (setConfig: UserConfigSetter): RootComponent<State> => {
         type: 'button',
         'aria-label': label,
         title: label,
-        onclick: (s: State) => {
-          const displayChats = !s.displayChats;
-          return [
+        onclick: (s: State) => pipe(
+          !s.displayChats,
+          (displayChats) => [
             {
               ...s,
               displayChats,
             },
             [() => setConfig.displayChats(displayChats), undefined],
-          ];
-        },
+          ],
+        ),
       }, [
         h('svg', {
           style: {
@@ -67,7 +66,7 @@ export default (setConfig: UserConfigSetter): RootComponent<State> => {
             'stroke-width': '2',
           }),
         ]),
-      ]);
-    },
-  };
-};
+      ]),
+    ),
+  }),
+);
