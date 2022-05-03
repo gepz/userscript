@@ -83,7 +83,7 @@ export default (
         display: 'flex',
         padding: '6px',
       },
-    })((s, n) => updateAt('mainTab', n)(c))(pipe(
+    })((_, n) => updateAt('mainTab', n)(c))(pipe(
       [
         'flowChat',
         'chatFilter',
