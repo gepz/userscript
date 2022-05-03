@@ -1,10 +1,10 @@
 import UserConfig from '@/UserConfig';
 
-type ConfigState = {
+type UserConfigState = {
   [P in keyof UserConfig]: UserConfig[P]['val'];
 };
 
-export default interface SettingState extends ConfigState {
+export default interface SettingState extends UserConfigState {
   showPanel: boolean,
   bannedWordRegexsValid: boolean,
   bannedWordRegexsError: string,
