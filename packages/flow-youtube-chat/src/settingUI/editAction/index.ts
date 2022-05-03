@@ -19,7 +19,7 @@ export default <T>(
     'editingInput',
     {
       id: key,
-      committedState: getTrueState(key, s),
+      committedState: getTrueState(key)(s),
       value: getValue(e),
     },
   )(c),
@@ -46,7 +46,7 @@ export default <T>(
     const [s1, ...es1] = onchange(key)(c)(s, e);
     const x: typeof s1.editingInput = s1.editingInput.id === key ? {
       id: key,
-      committedState: getTrueState(key, s1),
+      committedState: getTrueState(key)(s1),
       value: getValue(e),
     } : s1.editingInput;
 
