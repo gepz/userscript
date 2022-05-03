@@ -9,7 +9,7 @@ import {
   text,
 } from 'hyperapp';
 
-import TabContainerStyle from '../TabContainerStyle';
+import TabContainerStyle from '@/ui/TabContainerStyle';
 
 export default <T>(
   style: TabContainerStyle,

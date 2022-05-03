@@ -67,8 +67,8 @@ import scriptIdentifier from '@/scriptIdentifier';
 import setChatAnimation from '@/setChatAnimation';
 import setChatAppCss from '@/setChatAppCss';
 import setChatPlayState from '@/setChatPlayState';
-import settingComponent from '@/settingComponent';
 import settingStateInit from '@/settingStateInit';
+import settingsComponent from '@/settingsComponent';
 import simpleWrap from '@/simpleWrap';
 import toggleChatButton from '@/toggleChatButton';
 import videoToggleStream from '@/videoToggleStream';
@@ -149,7 +149,7 @@ export default (): Promise<unknown> => pipe(
     ))),
     T.apS('flowChats', T.of<FlowChat[]>([])),
     T.bind('wrappedSetting', (ctx) => T.of(simpleWrap(
-      settingComponent({
+      settingsComponent({
         setConfig: ctx.setConfig,
         act: {
           clearFlowChats: async () => removeOldChats(0)(ctx.flowChats)(),

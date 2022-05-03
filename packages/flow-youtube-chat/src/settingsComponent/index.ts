@@ -5,14 +5,14 @@ import {
 import AppCommander from '@/AppCommander';
 import RootComponent from '@/RootComponent';
 import SettingState from '@/SettingState';
-import settingPanel from '@/settingPanel';
-import toggleSettingPanelButton from '@/toggleSettingPanelButton';
+import settingsPanel from '@/settingsPanel';
+import toggleSettingsPanelButton from '@/toggleSettingsPanelButton';
 
 export default (
   command: AppCommander,
 ): RootComponent<SettingState> => {
   const tag = 'span';
-  const panel = settingPanel(command);
+  const panel = settingsPanel(command);
   return {
     tag,
     view: (s) => h(tag, {
@@ -21,7 +21,7 @@ export default (
       },
     }, [
       panel(s),
-      toggleSettingPanelButton(s),
+      toggleSettingsPanelButton(s),
     ]),
   };
 };
