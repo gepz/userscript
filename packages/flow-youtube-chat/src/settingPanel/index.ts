@@ -378,7 +378,7 @@ const colorNode = (
 ): R.Reader<Config, VNode<SettingState>> => (
   c,
 ) => settingRow(getText(label)(c.state.lang), [
-  textColorRow<SettingState>(pipe(
+  textColorRow(pipe(
     [
       colorPicker,
       colorInput,
@@ -498,71 +498,77 @@ const stepTimingNode: R.Reader<Config, VNode<SettingState>> = (
   }, intNode('timingStepCount', 1, 400, 1)(c)),
 ]);
 
-const flowChatPanel: R.Reader<Config, VNode<SettingState>[]> = (c) => [
-  h('div', {
-    style: panelBoxStyle(212),
-  }, pipe(
-    [
-      selectFontNode,
-      textColorNode('color'),
-      textColorNode('ownerColor'),
-      textColorNode('moderatorColor'),
-      textColorNode('memberColor'),
-      colorNode('shadowColor'),
-    ],
-    RA.map(apply(c)),
-  )),
-  h('div', {
-    style: panelBoxStyle(212),
-  }, pipe(
-    [
-      numberNode('chatOpacity', 0, 1, 0.05),
-      numberNode('fontSize', 0.3, 2, 0.05),
-      numberNode('fontWeight', 10, 1e3, 10),
-      numberNode('shadowFontWeight', 0, 3, 0.1),
-      numberNode('flowSpeed', 1, 50, 1),
-      intNode('maxChatCount', 5, 200, 5),
-      intNode('maxChatLength', 5, 200, 5),
-      intNode('laneCount', 1, 25, 1),
-    ],
-    RA.map(apply(c)),
-  )),
-  h('div', {
-    style: panelBoxStyle(212),
-  }, pipe(
-    [
-      numberNode('flowY1', 0, 0.95, 0.01),
-      numberNode('flowY2', 0.05, 1, 0.01),
-      numberNode('flowX1', 0, 0.95, 0.01),
-      numberNode('flowX2', 0.05, 1, 0.01),
-      numberNode('minSpacing', 0, 2.5, 0.1),
-      stepTimingNode,
-      checkboxNode('createChats'),
-      checkboxNode('displayModName'),
-      checkboxNode('displaySuperChatAuthor'),
-      checkboxNode('textOnly'),
-      (x: Config) => text(getText('flowNewChatIf')(x.state.lang)),
-      checkboxNode('noOverlap'),
-      // ...pipe(
-      //   state.displayMatrix,
-      //   RA.map(RA.map((y) => h<SettingState>('span', {
-      //     style: {
-      //       background: y ? '#000' : '#333',
-      //       color: y ? '#fff' : '#999',
-      //     },
-      //   }, text(y)))),
-      //   RA.map((x) => h('div', {
-      //     style: {
-      //       display: 'grid',
-      //       gridTemplateColumns: '1fr 1fr 1fr',
-      //     },
-      //   }, x)),
-      // ),
-      buttonNode('clearFlowChats'),
-    ],
-    RA.map(apply(c)),
-  )),
-];
+const flowChatPanel: R.Reader<Config, readonly VNode<SettingState>[]> = pipe(
+  [
+    pipe(
+      [
+        selectFontNode,
+        textColorNode('color'),
+        textColorNode('ownerColor'),
+        textColorNode('moderatorColor'),
+        textColorNode('memberColor'),
+        colorNode('shadowColor'),
+      ],
+      R.sequenceArray,
+      R.map((x) => h('div', {
+        style: panelBoxStyle(212),
+      }, x)),
+    ),
+    pipe(
+      [
+        numberNode('chatOpacity', 0, 1, 0.05),
+        numberNode('fontSize', 0.3, 2, 0.05),
+        numberNode('fontWeight', 10, 1e3, 10),
+        numberNode('shadowFontWeight', 0, 3, 0.1),
+        numberNode('flowSpeed', 1, 50, 1),
+        intNode('maxChatCount', 5, 200, 5),
+        intNode('maxChatLength', 5, 200, 5),
+        intNode('laneCount', 1, 25, 1),
+      ],
+      R.sequenceArray,
+      R.map((x) => h('div', {
+        style: panelBoxStyle(212),
+      }, x)),
+    ),
+    pipe(
+      [
+        numberNode('flowY1', 0, 0.95, 0.01),
+        numberNode('flowY2', 0.05, 1, 0.01),
+        numberNode('flowX1', 0, 0.95, 0.01),
+        numberNode('flowX2', 0.05, 1, 0.01),
+        numberNode('minSpacing', 0, 2.5, 0.1),
+        stepTimingNode,
+        checkboxNode('createChats'),
+        checkboxNode('displayModName'),
+        checkboxNode('displaySuperChatAuthor'),
+        checkboxNode('textOnly'),
+        (x: Config) => text(getText('flowNewChatIf')(x.state.lang)),
+        checkboxNode('noOverlap'),
+        // ...pipe(
+        //   state.displayMatrix,
+        //   RA.map(RA.map((y) => h<SettingState>('span', {
+        //     style: {
+        //       background: y ? '#000' : '#333',
+        //       color: y ? '#fff' : '#999',
+        //     },
+        //   }, text(y)))),
+        //   RA.map((x) => h('div', {
+        //     style: {
+        //       display: 'grid',
+        //       gridTemplateColumns: '1fr 1fr 1fr',
+        //     },
+        //   }, x)),
+        // ),
+        buttonNode('clearFlowChats'),
+      ],
+      R.sequenceArray,
+      R.map((x) => h('div', {
+        style: panelBoxStyle(212),
+      }, x)),
+    ),
+  ],
+  R.sequenceArray,
+);
 
 const filterPanel: R.Reader<Config, VNode<SettingState>[]> = (c) => [
   h('div', {
@@ -628,63 +634,57 @@ const feedbackPanel: R.Reader<Config, VNode<SettingState>[]> = (c) => pipe(
       h('div', {}, [
         h('span', {}, text(getText('eventLog')(c.state.lang))),
         buttonNode('copy')(c),
-        tabContainer(
-          {
-            container: {
-              height: '276px',
-            },
-            label: {
-              padding: '4px',
-              width: '2em',
-              textAlign: 'center',
-            },
-            labelFocus: {
-              background: '#666',
-            },
-            tab: {
-              display: 'flex',
-              flexDirection: 'column',
-              padding: '6px',
-            },
+        tabContainer<SettingState>({
+          container: {
+            height: '276px',
           },
-          pipe(
-            RA.makeBy(logPageLength, N.Show.show),
-          ),
-          pipe(
-            RA.makeBy(
-              logPageLength,
-              (i) => () => pipe(
-                getState<readonly string[]>('eventLog')(
-                  c.state,
-                ).slice(i * 100, (i + 1) * 100),
-                RA.mapWithIndex((j, x) => h('div', {
+          label: {
+            padding: '4px',
+            width: '2em',
+            textAlign: 'center',
+          },
+          labelFocus: {
+            background: '#666',
+          },
+          tab: {
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '6px',
+          },
+        })((s, n) => updateAt('logTab', n)(c))(pipe(
+          RA.makeBy(logPageLength, N.Show.show),
+        ))(pipe(
+          RA.makeBy(
+            logPageLength,
+            (i) => () => pipe(
+              getState<readonly string[]>('eventLog')(
+                c.state,
+              ).slice(i * 100, (i + 1) * 100),
+              RA.mapWithIndex((j, x) => h('div', {
+                style: {
+                  display: 'flex',
+                },
+              }, [
+                h('div', {
                   style: {
-                    display: 'flex',
+                    userSelect: 'none',
+                    flex: '0 0 2em',
                   },
-                }, [
-                  h('div', {
-                    style: {
-                      userSelect: 'none',
-                      flex: '0 0 2em',
-                    },
-                  }, text((i * 100) + j)),
-                  h('div', {
-                    style: {
-                      background: j % 2 === 0 ? '#fff'
-                      : '#ddd',
-                      color: '#000',
-                      flex: 'auto',
-                      wordBreak: 'break-all',
-                      padding: '0 2px',
-                    },
-                  }, text(x)),
-                ])),
-              ),
+                }, text((i * 100) + j)),
+                h('div', {
+                  style: {
+                    background: j % 2 === 0 ? '#fff'
+                    : '#ddd',
+                    color: '#000',
+                    flex: 'auto',
+                    wordBreak: 'break-all',
+                    padding: '0 2px',
+                  },
+                }, text(x)),
+              ])),
             ),
           ),
-          (s, n) => updateAt('logTab', n)(c),
-          getState<number>('logTab')(c.state),
-        ),
+        ))(getState<number>('logTab')(c.state)),
       ]),
     ]),
   ],
@@ -731,45 +731,39 @@ export default (
         )),
       )),
     ]),
-    tabContainer(
-      {
-        container: {
-          height: '364px',
-        },
-        label: {
-          padding: '6px',
-        },
-        labelFocus: {
-          background: '#666',
-        },
-        tab: {
-          display: 'flex',
-          padding: '6px',
-        },
+    tabContainer<SettingState>({
+      container: {
+        height: '364px',
       },
-      pipe(
-        [
-          'flowChat',
-          'chatFilter',
-          'chatField',
-          'feedback',
-        ],
-        RA.map(getText),
-        RA.map(apply(c.state.lang)),
-      ),
-      pipe(
-        [
-          () => flowChatPanel,
-          () => filterPanel,
-          // () => filterPanel,
-          () => chatFieldPanel,
-          () => feedbackPanel,
-        ] as const,
-        RA.map(flip),
-        RA.map(apply(c)),
-      ),
-      (s, n) => updateAt('mainTab', n)(c),
-      getState<number>('mainTab')(c.state),
-    ),
+      label: {
+        padding: '6px',
+      },
+      labelFocus: {
+        background: '#666',
+      },
+      tab: {
+        display: 'flex',
+        padding: '6px',
+      },
+    })((s, n) => updateAt('mainTab', n)(c))(pipe(
+      [
+        'flowChat',
+        'chatFilter',
+        'chatField',
+        'feedback',
+      ],
+      RA.map(getText),
+      RA.map(apply(c.state.lang)),
+    ))(pipe(
+      [
+        () => flowChatPanel,
+        () => filterPanel,
+        // () => filterPanel,
+        () => chatFieldPanel,
+        () => feedbackPanel,
+      ] as const,
+      RA.map(flip),
+      RA.map(apply(c)),
+    ))(getState<number>('mainTab')(c.state)),
   ]) : h('div', {})),
 );
