@@ -20,7 +20,7 @@ import languageLabels from '@/languageLabels';
 import languages from '@/languages';
 import chatFieldPanel from '@/settingUI/chatFieldPanel';
 import feedbackPanel from '@/settingUI/feedbackPanel';
-import filterPanel from '@/settingUI/filterPanel';
+import filterPanel from '@/settingUI/filterPanelOld';
 import flowChatPanel from '@/settingUI/flowChatPanel';
 import getState from '@/settingUI/getState';
 import updateAt from '@/settingUI/updateAt';
