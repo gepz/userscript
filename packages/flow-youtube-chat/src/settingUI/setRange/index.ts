@@ -3,7 +3,7 @@ import {
   pipe,
 } from 'fp-ts/function';
 
-import SettingConfig from '@/SettingConfig';
+import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import {
   TypeKey,
@@ -20,8 +20,10 @@ export default (
   bFn: (vA: number) => (vB: number) => number,
 ) => (
   vA: number,
-): R.Reader<SettingConfig, SettingDispatchable> => (c) => pipe(
-  bFn(vA)(c.state[keyB]),
+): R.Reader<AppCommander, R.Reader<SettingState, SettingDispatchable>> => (
+  c,
+) => (s) => pipe(
+  bFn(vA)(s[keyB]),
   (newB) => pipe(
     [
       configEffect(keyA, vA),
@@ -30,11 +32,11 @@ export default (
     R.sequenceArray,
     R.map((effects): SettingDispatchable => [
       {
-        ...c.state,
+        ...s,
         [keyA]: vA,
         [keyB]: newB,
       },
       ...effects,
     ]),
-  )(c.command.setConfig),
+  )(c.setConfig),
 );

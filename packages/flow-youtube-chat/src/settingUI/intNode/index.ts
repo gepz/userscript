@@ -5,7 +5,6 @@ import {
 } from 'hyperapp';
 
 import AppCommander from '@/AppCommander';
-import SettingConfig from '@/SettingConfig';
 import SettingState from '@/SettingState';
 import TextByLang from '@/TextByLang';
 import getText from '@/getText';

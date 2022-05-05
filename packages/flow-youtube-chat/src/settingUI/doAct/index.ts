@@ -1,11 +1,12 @@
-import SettingConfig from '@/SettingConfig';
+import AppCommander from '@/AppCommander';
+import SettingState from '@/SettingState';
 
 export default ({
-  copy: async (c: SettingConfig) => {
-    GM.setClipboard(c.state.eventLog.join('\n'));
+  copy: () => async (s: SettingState) => {
+    GM.setClipboard(s.eventLog.join('\n'));
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  clearFlowChats: async (c: SettingConfig) => {
-    c.command.act.clearFlowChats();
+  clearFlowChats: (c: AppCommander) => async (s: SettingState) => {
+    c.act.clearFlowChats();
   },
 });

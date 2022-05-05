@@ -4,7 +4,6 @@ import {
 } from 'hyperapp';
 
 import AppCommander from '@/AppCommander';
-import SettingConfig from '@/SettingConfig';
 import SettingState from '@/SettingState';
 import TextByLang from '@/TextByLang';
 import {
@@ -15,18 +14,16 @@ import doAct from '@/settingUI/doAct';
 
 export default (
   label: keyof TextByLang
-  & TypeKey<typeof doAct, (c: SettingConfig) => Promise<void>>,
+  & TypeKey<
+  typeof doAct,
+  R.Reader<AppCommander, R.Reader<SettingState, Promise<void>>>
+  >,
 ): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
   c,
 ) => (state) => h('button', {
   type: 'button',
   onclick: (s) => [
     s,
-    [
-      () => doAct[label]({
-        command: c,
-        state: s,
-      }), undefined,
-    ],
+    [() => doAct[label](c)(s), undefined],
   ],
 }, text(getText(label)(state.lang)));
