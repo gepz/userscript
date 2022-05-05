@@ -1,7 +1,6 @@
 import * as R from 'fp-ts/Reader';
 
 import AppCommander from '@/AppCommander';
-import SettingConfig from '@/SettingConfig';
 import SettingState from '@/SettingState';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import StateKey from '@/settingUI/StateKey';

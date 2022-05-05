@@ -1,7 +1,5 @@
 import * as R from 'fp-ts/Reader';
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
-  apply,
   pipe,
 } from 'fp-ts/function';
 import {

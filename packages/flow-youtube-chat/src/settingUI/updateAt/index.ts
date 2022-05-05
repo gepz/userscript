@@ -4,7 +4,6 @@ import {
 } from 'fp-ts/function';
 
 import AppCommander from '@/AppCommander';
-import SettingConfig from '@/SettingConfig';
 import SettingState from '@/SettingState';
 import UserConfigSetter from '@/UserConfigSetter';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
@@ -17,31 +16,27 @@ export default <T>(
   k: StateKey<T>,
   v: T,
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-) => (command: AppCommander) => (s: SettingState): SettingDispatchable => pipe(
-  {
-    command,
-    state: s,
-  },
+) => pipe(
   k in setComputed ? (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     setComputed[k as keyof typeof setComputed] as (
       v: unknown
-    ) => R.Reader<SettingConfig, SettingDispatchable>
+    ) => R.Reader<AppCommander, R.Reader<SettingState, SettingDispatchable>>
   )(v)
   : k in setState ? (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     setState[k as keyof typeof setState] as (
       v: unknown
-    ) => R.Reader<SettingConfig, SettingDispatchable>
-  )(v) : () => [
+    ) => R.Reader<AppCommander, R.Reader<SettingState, SettingDispatchable>>
+  )(v) : (c: AppCommander) => (s: SettingState): SettingDispatchable => [
     {
       ...s,
       [k]: v,
     },
-    ...(k in command.setConfig) ? [
+    ...(k in c.setConfig) ? [
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       configEffect(k as keyof UserConfigSetter, v as never)(
-        command.setConfig,
+        c.setConfig,
       ),
     ]
     : [],
