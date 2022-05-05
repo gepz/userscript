@@ -8,7 +8,7 @@ import {
   VNode,
 } from 'hyperapp';
 
-import SettingConfig from '@/SettingConfig';
+import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import getText from '@/getText';
 import buttonNode from '@/settingUI/buttonNode';
@@ -22,8 +22,8 @@ import textColorNode from '@/settingUI/textColorNode';
 import panelBoxStyle from '@/ui/panelBoxStyle';
 
 const flowChatPanel: R.Reader<
-SettingConfig,
-readonly VNode<SettingState>[]
+AppCommander,
+R.Reader<SettingState, readonly VNode<SettingState>[]>
 > = pipe(
   [
     pipe(
@@ -36,9 +36,10 @@ readonly VNode<SettingState>[]
         colorNode('shadowColor'),
       ],
       R.sequenceArray,
-      R.map((x) => h('div', {
+      R.map(R.sequenceArray),
+      R.map(R.map((x) => h('div', {
         style: panelBoxStyle(212),
-      }, x)),
+      }, x))),
     ),
     pipe(
       [
@@ -52,9 +53,10 @@ readonly VNode<SettingState>[]
         intNode('laneCount', 1, 25, 1),
       ],
       R.sequenceArray,
-      R.map((x) => h('div', {
+      R.map(R.sequenceArray),
+      R.map(R.map((x) => h('div', {
         style: panelBoxStyle(212),
-      }, x)),
+      }, x))),
     ),
     pipe(
       [
@@ -68,7 +70,7 @@ readonly VNode<SettingState>[]
         checkboxNode('displayModName'),
         checkboxNode('displaySuperChatAuthor'),
         checkboxNode('textOnly'),
-        (x: SettingConfig) => text(getText('flowNewChatIf')(x.state.lang)),
+        () => (s: SettingState) => text(getText('flowNewChatIf')(s.lang)),
         checkboxNode('noOverlap'),
         // ...pipe(
         //   state.displayMatrix,
@@ -88,12 +90,14 @@ readonly VNode<SettingState>[]
         buttonNode('clearFlowChats'),
       ],
       R.sequenceArray,
-      R.map((x) => h('div', {
+      R.map(R.sequenceArray),
+      R.map(R.map((x) => h('div', {
         style: panelBoxStyle(212),
-      }, x)),
+      }, x))),
     ),
   ],
   R.sequenceArray,
+  R.map(R.sequenceArray),
 );
 
 export default flowChatPanel;

@@ -1,3 +1,4 @@
+import * as R from 'fp-ts/Reader';
 import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
@@ -9,7 +10,7 @@ import {
   VNode,
 } from 'hyperapp';
 
-import SettingConfig from '@/SettingConfig';
+import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import getText from '@/getText';
 import buttonNode from '@/settingUI/buttonNode';
@@ -18,9 +19,12 @@ import updateAt from '@/settingUI/updateAt';
 import panelBoxStyle from '@/ui/panelBoxStyle';
 import tabContainer from '@/ui/tabContainer';
 
-export default (c: SettingConfig): VNode<SettingState>[] => pipe(
+export default (c: AppCommander): R.Reader<
+SettingState,
+VNode<SettingState>[]
+> => (s) => pipe(
   Math.trunc((
-    getState<readonly string[]>('eventLog')(c.state).length
+    getState<readonly string[]>('eventLog')(s).length
   ) / 100) + 1,
   (logPageLength) => [
     h('div', {
@@ -37,10 +41,10 @@ export default (c: SettingConfig): VNode<SettingState>[] => pipe(
         // eslint-disable-next-line max-len
         href: 'https://greasyfork.org/en/scripts/411442-flow-youtube-chat/feedback',
         target: '_blank',
-      }, text(getText('giveFeedback')(c.state.lang)))),
+      }, text(getText('giveFeedback')(s.lang)))),
       h('div', {}, [
-        h('span', {}, text(getText('eventLog')(c.state.lang))),
-        buttonNode('copy')(c),
+        h('span', {}, text(getText('eventLog')(s.lang))),
+        buttonNode('copy')(c)(s),
         tabContainer<SettingState>({
           container: {
             height: '276px',
@@ -58,14 +62,14 @@ export default (c: SettingConfig): VNode<SettingState>[] => pipe(
             flexDirection: 'column',
             padding: '6px',
           },
-        })((s, n) => updateAt('logTab', n)(c))(pipe(
+        })((_, n) => updateAt('logTab', n)(c))(pipe(
           RA.makeBy(logPageLength, N.Show.show),
         ))(pipe(
           RA.makeBy(
             logPageLength,
             (i) => () => pipe(
               getState<readonly string[]>('eventLog')(
-                c.state,
+                s,
               ).slice(i * 100, (i + 1) * 100),
               RA.mapWithIndex((j, x) => h('div', {
                 style: {
@@ -91,7 +95,7 @@ export default (c: SettingConfig): VNode<SettingState>[] => pipe(
               ])),
             ),
           ),
-        ))(getState<number>('logTab')(c.state)),
+        ))(getState<number>('logTab')(s)),
       ]),
     ]),
   ],

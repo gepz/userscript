@@ -29,13 +29,9 @@ import option from '@/ui/option';
 import tabContainer from '@/ui/tabContainer';
 
 export default (
-  command: AppCommander,
+  c: AppCommander,
 ): R.Reader<SettingState, VNode<SettingState>> => flow(
-  (state) => ({
-    command,
-    state,
-  }),
-  (c) => (c.state.showPanel ? h('div', {
+  (state) => (state.showPanel ? h('div', {
     class: 'fyc_panel',
     style: {
       backgroundColor: 'rgba(30,30,30,0.9)',
@@ -65,7 +61,7 @@ export default (
         RA.mapWithIndex((i, lang) => option(
           lang,
           languageLabels[i],
-          lang === c.state.lang,
+          lang === state.lang,
         )),
       )),
     ]),
@@ -83,7 +79,7 @@ export default (
         display: 'flex',
         padding: '6px',
       },
-    })((_, n) => updateAt('mainTab', n)(c))(pipe(
+    })((s, n) => updateAt('mainTab', n)(c)(s))(pipe(
       [
         'flowChat',
         'chatFilter',
@@ -91,7 +87,7 @@ export default (
         'feedback',
       ],
       RA.map(getText),
-      RA.map(apply(c.state.lang)),
+      RA.map(apply(state.lang)),
     ))(pipe(
       [
         () => flowChatPanel,
@@ -101,6 +97,8 @@ export default (
       ] as const,
       RA.map(flip),
       RA.map(apply(c)),
-    ))(getState<number>('mainTab')(c.state)),
+      RA.map(flip),
+      RA.map(apply(state)),
+    ))(getState<number>('mainTab')(state)),
   ]) : h('div', {})),
 );

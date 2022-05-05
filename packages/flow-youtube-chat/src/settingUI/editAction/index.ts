@@ -1,5 +1,6 @@
 import * as R from 'fp-ts/Reader';
 
+import AppCommander from '@/AppCommander';
 import SettingConfig from '@/SettingConfig';
 import SettingState from '@/SettingState';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
@@ -11,10 +12,10 @@ import getValue from '@/ui/getValue';
 export default <T>(
   key: StateKey<T>,
   onchange: (k: StateKey<T>) => R.Reader<
-  SettingConfig,
+  AppCommander,
   (s: SettingState, e: Event) => SettingDispatchable
   >,
-) => (c: SettingConfig) => ({
+) => (c: AppCommander) => ({
   onfocus: (s: SettingState, e: Event) => updateAt<typeof s.editingInput>(
     'editingInput',
     {
@@ -22,7 +23,7 @@ export default <T>(
       committedState: getTrueState(key)(s),
       value: getValue(e),
     },
-  )(c),
+  )(c)(s),
   onblur: (s: SettingState) => updateAt<typeof s.editingInput>(
     'editingInput',
     {
@@ -30,7 +31,7 @@ export default <T>(
       committedState: '',
       value: '',
     },
-  )(c),
+  )(c)(s),
   oninput: (s: SettingState, e: Event) => updateAt<typeof s.editingInput>(
     'editingInput',
     {
@@ -38,7 +39,7 @@ export default <T>(
       committedState: s.editingInput.committedState,
       value: getValue(e),
     },
-  )(c),
+  )(c)(s),
   onchange: (
     s: SettingState,
     e: Event,
@@ -50,10 +51,7 @@ export default <T>(
       value: getValue(e),
     } : s1.editingInput;
 
-    const [s2, ...es2] = updateAt('editingInput', x)({
-      ...c,
-      state: s1,
-    });
+    const [s2, ...es2] = updateAt('editingInput', x)(c)(s1);
 
     return [s2, ...es1, ...es2];
   },

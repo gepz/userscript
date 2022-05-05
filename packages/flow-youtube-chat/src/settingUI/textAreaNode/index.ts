@@ -3,7 +3,7 @@ import {
   VNode,
 } from 'hyperapp';
 
-import SettingConfig from '@/SettingConfig';
+import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import TextByLang from '@/TextByLang';
 import getText from '@/getText';
@@ -18,12 +18,12 @@ export default (
   label: keyof TextByLang
   & StateKey<readonly string[]>,
   rows: number,
-): R.Reader<SettingConfig, VNode<SettingState>> => (
+): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
   c,
-) => settingRow(getText(label)(c.state.lang), [
+) => (s) => settingRow(getText(label)(s.lang), [
   textAreaRow(
     rows,
-    getEditValue<readonly string[]>(label, (x) => x.join('\n'))(c.state),
+    getEditValue<readonly string[]>(label, (x) => x.join('\n'))(s),
     editAction(label, updateStrings)(c),
   ),
 ]);

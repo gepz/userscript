@@ -1,4 +1,5 @@
 import * as O from 'fp-ts/Option';
+import * as R from 'fp-ts/Reader';
 import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
@@ -8,7 +9,7 @@ import {
   VNode,
 } from 'hyperapp';
 
-import SettingConfig from '@/SettingConfig';
+import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import fonts from '@/fonts';
 import getText from '@/getText';
@@ -19,22 +20,24 @@ import option from '@/ui/option';
 import settingRow from '@/ui/settingRow';
 
 export default (
-  c: SettingConfig,
-): VNode<SettingState> => settingRow(getText('font')(c.state.lang), [
+  c: AppCommander,
+): R.Reader<SettingState, VNode<SettingState>> => (
+  s,
+) => settingRow(getText('font')(s.lang), [
   h('select', {
     style: textRowStyle,
     onchange: updateString('font')(c),
   }, pipe(
-    fonts(c.state.font),
-    RA.findIndex((x) => x[0] === c.state.font),
+    fonts(s.font),
+    RA.findIndex((x) => x[0] === s.font),
     O.getOrElse(() => 0),
     (index) => pipe(
-      fonts(c.state.font),
+      fonts(s.font),
       RA.mapWithIndex((i, font) => option(
         font[0],
         pipe(
           languages,
-          RA.findIndex((x) => x === c.state.lang),
+          RA.findIndex((x) => x === s.lang),
           O.map((x) => font[x + 1]),
           O.getOrElse(() => 'Error'),
         ),
@@ -45,7 +48,7 @@ export default (
   h('input', {
     style: textRowStyle,
     maxlength: 20,
-    value: c.state.font,
+    value: s.font,
     oninput: updateString('font')(c),
   }),
 ]);

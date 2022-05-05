@@ -7,7 +7,7 @@ import {
   VNode,
 } from 'hyperapp';
 
-import SettingConfig from '@/SettingConfig';
+import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import TextByLang from '@/TextByLang';
 import getText from '@/getText';
@@ -25,15 +25,15 @@ import textColorRow from '@/ui/textColorRow';
 export default (
   label: keyof TextByLang
   & StateKey<string>,
-): R.Reader<SettingConfig, VNode<SettingState>> => (
+): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
   c,
-) => settingRow(getText(label)(c.state.lang), [
+) => (s) => settingRow(getText(label)(s.lang), [
   textColorRow<SettingState>(pipe(
     editAction(label, updateString)(c),
     (x) => [
       colorPicker(x),
       colorInput(x),
-      colorTextOutput(exampleTextStyle(c.state)),
+      colorTextOutput(exampleTextStyle(s)),
     ],
-  ))(getEditValue<string>(label, identity)(c.state)),
+  ))(getEditValue<string>(label, identity)(s)),
 ]);
