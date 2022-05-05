@@ -3,7 +3,7 @@ import {
   VNode,
 } from 'hyperapp';
 
-import SettingConfig from '@/SettingConfig';
+import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import TextByLang from '@/TextByLang';
 import getText from '@/getText';
@@ -15,8 +15,10 @@ import checkboxRow from '@/ui/checkboxRow';
 export default (
   label: keyof TextByLang
   & StateKey<boolean>,
-): R.Reader<SettingConfig, VNode<SettingState>> => (c) => checkboxRow(
-  getText(label)(c.state.lang),
-  getState<boolean>(label)(c.state),
+): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
+  c,
+) => (s) => checkboxRow(
+  getText(label)(s.lang),
+  getState<boolean>(label)(s),
   updateBool(label)(c),
 );

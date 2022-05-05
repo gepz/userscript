@@ -4,6 +4,7 @@ import {
   VNode,
 } from 'hyperapp';
 
+import AppCommander from '@/AppCommander';
 import SettingConfig from '@/SettingConfig';
 import SettingState from '@/SettingState';
 import TextByLang from '@/TextByLang';
@@ -21,15 +22,15 @@ export default (
   min: number,
   max: number,
   step: number,
-): R.Reader<SettingConfig, VNode<SettingState>> => (
+): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
   c,
-) => settingRow(getText(label)(c.state.lang), [
+) => (s) => settingRow(getText(label)(s.lang), [
   rangeRow(
     min,
     max,
     step,
-    getEditValue<number>(label, N.Show.show)(c.state),
-    c.state.editingInput.id === label,
+    getEditValue<number>(label, N.Show.show)(s),
+    s.editingInput.id === label,
     editAction(label, updateInt)(c),
   ),
 ]);

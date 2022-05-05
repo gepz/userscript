@@ -1,9 +1,10 @@
 import * as R from 'fp-ts/Reader';
 import {
+  apply,
   pipe,
 } from 'fp-ts/function';
 
-import SettingConfig from '@/SettingConfig';
+import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import flip from '@/flip';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
@@ -14,11 +15,13 @@ import getChecked from '@/ui/getChecked';
 export default (
   key: StateKey<boolean>,
 ): R.Reader<
-  SettingConfig,
+  AppCommander,
   (s: SettingState, e: Event) => SettingDispatchable
   > => flip(
-  (_, e) => pipe(
+  (s, e) => pipe(
     getChecked(e),
     (x) => updateAt(key, x),
+    flip,
+    apply(s),
   ),
 );
