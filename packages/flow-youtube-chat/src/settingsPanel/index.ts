@@ -4,6 +4,7 @@ import {
   pipe,
   flow,
   apply,
+  constant,
 } from 'fp-ts/function';
 import {
   h,
@@ -90,13 +91,13 @@ export default (
       RA.map(apply(state.lang)),
     ))(pipe(
       [
-        () => flowChatPanel,
-        () => filterPanel,
-        () => chatFieldPanel,
-        () => feedbackPanel,
+        flowChatPanel,
+        filterPanel,
+        chatFieldPanel,
+        feedbackPanel,
       ] as const,
-      RA.map(flip),
       RA.map(apply(c)),
+      RA.map(constant),
       RA.map(flip),
       RA.map(apply(state)),
     ))(getState<number>('mainTab')(state)),
