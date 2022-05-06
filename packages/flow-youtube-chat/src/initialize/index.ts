@@ -55,6 +55,7 @@ import UserConfigSetter from '@/UserConfigSetter';
 import appendLog from '@/appendLog';
 import consoleLog from '@/consoleLog';
 import createChatScreen from '@/createChatScreen';
+import defaultFilter from '@/defaultFilter';
 import defaultUserConfig from '@/defaultUserConfig';
 import livePageYt from '@/livePageYt';
 import mainCss from '@/mainCss';
@@ -388,9 +389,14 @@ export default (): Promise<unknown> => pipe(
       cs.displayModName,
       cs.displaySuperChatAuthor,
       cs.fieldScale,
-      cs.bannedWords,
-      cs.bannedWordRegexs,
-      cs.bannedUsers,
+      pipe(
+        merge(
+          cs.bannedWords,
+          cs.bannedWordRegexs,
+          cs.bannedUsers,
+        ),
+        tap(() => ctx.setConfig.filterExp(defaultFilter(ctx.getConfig))),
+      ),
     )),
     T.of,
   )),
@@ -505,10 +511,12 @@ export default (): Promise<unknown> => pipe(
               'bannedWords',
               'bannedWordRegexs',
               'bannedUsers',
+              'filterExp',
               'simplifyChatField',
               'createBanButton',
               'fieldScale',
-            ].includes(key),
+            ],
+            (x: (keyof UserConfig)[]) => x.includes(key),
             // eslint-disable-next-line max-len
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             (x) => (x ? () => ctx.setConfigPlain[key](val as never)
