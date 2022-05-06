@@ -1,6 +1,7 @@
 import * as expEval from 'expression-eval';
 import * as I from 'fp-ts/Identity';
 import * as O from 'fp-ts/Option';
+import * as R from 'fp-ts/Reader';
 import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
@@ -12,6 +13,8 @@ import {
   VNode,
 } from 'hyperapp';
 
+import AppCommander from '@/AppCommander';
+import SettingState from '@/SettingState';
 import panelBoxStyle from '@/ui/panelBoxStyle';
 
 enum Primitive {
@@ -379,11 +382,12 @@ const expNode: ExpNodeFunc<unknown> = <T>(
   }),
 );
 
-export default <T>(
-  exp: expEval.parse.Expression,
-): readonly VNode<T>[] => pipe(
-  exp,
-  expNode<T>,
+export default (c: AppCommander): R.Reader<
+SettingState,
+readonly VNode<SettingState>[]
+> => (s) => pipe(
+  s.filterExp,
+  expNode<SettingState>,
   apply(unknownType),
   apply(typeRoot),
   (x) => x.nodes,
