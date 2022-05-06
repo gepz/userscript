@@ -21,7 +21,7 @@ import tabContainer from '@/ui/tabContainer';
 
 export default (c: AppCommander): R.Reader<
 SettingState,
-VNode<SettingState>[]
+readonly VNode<SettingState>[]
 > => (s) => pipe(
   Math.trunc((
     getState<readonly string[]>('eventLog')(s).length

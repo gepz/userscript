@@ -18,7 +18,7 @@ import textAreaRow from '@/ui/textAreaRow';
 
 export default (c: AppCommander): R.Reader<
 SettingState,
-VNode<SettingState>[]
+readonly VNode<SettingState>[]
 > => (s) => [
   h('div', {
     style: panelBoxStyle(212),
