@@ -5,7 +5,7 @@ import {
   pipe,
   flow,
 } from 'fp-ts/function';
-import * as S from 'fp-ts/string';
+import * as Str from 'fp-ts/string';
 
 import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';
@@ -49,7 +49,7 @@ export default (
     IOO.fromIO,
     IOO.filter((x) => !x.includes(id)),
     IOO.map(flow(
-      RA.uniq(S.Eq),
+      RA.uniq(Str.Eq),
       RA.append(id),
     )),
     IOO.chain((x) => IOO.fromIO(() => {

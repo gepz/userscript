@@ -3,7 +3,7 @@ import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
 } from 'fp-ts/function';
-import * as S from 'fp-ts/string';
+import * as Str from 'fp-ts/string';
 import m from 'mithril';
 
 import FlowChat from '@/FlowChat';
@@ -59,7 +59,7 @@ const parseMessage = (
     }
     : pipe(
       node.textContent ?? '',
-      S.slice(0, maxChatLength),
+      Str.slice(0, maxChatLength),
       (x) => (node instanceof eleWin.HTMLAnchorElement ? {
         vnodes: [
           ...vnodes,

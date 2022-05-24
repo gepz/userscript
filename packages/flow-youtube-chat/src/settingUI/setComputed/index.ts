@@ -9,6 +9,7 @@ import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import computed from '@/settingUI/computed';
 import configEffect from '@/settingUI/configEffect';
 import stepTiming from '@/settingUI/stepTiming';
+import * as Ed from '@/ui/Editable';
 
 const setComputed: {
   [K in keyof typeof computed]: (
@@ -16,7 +17,7 @@ const setComputed: {
   ) => R.Reader<AppCommander, R.Reader<SettingState, SettingDispatchable>>
 } = {
   useStepTiming: (v) => (c) => (s) => pipe(
-    v ? stepTiming(s.timingStepCount)
+    v ? stepTiming(Ed.value(s.timingStepCount))
     : 'linear',
     (timingFunction) => [
       {

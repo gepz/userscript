@@ -1,4 +1,3 @@
-import * as expEval from 'expression-eval';
 import * as I from 'fp-ts/Identity';
 import * as O from 'fp-ts/Option';
 import * as R from 'fp-ts/Reader';
@@ -6,16 +5,35 @@ import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
   apply,
+  constant,
+  flow,
 } from 'fp-ts/function';
 import {
   h,
   text,
   VNode,
 } from 'hyperapp';
+import * as Op from 'monocle-ts/Optional';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
+import flip from '@/flip';
+import ArrayExpression from '@/settingUI/EditableExpression/ArrayExpression';
+import CallExpression from '@/settingUI/EditableExpression/CallExpression';
+import Expression from '@/settingUI/EditableExpression/Expression';
+import Identifier from '@/settingUI/EditableExpression/Identifier';
+import Literal from '@/settingUI/EditableExpression/Literal';
+import LiteralArray from '@/settingUI/EditableExpression/LiteralArray';
+import MemberExpression from '@/settingUI/EditableExpression/MemberExpression';
+import editAction from '@/settingUI/editAction';
+import setEditRegexs from '@/settingUI/setEditRegexs';
+import setEditString from '@/settingUI/setEditString';
+import setEditStrings from '@/settingUI/setEditStrings';
+import textAreaNode from '@/settingUI/textAreaNode';
+import * as Ed from '@/ui/Editable';
 import panelBoxStyle from '@/ui/panelBoxStyle';
+import textAreaRow from '@/ui/textAreaRow';
+import textInput from '@/ui/textInput';
 
 enum Primitive {
   unknown,
@@ -26,7 +44,6 @@ enum Primitive {
 enum UI {
   unknown,
   card,
-  textArea,
 }
 
 type TaggedType<T1 extends string, T2> = {
@@ -84,9 +101,14 @@ const unknownType = simpleType({
 
 const errorNode = text('error');
 
-type Result<T1, T2 extends EvalType | ErrorType = EvalType | ErrorType> = {
-  type: T2,
-  nodes: readonly VNode<T1>[],
+type Result<T extends EvalType | ErrorType> = {
+  type: T,
+  nodes: readonly VNode<SettingState>[],
+};
+
+const errorResult: Result<ErrorType> = {
+  type: errorType,
+  nodes: [errorNode],
 };
 
 const typeRoot = recordType({
@@ -137,6 +159,16 @@ const typeRoot = recordType({
       listType(unknownType),
     ]),
   }),
+  O: recordType({
+    exists: funcType([
+      funcType([
+        varType(0),
+        unknownType,
+      ]),
+      unknownType,
+      unknownType,
+    ]),
+  }),
   inText: funcType([
     unknownType,
     simpleType({
@@ -179,70 +211,117 @@ const typeRoot = recordType({
   ]),
 });
 
-const idNode = <T>(
-  exp: expEval.parse.Identifier,
+type ExpNodeFunc = (
+  exp: Expression,
+) => (
+  opt: Op.Optional<Expression, Expression>,
+) => (
+  expectedType: EvalType,
 ) => (
   context: RecordType,
-): Result<T> => ({
+) => R.Reader<
+AppCommander,
+R.Reader<SettingState, Result<EvalType | ErrorType>>
+>;
+
+const identifierNode = (
+  exp: Identifier,
+) => (
+  opt: Op.Optional<Expression, Identifier>,
+) => (
+  context: RecordType,
+) => (
+  c: AppCommander,
+) => (
+  s:SettingState,
+): Result<EvalType | ErrorType> => ({
   type: exp.name in context.type ? context.type[exp.name]
   : unknownType,
-  nodes: [h('div', {}, text(exp.name))],
+  nodes: [
+    exp.name === 'inText' ? textAreaNode(
+      'bannedWords',
+      18,
+      setEditStrings,
+    )(c)(s)
+    : exp.name === 'matchedByText' ? textAreaNode(
+      'bannedWordRegexs',
+      18,
+      setEditRegexs,
+    )(c)(s)
+    : exp.name === 'eqText' ? textAreaNode(
+      'bannedUsers',
+      18,
+      setEditStrings,
+    )(c)(s)
+    : h('div', {}, text(exp.name)),
+  ],
 });
 
-type ExpNodeFunc<T1> = <T2 = T1>(
-  exp: expEval.parse.Expression
+const memberNode = (
+  exp: MemberExpression,
 ) => (
-  expectedType: EvalType
+  opt: Op.Optional<Expression, MemberExpression>,
 ) => (
-  context: RecordType
-) => Result<T2>;
-
-const memberNode = <T>(
-  exp: expEval.parse.MemberExpression,
+  f: ExpNodeFunc,
 ) => (
-  f: ExpNodeFunc<T>,
-): Result<T> => pipe(
-  f(exp.object)(unknownType)(typeRoot),
-  O.fromPredicate((x): x is Result<T, RecordType> => x.type.tag === 'record'),
-  O.map((x) => f(exp.property)(unknownType)(x.type)),
+  c: AppCommander,
+) => (
+  s:SettingState,
+): Result<EvalType | ErrorType> => pipe(
+  f(exp.object)(pipe(
+    opt,
+    Op.prop('object'),
+  ))(unknownType)(typeRoot)(c)(s),
+  O.fromPredicate((x): x is Result<RecordType> => x.type.tag === 'record'),
+  O.map((x) => f(exp.property)(pipe(
+    opt,
+    Op.prop('property'),
+  ))(unknownType)(x.type)(c)(s)),
   O.map((x) => ({
     type: x.type,
     nodes: x.nodes,
   })),
-  O.getOrElse<Result<T>>(() => ({
-    type: errorType,
-    nodes: [errorNode],
-  })),
+  O.getOrElse<Result<EvalType | ErrorType>>(() => errorResult),
 );
 
-const callNode = <T>(
-  exp: expEval.parse.CallExpression,
+const callNode = (
+  exp: CallExpression,
 ) => (
-  f: ExpNodeFunc<T>,
+  opt: Op.Optional<Expression, CallExpression>,
+) => (
+  f: ExpNodeFunc,
 ) => (
   expectedType: EvalType,
-): Result<T> => pipe(
-  f(exp.callee)(expectedType)(typeRoot),
-  O.fromPredicate((x): x is Result<T, FunctionType> => x.type.tag === 'func'),
+) => (
+  c: AppCommander,
+) => (
+  s:SettingState,
+): Result<EvalType | ErrorType> => pipe(
+  f(exp.callee)(pipe(
+    opt,
+    Op.prop('callee'),
+  ))(expectedType)(typeRoot)(c)(s),
+  O.fromPredicate((x): x is Result<FunctionType> => x.type.tag === 'func'),
   O.bindTo('calleeResult'),
-  O.bind('argumentResults', (r) => pipe(
-    exp.arguments,
-    RA.map(f),
-    RA.mapWithIndex((i, a) => pipe(
-      r.calleeResult.type.type,
-      (x) => (RA.size(x) - 1 > i ? a(x[i])(typeRoot)
-      : {
-        type: errorType,
-        nodes: [errorNode],
-      }),
+  O.bind('argumentResult', (r) => pipe(
+    exp.arguments[0],
+    O.fromNullable,
+    O.map(f),
+    O.map((a) => pipe(
+      r.calleeResult.type.type[0],
+      (x) => (a(pipe(
+        opt,
+        Op.prop('arguments'),
+        Op.component(0),
+      ))(x)(typeRoot)(c)(s)),
     )),
-    O.of,
+    O.altW(() => O.of(errorResult)),
   )),
   O.map((ctx) => pipe(
-    ctx.argumentResults,
-    RA.chainWithIndex((i, result) => (pipe(
-      ctx.calleeResult.type.type[i],
-      (x) => x?.tag === 'simple' && x?.type.ui === UI.card,
+    ctx.argumentResult,
+    (result) => (pipe(
+      ctx.calleeResult.type.type[0],
+      (x) => x.tag === 'simple' && x.type.ui === UI.card,
     ) ? pipe(
       result.nodes,
       RA.map((x) => h('div', {
@@ -251,144 +330,207 @@ const callNode = <T>(
     ) : [
       ...ctx.calleeResult.nodes,
       ...result.nodes,
-    ])),
+    ]),
     I.bindTo('nodes'),
     I.apS('type', pipe(
       ctx.calleeResult.type.type.slice(
-        RA.size(ctx.argumentResults),
+        ctx.argumentResult.type.tag === 'error' ? 0 : 1,
       ),
       (x) => (RA.size(x) === 0 ? errorType
       : RA.size(x) === 1 ? x[0]
       : funcType(x)),
     )),
   )),
-  O.getOrElse<Result<T>>(() => ({
-    type: errorType,
-    nodes: [errorNode],
-  })),
+  O.getOrElse<Result<EvalType | ErrorType>>(() => errorResult),
 );
 
-const literalNode = <T>(
-  exp: expEval.parse.Literal,
+const literalNode = (
+  exp: Literal,
+) => (
+  opt: Op.Optional<Expression, Literal>,
 ) => (
   expectedType: EvalType,
-): Result<T> => ({
-  type: expectedType,
-  nodes: expectedType.tag === 'simple'
-      && expectedType.type.ui === UI.textArea
-    ? [
-      h('textarea', {
-        value: exp.value,
-      }),
-    ]
-    : [h('div', {}, [text(exp.value)])],
-});
+): R.Reader<
+AppCommander,
+Result<EvalType | ErrorType>
+> => (c) => pipe(
+  opt,
+  Op.prop('value'),
+  (value) => ({
+    type: expectedType,
+    nodes: [
+      textInput(
+        editAction(
+          'filterExp',
+          pipe(
+            setEditString,
+            R.map(R.map(
+              (f) => (x: Expression) => pipe(
+                value.getOption(x),
+                O.getOrElse(constant(Ed.of(''))),
+                f,
+                value.set,
+                apply(x),
+              ),
+            )),
+          ),
+        )(c),
+      )(exp.value),
+    ],
+  }),
+);
 
-const arrayNode = <T>(
-  exp: expEval.parse.ArrayExpression,
+const literalArrayNode = (
+  exp: LiteralArray,
 ) => (
-  f: ExpNodeFunc<T>,
+  opt: Op.Optional<Expression, LiteralArray>,
 ) => (
   expectedType: EvalType,
-): Result<T> => pipe(
+): R.Reader<
+AppCommander,
+Result<EvalType | ErrorType>
+> => (c) => pipe(
+  opt,
+  Op.prop('value'),
+  (value) => ({
+    type: expectedType,
+    nodes: [
+      textAreaRow(
+        18,
+        editAction(
+          'filterExp',
+          pipe(
+            setEditStrings,
+            R.map(R.map(
+              (f) => (x: Expression) => pipe(
+                value.getOption(x),
+                O.getOrElse(constant(Ed.of<readonly string[]>(['']))),
+                f,
+                value.set,
+                apply(x),
+              ),
+            )),
+          ),
+        )(c),
+      )(exp.value),
+    ],
+  }),
+);
+
+const arrayNode = (
+  exp: ArrayExpression,
+) => (
+  opt: Op.Optional<Expression, ArrayExpression>,
+) => (
+  nodeF: ExpNodeFunc,
+) => (
+  expectedType: EvalType,
+): R.Reader<
+AppCommander,
+R.Reader<SettingState, Result<EvalType | ErrorType>>
+> => pipe(
   exp.elements,
   (e) => (
-    expectedType.tag === 'simple'
-        && expectedType.type.ui === UI.textArea
-        && pipe(
-          e,
-          RA.every(
-            (x) => x.type === 'Literal'
-            // eslint-disable-next-line max-len
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-         && typeof (x as expEval.parse.Literal).value === 'string',
-          ),
-        ) ? pipe(
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      e as expEval.parse.Literal[],
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      RA.map((x) => (x.value as string)),
-      (x) => x.join('\n'),
-      (x): expEval.parse.Literal => ({
-        type: 'Literal',
-        value: x,
-        raw: x,
-      }),
-      f,
-      apply(expectedType),
-      apply(typeRoot),
-    ) : pipe(
+    pipe(
       e,
-      RA.map(f),
+      RA.map(nodeF),
+      RA.mapWithIndex(pipe(
+        opt,
+        Op.prop('elements'),
+        (elementsOpt) => (i: number, f) => pipe(
+          elementsOpt,
+          Op.component(i),
+          f,
+        ),
+      )),
       RA.map(apply(expectedType)),
       RA.map(apply(typeRoot)),
-      RA.reduce<Result<T>, {
-        types: (EvalType | ErrorType)[],
-        nodes: VNode<T>[],
-      }>({
-            types: [],
-            nodes: [],
-          }, (x, y) => ({
-            types: [...x.types, y.type],
-            nodes: [...x.nodes, h('div', {}, y.nodes)],
-          })),
-      (ctx) => ({
-        type: pipe(
-          ctx.types,
-          O.fromPredicate((v): v is EvalType[] => pipe(
-            v,
-            RA.every((x) => x.tag !== 'error'),
-          )),
-          O.map(tupleType),
-          O.getOrElse<EvalType | ErrorType>(() => errorType),
-        ),
-        nodes: ctx.nodes,
-      }),
+      R.sequenceArray,
+      R.map(R.sequenceArray),
+      R.map(R.map(flow(
+        RA.reduce<Result<EvalType | ErrorType>, {
+          types: (EvalType | ErrorType)[],
+          nodes: VNode<SettingState>[],
+        }>({
+              types: [],
+              nodes: [],
+            }, (x, y) => ({
+              types: [...x.types, y.type],
+              nodes: [...x.nodes, h('div', {}, y.nodes)],
+            })),
+        (ctx) => ({
+          type: pipe(
+            ctx.types,
+            O.fromPredicate((v): v is EvalType[] => pipe(
+              v,
+              RA.every((x) => x.tag !== 'error'),
+            )),
+            O.map(tupleType),
+            O.getOrElse<EvalType | ErrorType>(() => errorType),
+          ),
+          nodes: ctx.nodes,
+        }),
+      ))),
     )
   ),
 );
 
-const expNode: ExpNodeFunc<unknown> = <T>(
-  exp: expEval.parse.Expression,
+const expNode: ExpNodeFunc = (
+  exp,
+) => (
+  opt,
 ) => (
   expectedType,
 ) => (
   context,
-) => pipe(
-  exp.type,
-  (type) => (type === 'Identifier' ? idNode<T>(
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    exp as expEval.parse.Identifier,
-  )(context)
-  : type === 'MemberExpression' ? memberNode<T>(
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    exp as expEval.parse.MemberExpression,
-  )(expNode)
-  : type === 'CallExpression' ? callNode<T>(
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    exp as expEval.parse.CallExpression,
-  )(expNode)(expectedType)
-  : type === 'Literal' ? literalNode<T>(
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    exp as expEval.parse.Literal,
-  )(expectedType)
-  : type === 'ArrayExpression' ? arrayNode<T>(
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    exp as expEval.parse.ArrayExpression,
-  )(expNode)(expectedType)
-  : {
-    type: unknownType,
-    nodes: [],
-  }),
+) => (
+  c,
+) => (
+  s,
+) => (exp.type === 'Identifier' ? identifierNode(exp)(pipe(
+  opt,
+  Op.filter((x): x is Identifier => x.type === 'Identifier'),
+))(context)(c)(s)
+: exp.type === 'MemberExpression' ? memberNode(exp)(pipe(
+  opt,
+  Op.filter((x): x is MemberExpression => x.type === 'MemberExpression'),
+))(expNode)(c)(s)
+: exp.type === 'CallExpression' ? callNode(exp)(pipe(
+  opt,
+  Op.filter((x): x is CallExpression => x.type === 'CallExpression'),
+))(expNode)(expectedType)(c)(s)
+: exp.type === 'Literal' ? literalNode(exp)(pipe(
+  opt,
+  Op.filter((x): x is Literal => x.type === 'Literal'),
+))(expectedType)(c)
+: exp.type === 'LiteralArray' ? literalArrayNode(exp)(pipe(
+  opt,
+  Op.filter((x): x is LiteralArray => x.type === 'LiteralArray'),
+))(expectedType)(c)
+: exp.type === 'ArrayExpression' ? arrayNode(exp)(pipe(
+  opt,
+  Op.filter((x): x is ArrayExpression => x.type === 'ArrayExpression'),
+))(expNode)(expectedType)(c)(s)
+: {
+  type: unknownType,
+  nodes: [],
+}
 );
 
-export default (c: AppCommander): R.Reader<
-SettingState,
-readonly VNode<SettingState>[]
-> => (s) => pipe(
-  s.filterExp,
-  expNode<SettingState>,
-  apply(unknownType),
-  apply(typeRoot),
-  (x) => x.nodes,
+const filterPanel: R.Reader<
+AppCommander,
+R.Reader<SettingState, readonly VNode<SettingState>[]>
+> = pipe(
+  R.ask<SettingState>(),
+  R.map((x) => x.filterExp),
+  R.map(expNode),
+  R.map(apply(Op.id())),
+  R.map(apply(unknownType)),
+  R.map(apply(typeRoot)),
+  R.map(flip),
+  R.flatten,
+  flip,
+  R.map(R.map((x) => x.nodes)),
 );
+
+export default filterPanel;

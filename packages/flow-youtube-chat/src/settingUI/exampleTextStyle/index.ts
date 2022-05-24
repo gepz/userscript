@@ -4,9 +4,12 @@ import {
 
 import SettingState from '@/SettingState';
 import textShadow from '@/textShadow';
+import * as Ed from '@/ui/Editable';
 
 export default (s: SettingState): StyleProp => ({
-  fontFamily: s.font,
-  fontWeight: s.fontWeight.toString(),
-  textShadow: textShadow(s.shadowColor)(s.shadowFontWeight),
+  fontFamily: Ed.value(s.font),
+  fontWeight: Ed.value(s.fontWeight).toString(),
+  textShadow: textShadow(Ed.value(s.shadowColor))(
+    Ed.value(s.shadowFontWeight),
+  ),
 });

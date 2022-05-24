@@ -5,6 +5,7 @@ import {
 import {
   diff,
 } from 'deep-diff';
+import deepEq from 'fast-deep-equal';
 import {
   eqStrict,
 } from 'fp-ts/Eq';
@@ -49,6 +50,7 @@ import FlowChat from '@/FlowChat';
 import LivePage from '@/LivePage';
 import Logger from '@/Logger';
 import MainState from '@/MainState';
+import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
 import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';
@@ -68,6 +70,7 @@ import scriptIdentifier from '@/scriptIdentifier';
 import setChatAnimation from '@/setChatAnimation';
 import setChatAppCss from '@/setChatAppCss';
 import setChatPlayState from '@/setChatPlayState';
+import setSettingFromConfig from '@/setSettingFromConfig';
 import settingStateInit from '@/settingStateInit';
 import settingsComponent from '@/settingsComponent';
 import simpleWrap from '@/simpleWrap';
@@ -126,6 +129,7 @@ export default (): Promise<unknown> => pipe(
         async (
           val: never,
         ) => {
+          if (deepEq(ctx.getConfig[x](), val)) return;
           ctx.setConfigPlain[x](val);
           const item = ctx.userConfig[x];
           ctx.channel.postMessage([x, val]);
@@ -159,7 +163,7 @@ export default (): Promise<unknown> => pipe(
       settingStateInit(ctx.getConfig),
     ))),
     T.bind('mainLog', (ctx) => T.of<Logger>(
-      (x) => () => ctx.wrappedSetting.dispatch((s) => ({
+      (x) => () => ctx.wrappedSetting.dispatch((s): SettingState => ({
         ...s,
         eventLog: appendLog(s.eventLog)(x),
       })),
@@ -184,19 +188,26 @@ export default (): Promise<unknown> => pipe(
   )),
   T.bind('cs', (ctx) => T.of<ConfigSubject>(pipe(
     ctx.configSubject,
-    Object.entries,
-    RA.map(([k, value]: [string, Subject<unknown>]) => [
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    (x) => Object.entries(x) as {
+      [K in keyof ConfigSubject]: [K, ConfigSubject[K]];
+    }[keyof ConfigSubject][],
+    RA.map(([k, value]) => [
       k,
       pipe(
         value,
-        tap((v) => pipe(
+        tap<unknown>((v) => pipe(
           v,
           (x) => <T>(s: T) => ({
             ...s,
             [k]: x,
           }),
           IO.of,
-          IO.chainFirst((x) => () => ctx.wrappedSetting.dispatch(x)),
+          IO.chainFirst(() => () => ctx.wrappedSetting.dispatch(
+            // eslint-disable-next-line max-len
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, max-len
+            setSettingFromConfig(k)(v as UserConfig[keyof UserConfigGetter]['val']),
+          )),
           IO.chain((x) => (k in ctx.toggleChatButtonInit
             ? () => ctx.wrappedToggleChatBtn.dispatch(x)
             : () => {})),

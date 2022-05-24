@@ -1,29 +1,39 @@
+import * as O from 'fp-ts/Option';
+import {
+  constant,
+  pipe,
+} from 'fp-ts/function';
 import {
   h,
   VNode,
   Action,
-  StyleProp,
 } from 'hyperapp';
 
-const style: StyleProp = {
-  resize: 'horizontal',
-  boxSizing: 'border-box',
-  width: '100%',
-};
+import * as Ed from '@/ui/Editable';
 
 export default <T>(
   rows: number,
-  value: string,
   action: Partial<Record<
   'oninput'
   | 'onchange'
-  | 'onfocus'
-  | 'onblur'
   , Action<T>
   >>,
-): VNode<T> => h('textarea', {
+) => (value: Ed.Editable<readonly string[]>): VNode<T> => h('textarea', {
   rows,
-  value,
-  style,
+  style: {
+    resize: 'horizontal',
+    boxSizing: 'border-box',
+    width: '100%',
+    borderColor: Ed.hasError(value) ? '#f55' : undefined,
+  },
+  value: pipe(
+    value,
+    Ed.text,
+    O.getOrElse(pipe(
+      Ed.value(value),
+      (x) => x.join('\n'),
+      constant,
+    )),
+  ),
   ...action,
 });

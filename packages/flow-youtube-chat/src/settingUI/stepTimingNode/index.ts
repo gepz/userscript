@@ -18,10 +18,8 @@ export default (
   checkboxNode('useStepTiming')(c)(s),
   h('div', {
     style: {
-      ...(getState<boolean>('useStepTiming')(s) ? {}
-      : {
-        opacity: '0.5',
-      }),
+      opacity: getState<boolean>('useStepTiming')(s) ? undefined
+      : '0.5',
     },
   }, intNode('timingStepCount', 1, 400, 1)(c)(s)),
 ]);

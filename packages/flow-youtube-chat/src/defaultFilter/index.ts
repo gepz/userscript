@@ -7,15 +7,15 @@ export default (
 ): expEval.parse.Expression => expEval.parse(`
 or([
 RA.some(
-  flip(flow([matchedByText, RA.some]))(${
-  JSON.stringify(getConfig.bannedWordRegexs())
-})
+  flip(flow([inText, RA.some]))(${JSON.stringify(getConfig.bannedWords())})
 )(RA.compact([
   messageText,
   paymentInfo
 ])),
 RA.some(
-  flip(flow([inText, RA.some]))(${JSON.stringify(getConfig.bannedWords())})
+  flip(flow([matchedByText, RA.some]))(${
+  JSON.stringify(getConfig.bannedWordRegexs())
+})
 )(RA.compact([
   messageText,
   paymentInfo

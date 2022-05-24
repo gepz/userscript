@@ -45,4 +45,7 @@ export default interface TextByLang {
   flowX1: string[],
   flowX2: string[],
   shadowColor: string[],
+  invalidColor: string[],
+  inputNonNumberic: string[],
+  invalidSetting: string[],
 }
