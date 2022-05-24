@@ -10,6 +10,7 @@ import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import configEffect from '@/settingUI/configEffect';
 import setRange from '@/settingUI/setRange';
 import stepTiming from '@/settingUI/stepTiming';
+import * as Ed from '@/ui/Editable';
 
 const setState: Partial<{
   [K in keyof SettingState]: (
@@ -21,7 +22,7 @@ const setState: Partial<{
   flowX1: setRange('flowX1')('flowX2')((a) => (b) => Math.max(b, a + 0.05)),
   flowX2: setRange('flowX2')('flowX1')((a) => (b) => Math.min(b, a - 0.05)),
   timingStepCount: (v) => (c) => (s) => pipe(
-    stepTiming(v),
+    stepTiming(Ed.value(v)),
     (timingFunction) => [
       {
         ...s,
@@ -29,35 +30,6 @@ const setState: Partial<{
         timingFunction,
       },
       configEffect('timingFunction', timingFunction)(c.setConfig),
-    ],
-  ),
-  bannedWordRegexs: (v) => (c) => (s) => pipe(
-    v,
-    RA.reduce({
-      valid: true,
-      error: '',
-    }, (acc, cur) => {
-      try {
-        RegExp(cur, 'u');
-        return acc;
-      } catch (e) {
-        return {
-          valid: false,
-          // eslint-disable-next-line max-len
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          error: `${acc.error}${e} in ${cur};`,
-        };
-      }
-    }),
-    (x) => [
-      {
-        ...s,
-        bannedWordRegexs: v,
-        bannedWordRegexsError: x.error,
-        bannedWordRegexsValid: x.valid,
-      },
-      ...x.valid ? [configEffect('bannedWordRegexs', v)(c.setConfig)]
-      : [],
     ],
   ),
 };

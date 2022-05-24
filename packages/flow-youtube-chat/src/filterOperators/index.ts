@@ -8,14 +8,14 @@ import * as B from 'fp-ts/boolean';
 import {
   flow,
 } from 'fp-ts/function';
-import * as S from 'fp-ts/string';
+import * as Str from 'fp-ts/string';
 
 import DisplayText from '@/DisplayText';
 import flip from '@/flip';
 
 const inText = (text: DisplayText) => (
   x: string,
-): boolean => S.includes(x)(text.content);
+): boolean => Str.includes(x)(text.content);
 
 const eqText = (text: DisplayText) => (
   x: string,

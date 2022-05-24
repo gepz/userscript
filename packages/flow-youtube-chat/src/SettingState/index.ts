@@ -1,20 +1,12 @@
-import UserConfig from '@/UserConfig';
+import MappedConfigState from '@/MappedConfigState';
+import * as Ed from '@/ui/Editable';
 
-type UserConfigState = {
-  [P in keyof UserConfig]: UserConfig[P]['val'];
-};
-
-export default interface SettingState extends UserConfigState {
+type SettingState = MappedConfigState & {
   showPanel: boolean,
-  bannedWordRegexsValid: boolean,
-  bannedWordRegexsError: string,
   mainTab: number,
   logTab: number,
-  timingStepCount: number,
+  timingStepCount: Ed.Editable<number>,
   eventLog: readonly string[],
-  editingInput: {
-    id: string,
-    committedState: unknown,
-    value: string,
-  }
-}
+};
+
+export default SettingState;

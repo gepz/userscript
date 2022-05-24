@@ -1,23 +1,26 @@
+import * as O from 'fp-ts/Option';
+import {
+  constant,
+  pipe,
+} from 'fp-ts/function';
 import {
   h,
   VNode,
   Action,
 } from 'hyperapp';
 
+import * as Ed from '@/ui/Editable';
+
 export default <T>(
   min: number,
   max: number,
   step: number,
-  value: string,
-  editing: boolean,
   action: Partial<Record<
   'oninput'
   | 'onchange'
-  | 'onfocus'
-  | 'onblur'
   , Action<T>
   >>,
-): VNode<T> => h('div', {}, [
+) => (value: Ed.Editable<number>): VNode<T> => h('div', {}, [
   h('input', {
     style: {
       width: '150px',
@@ -27,7 +30,7 @@ export default <T>(
     min,
     max,
     step,
-    value,
+    value: Ed.value(value).toString(),
     oninput: action.onchange,
   }),
   h('input', {
@@ -37,10 +40,16 @@ export default <T>(
       color: 'inherit',
       borderWidth: '1px',
       verticalAlign: 'middle',
+      borderColor: Ed.hasError(value) ? '#f55' : undefined,
     },
     inputmode: 'decimal',
-    value: editing ? value
-    : Number.parseFloat(value).toFixed(4).replace(/\.?0+$/, ''),
+    value: pipe(
+      value,
+      Ed.text,
+      O.getOrElse(constant(
+        Ed.value(value).toFixed(4).replace(/\.?0+$/, ''),
+      )),
+    ),
     ...action,
   }),
 ]);

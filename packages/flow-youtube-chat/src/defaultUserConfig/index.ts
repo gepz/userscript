@@ -9,7 +9,7 @@ import {
   flow,
   pipe,
 } from 'fp-ts/function';
-import * as S from 'fp-ts/string';
+import * as Str from 'fp-ts/string';
 
 import UserConfig from '@/UserConfig';
 import fycKey from '@/fycKey';
@@ -24,8 +24,8 @@ const stringsArgs: [
 ] = [
   [],
   flow(
-    S.split(/\r\n|\n/),
-    RA.filter(P.not(S.isEmpty)),
+    Str.split(/\r\n|\n/),
+    RA.filter(P.not(Str.isEmpty)),
   ),
   (x) => x.join('\n'),
 ];
@@ -117,15 +117,15 @@ export default (): Promise<UserConfig> => pipe(
       expEval.parse(`,
   or([
   RA.some(
-    flip(flow([matchedByText, RA.some]))(${
-  JSON.stringify(x.bannedWordRegexs.val)
-})
+    flip(flow([inText, RA.some]))(${JSON.stringify(x.bannedWords.val)})
   )(RA.compact([
     messageText,
     paymentInfo
   ])),
   RA.some(
-    flip(flow([inText, RA.some]))(${JSON.stringify(x.bannedWords.val)})
+    flip(flow([matchedByText, RA.some]))(${
+  JSON.stringify(x.bannedWordRegexs.val)
+})
   )(RA.compact([
     messageText,
     paymentInfo

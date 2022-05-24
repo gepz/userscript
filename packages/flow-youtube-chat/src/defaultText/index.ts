@@ -53,6 +53,10 @@ const defaultText: Readonly<TextByLang> = {
   flowX1: ['Flow area left edge', '流れ範囲の左端'],
   flowX2: ['Flow area right edge', '流れ範囲の右端'],
   shadowColor: ['Color(Shadow)', '色(影)'],
+  invalidColor: ['Invalid color', '無効な色'],
+  inputNonNumberic: ['Input isn\'t a number', '入力値が数字でない'],
+  invalidSetting: ['Invalid setting', '無効な設定値'],
+
 };
 
 export default defaultText;

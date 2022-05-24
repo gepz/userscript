@@ -5,14 +5,20 @@ import {
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
+import UserConfig from '@/UserConfig';
 import UserConfigSetter from '@/UserConfigSetter';
+import isEditable from '@/isEditable';
+import Expression from '@/settingUI/EditableExpression/Expression';
+import toJsepExp from '@/settingUI/EditableExpression/toJsepExp';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import StateKey from '@/settingUI/StateKey';
+import UpdateType from '@/settingUI/UpdateType';
 import configEffect from '@/settingUI/configEffect';
 import setComputed from '@/settingUI/setComputed';
 import setState from '@/settingUI/setState';
+import * as Ed from '@/ui/Editable';
 
-export default <T>(
+export default <T extends UpdateType>(
   k: StateKey<T>,
   v: T,
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -34,8 +40,23 @@ export default <T>(
       [k]: v,
     },
     ...(k in c.setConfig) ? [
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      configEffect(k as keyof UserConfigSetter, v as never)(
+      configEffect(
+        // eslint-disable-next-line max-len
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        k as keyof UserConfigSetter,
+        Array.isArray(v)
+        && v.length === 2
+        && isEditable(k)(v[0]) ? Ed.value(
+          // eslint-disable-next-line max-len
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          v as unknown as Ed.Editable<UserConfig[keyof UserConfig]['val']>,
+        // eslint-disable-next-line max-len
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        ) : k === 'filterExp' ? toJsepExp(v as Expression)
+        // eslint-disable-next-line max-len
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        : v as never,
+      )(
         c.setConfig,
       ),
     ]

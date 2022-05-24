@@ -14,7 +14,6 @@ import {
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-// import filterPanel from '@/filterPanel';
 import flip from '@/flip';
 import getText from '@/getText';
 import languageLabels from '@/languageLabels';
@@ -22,10 +21,12 @@ import languages from '@/languages';
 import chatFieldPanel from '@/settingUI/chatFieldPanel';
 import feedbackPanel from '@/settingUI/feedbackPanel';
 import filterPanel from '@/settingUI/filterPanelOld';
+// import filterPanel from '@/settingUI/filterPanel';
 import flowChatPanel from '@/settingUI/flowChatPanel';
 import getState from '@/settingUI/getState';
+import setString from '@/settingUI/setString';
 import updateAt from '@/settingUI/updateAt';
-import updateString from '@/settingUI/updateString';
+import updateInput from '@/settingUI/updateInput';
 import option from '@/ui/option';
 import tabContainer from '@/ui/tabContainer';
 
@@ -46,6 +47,7 @@ export default (
       border: 'solid 1px #666',
       fontFamily: 'MS PGothic',
       lineHeight: '1.2',
+      colorScheme: 'dark',
     },
   }, [
     h('div', {
@@ -56,7 +58,7 @@ export default (
     }, [
       text('🌐'),
       h('select', {
-        onchange: updateString('lang')(c),
+        onchange: updateInput(setString)('lang')(c),
       }, pipe(
         languages,
         RA.mapWithIndex((i, lang) => option(

@@ -1,7 +1,5 @@
 import * as R from 'fp-ts/Reader';
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
-  identity,
   pipe,
 } from 'fp-ts/function';
 import {
@@ -14,24 +12,26 @@ import TextByLang from '@/TextByLang';
 import getText from '@/getText';
 import StateKey from '@/settingUI/StateKey';
 import editAction from '@/settingUI/editAction';
-import getEditValue from '@/settingUI/getEditValue';
-import updateString from '@/settingUI/updateString';
-import colorInput from '@/ui/colorInput';
+import setEditColor from '@/settingUI/setEditColor';
+import * as Ed from '@/ui/Editable';
 import colorPicker from '@/ui/colorPicker';
+import errorText from '@/ui/errorText';
 import settingRow from '@/ui/settingRow';
-import textColorRow from '@/ui/textColorRow';
+import textInput from '@/ui/textInput';
 
 export default (
   label: keyof TextByLang
-  & StateKey<string>,
+  & StateKey<Ed.Editable<string>>,
 ): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
   c,
-) => (s) => settingRow(getText(label)(s.lang), [
-  textColorRow(pipe(
-    [
-      colorPicker,
-      colorInput,
+) => (s) => settingRow(
+  getText(label)(s.lang),
+  errorText(getText('invalidColor')(s.lang))(s[label]),
+  pipe(
+    editAction(label, setEditColor)(c),
+    (x) => [
+      colorPicker(x)(Ed.value(s[label])),
+      textInput(x)(s[label]),
     ],
-    RA.map((f) => f(editAction(label, updateString)(c))),
-  ))(getEditValue<string>(label, identity)(s)),
-]);
+  ),
+);
