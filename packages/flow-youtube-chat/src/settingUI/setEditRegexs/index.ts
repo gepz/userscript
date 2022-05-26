@@ -10,7 +10,6 @@ import * as RTu from 'fp-ts/ReadonlyTuple';
 import {
   pipe,
   constant,
-  flow,
 } from 'fp-ts/function';
 import * as Str from 'fp-ts/string';
 
@@ -55,7 +54,7 @@ export default (
       readonly [string, O.Option<string>]
       >([value, O.some(x)]))),
       O.getOrElse<En.Endomorphism<Ed.Editable<readonly string[]>>>(
-        constant(constant([ctx.regexs, O.none])),
+        constant(constant(Ed.of(ctx.regexs))),
       ),
     )
   ),

@@ -14,6 +14,7 @@ import getText from '@/getText';
 import StateKey from '@/settingUI/StateKey';
 import editAction from '@/settingUI/editAction';
 import getState from '@/settingUI/getState';
+import EditSetter from '@/ui/EditSetter';
 import * as Ed from '@/ui/Editable';
 import errorText from '@/ui/errorText';
 import settingRow from '@/ui/settingRow';
@@ -23,13 +24,7 @@ export default (
   label: keyof TextByLang
   & StateKey<Ed.Editable<readonly string[]>>,
   rows: number,
-  set: (
-    editing: boolean,
-  ) => (
-    value: string,
-  ) => (
-    state: Ed.Editable<readonly string[]>,
-  ) => Ed.Editable<readonly string[]>,
+  setter: EditSetter<Ed.Editable<readonly string[]>>,
 ): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
   c,
 ) => (s) => settingRow(
@@ -38,7 +33,7 @@ export default (
   [
     textAreaRow(
       rows,
-      editAction<Ed.Editable<readonly string[]>>(label, set)(c),
+      editAction<Ed.Editable<readonly string[]>>(label, setter)(c),
     )(getState<Ed.Editable<readonly string[]>>(label)(s)),
   ],
 );

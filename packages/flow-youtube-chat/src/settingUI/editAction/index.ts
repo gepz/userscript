@@ -4,20 +4,17 @@ import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import StateKey from '@/settingUI/StateKey';
 import UpdateType from '@/settingUI/UpdateType';
 import updateInput from '@/settingUI/updateInput';
+import EditSetter from '@/ui/EditSetter';
 
 export default <T extends UpdateType>(
   key: StateKey<T>,
-  set: (
-    editing: boolean,
-  ) => (
-    value: string,
-  ) => (
-    state: T,
-  ) => T,
+  setter: EditSetter<T>,
 ) => (c: AppCommander) => ({
-  oninput: (s: SettingState, e: Event) => updateInput(set(true))(key)(c)(s, e),
+  oninput: (s: SettingState, e: Event) => updateInput(
+    setter(true),
+  )(key)(c)(s, e),
   onchange: (
     s: SettingState,
     e: Event,
-  ): SettingDispatchable => updateInput(set(false))(key)(c)(s, e),
+  ): SettingDispatchable => updateInput(setter(false))(key)(c)(s, e),
 });

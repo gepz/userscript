@@ -16,7 +16,7 @@ import updateAt from '@/settingUI/updateAt';
 import getValue from '@/ui/getValue';
 
 export default <T extends UpdateType>(
-  set: R.Reader<string, En.Endomorphism<T>>,
+  setter: R.Reader<string, En.Endomorphism<T>>,
 ) => (
   key: StateKey<T>,
 ): R.Reader<
@@ -25,7 +25,7 @@ export default <T extends UpdateType>(
   > => flip(
   (s, e) => pipe(
     getValue(e),
-    set,
+    setter,
     apply(getState(key)(s)),
     (x) => updateAt(key, x),
     flip,

@@ -1,7 +1,6 @@
 import * as O from 'fp-ts/Option';
 import * as RTu from 'fp-ts/ReadonlyTuple';
 import {
-  flow,
   pipe,
   constant,
 } from 'fp-ts/function';
@@ -22,10 +21,10 @@ export default (
       ? pipe(
         state,
         Ed.setText(value),
-      ) : [x, O.some([value, O.none])])
+      ) : Ed.fromValueText(x)(value))
     : (x) => (Number.isNaN(x)
       ? pipe(
         state,
         RTu.mapSnd(constant(O.some([value, O.some('')]))),
-      ) : [x, O.none]),
+      ) : Ed.of(x)),
 );

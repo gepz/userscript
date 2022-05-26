@@ -20,6 +20,6 @@ export default (
   RA.filter(P.not(Str.isEmpty)),
   (x) => constant(
     editing ? [x, O.some([value, O.none])]
-    : [x, O.none],
+    : Ed.of(x),
   ),
 );
