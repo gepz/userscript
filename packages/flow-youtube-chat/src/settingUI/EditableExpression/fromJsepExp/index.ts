@@ -3,7 +3,6 @@ import * as O from 'fp-ts/Option';
 import * as R from 'fp-ts/Reader';
 import * as RA from 'fp-ts/ReadonlyArray';
 import {
-  constant,
   identity,
   pipe,
 } from 'fp-ts/function';
@@ -45,10 +44,10 @@ const callExp = (
     type: exp.type,
   },
   O.of,
-  O.bind('arguments', () => pipe(
-    exp.arguments,
-    RA.map(f),
-    O.sequenceArray,
+  O.bind('argument', () => pipe(
+    exp.arguments[0],
+    O.fromNullable,
+    O.map(f),
   )),
   O.bind('callee', () => f(exp.callee)),
 );

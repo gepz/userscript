@@ -1,7 +1,9 @@
 import * as expEval from 'expression-eval';
+import * as O from 'fp-ts/Option';
 import * as R from 'fp-ts/Reader';
 import * as RA from 'fp-ts/ReadonlyArray';
 import {
+  constant,
   flow,
   identity,
   pipe,
@@ -39,8 +41,11 @@ const callExp = (
 ): expEval.parse.CallExpression => ({
   ...exp,
   arguments: pipe(
-    RA.map(f)(exp.arguments),
-    RA.toArray,
+    exp.argument,
+    O.map(f),
+    O.map(RA.of),
+    O.map(RA.toArray),
+    O.getOrElse(constant<expEval.parse.Expression[]>([])),
   ),
   callee: f(exp.callee),
 }

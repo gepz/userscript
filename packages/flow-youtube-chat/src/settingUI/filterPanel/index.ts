@@ -2,11 +2,14 @@ import * as I from 'fp-ts/Identity';
 import * as O from 'fp-ts/Option';
 import * as R from 'fp-ts/Reader';
 import * as RA from 'fp-ts/ReadonlyArray';
+import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray';
+import * as RTu from 'fp-ts/ReadonlyTuple';
 import {
   pipe,
   apply,
   constant,
   flow,
+  identity,
 } from 'fp-ts/function';
 import {
   h,
@@ -29,7 +32,7 @@ import editAction from '@/settingUI/editAction';
 import setEditRegexs from '@/settingUI/setEditRegexs';
 import setEditString from '@/settingUI/setEditString';
 import setEditStrings from '@/settingUI/setEditStrings';
-import textAreaNode from '@/settingUI/textAreaNode';
+import EditSetter from '@/ui/EditSetter';
 import * as Ed from '@/ui/Editable';
 import panelBoxStyle from '@/ui/panelBoxStyle';
 import textAreaRow from '@/ui/textAreaRow';
@@ -44,6 +47,7 @@ enum Primitive {
 enum UI {
   unknown,
   card,
+  regex,
 }
 
 type TaggedType<T1 extends string, T2> = {
@@ -57,8 +61,13 @@ type SimpleType = TaggedType<'simple', {
   ui: UI,
 }>;
 type RestType = TaggedType<'rest', EvalType>;
-type FunctionType = TaggedType<'func', EvalType[]>;
-type TupleType = TaggedType<'tuple', (EvalType | RestType)[]>;
+type FunctionType = TaggedType<'func', readonly [
+  readonly O.Option<EvalType>[] & {
+    readonly 0: O.Option<EvalType>
+  },
+  O.Option<EvalType>,
+]>;
+type TupleType = TaggedType<'tuple', readonly (EvalType | RestType)[]>;
 type RecordType = TaggedType<'record', {
   [key: string]: EvalType,
 } >;
@@ -82,22 +91,24 @@ const makeType = <A extends TaggedType<string, unknown>>(
   type,
 });
 
-const varType = makeType<VariableType>('var');
-const simpleType = makeType<SimpleType>('simple');
-const funcType = makeType<FunctionType>('func');
-const tupleType = makeType<TupleType>('tuple');
-const restType = makeType<RestType>('rest');
-const recordType = makeType<RecordType>('record');
-const listType = (x: EvalType) => tupleType([restType(x)]);
+const varT = makeType<VariableType>('var');
+const simpleT = makeType<SimpleType>('simple');
+const primitiveT = (pri: Primitive) => makeType<SimpleType>('simple')({
+  pri,
+  ui: UI.unknown,
+});
+
+const funcT = makeType<FunctionType>('func');
+const tupleT = makeType<TupleType>('tuple');
+const restT = makeType<RestType>('rest');
+const recordT = makeType<RecordType>('record');
+const listT = (x: EvalType) => tupleT([restT(x)]);
 
 const errorType: ErrorType = {
   tag: 'error',
 };
 
-const unknownType = simpleType({
-  pri: Primitive.unknown,
-  ui: UI.unknown,
-});
+const unknownType = primitiveT(Primitive.unknown);
 
 const errorNode = text('error');
 
@@ -111,103 +122,108 @@ const errorResult: Result<ErrorType> = {
   nodes: [errorNode],
 };
 
-const typeRoot = recordType({
-  or: funcType([
-    simpleType({
-      pri: Primitive.boolean,
-      ui: UI.card,
-    }),
-    unknownType,
+const typeRoot = recordT({
+  or: funcT([
+    [
+      O.some(listT(simpleT({
+        pri: Primitive.boolean,
+        ui: UI.card,
+      }))),
+    ],
+    O.some(primitiveT(Primitive.boolean)),
   ]),
-  and: funcType([
-    simpleType({
-      pri: Primitive.boolean,
-      ui: UI.card,
-    }),
-    unknownType,
+  and: funcT([
+    [
+      O.some(listT(simpleT({
+        pri: Primitive.boolean,
+        ui: UI.card,
+      }))),
+    ],
+    O.some(primitiveT(Primitive.boolean)),
   ]),
-  flip: funcType([
-    funcType([
-      varType(0),
-      varType(1),
-      varType(2),
-    ]),
-    varType(1),
-    varType(0),
-    varType(2),
-  ]),
-  flow: funcType([
-    tupleType([
-      varType(0),
-      varType(1),
-      varType(2),
-    ]),
-    varType(0),
-    varType(2),
-  ]),
-  RA: recordType({
-    some: funcType([
-      funcType([
-        varType(0),
-        unknownType,
+  flip: funcT([
+    RNEA.map(O.some)([
+      funcT([
+        RNEA.map(O.some)([
+          varT(0),
+          varT(1),
+        ]),
+        O.some(varT(2)),
       ]),
-      listType(varType(0)),
-      unknownType,
+      varT(1),
+      varT(0),
     ]),
-    compact: funcType([
-      listType(unknownType),
-      listType(unknownType),
+    O.some(varT(2)),
+  ]),
+  flow: funcT([
+    RNEA.map(O.some)([
+      tupleT([
+        varT(0),
+        varT(1),
+        varT(2),
+      ]),
+      varT(0),
+    ]),
+    O.some(varT(2)),
+  ]),
+  RA: recordT({
+    some: funcT([
+      RNEA.map(O.some)([
+        funcT([
+          [O.some(varT(0))],
+          O.some(unknownType),
+        ]),
+        listT(varT(0)),
+      ]),
+      O.some(unknownType),
+    ]),
+    compact: funcT([
+      [O.some(listT(unknownType))],
+      O.some(listT(unknownType)),
     ]),
   }),
-  O: recordType({
-    exists: funcType([
-      funcType([
-        varType(0),
+  O: recordT({
+    exists: funcT([
+      RNEA.map(O.some)([
+        funcT([
+          [O.some(varT(0))],
+          O.some(unknownType),
+        ]),
         unknownType,
       ]),
-      unknownType,
-      unknownType,
+      O.some(unknownType),
     ]),
   }),
-  inText: funcType([
-    unknownType,
-    simpleType({
-      pri: Primitive.string,
-      ui: UI.unknown,
-    }),
-    simpleType({
-      pri: Primitive.boolean,
-      ui: UI.unknown,
-    }),
+  inText: funcT([
+    RNEA.map(O.some)([
+      unknownType,
+      primitiveT(Primitive.string),
+    ]),
+    O.some(primitiveT(Primitive.boolean)),
   ]),
-  eqText: funcType([
-    unknownType,
-    simpleType({
-      pri: Primitive.string,
-      ui: UI.unknown,
-    }),
-    simpleType({
-      pri: Primitive.boolean,
-      ui: UI.unknown,
-    }),
+  eqText: funcT([
+    RNEA.map(O.some)([
+      unknownType,
+      primitiveT(Primitive.string),
+    ]),
+    O.some(primitiveT(Primitive.boolean)),
   ]),
-  matchedByText: funcType([
-    unknownType,
-    simpleType({
-      pri: Primitive.string,
-      ui: UI.unknown,
-    }),
-    simpleType({
+  matchedByText: funcT([
+    RNEA.map(O.some)([
+      unknownType,
+      simpleT({
+        pri: Primitive.string,
+        ui: UI.regex,
+      }),
+    ]),
+    O.some(simpleT({
       pri: Primitive.boolean,
-      ui: UI.unknown,
-    }),
+      ui: UI.regex,
+    })),
   ]),
-  isVisible: funcType([
-    unknownType,
-    simpleType({
-      pri: Primitive.boolean,
-      ui: UI.unknown,
-    }),
+  isVisible: funcT([
+    [O.some(unknownType)],
+    O.some(primitiveT(Primitive.boolean)),
   ]),
 });
 
@@ -234,28 +250,10 @@ const identifierNode = (
   c: AppCommander,
 ) => (
   s:SettingState,
-): Result<EvalType | ErrorType> => ({
-  type: exp.name in context.type ? context.type[exp.name]
-  : unknownType,
-  nodes: [
-    exp.name === 'inText' ? textAreaNode(
-      'bannedWords',
-      18,
-      setEditStrings,
-    )(c)(s)
-    : exp.name === 'matchedByText' ? textAreaNode(
-      'bannedWordRegexs',
-      18,
-      setEditRegexs,
-    )(c)(s)
-    : exp.name === 'eqText' ? textAreaNode(
-      'bannedUsers',
-      18,
-      setEditStrings,
-    )(c)(s)
-    : h('div', {}, text(exp.name)),
-  ],
-});
+): Result<EvalType | ErrorType> => (exp.name in context.type ? {
+  type: context.type[exp.name],
+  nodes: [h('div', {}, text(exp.name))],
+} : errorResult);
 
 const memberNode = (
   exp: MemberExpression,
@@ -304,44 +302,81 @@ const callNode = (
   O.fromPredicate((x): x is Result<FunctionType> => x.type.tag === 'func'),
   O.bindTo('calleeResult'),
   O.bind('argumentResult', (r) => pipe(
-    exp.arguments[0],
-    O.fromNullable,
+    exp.argument,
     O.map(f),
-    O.map((a) => pipe(
-      r.calleeResult.type.type[0],
-      (x) => (a(pipe(
+    O.map((func) => pipe(
+      r.calleeResult.type.type,
+      RTu.fst,
+      ([x]) => x,
+      O.getOrElse<EvalType>(constant(unknownType)),
+      (x) => (func(pipe(
         opt,
-        Op.prop('arguments'),
-        Op.component(0),
+        Op.prop('argument'),
+        Op.some,
       ))(x)(typeRoot)(c)(s)),
     )),
-    O.altW(() => O.of(errorResult)),
+    O.alt(constant(O.of<Result<EvalType | ErrorType>>(errorResult))),
   )),
   O.map((ctx) => pipe(
     ctx.argumentResult,
-    (result) => (pipe(
-      ctx.calleeResult.type.type[0],
-      (x) => x.tag === 'simple' && x.type.ui === UI.card,
-    ) ? pipe(
-      result.nodes,
-      RA.map((x) => h('div', {
-        style: panelBoxStyle(212),
-      }, [x])),
-    ) : [
+    (result) => ([
       ...ctx.calleeResult.nodes,
-      ...result.nodes,
+      ...pipe(
+        result.nodes,
+        pipe(
+          ctx.calleeResult.type.type,
+          RTu.fst,
+          (x) => x[0],
+          O.exists((x) => x.tag === 'simple' && x.type.ui === UI.card),
+        ) ? RA.map((x) => h('div', {
+          style: panelBoxStyle(212),
+        }, [x]))
+        : identity,
+      ),
     ]),
     I.bindTo('nodes'),
     I.apS('type', pipe(
-      ctx.calleeResult.type.type.slice(
-        ctx.argumentResult.type.tag === 'error' ? 0 : 1,
-      ),
-      (x) => (RA.size(x) === 0 ? errorType
-      : RA.size(x) === 1 ? x[0]
-      : funcType(x)),
+      ctx.calleeResult.type.type,
+      O.fromPredicate((x): x is readonly [readonly [
+        O.Option<EvalType>,
+        O.Option<EvalType>,
+        ...O.Option<EvalType>[],
+      ], O.Option<EvalType>] => RTu.fst(x).length > 1),
+      O.map(flow(
+        RTu.mapFst(
+          ([, ...tail]): RNEA.ReadonlyNonEmptyArray<
+          O.Option<EvalType>
+          > => tail,
+        ),
+        funcT,
+      )),
+      O.getOrElseW(() => pipe(
+        ctx.calleeResult.type.type,
+        RTu.snd,
+        O.getOrElse<EvalType | ErrorType>(constant(errorType)),
+      )),
     )),
   )),
-  O.getOrElse<Result<EvalType | ErrorType>>(() => errorResult),
+  O.getOrElse<Result<EvalType | ErrorType>>(constant(errorResult)),
+);
+
+const expressionSetter = <T>(
+  setter: EditSetter<T>,
+) => (
+  opt: Op.Optional<Expression, T>,
+) => (
+  empty: T,
+) => pipe(
+  setter,
+  R.map(R.map(
+    (f) => (x: Expression) => pipe(
+      opt.getOption(x),
+      O.getOrElse(constant(empty)),
+      f,
+      opt.set,
+      apply(x),
+    ),
+  )),
 );
 
 const literalNode = (
@@ -352,32 +387,36 @@ const literalNode = (
   expectedType: EvalType,
 ): R.Reader<
 AppCommander,
-Result<EvalType | ErrorType>
+Result<SimpleType>
 > => (c) => pipe(
   opt,
   Op.prop('value'),
   (value) => ({
-    type: expectedType,
+    type: simpleT({
+      pri: Primitive.string,
+      ui: expectedType.tag === 'simple' ? expectedType.type.ui
+      : UI.unknown,
+    }),
     nodes: [
       textInput(
         editAction(
           'filterExp',
-          pipe(
-            setEditString,
-            R.map(R.map(
-              (f) => (x: Expression) => pipe(
-                value.getOption(x),
-                O.getOrElse(constant(Ed.of(''))),
-                f,
-                value.set,
-                apply(x),
-              ),
-            )),
-          ),
+          expressionSetter(setEditString)(value)(Ed.of('')),
         )(c),
       )(exp.value),
     ],
   }),
+);
+
+const stringTupleUI: R.Reader<EvalType, O.Option<UI>> = flow(
+  O.fromPredicate((x): x is TupleType => x.tag === 'tuple'),
+  O.map((x) => x.type),
+  O.filter((x): x is [RestType] => x.length === 1 && x[0].tag === 'rest'),
+  O.map(([x]) => x.type),
+  O.filter((x): x is SimpleType => x.tag === 'simple'),
+  O.map((x) => x.type),
+  O.filter((x) => x.pri === Primitive.string),
+  O.map((x) => x.ui),
 );
 
 const literalArrayNode = (
@@ -388,33 +427,38 @@ const literalArrayNode = (
   expectedType: EvalType,
 ): R.Reader<
 AppCommander,
-Result<EvalType | ErrorType>
+Result<TupleType>
 > => (c) => pipe(
   opt,
   Op.prop('value'),
   (value) => ({
-    type: expectedType,
+    type: listT(simpleT({
+      pri: Primitive.string,
+      ui: pipe(
+        expectedType,
+        stringTupleUI,
+        O.getOrElseW(constant(UI.unknown)),
+      ),
+    })),
     nodes: [
       textAreaRow(
         18,
         editAction(
           'filterExp',
-          pipe(
-            setEditStrings,
-            R.map(R.map(
-              (f) => (x: Expression) => pipe(
-                value.getOption(x),
-                O.getOrElse(constant(Ed.of<readonly string[]>(['']))),
-                f,
-                value.set,
-                apply(x),
-              ),
-            )),
-          ),
+          expressionSetter(
+            pipe(
+              expectedType,
+              stringTupleUI,
+              O.getOrElseW(constant(UI.unknown)),
+            ) === UI.regex
+              ? setEditRegexs
+              : setEditStrings,
+          )(value)(Ed.of([''])),
         )(c),
       )(exp.value),
     ],
-  }),
+  }
+  ),
 );
 
 const arrayNode = (
@@ -465,7 +509,7 @@ R.Reader<SettingState, Result<EvalType | ErrorType>>
               v,
               RA.every((x) => x.tag !== 'error'),
             )),
-            O.map(tupleType),
+            O.map(tupleT),
             O.getOrElse<EvalType | ErrorType>(() => errorType),
           ),
           nodes: ctx.nodes,

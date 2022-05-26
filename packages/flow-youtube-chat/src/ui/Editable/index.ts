@@ -13,6 +13,10 @@ export type Editable<T> = readonly [
 
 export const of: <T>(x: T) => Editable<T> = (x) => [x, O.none];
 
+export const fromValueText: <T>(v: T) => (t: string) => Editable<T> = (
+  v,
+) => (t) => [v, O.some([t, O.none])];
+
 export const value: <T>(x: Editable<T>) => T = RTu.fst;
 
 export const text: <T>(x: Editable<T>) => O.Option<string> = flow(

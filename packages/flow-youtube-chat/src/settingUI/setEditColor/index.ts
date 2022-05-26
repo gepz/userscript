@@ -14,8 +14,8 @@ export default (
   value: string,
 ): En.Endomorphism<Ed.Editable<string>> => (editing
   ? (validColor(value)
-    ? constant([value, O.some([value, O.none])])
+    ? constant(Ed.fromValueText(value)(value))
     : Ed.setText(value))
   : (validColor(value)
-    ? constant([value, O.none])
+    ? constant(Ed.of(value))
     : RTu.mapSnd(constant(O.some([value, O.some('')])))));

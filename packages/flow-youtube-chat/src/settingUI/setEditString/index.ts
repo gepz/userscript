@@ -12,7 +12,7 @@ export default (
   editing: boolean,
 ): R.Reader<string, En.Endomorphism<Ed.Editable<string>>> => flow(
   (x) => constant(
-    editing ? [x, O.some([x, O.none])]
-    : [x, O.none],
+    editing ? Ed.fromValueText(x)(x)
+    : Ed.of(x),
   ),
 );
