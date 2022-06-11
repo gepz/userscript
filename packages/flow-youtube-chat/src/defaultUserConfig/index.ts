@@ -114,7 +114,7 @@ export default (): Promise<UserConfig> => pipe(
     'filterExp',
     (x) => () => ic<string, expEval.parse.Expression>(
       'filterExp',
-      expEval.parse(`,
+      expEval.parse(`
   or([
   RA.some(
     flip(flow([inText, RA.some]))(${JSON.stringify(x.bannedWords.val)})

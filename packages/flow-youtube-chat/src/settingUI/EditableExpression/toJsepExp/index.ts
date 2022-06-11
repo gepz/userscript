@@ -45,7 +45,7 @@ const callExp = (
     O.map(f),
     O.map(RA.of),
     O.map(RA.toArray),
-    O.getOrElse(constant<expEval.parse.Expression[]>([])),
+    O.getOrElse<expEval.parse.Expression[]>(constant([])),
   ),
   callee: f(exp.callee),
 }
@@ -74,7 +74,7 @@ const literalArray = (
       (x): expEval.parse.Literal => ({
         type: 'Literal',
         value: x,
-        raw: x,
+        raw: JSON.stringify(x),
       }),
     )),
     RA.toArray,
