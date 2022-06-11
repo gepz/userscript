@@ -45,8 +45,8 @@ const callExp = (
   },
   O.of,
   O.bind('argument', () => pipe(
-    exp.arguments[0],
-    O.fromNullable,
+    exp.arguments,
+    RA.head,
     O.map(f),
   )),
   O.bind('callee', () => f(exp.callee)),
