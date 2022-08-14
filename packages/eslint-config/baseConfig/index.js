@@ -11,8 +11,9 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'airbnb-base',
+    "plugin:consistent-default-export-name/fixed",
   ],
-  plugins: ['@typescript-eslint', 'filenames'],
+  plugins: ['@typescript-eslint'],
   rules: {
     'import/no-extraneous-dependencies': [
       'error',
@@ -36,7 +37,6 @@ module.exports = {
       },
     ],
     'func-names': ['error', 'as-needed'],
-    'filenames/match-exported': ['error', ['camel', 'pascal']],
     semi: ['warn', 'always'],
     ...sharedRules,
   },
