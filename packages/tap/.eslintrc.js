@@ -7,7 +7,6 @@ module.exports = {
   extends: ['@userscript/eslint-config/baseConfig'],
   plugins: [
     '@typescript-eslint',
-    'filenames',
   ],
   settings: {
     'import/resolver': {
