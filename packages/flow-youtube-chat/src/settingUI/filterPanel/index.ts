@@ -24,6 +24,18 @@ import * as Op from 'monocle-ts/Optional';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
+import ErrorType from '@/filter/ErrorType';
+import EvalType from '@/filter/EvalType';
+import FunctionType from '@/filter/FunctionType';
+import Primitive from '@/filter/Primitive';
+import RecordType from '@/filter/RecordType';
+import RestType from '@/filter/RestType';
+import SimpleType from '@/filter/SimpleType';
+import TaggedType from '@/filter/TaggedType';
+import TupleType from '@/filter/TupleType';
+import UI from '@/filter/UI';
+import UnknownType from '@/filter/UnknownType';
+import VariableType from '@/filter/VariableType';
 import flip from '@/flip';
 import ArrayExpression from '@/settingUI/EditableExpression/ArrayExpression';
 import CallExpression from '@/settingUI/EditableExpression/CallExpression';
@@ -41,55 +53,6 @@ import * as Ed from '@/ui/Editable';
 import panelBoxStyle from '@/ui/panelBoxStyle';
 import textAreaRow from '@/ui/textAreaRow';
 import textInput from '@/ui/textInput';
-
-enum Primitive {
-  unknown,
-  boolean,
-  string,
-}
-
-enum UI {
-  unknown,
-  card,
-  regex,
-}
-
-type TaggedType<T1 extends string, T2> = {
-  tag: T1,
-  type: T2,
-};
-
-type VariableType = TaggedType<'var', number>;
-type SimpleType = TaggedType<'simple', {
-  pri: Primitive,
-  ui: UI,
-}>;
-type RestType = TaggedType<'rest', EvalType>;
-type FunctionType = TaggedType<'func', readonly [
-  readonly O.Option<EvalType>[] & {
-    readonly 0: O.Option<EvalType>
-  },
-  O.Option<EvalType>,
-]>;
-type TupleType = TaggedType<'tuple', readonly (EvalType | RestType)[]>;
-type RecordType = TaggedType<'record', {
-  [key: string]: EvalType,
-}>;
-
-type UnknownType = {
-  tag: 'unknown',
-};
-
-type ErrorType = {
-  tag: 'error',
-};
-
-type EvalType = VariableType
-| SimpleType
-| FunctionType
-| TupleType
-| RecordType
-| UnknownType;
 
 const makeType = <A extends TaggedType<string, unknown>>(
   tag: A['tag'],
