@@ -4,7 +4,7 @@ import {
 } from 'fp-ts/function';
 
 import ChatData from '@/ChatData';
-import filterOperators from '@/filterOperators';
+import filterOperators from '@/filter/filterOperators';
 
 export default (
   data: ChatData,
