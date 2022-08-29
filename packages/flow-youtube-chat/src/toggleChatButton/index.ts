@@ -8,10 +8,11 @@ import {
 import RootComponent from '@/RootComponent';
 import UserConfigSetter from '@/UserConfigSetter';
 import getText from '@/getText';
+import languages from '@/languages';
 
 type State = {
   displayChats: boolean,
-  lang: string,
+  lang: typeof languages[number],
 };
 
 export default (setConfig: UserConfigSetter): RootComponent<State> => pipe(
