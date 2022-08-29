@@ -14,5 +14,8 @@ export default (): Configuration => merge(
   styleLoaderConfig(),
   {
     plugins: [new ForkTsCheckerWebpackPlugin()],
+    stats: {
+      errorDetails: true,
+    },
   },
 );
