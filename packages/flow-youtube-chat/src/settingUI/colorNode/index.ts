@@ -8,7 +8,7 @@ import {
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import TextByLang from '@/TextByLang';
+import TextKey from '@/TextKey';
 import getText from '@/getText';
 import StateKey from '@/settingUI/StateKey';
 import editAction from '@/settingUI/editAction';
@@ -20,7 +20,7 @@ import settingRow from '@/ui/settingRow';
 import textInput from '@/ui/textInput';
 
 export default (
-  label: keyof TextByLang
+  label: TextKey
   & StateKey<Ed.Editable<string>>,
 ): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
   c,

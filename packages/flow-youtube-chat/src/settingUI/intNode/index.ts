@@ -5,7 +5,7 @@ import {
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import TextByLang from '@/TextByLang';
+import TextKey from '@/TextKey';
 import getText from '@/getText';
 import StateKey from '@/settingUI/StateKey';
 import editAction from '@/settingUI/editAction';
@@ -17,7 +17,7 @@ import rangeRow from '@/ui/rangeRow';
 import settingRow from '@/ui/settingRow';
 
 export default (
-  label: keyof TextByLang
+  label: TextKey
   & StateKey<Ed.Editable<number>>,
   min: number,
   max: number,

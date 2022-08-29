@@ -5,7 +5,7 @@ import {
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import TextByLang from '@/TextByLang';
+import TextKey from '@/TextKey';
 import {
   TypeKey,
 } from '@/TypeKey';
@@ -13,7 +13,7 @@ import getText from '@/getText';
 import doAct from '@/settingUI/doAct';
 
 export default (
-  label: keyof TextByLang
+  label: TextKey
   & TypeKey<
   typeof doAct,
   R.Reader<AppCommander, R.Reader<SettingState, Promise<void>>>
