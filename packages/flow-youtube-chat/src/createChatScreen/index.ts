@@ -1,16 +1,19 @@
-export default (): HTMLElement => {
-  const element = document.createElement('div');
-  Object.assign<
+import * as IO from 'fp-ts/IO';
+import {
+  pipe,
+} from 'fp-ts/function';
+
+export default pipe(
+  () => document.createElement('div'),
+  IO.chainFirst((x) => () => Object.assign<
   CSSStyleDeclaration,
   Partial<CSSStyleDeclaration>
-  >(element.style, {
+  >(x.style, {
     pointerEvents: 'none',
     zIndex: '30',
     position: 'absolute',
     overflow: 'hidden',
     height: '100%',
     width: '100%',
-  });
-
-  return element;
-};
+  })),
+);

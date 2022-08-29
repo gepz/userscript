@@ -1,8 +1,6 @@
-import {
-  Editable,
-} from '@/ui/Editable';
+import * as Ed from '@/ui/Editable';
 
 export default interface Literal {
   type: 'Literal';
-  value: Editable<string>
+  value: Ed.Editable<string>
 }

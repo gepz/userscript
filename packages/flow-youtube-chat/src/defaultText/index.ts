@@ -1,6 +1,6 @@
 import TextByLang from '@/TextByLang';
 
-const defaultText: Readonly<TextByLang> = {
+const defaultText: TextByLang = {
   setting: ['Settings', '設定'],
   font: ['Font', 'フォント'],
   color: ['Color(Normal)', '色(通常)'],
@@ -56,7 +56,6 @@ const defaultText: Readonly<TextByLang> = {
   invalidColor: ['Invalid color', '無効な色'],
   inputNonNumberic: ['Input isn\'t a number', '入力値が数字でない'],
   invalidSetting: ['Invalid setting', '無効な設定値'],
-
 };
 
 export default defaultText;

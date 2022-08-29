@@ -24,19 +24,27 @@ import * as Op from 'monocle-ts/Optional';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import ErrorType from '@/filter/ErrorType';
-import EvalType from '@/filter/EvalType';
-import FunctionType from '@/filter/FunctionType';
-import Primitive from '@/filter/Primitive';
-import RecordType from '@/filter/RecordType';
-import RestType from '@/filter/RestType';
-import SimpleType from '@/filter/SimpleType';
-import TaggedType from '@/filter/TaggedType';
-import TupleType from '@/filter/TupleType';
-import UI from '@/filter/UI';
-import UnknownType from '@/filter/UnknownType';
-import VariableType from '@/filter/VariableType';
+import ErrorType from '@/filter/type/ErrorType';
+import EvalType from '@/filter/type/EvalType';
+import FunctionType from '@/filter/type/FunctionType';
+import Primitive from '@/filter/type/Primitive';
+import RecordType from '@/filter/type/RecordType';
+import RestType from '@/filter/type/RestType';
+import SimpleType from '@/filter/type/SimpleType';
+import TupleType from '@/filter/type/TupleType';
+import UI from '@/filter/type/UI';
+import VariableType from '@/filter/type/VariableType';
+import errorT from '@/filter/type/errorT';
+import funcT from '@/filter/type/funcT';
+import listT from '@/filter/type/listT';
+import restT from '@/filter/type/restT';
+import returnT from '@/filter/type/returnT';
+import simpleT from '@/filter/type/simpleT';
+import tupleT from '@/filter/type/tupleT';
+import unknownT from '@/filter/type/unknownT';
+import typeRoot from '@/filter/typeRoot';
 import flip from '@/flip';
+import setRecord from '@/setRecord';
 import ArrayExpression from '@/settingUI/EditableExpression/ArrayExpression';
 import CallExpression from '@/settingUI/EditableExpression/CallExpression';
 import Expression from '@/settingUI/EditableExpression/Expression';
@@ -45,6 +53,7 @@ import Literal from '@/settingUI/EditableExpression/Literal';
 import LiteralArray from '@/settingUI/EditableExpression/LiteralArray';
 import MemberExpression from '@/settingUI/EditableExpression/MemberExpression';
 import editAction from '@/settingUI/editAction';
+import errorNode from '@/settingUI/errorNode';
 import setEditRegexs from '@/settingUI/setEditRegexs';
 import setEditString from '@/settingUI/setEditString';
 import setEditStrings from '@/settingUI/setEditStrings';
@@ -54,58 +63,6 @@ import panelBoxStyle from '@/ui/panelBoxStyle';
 import textAreaRow from '@/ui/textAreaRow';
 import textInput from '@/ui/textInput';
 
-const makeType = <A extends TaggedType<string, unknown>>(
-  tag: A['tag'],
-) => (
-  type: A['type'],
-) => ({
-  tag,
-  type,
-});
-
-const varT = makeType<VariableType>('var');
-const simpleT = makeType<SimpleType>('simple');
-const primitiveT = (pri: Primitive) => makeType<SimpleType>('simple')({
-  pri,
-  ui: UI.unknown,
-});
-
-const funcT = makeType<FunctionType>('func');
-const tupleT = makeType<TupleType>('tuple');
-const restT = makeType<RestType>('rest');
-const recordT = makeType<RecordType>('record');
-const listT = (x: EvalType) => tupleT([restT(x)]);
-const returnT: R.Reader<FunctionType, O.Option<EvalType>> = (type) => pipe(
-  type.type,
-  O.fromPredicate((x): x is readonly [readonly [
-    O.Option<EvalType>,
-    O.Option<EvalType>,
-    ...O.Option<EvalType>[],
-  ], O.Option<EvalType>] => RTu.fst(x).length > 1),
-  O.map(flow(
-    RTu.mapFst(
-      ([, ...tail]): RNEA.ReadonlyNonEmptyArray<
-      O.Option<EvalType>
-      > => tail,
-    ),
-    funcT,
-  )),
-  O.alt(() => pipe(
-    type.type,
-    RTu.snd,
-  )),
-);
-
-const errorType: ErrorType = {
-  tag: 'error',
-};
-
-const unknownType: UnknownType = {
-  tag: 'unknown',
-};
-
-const errorNode = text('error');
-
 type Result<T extends EvalType | ErrorType> = {
   type: T,
   nodes: readonly VNode<SettingState>[],
@@ -113,122 +70,9 @@ type Result<T extends EvalType | ErrorType> = {
 };
 
 const errorResult = (typeMap: Record<number, EvalType>): Result<ErrorType> => ({
-  type: errorType,
+  type: errorT,
   nodes: [errorNode],
   typeMap,
-});
-
-const typeRoot = recordT({
-  or: funcT([
-    [
-      O.some(listT(simpleT({
-        pri: Primitive.boolean,
-        ui: UI.card,
-      }))),
-    ],
-    O.some(primitiveT(Primitive.boolean)),
-  ]),
-  and: funcT([
-    [
-      O.some(listT(simpleT({
-        pri: Primitive.boolean,
-        ui: UI.card,
-      }))),
-    ],
-    O.some(primitiveT(Primitive.boolean)),
-  ]),
-  flip: funcT([
-    RNEA.map(O.some)([
-      funcT([
-        RNEA.map(O.some)([
-          varT(0),
-          varT(1),
-        ]),
-        O.some(varT(2)),
-      ]),
-      varT(1),
-      varT(0),
-    ]),
-    O.some(varT(2)),
-  ]),
-  flow: funcT([
-    RNEA.map(O.some)([
-      tupleT([
-        funcT([
-          [O.some(varT(0))],
-          O.some(varT(1)),
-        ]),
-        funcT([
-          [O.some(varT(1))],
-          O.some(varT(2)),
-        ]),
-      ]),
-      funcT([
-        [O.some(varT(0))],
-        O.some(varT(2)),
-      ]),
-    ]),
-    O.some(varT(2)),
-  ]),
-  RA: recordT({
-    some: funcT([
-      RNEA.map(O.some)([
-        funcT([
-          [O.some(varT(0))],
-          O.some(primitiveT(Primitive.boolean)),
-        ]),
-        listT(varT(0)),
-      ]),
-      O.some(primitiveT(Primitive.boolean)),
-    ]),
-    compact: funcT([
-      [O.some(listT(unknownType))],
-      O.some(listT(unknownType)),
-    ]),
-  }),
-  O: recordT({
-    exists: funcT([
-      RNEA.map(O.some)([
-        funcT([
-          [O.some(varT(0))],
-          O.some(primitiveT(Primitive.boolean)),
-        ]),
-        unknownType,
-      ]),
-      O.some(primitiveT(Primitive.boolean)),
-    ]),
-  }),
-  inText: funcT([
-    RNEA.map(O.some)([
-      unknownType,
-      primitiveT(Primitive.string),
-    ]),
-    O.some(primitiveT(Primitive.boolean)),
-  ]),
-  eqText: funcT([
-    RNEA.map(O.some)([
-      unknownType,
-      primitiveT(Primitive.string),
-    ]),
-    O.some(primitiveT(Primitive.boolean)),
-  ]),
-  matchedByText: funcT([
-    RNEA.map(O.some)([
-      unknownType,
-      simpleT({
-        pri: Primitive.string,
-        ui: UI.regex,
-      }),
-    ]),
-    O.some(simpleT({
-      pri: Primitive.boolean,
-      ui: UI.regex,
-    })),
-  ]),
-  isVisible: funcT([
-    [O.some(unknownType)],
-    O.some(primitiveT(Primitive.boolean)),
-  ]),
 });
 
 const replaceVarType = (
@@ -242,17 +86,6 @@ const replaceVarType = (
   O.map((x) => typeMap[x.type]),
   O.getOrElse(constant(type)),
 );
-
-const setRecord = <T1 extends string | number | symbol, T2>(
-  key: T1,
-) => (
-  value: T2,
-) => (
-  rec: Record<T1, T2>,
-): Record<T1, T2> => ({
-  ...rec,
-  [key]: value,
-});
 
 const assignableToVarType = (
   a: VariableType,
@@ -338,12 +171,12 @@ const memberNode = (
   f(exp.object)(pipe(
     opt,
     Op.prop('object'),
-  ))(unknownType)(typeRoot)(m)(c)(s),
+  ))(unknownT)(typeRoot)(m)(c)(s),
   O.fromPredicate((x): x is Result<RecordType> => x.type.tag === 'record'),
   O.map((x) => f(exp.property)(pipe(
     opt,
     Op.prop('property'),
-  ))(unknownType)(x.type)(m)(c)(s)),
+  ))(unknownT)(x.type)(m)(c)(s)),
   O.map((x) => ({
     type: x.type,
     nodes: x.nodes,
@@ -391,7 +224,9 @@ const callNode = (
   f(exp.callee)(pipe(
     opt,
     Op.prop('callee'),
-  ))(funcT([[O.some(unknownType)], O.some(expectedType)]))(typeRoot)(m)(c)(s),
+  ))(funcT([[O.some(unknownT)], O.some(expectedType)]))(
+    typeRoot,
+  )(m)(c)(s),
   O.fromPredicate((x): x is Result<FunctionType> => x.type.tag === 'func'),
   O.bindTo('calleeResult'),
   O.bind('argumentResult', (ctx) => pipe(
@@ -401,7 +236,7 @@ const callNode = (
       ctx.calleeResult.type.type,
       RTu.fst,
       ([x]) => x,
-      O.getOrElse<EvalType>(constant(unknownType)),
+      O.getOrElse<EvalType>(constant(unknownT)),
       (x) => (func(pipe(
         opt,
         Op.prop('argument'),
@@ -431,7 +266,7 @@ const callNode = (
     I.bindTo('nodes'),
     I.apS('type', pipe(
       returnT(ctx.calleeResult.type),
-      O.getOrElse<EvalType | ErrorType>(constant(errorType)),
+      O.getOrElse<EvalType | ErrorType>(constant(errorT)),
     )),
     I.bind(
       'typeMap',
@@ -600,7 +435,7 @@ R.Reader<SettingState, Result<EvalType | ErrorType>>
             RA.map((x) => x.type),
             RA.filterMap(RNEA.fromReadonlyArray),
             RA.append<RNEA.ReadonlyNonEmptyArray<EvalType | RestType>>(
-              [restT(unknownType)] as const,
+              [restT(unknownT)] as const,
             ),
             RA.map((x) => ({
               types: [],
@@ -673,7 +508,7 @@ R.Reader<SettingState, Result<EvalType | ErrorType>>
           RA.every((x) => x.tag !== 'error'),
         )),
         O.map(tupleT),
-        O.getOrElse<EvalType | ErrorType>(() => errorType),
+        O.getOrElse<EvalType | ErrorType>(() => errorT),
       ),
       nodes: ctx.nodes,
       typeMap: ctx.typeMap,
@@ -728,7 +563,7 @@ const expNode: ExpNodeFunc = (
     Op.filter((x): x is ArrayExpression => x.type === 'ArrayExpression'),
   ))(expNode)(t)(m)(c)(s)
   : {
-    type: unknownType,
+    type: unknownT,
     nodes: [],
     typeMap: m,
   }),
@@ -742,7 +577,7 @@ R.Reader<SettingState, readonly VNode<SettingState>[]>
   R.map((x) => x.filterExp),
   R.map(expNode),
   R.map(apply(Op.id())),
-  R.map(apply(unknownType)),
+  R.map(apply(unknownT)),
   R.map(apply(typeRoot)),
   R.map(apply({})),
   R.map(flip),

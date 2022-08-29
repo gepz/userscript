@@ -9,7 +9,7 @@ import {
 import ChatData from '@/ChatData';
 import Logger from '@/Logger';
 import UserConfigGetter from '@/UserConfigGetter';
-import filterContext from '@/filterContext';
+import filterContext from '@/filter/filterContext';
 
 export default (
   data: ChatData,
