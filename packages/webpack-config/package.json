@@ -4,6 +4,8 @@
   "version": "1.0.0",
   "author": "",
   "dependencies": {
+    "webpack": "^5.64.4",
+    "webpack-dev-server": "^4.6.0",
     "webpack-merge": "^5.4.0"
   },
   "keywords": [],
@@ -13,6 +15,7 @@
     "webpack": "^5.64.4"
   },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
