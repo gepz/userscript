@@ -12,7 +12,7 @@
 - Reset default settings
 - Shadow color V2
 
-## Typescript 4.8
+## Typescript 4.9
 - "satisfies"
   - filterPanel
   - as const
