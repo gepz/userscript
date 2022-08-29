@@ -1,15 +1,11 @@
-import * as O from 'fp-ts/Option';
 import * as R from 'fp-ts/Reader';
-import {
-  constant, pipe,
-} from 'fp-ts/function';
 import {
   VNode,
 } from 'hyperapp';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import TextByLang from '@/TextByLang';
+import TextKey from '@/TextKey';
 import getText from '@/getText';
 import StateKey from '@/settingUI/StateKey';
 import editAction from '@/settingUI/editAction';
@@ -21,7 +17,7 @@ import settingRow from '@/ui/settingRow';
 import textAreaRow from '@/ui/textAreaRow';
 
 export default (
-  label: keyof TextByLang
+  label: TextKey
   & StateKey<Ed.Editable<readonly string[]>>,
   rows: number,
   setter: EditSetter<Ed.Editable<readonly string[]>>,

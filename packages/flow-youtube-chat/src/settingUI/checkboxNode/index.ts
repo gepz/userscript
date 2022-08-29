@@ -5,7 +5,7 @@ import {
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import TextByLang from '@/TextByLang';
+import TextKey from '@/TextKey';
 import getText from '@/getText';
 import StateKey from '@/settingUI/StateKey';
 import getState from '@/settingUI/getState';
@@ -13,7 +13,7 @@ import updateBool from '@/settingUI/updateBool';
 import checkboxRow from '@/ui/checkboxRow';
 
 export default (
-  label: keyof TextByLang
+  label: TextKey
   & StateKey<boolean>,
 ): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
   c,
