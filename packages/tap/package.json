@@ -25,11 +25,12 @@
   "license": "AGPL-3.0-or-later",
   "main": "./lib/index.js",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.dev.conf.ts",
     "prod": "run-s prod_webpack prod_lib",
     "prod_lib": "ttsc --project tsconfig.build.json",
     "prod_webpack": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.prod.conf.ts",
-    "start": "npm run dev"
+    "start": "pnpm dev"
   },
   "sideEffects": false,
   "types": "./lib/index.d.ts"

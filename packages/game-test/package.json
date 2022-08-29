@@ -60,9 +60,10 @@
   },
   "license": "AGPL-3.0-or-later",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.dev.conf.ts",
     "prod_webpack": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.prod.conf.ts",
     "prod": "run-s prod_webpack",
-    "start": "npm run dev"
+    "start": "pnpm dev"
   }
 }
