@@ -31,7 +31,10 @@ type StoragePairs<
 
 type StoragePair = [GmStorage | undefined, GmStorage];
 
-type Schema<T extends StoragePair[]> = T extends [infer U extends StoragePair, ... infer V extends StoragePair[]] ?
+type Schema<T extends StoragePair[]> = T extends [
+  infer U extends StoragePair,
+  ... infer V extends StoragePair[],
+] ?
   [
     {
       upgradeAlias?: U[0] extends GmStorage ?
