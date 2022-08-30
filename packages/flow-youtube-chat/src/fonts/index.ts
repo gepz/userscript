@@ -1,4 +1,6 @@
-export default (currentFont: string): [string, string, string][] => [
+export default (currentFont: string): readonly (
+readonly [string, string, string]
+)[] => [
   ['', 'Default', 'デフォルト'],
   ['arial', 'Arial', 'Arial'],
   ['arial black', 'Arial Black', 'Arial Black'],
@@ -24,4 +26,4 @@ export default (currentFont: string): [string, string, string][] => [
   ['Yu Gothic', 'Yu Gothic', '遊ゴシック'],
   ['YuGothic', 'YuGothic', '游ゴシック体'],
   [currentFont, 'Custom', 'カスタム'],
-];
+] as const;

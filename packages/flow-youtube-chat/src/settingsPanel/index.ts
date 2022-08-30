@@ -20,6 +20,8 @@ import languageLabels from '@/languageLabels';
 import languages from '@/languages';
 import chatFieldPanel from '@/settingUI/chatFieldPanel';
 import feedbackPanel from '@/settingUI/feedbackPanel';
+// eslint-disable-next-line max-len
+// eslint-disable-next-line consistent-default-export-name/default-import-match-filename
 import filterPanel from '@/settingUI/filterPanelOld';
 // import filterPanel from '@/settingUI/filterPanel';
 import flowChatPanel from '@/settingUI/flowChatPanel';
