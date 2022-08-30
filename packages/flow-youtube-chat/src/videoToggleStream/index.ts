@@ -1,3 +1,4 @@
+import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
 } from 'fp-ts/function';
@@ -8,17 +9,16 @@ import {
   map,
 } from 'rxjs';
 
-export default (video: HTMLVideoElement): Observable<boolean> => merge(
-  pipe(
-    fromEvent(video, 'playing'),
-    map(() => true),
-  ),
-  pipe(
-    fromEvent(video, 'waiting'),
-    map(() => false),
-  ),
-  pipe(
-    fromEvent(video, 'pause'),
-    map(() => false),
-  ),
+export default (video: HTMLVideoElement): Observable<boolean> => pipe(
+  [['playing'], ['waiting', 'pause']],
+  RA.mapWithIndex((i, x) => [x, i === 0] as const),
+  RA.chain(([xs, b]) => pipe(
+    xs,
+    RA.map((x) => [x, b] as const),
+  )),
+  RA.map(([x, b]) => pipe(
+    fromEvent(video, x),
+    map(() => b),
+  )),
+  (x) => merge(...x),
 );

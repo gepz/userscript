@@ -1,3 +1,5 @@
 import validateColor from 'validate-color';
 
-export default (x: string) => validateColor(x.replace(/grey/ig, 'gray'));
+export default (x: string): boolean => validateColor(
+  x.replace(/grey/ig, 'gray'),
+);
