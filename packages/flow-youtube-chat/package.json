@@ -2,6 +2,7 @@
   "name": "@userscript/flow-youtube-chat",
   "description": "flow-youtube-chat",
   "version": "1.15.9",
+  "packageManager": "pnpm@7.9.5",
   "dependencies": {
     "@userscript/assert": "^1.0.0",
     "@userscript/forward-to": "^1.0.0",
