@@ -368,7 +368,7 @@ export default (): Promise<unknown> => pipe(
               setAnimation: false,
               setPlayState: false,
               ...config,
-            },
+            } satisfies ChatUpdateConfig,
             (x: ChatUpdateConfig) => pipe(
               [
                 pipe(
@@ -527,7 +527,7 @@ export default (): Promise<unknown> => pipe(
               'createBanButton',
               'fieldScale',
             ],
-            (x: (keyof UserConfig)[]) => x.includes(key),
+            (x: readonly (keyof UserConfig)[]) => x.includes(key),
             // eslint-disable-next-line max-len
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             (x) => (x ? () => ctx.setConfigPlain[key](val as never)

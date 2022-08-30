@@ -12,9 +12,9 @@ import UserConfigGetter from '@/UserConfigGetter';
 import getChatFontSize from '@/getChatFontSize';
 import textShadow from '@/textShadow';
 
-const textStyle: Partial<CSSStyleDeclaration> = {
+const textStyle = {
   fontFamily: 'inherit',
-};
+} satisfies Partial<CSSStyleDeclaration>;
 
 const parseMessage = (
   message: Element,
@@ -68,7 +68,7 @@ const parseMessage = (
               fontSize: '0.84em',
               textDecoration: 'underline',
               ...textStyle,
-            },
+            } satisfies Partial<CSSStyleDeclaration>,
           }, x),
         ],
         length: length + x.length,
@@ -115,7 +115,7 @@ export default (
             color: O.toUndefined(data.textColor),
             fontSize: '0.84em',
             ...textStyle,
-          },
+          } satisfies Partial<CSSStyleDeclaration>,
         }, `${x.content}: `)),
       ),
       pipe(
@@ -128,7 +128,7 @@ export default (
           style: {
             color: O.toUndefined(data.textColor),
             ...textStyle,
-          },
+          } satisfies Partial<CSSStyleDeclaration>,
         }, x.vnodes)),
       ),
       pipe(
@@ -139,7 +139,7 @@ export default (
             color: O.toUndefined(data.paidColor),
             fontSize: '0.84em',
             ...textStyle,
-          },
+          } satisfies Partial<CSSStyleDeclaration>,
         }, m('strong', {
           style: textStyle,
         }, x.content))),
