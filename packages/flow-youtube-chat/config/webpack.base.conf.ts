@@ -11,7 +11,7 @@ import {
 
 export default (): Configuration => merge(
   tsbaseConfig(path.join(__dirname, '../')),
-  styleLoaderConfig(),
+  styleLoaderConfig,
   {
     plugins: [new ForkTsCheckerWebpackPlugin()],
     stats: {
