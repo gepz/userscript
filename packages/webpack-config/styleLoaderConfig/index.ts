@@ -2,7 +2,7 @@ import {
   Configuration,
 } from 'webpack';
 
-export default (): Configuration => ({
+export default ({
   module: {
     rules: [
       {
@@ -21,4 +21,4 @@ export default (): Configuration => ({
       },
     ],
   },
-});
+}) satisfies Configuration;
