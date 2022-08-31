@@ -46,9 +46,7 @@ module.exports = {
       'newlines-between': 'always',
     },
   ],
-  'no-param-reassign': [
-    'error',
-  ],
+  'no-param-reassign': ['error'],
   'no-mixed-operators': [
     'error', {
       allowSamePrecedence: true,
