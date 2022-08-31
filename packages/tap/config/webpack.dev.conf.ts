@@ -7,6 +7,6 @@ import {
 import webpackBaseConf from './webpack.base.conf';
 
 export default merge(
-  webpackBaseConf(),
+  webpackBaseConf,
   devConfig(path.join(__dirname, '../')),
 );

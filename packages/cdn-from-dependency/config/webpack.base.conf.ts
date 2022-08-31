@@ -7,6 +7,6 @@ import {
   merge,
 } from 'webpack-merge';
 
-export default (): Configuration => merge(
+export default merge(
   tsbaseConfig(path.resolve(__dirname, '../')),
-);
+) satisfies Configuration;

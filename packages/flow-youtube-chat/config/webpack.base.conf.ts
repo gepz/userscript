@@ -9,7 +9,7 @@ import {
   merge,
 } from 'webpack-merge';
 
-export default (): Configuration => merge(
+export default merge(
   tsbaseConfig(path.join(__dirname, '../')),
   styleLoaderConfig,
   {
@@ -18,4 +18,4 @@ export default (): Configuration => merge(
       errorDetails: true,
     },
   },
-);
+) satisfies Configuration;
