@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import {
   BundleAnalyzerPlugin,
@@ -10,7 +8,7 @@ import {
 
 import webpackBaseConf from './webpack.base.conf';
 
-module.exports = merge(
+export default merge(
   webpackBaseConf,
   {
     externals: [
