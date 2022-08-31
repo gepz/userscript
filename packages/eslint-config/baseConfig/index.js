@@ -11,10 +11,6 @@ module.exports = {
   ],
   plugins: ['@typescript-eslint'],
   rules: {
-    'consistent-default-export-name/default-export-match-filename': [
-      2,
-      [null, 'camel', 'pascal'],
-    ],
     'import/no-extraneous-dependencies': [
       'error',
       {
