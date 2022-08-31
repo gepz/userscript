@@ -6,10 +6,10 @@ import {
 } from 'webpack-merge';
 
 import userscriptPlugin from './userscriptPlugin';
-import baseConfig from './webpack.base.conf';
+import webpackBaseConf from './webpack.base.conf';
 
 module.exports = merge(
-  baseConfig(),
+  webpackBaseConf(),
   {
     externals: {
       sweetalert2: 'Swal',
