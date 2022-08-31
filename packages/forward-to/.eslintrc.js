@@ -5,9 +5,7 @@ const path = require(
 module.exports = {
   root: true,
   extends: ['@userscript/eslint-config/baseConfig'],
-  plugins: [
-    '@typescript-eslint',
-  ],
+  plugins: ['@typescript-eslint'],
   settings: {
     'import/resolver': {
       node: {},
