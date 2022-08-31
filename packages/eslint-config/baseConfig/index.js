@@ -1,9 +1,5 @@
 const sharedRules = require('../sharedRules');
 
-const path = require(
-  'path',
-);
-
 module.exports = {
   env: {
     browser: true,
@@ -11,10 +7,14 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'airbnb-base',
-    "plugin:consistent-default-export-name/fixed",
+    'plugin:consistent-default-export-name/fixed',
   ],
   plugins: ['@typescript-eslint'],
   rules: {
+    'consistent-default-export-name/default-export-match-filename': [
+      2,
+      [null, 'camel', 'pascal'],
+    ],
     'import/no-extraneous-dependencies': [
       'error',
       {
