@@ -4,9 +4,9 @@ import {
   merge,
 } from 'webpack-merge';
 
-import baseConfig from './webpack.base.conf';
+import webpackBaseConf from './webpack.base.conf';
 
 export default merge(
-  baseConfig(),
+  webpackBaseConf(),
   devConfig(path.join(__dirname, '../')),
 );
