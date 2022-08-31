@@ -11,7 +11,7 @@ import {
 import webpackBaseConf from './webpack.base.conf';
 
 module.exports = merge(
-  webpackBaseConf(),
+  webpackBaseConf,
   {
     externals: [
       {

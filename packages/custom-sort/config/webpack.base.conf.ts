@@ -8,7 +8,7 @@ import {
   merge,
 } from 'webpack-merge';
 
-export default (): Configuration => merge(
+export default merge(
   tsbaseConfig(path.join(__dirname, '../')),
   styleLoaderConfig,
-);
+) satisfies Configuration;

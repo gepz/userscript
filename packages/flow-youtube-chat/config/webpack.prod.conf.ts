@@ -12,7 +12,7 @@ import userscriptPlugin from './userscriptPlugin';
 import webpackBaseConf from './webpack.base.conf';
 
 module.exports = merge(
-  webpackBaseConf(),
+  webpackBaseConf,
   {
     externals: [
       {
