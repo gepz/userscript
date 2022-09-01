@@ -509,10 +509,12 @@ importers:
 
   packages/webpack-config:
     specifiers:
+      '@types/node': 18.7.14
       webpack: ^5.74.0
       webpack-dev-server: ^4.10.1
       webpack-merge: ^5.8.0
     dependencies:
+      '@types/node': 18.7.14
       webpack: 5.74.0
       webpack-dev-server: 4.10.1_webpack@5.74.0
       webpack-merge: 5.8.0
