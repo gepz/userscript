@@ -51,14 +51,14 @@ export default (
   ),
   IOO.fromIO,
   IOO.filter(() => !chat.animationEnded),
-  IOO.chainFirst((x) => IOO.fromIO(() => {
+  IOO.chainFirstIOK((x) => () => {
     // eslint-disable-next-line no-param-reassign
     chat.animationDuration = flowDuration;
     // eslint-disable-next-line no-param-reassign
     chat.width = getWidth(chat.element.firstElementChild);
     // eslint-disable-next-line no-param-reassign
     chat.height = x.fontSize;
-  })),
+  }),
   IOO.map(() => ({
     progress: getFlowChatProgress(chat),
   })),
@@ -74,19 +74,19 @@ export default (
     (intervalTooSmall(ctx.interval)(mainState.getConfig)) ? pipe(
       chat.animation,
       IOO.fromOption,
-      IOO.chain((x) => IOO.fromIO(() => {
+      IOO.chainIOK((x) => () => {
         x.finish();
         // eslint-disable-next-line no-param-reassign
         chat.animation = O.none;
-      })),
+      }),
       IO.map(() => O.none),
     )
     : IOO.some(ctx)
   )),
-  IOO.chainFirst((x) => IOO.fromIO(() => {
+  IOO.chainFirstIOK((x) => () => {
     // eslint-disable-next-line no-param-reassign
     chat.lane = x.lane;
-  })),
+  }),
   IOO.map((x) => ({
     ...x,
     laneY: getLaneY(chat.lane, mainState),
@@ -96,7 +96,7 @@ export default (
       pipe(
         chat.animation,
         IOO.fromOption,
-        IOO.chain((x) => IOO.fromIO(() => x.cancel())),
+        IOO.chainIOK((x) => () => x.cancel()),
       ),
       pipe(
         [

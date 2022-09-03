@@ -46,10 +46,10 @@ export default (
     IO.chainFirst((w) => () => enterQuery(q)(w).forEach((id) => pipe(
       stringMap().get(id),
       IOO.fromNullable,
-      IOO.chain((x) => IOO.fromIO(text(x))),
-      IOO.chainFirst(() => IOO.fromIO(addComponents(w)(id)([isVisible]))),
-      IOO.chainFirst((x) => IOO.fromIO(() => containers.set(id, x))),
-      IOO.chainFirst((x) => IOO.fromIO(hasComponent(w, displayParent, id)
+      IOO.chainIOK((x) => text(x)),
+      IOO.chainFirstIOK(() => addComponents(w)(id)([isVisible])),
+      IOO.chainFirstIOK((x) => () => containers.set(id, x)),
+      IOO.chainFirstIOK((x) => (hasComponent(w, displayParent, id)
         ? () => containers.get(displayParent.v[id])?.addChild(x)
         : () => app.stage.addChild(x))),
     )())),

@@ -38,16 +38,16 @@ export default (
       RM.lookup(N.Eq)(id),
       IOO.fromOption,
       // eslint-disable-next-line no-param-reassign
-      IOO.chainFirst((x) => IOO.fromIO(() => { x.x = position.x[id]; })),
+      IOO.chainFirstIOK((x) => () => { x.x = position.x[id]; }),
       // eslint-disable-next-line no-param-reassign
-      IOO.chainFirst((x) => IOO.fromIO(() => { x.y = position.y[id]; })),
+      IOO.chainFirstIOK((x) => () => { x.y = position.y[id]; }),
     )())),
     IO.chainFirst((w) => () => exitQuery(q)(w).forEach((id) => pipe(
       containers,
       RM.lookup(N.Eq)(id),
       IOO.fromOption,
-      IOO.chainFirst(() => IOO.fromIO(() => containers.delete(id))),
-      IOO.chainFirst((x) => IOO.fromIO(() => x.parent.removeChild(x))),
+      IOO.chainFirstIOK(() => () => containers.delete(id)),
+      IOO.chainFirstIOK((x) => () => x.parent.removeChild(x)),
     )())),
   )),
 );

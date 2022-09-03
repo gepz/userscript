@@ -47,23 +47,21 @@ export default (
             O.fromPredicate(getConfig.createChats),
             O.filter(() => data.chatType === 'normal'),
             IOO.fromOption,
-            IOO.chain(() => IOO.fromIO(addFlowChat(
+            IOO.chainIOK(() => addFlowChat(
               getData,
               flowChats,
               chatScrn,
               mainState,
-            ))),
+            )),
           ),
           pipe(
             data.authorID,
             IOO.fromOption,
             IOO.filter(getConfig.createBanButton),
-            IOO.chain((x) => IOO.fromIO(
-              addBanButton(chat, x, getConfig, setConfig),
-            )),
+            IOO.chainIOK((x) => addBanButton(chat, x, getConfig, setConfig)),
             IO.map(() => O.some(undefined)),
             IOO.filter(getConfig.simplifyChatField),
-            IOO.chain(() => IOO.fromIO(setChatFieldSimplifyStyle(chat))),
+            IOO.chainIOK(() => setChatFieldSimplifyStyle(chat)),
           ),
         ],
         IO.sequenceArray,
