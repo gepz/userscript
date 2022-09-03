@@ -4,6 +4,7 @@
   "version": "1.15.9",
   "packageManager": "pnpm@7.9.5",
   "dependencies": {
+    "@effect-ts/core": "^0.60.3",
     "@userscript/assert": "workspace:^1.0.0",
     "@userscript/forward-to": "workspace:^1.0.0",
     "@userscript/tap": "workspace:^1.0.0",
