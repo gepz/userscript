@@ -35,7 +35,7 @@ export default (
     width: 2,
     height: getChatFontSize(mainState),
     y: 0,
-  },
+  } satisfies FlowChat,
   (x: FlowChat) => getChatLane(
     x,
     0,
@@ -68,8 +68,8 @@ export default (
       },
       (i) => pipe(
         () => flowChats.splice(i, 1)[0].animation,
-        IOO.chain(
-          (oldAnimation) => IOO.fromIO(() => oldAnimation.cancel()),
+        IOO.chainIOK(
+          (oldAnimation) => () => oldAnimation.cancel(),
         ),
       ),
     ),

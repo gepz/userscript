@@ -64,10 +64,8 @@ export default ({
           (x) => blas.base.gnrm2(x.length, x, 1),
         ) < radius.v[bulletId] + radius.v[id]),
         IOO.fromOption,
-        IOO.chainFirst((x) => IOO.fromIO(addComponents(w)(x)([removing]))),
-        IOO.chainFirst(() => IOO.fromIO(
-          addComponents(w)(bulletId)([removing]),
-        )),
+        IOO.chainFirstIOK((x) => addComponents(w)(x)([removing])),
+        IOO.chainFirstIOK(() => addComponents(w)(bulletId)([removing])),
       )()),
     )),
   )),

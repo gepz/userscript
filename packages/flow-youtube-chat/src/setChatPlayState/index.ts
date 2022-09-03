@@ -16,12 +16,10 @@ export default (
   O.fromPredicate((x) => !x.animationEnded),
   IOO.fromOption,
   IOO.chainOptionK((x) => x.animation),
-  IOO.chainFirst((x) => IOO.fromIO(
-    mainState.chatPlaying ? () => x.play()
-    : () => x.pause(),
-  )),
-  IOO.chain((x) => IOO.fromIO(() => {
+  IOO.chainFirstIOK((x) => (mainState.chatPlaying ? () => x.play()
+  : () => x.pause())),
+  IOO.chainIOK((x) => () => {
     // eslint-disable-next-line no-param-reassign
     x.playbackRate = mainState.getConfig.flowSpeed() / 15;
-  })),
+  }),
 );

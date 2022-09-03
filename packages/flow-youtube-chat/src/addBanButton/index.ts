@@ -9,31 +9,8 @@ import * as Str from 'fp-ts/string';
 
 import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';
+import banButton from '@/banButton';
 import defaultToast from '@/defaultToast';
-
-const button = document.createElement('button');
-button.classList.add(
-  'style-scope',
-  'yt-icon-button',
-  'fyc_button',
-);
-
-Object.assign<
-CSSStyleDeclaration,
-Partial<CSSStyleDeclaration>
->(button.style, {
-  padding: '0px',
-  width: '20px',
-  height: '20px',
-  fill: '#fff',
-});
-
-button.setAttribute('aria-label', 'NGに入れる(Ban this user)');
-button.innerHTML = '<svg class="style-scope yt-icon" style="width: 100%;'
-  + ' height: 75%; fill: var(--yt-spec-text-secondary);" viewBox="0 0 512 512">'
-  // eslint-disable-next-line max-len
-  + '<path d="M440 78A256 256 0 1 0 73 435 256 256 0 0 0 440 78zm-99 35L113 341C37 179 212 44 341 113zM177 405l228-228c76 162-99 297-228 228z" fill-rule="evenodd"/>'
-  + '</svg>';
 
 export default (
   chat: HTMLElement,
@@ -41,10 +18,10 @@ export default (
   getConfig: UserConfigGetter,
   setConfig: UserConfigSetter,
 ): IO.IO<void> => (chat.children.namedItem('card') ? () => {}
-: () => {
+: pipe(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  const clone = button.cloneNode(true) as HTMLButtonElement;
-  clone.onclick = pipe(
+  () => banButton.cloneNode(true) as HTMLButtonElement,
+  IO.chainFirst((clone) => pipe(
     getConfig.bannedUsers,
     IOO.fromIO,
     IOO.filter((x) => !x.includes(id)),
@@ -52,18 +29,21 @@ export default (
       RA.uniq(Str.Eq),
       RA.append(id),
     )),
-    IOO.chain((x) => IOO.fromIO(() => {
-      setConfig.bannedUsers(x);
-      defaultToast().fire({
+    IOO.chainIOK((x) => pipe(
+      () => setConfig.bannedUsers(x),
+      IO.apSecond(() => defaultToast().fire({
         title: `Added Banned User: ${id}`,
         icon: 'success',
-      });
-    })),
+      })),
+    )),
     IO.apSecond(() => {
       // eslint-disable-next-line no-param-reassign
       chat.style.display = 'none';
     }),
-  );
-
-  chat.querySelector('#content #message')?.append(clone);
-});
+    // eslint-disable-next-line no-param-reassign
+    (x) => () => { clone.onclick = x; },
+  )),
+  IO.chain((x) => () => chat.querySelector(
+    '#content #message',
+  )?.append(x)),
+));

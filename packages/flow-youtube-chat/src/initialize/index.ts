@@ -250,7 +250,7 @@ export default (): Promise<unknown> => pipe(
         tap((scale) => pipe(
           ctx.live.chatField.ele,
           IOO.fromOption,
-          IOO.chain((field) => IOO.fromIO(() => pipe(
+          IOO.chainIOK((field) => () => pipe(
             [
               pipe(
                 O.fromNullable(field.parentElement),
@@ -277,7 +277,7 @@ export default (): Promise<unknown> => pipe(
             ],
             RA.compact,
             IO.sequenceArray,
-          ))),
+          )),
         )()),
       ),
       pipe(
@@ -462,12 +462,13 @@ export default (): Promise<unknown> => pipe(
           [
             pipe(
               ctx.live.chatField.ele,
-              O.map((x) => () => {
-                setChatAppCss(x)();
-                c.chatMutationPair.observer.observe(x, {
+              O.map(flow(
+                IO.of,
+                IO.chainFirst(setChatAppCss),
+                IO.chain((x) => () => c.chatMutationPair.observer.observe(x, {
                   childList: true,
-                });
-              }),
+                })),
+              )),
             ),
             pipe(
               ctx.live.chatTicker.ele,
@@ -477,10 +478,16 @@ export default (): Promise<unknown> => pipe(
             ),
             pipe(
               ctx.live.player.ele,
-              O.map((x) => () => {
-                c.playerResizePair.observer.observe(x);
-                x.insertAdjacentElement('afterbegin', ctx.chatScreen);
-              }),
+              O.map(flow(
+                IO.of,
+                IO.chainFirst(
+                  (x) => () => c.playerResizePair.observer.observe(x),
+                ),
+                IO.chain((x) => () => x.insertAdjacentElement(
+                  'afterbegin',
+                  ctx.chatScreen,
+                )),
+              )),
             ),
             pipe(
               ctx.live.toggleChatBtnParent.ele,
@@ -488,12 +495,10 @@ export default (): Promise<unknown> => pipe(
             ),
             pipe(
               ctx.live.settingNextElement.ele,
-              O.map((x) => () => {
-                x.insertAdjacentElement(
-                  'beforebegin',
-                  ctx.wrappedSetting.node,
-                );
-              }),
+              O.map((x) => () => x.insertAdjacentElement(
+                'beforebegin',
+                ctx.wrappedSetting.node,
+              )),
             ),
           ],
           RA.compact,
