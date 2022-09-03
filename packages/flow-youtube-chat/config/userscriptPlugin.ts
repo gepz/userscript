@@ -43,7 +43,7 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
         (x = cdnSegment('astring')) => `${x.begin}cdn.jsdelivr.net/npm/${
           x.nameVer}/dist/${x.name}${x.end}`,
         (x = cdnSegment('jsep')) => `${x.begin}cdn.jsdelivr.net/npm/${
-          x.nameVer}/build/${x.name}${x.end}`,
+          x.nameVer}/dist/iife/${x.name}.iife${x.end}`,
         (x = cdnSegment('hash-it')) => `${x.begin}cdn.jsdelivr.net/npm/${
           x.nameVer}/dist/${x.name}${x.end}`,
         (x = cdnSegment('micro-memoize')) => `${x.begin}cdn.jsdelivr.net/npm/${
