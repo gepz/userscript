@@ -23,7 +23,9 @@ import {
 import * as Op from 'monocle-ts/Optional';
 
 import AppCommander from '@/AppCommander';
+import * as EOP from '@/ElementOpticPair';
 import SettingState from '@/SettingState';
+import chainOptionElse from '@/chainOptionElse';
 import ErrorType from '@/filter/type/ErrorType';
 import EvalType from '@/filter/type/EvalType';
 import FunctionType from '@/filter/type/FunctionType';
@@ -113,10 +115,18 @@ const updateTypeMap = (
   O.getOrElse(constant(typeMap)),
 );
 
+const optPairProp = <A, P extends keyof A>(prop: P) => <S>(
+  pair: EOP.ElementOpticPair<S, A>,
+): EOP.ElementOpticPair<S, A[P]> => ({
+  ele: pair.ele[prop],
+  opt: pipe(
+    pair.opt,
+    Op.prop(prop),
+  ),
+});
+
 type ExpNodeFunc = (
-  exp: Expression,
-) => (
-  opt: Op.Optional<Expression, Expression>,
+  pair: EOP.ElementOpticPair<Expression, Expression>,
 ) => (
   expectedType: EvalType,
 ) => (
@@ -129,9 +139,7 @@ R.Reader<SettingState, Result<EvalType | ErrorType>>
 >;
 
 const identifierNode = (
-  exp: Identifier,
-) => (
-  opt: Op.Optional<Expression, Identifier>,
+  pair: EOP.ElementOpticPair<Expression, Identifier>,
 ) => (
   context: RecordType,
 ) => (
@@ -142,10 +150,10 @@ const identifierNode = (
   c: AppCommander,
 ) => (
   s: SettingState,
-): Result<EvalType | ErrorType> => (exp.name in context.type ? pipe(
+): Result<EvalType | ErrorType> => (pair.ele.name in context.type ? pipe(
   {
-    type: context.type[exp.name],
-    nodes: [h<SettingState>('div', {}, text(exp.name))],
+    type: context.type[pair.ele.name],
+    nodes: [h<SettingState>('div', {}, text(pair.ele.name))],
   },
   I.bind(
     'typeMap',
@@ -154,9 +162,7 @@ const identifierNode = (
 ) : errorResult(m));
 
 const memberNode = (
-  exp: MemberExpression,
-) => (
-  opt: Op.Optional<Expression, MemberExpression>,
+  pair: EOP.ElementOpticPair<Expression, MemberExpression>,
 ) => (
   f: ExpNodeFunc,
 ) => (
@@ -168,14 +174,14 @@ const memberNode = (
 ) => (
   s:SettingState,
 ): Result<EvalType | ErrorType> => pipe(
-  f(exp.object)(pipe(
-    opt,
-    Op.prop('object'),
+  f(pipe(
+    pair,
+    optPairProp('object'),
   ))(unknownT)(typeRoot)(m)(c)(s),
   O.fromPredicate((x): x is Result<RecordType> => x.type.tag === 'record'),
-  O.map((x) => f(exp.property)(pipe(
-    opt,
-    Op.prop('property'),
+  O.map((x) => f(pipe(
+    pair,
+    optPairProp('property'),
   ))(unknownT)(x.type)(m)(c)(s)),
   O.map((x) => ({
     type: x.type,
@@ -207,9 +213,7 @@ const primitiveTupleUI = (
 */
 
 const callNode = (
-  exp: CallExpression,
-) => (
-  opt: Op.Optional<Expression, CallExpression>,
+  pair: EOP.ElementOpticPair<Expression, CallExpression>,
 ) => (
   f: ExpNodeFunc,
 ) => (
@@ -221,27 +225,29 @@ const callNode = (
 ) => (
   s:SettingState,
 ): Result<EvalType | ErrorType> => pipe(
-  f(exp.callee)(pipe(
-    opt,
-    Op.prop('callee'),
+  f(pipe(
+    pair,
+    optPairProp('callee'),
   ))(funcT([[O.some(unknownT)], O.some(expectedType)]))(
     typeRoot,
   )(m)(c)(s),
   O.fromPredicate((x): x is Result<FunctionType> => x.type.tag === 'func'),
   O.bindTo('calleeResult'),
   O.bind('argumentResult', (ctx) => pipe(
-    exp.argument,
-    O.map(f),
-    O.map((func) => pipe(
+    pair.ele.argument,
+    O.map((arg) => pipe(
       ctx.calleeResult.type.type,
       RTu.fst,
       ([x]) => x,
       O.getOrElse<EvalType>(constant(unknownT)),
-      (x) => (func(pipe(
-        opt,
-        Op.prop('argument'),
-        Op.some,
-      ))(x)(typeRoot)(ctx.calleeResult.typeMap)(c)(s)),
+      (x) => (f({
+        ele: arg,
+        opt: pipe(
+          pair.opt,
+          Op.prop('argument'),
+          Op.some,
+        ),
+      })(x)(typeRoot)(ctx.calleeResult.typeMap)(c)(s)),
     )),
     O.alt(constant(O.of<Result<EvalType | ErrorType>>(errorResult(m)))),
   )),
@@ -296,9 +302,7 @@ const expressionSetter = <T>(
 );
 
 const literalNode = (
-  exp: Literal,
-) => (
-  opt: Op.Optional<Expression, Literal>,
+  pair: EOP.ElementOpticPair<Expression, Literal>,
 ) => (
   expectedType: EvalType,
 ) => (
@@ -307,7 +311,7 @@ const literalNode = (
 AppCommander,
 Result<SimpleType>
 > => (c) => pipe(
-  opt,
+  pair.opt,
   Op.prop('value'),
   (value) => ({
     type: simpleT({
@@ -321,7 +325,7 @@ Result<SimpleType>
           'filterExp',
           expressionSetter(setEditString)(value)(Ed.of('')),
         )(c),
-      )(exp.value),
+      )(pair.ele.value),
     ],
   }),
   I.bind(
@@ -331,9 +335,7 @@ Result<SimpleType>
 );
 
 const literalArrayNode = (
-  exp: LiteralArray,
-) => (
-  opt: Op.Optional<Expression, LiteralArray>,
+  pair: EOP.ElementOpticPair<Expression, LiteralArray>,
 ) => (
   expectedType: EvalType,
 ) => (
@@ -342,7 +344,7 @@ const literalArrayNode = (
 AppCommander,
 Result<TupleType>
 > => (c) => pipe(
-  opt,
+  pair.opt,
   Op.prop('value'),
   (value) => ({
     type: listT(simpleT({
@@ -368,7 +370,7 @@ Result<TupleType>
               : setEditStrings,
           )(value)(Ed.of([''])),
         )(c),
-      )(exp.value),
+      )(pair.ele.value),
     ],
   }),
   I.bind(
@@ -378,9 +380,7 @@ Result<TupleType>
 );
 
 const arrayNode = (
-  exp: ArrayExpression,
-) => (
-  opt: Op.Optional<Expression, ArrayExpression>,
+  pair: EOP.ElementOpticPair<Expression, ArrayExpression>,
 ) => (
   nodeF: ExpNodeFunc,
 ) => (
@@ -391,15 +391,18 @@ const arrayNode = (
 AppCommander,
 R.Reader<SettingState, Result<EvalType | ErrorType>>
 > => pipe(
-  exp.elements,
-  RA.map(nodeF),
+  pair.ele.elements,
   RA.mapWithIndex(pipe(
-    opt,
+    pair.opt,
     Op.prop('elements'),
-    (elementsOpt) => (i: number, f) => pipe(
+    (elementsOpt) => (i: number, e) => pipe(
       elementsOpt,
       Op.component(i),
-      f,
+      (x): EOP.ElementOpticPair<Expression, Expression> => ({
+        ele: e,
+        opt: x,
+      }),
+      nodeF,
     ),
   )),
   RA.map(R.map(apply(typeRoot))),
@@ -522,9 +525,7 @@ R.Reader<SettingState, Result<EvalType | ErrorType>>
 );
 
 const expNode: ExpNodeFunc = (
-  exp,
-) => (
-  opt,
+  pair,
 ) => (
   expectedType,
 ) => (
@@ -538,35 +539,44 @@ const expNode: ExpNodeFunc = (
 ) => pipe(
   expectedType,
   replaceVarType(m),
-  (t) => (exp.type === 'Identifier' ? identifierNode(exp)(pipe(
-    opt,
-    Op.filter((x): x is Identifier => x.type === 'Identifier'),
-  ))(context)(t)(m)(c)(s)
-  : exp.type === 'MemberExpression' ? memberNode(exp)(pipe(
-    opt,
-    Op.filter((x): x is MemberExpression => x.type === 'MemberExpression'),
-  ))(expNode)(t)(m)(c)(s)
-  : exp.type === 'CallExpression' ? callNode(exp)(pipe(
-    opt,
-    Op.filter((x): x is CallExpression => x.type === 'CallExpression'),
-  ))(expNode)(t)(m)(c)(s)
-  : exp.type === 'Literal' ? literalNode(exp)(pipe(
-    opt,
-    Op.filter((x): x is Literal => x.type === 'Literal'),
-  ))(t)(m)(c)
-  : exp.type === 'LiteralArray' ? literalArrayNode(exp)(pipe(
-    opt,
-    Op.filter((x): x is LiteralArray => x.type === 'LiteralArray'),
-  ))(t)(m)(c)
-  : exp.type === 'ArrayExpression' ? arrayNode(exp)(pipe(
-    opt,
-    Op.filter((x): x is ArrayExpression => x.type === 'ArrayExpression'),
-  ))(expNode)(t)(m)(c)(s)
-  : {
-    type: unknownT,
-    nodes: [],
-    typeMap: m,
-  }),
+  (t) => pipe(
+    pair,
+    E.right,
+    chainOptionElse(flow(
+      EOP.filter((x): x is Identifier => x.type === 'Identifier'),
+      O.map((x) => identifierNode(x)(context)(t)(m)(c)(s)),
+    )),
+    chainOptionElse(flow(
+      EOP.filter(
+        (x): x is MemberExpression => x.type === 'MemberExpression',
+      ),
+      O.map((x) => memberNode(x)(expNode)(t)(m)(c)(s)),
+    )),
+    chainOptionElse(flow(
+      EOP.filter((x): x is CallExpression => x.type === 'CallExpression'),
+      O.map((x) => callNode(x)(expNode)(t)(m)(c)(s)),
+    )),
+    chainOptionElse(flow(
+      EOP.filter((x): x is Literal => x.type === 'Literal'),
+      O.map((x) => literalNode(x)(t)(m)(c)),
+    )),
+    chainOptionElse(flow(
+      EOP.filter((x): x is LiteralArray => x.type === 'LiteralArray'),
+      O.map((x) => literalArrayNode(x)(t)(m)(c)),
+    )),
+    chainOptionElse(flow(
+      EOP.filter((x): x is ArrayExpression => x.type === 'ArrayExpression'),
+      O.map((x) => arrayNode(x)(expNode)(t)(m)(c)(s)),
+    )),
+    E.map(() => (
+      {
+        type: unknownT,
+        nodes: [],
+        typeMap: m,
+      }
+    )),
+    E.toUnion,
+  ),
 );
 
 const filterPanel: R.Reader<
@@ -575,8 +585,11 @@ R.Reader<SettingState, readonly VNode<SettingState>[]>
 > = pipe(
   R.ask<SettingState>(),
   R.map((x) => x.filterExp),
+  R.map((x): EOP.ElementOpticPair<Expression, Expression> => ({
+    ele: x,
+    opt: Op.id(),
+  })),
   R.map(expNode),
-  R.map(apply(Op.id())),
   R.map(apply(unknownT)),
   R.map(apply(typeRoot)),
   R.map(apply({})),
