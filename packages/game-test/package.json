@@ -56,8 +56,7 @@
     "webpack-bundle-analyzer": "^4.6.1",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.10.1",
-    "webpack-merge": "^5.8.0",
-    "webpack-userscript": "^2.5.8"
+    "webpack-merge": "^5.8.0"
   },
   "license": "AGPL-3.0-or-later",
   "scripts": {
