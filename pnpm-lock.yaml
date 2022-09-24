@@ -417,7 +417,6 @@ importers:
       webpack-cli: ^4.10.0
       webpack-dev-server: ^4.10.1
       webpack-merge: ^5.8.0
-      webpack-userscript: ^2.5.8
     dependencies:
       '@stdlib/blas': 0.0.12
       '@types/node': 18.7.14
@@ -472,7 +471,111 @@ importers:
       webpack-cli: 4.10.0_sjobg5ds7hmgtxx5pqy6k6k7ei
       webpack-dev-server: 4.10.1_5v66e2inugklgvlh4huuavolfq
       webpack-merge: 5.8.0
-      webpack-userscript: 2.5.8_webpack@5.74.0
+
+  packages/image-to-text:
+    specifiers:
+      '@stdlib/blas': ^0.0.12
+      '@types/feather-icons': ^4.7.0
+      '@types/node': 18.7.14
+      '@types/resize-observer-browser': ^0.1.7
+      '@types/terser-webpack-plugin': ^5.2.0
+      '@types/webpack-bundle-analyzer': ^4.4.2
+      '@types/webpack-dev-server': ^4.7.2
+      '@typescript-eslint/eslint-plugin': ^5.36.1
+      '@typescript-eslint/parser': ^5.36.1
+      '@userscript/assert': workspace:^1.0.0
+      '@userscript/cdn-from-dependency': workspace:^1.0.0
+      '@userscript/eslint-config': workspace:^1.0.0
+      '@userscript/forward-to': workspace:^1.0.0
+      '@userscript/tap': workspace:^1.0.0
+      '@userscript/webpack-config': workspace:^1.0.0
+      autoprefixer: ^10.4.8
+      cross-env: ^7.0.3
+      css-loader: ^6.7.1
+      eslint: ^8.23.0
+      eslint-config-airbnb-base: ^15.0.0
+      eslint-config-airbnb-typescript: ^17.0.0
+      eslint-import-resolver-webpack: ^0.13.2
+      eslint-plugin-filenames: ^1.3.2
+      eslint-plugin-import: ^2.26.0
+      fast-deep-equal: ^3.1.3
+      fork-ts-checker-webpack-plugin: ^7.2.13
+      fp-ts: ^2.12.3
+      fp-ts-contrib: ^0.1.29
+      hash-it: ^5.0.2
+      html-webpack-plugin: ^5.5.0
+      hyperapp: ^2.0.22
+      micro-memoize: ^4.0.11
+      npm-run-all: ^4.1.5
+      postcss: ^8.4.16
+      postcss-loader: ^7.0.1
+      rxjs: ^7.5.6
+      style-loader: ^3.3.1
+      terser-webpack-plugin: ^5.3.6
+      ts-loader: ^9.3.1
+      ts-node: ^10.9.1
+      ts-toolbelt: ^9.6.0
+      tsconfig-paths: ^4.1.0
+      ttypescript: ^1.5.13
+      type-fest: ^2.19.0
+      typescript: ^4.9.0-dev.20220831
+      webpack: ^5.74.0
+      webpack-bundle-analyzer: ^4.6.1
+      webpack-cli: ^4.10.0
+      webpack-dev-server: ^4.10.1
+      webpack-merge: ^5.8.0
+    dependencies:
+      '@stdlib/blas': 0.0.12
+      '@types/node': 18.7.14
+      '@userscript/assert': link:../assert
+      '@userscript/forward-to': link:../forward-to
+      '@userscript/tap': link:../tap
+      fast-deep-equal: 3.1.3
+      fp-ts: 2.12.3
+      fp-ts-contrib: 0.1.29_fp-ts@2.12.3
+      hash-it: 5.0.2
+      hyperapp: 2.0.22
+      micro-memoize: 4.0.11
+      rxjs: 7.5.6
+      ts-toolbelt: 9.6.0
+      type-fest: 2.19.0
+    devDependencies:
+      '@types/feather-icons': 4.7.0
+      '@types/resize-observer-browser': 0.1.7
+      '@types/terser-webpack-plugin': 5.2.0_webpack@5.74.0
+      '@types/webpack-bundle-analyzer': 4.4.2_webpack-cli@4.10.0
+      '@types/webpack-dev-server': 4.7.2_5v66e2inugklgvlh4huuavolfq
+      '@typescript-eslint/eslint-plugin': 5.36.1_2ah3jo732rqiljlew5kde5iq2y
+      '@typescript-eslint/parser': 5.36.1_so4gd7z64zumxn5bg5zsiqvkaq
+      '@userscript/cdn-from-dependency': link:../cdn-from-dependency
+      '@userscript/eslint-config': link:../eslint-config
+      '@userscript/webpack-config': link:../webpack-config
+      autoprefixer: 10.4.8_postcss@8.4.16
+      cross-env: 7.0.3
+      css-loader: 6.7.1_webpack@5.74.0
+      eslint: 8.23.0
+      eslint-config-airbnb-base: 15.0.0_faomjyrlgqmwswvqymymzkxcqi
+      eslint-config-airbnb-typescript: 17.0.0_nwt6qmnsbmuicuvak5hafgwebq
+      eslint-import-resolver-webpack: 0.13.2_3aume32cesyv5xgnalbg7xjz2m
+      eslint-plugin-filenames: 1.3.2_eslint@8.23.0
+      eslint-plugin-import: 2.26.0_yimcai5netikpzn7mb3ahwbmf4
+      fork-ts-checker-webpack-plugin: 7.2.13_nleavgxpnq4iww4mbfuzfwddju
+      html-webpack-plugin: 5.5.0_webpack@5.74.0
+      npm-run-all: 4.1.5
+      postcss: 8.4.16
+      postcss-loader: 7.0.1_qjv4cptcpse3y5hrjkrbb7drda
+      style-loader: 3.3.1_webpack@5.74.0
+      terser-webpack-plugin: 5.3.6_webpack@5.74.0
+      ts-loader: 9.3.1_nleavgxpnq4iww4mbfuzfwddju
+      ts-node: 10.9.1_wgt57eswp5e2rya3qzkbbyq3oe
+      tsconfig-paths: 4.1.0
+      ttypescript: 1.5.13_3bcaxnk4di2it7caspkbx52744
+      typescript: 4.9.0-dev.20220831
+      webpack: 5.74.0_webpack-cli@4.10.0
+      webpack-bundle-analyzer: 4.6.1
+      webpack-cli: 4.10.0_sjobg5ds7hmgtxx5pqy6k6k7ei
+      webpack-dev-server: 4.10.1_5v66e2inugklgvlh4huuavolfq
+      webpack-merge: 5.8.0
 
   packages/tap:
     specifiers:
