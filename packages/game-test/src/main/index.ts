@@ -8,7 +8,7 @@ import * as PIXI from 'pixi.js';
 import defaultAppConfig from '@/defaultAppConfig';
 import gameTask from '@/gameTask';
 
-export default (): IO.IO<void> => pipe(
+export default pipe(
   () => new PIXI.Application(defaultAppConfig()),
   IO.chainFirst((x) => () => document.body.appendChild(x.view)),
   T.fromIO,
@@ -20,4 +20,4 @@ export default (): IO.IO<void> => pipe(
     x.sub.unsubscribe();
     x.app.destroy();
   }),
-);
+) satisfies IO.IO<void>;
