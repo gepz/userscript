@@ -254,18 +254,16 @@ export default (): Promise<unknown> => pipe(
             [
               pipe(
                 O.fromNullable(field.parentElement),
-                O.map((x) => () => {
-                  // eslint-disable-next-line no-param-reassign
-                  x.style.transformOrigin = `${scale >= 1 ? 'top'
-                    : 'bottom'} left`;
-
-                  // eslint-disable-next-line no-param-reassign
-                  x.style.transform = `scale(${scale})`;
-                  // eslint-disable-next-line no-param-reassign
-                  x.style.width = `${100 / scale}%`;
-                  // eslint-disable-next-line no-param-reassign
-                  x.style.height = `${field.offsetHeight}px`;
-                }),
+                O.map((x) => () => Object.assign<
+                CSSStyleDeclaration,
+                Partial<CSSStyleDeclaration>
+                >(x.style, {
+                  transformOrigin: `${scale >= 1 ? 'top'
+                  : 'bottom'} left`,
+                  transform: `scale(${scale})`,
+                  width: `${100 / scale}%`,
+                  height: `${100 / scale}%`,
+                })),
               ),
               pipe(
                 ctx.live.chatScroller.ele,
@@ -294,24 +292,23 @@ export default (): Promise<unknown> => pipe(
               pipe(
                 cs.flowX1,
                 startWith(ctx.getConfig.flowX1()),
-                tap((x) => {
-                  ctx.chatScreen.style.left = `${x * 100}%`;
-                  ctx.chatScreen.style.width = `${
-                    (ctx.getConfig.flowX2() - x) * 100
-                  }%`;
-                }),
+                tap((x) => Object.assign<
+                CSSStyleDeclaration,
+                Partial<CSSStyleDeclaration>
+                >(ctx.chatScreen.style, {
+                  left: `${x * 100}%`,
+                  width: `${(ctx.getConfig.flowX2() - x) * 100}%`,
+                })),
               ),
               pipe(
                 cs.flowX2,
-                tap((x) => {
-                  ctx.chatScreen.style.left = `${
-                    ctx.getConfig.flowX1() * 100
-                  }%`;
-
-                  ctx.chatScreen.style.width = `${
-                    (x - ctx.getConfig.flowX1()) * 100
-                  }%`;
-                }),
+                tap((x) => Object.assign<
+                CSSStyleDeclaration,
+                Partial<CSSStyleDeclaration>
+                >(ctx.chatScreen.style, {
+                  left: `${ctx.getConfig.flowX1() * 100}%`,
+                  width: `${(x - ctx.getConfig.flowX1()) * 100}%`,
+                })),
               ),
               cs.textOnly,
             ),
