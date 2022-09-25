@@ -20,4 +20,4 @@ export default pipe(
     x.sub.unsubscribe();
     x.app.destroy();
   }),
-) satisfies IO.IO<void>;
+) satisfies () => void;
