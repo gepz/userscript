@@ -79,4 +79,8 @@ module.exports = {
   'no-nested-ternary': ['off'],
   'max-params': ['error', 6],
   'max-statements-per-line': ['error'],
+  'import-newlines/enforce': [
+    'error',
+    0,
+  ],
 };
