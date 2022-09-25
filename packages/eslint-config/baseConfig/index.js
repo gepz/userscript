@@ -9,7 +9,10 @@ module.exports = {
     'airbnb-base',
     'plugin:consistent-default-export-name/fixed',
   ],
-  plugins: ['@typescript-eslint'],
+  plugins: [
+    '@typescript-eslint',
+    'import-newlines',
+  ],
   rules: {
     'import/no-extraneous-dependencies': [
       'error',
@@ -30,6 +33,7 @@ module.exports = {
     'no-multiple-empty-lines': [
       'error', {
         max: 1,
+        maxBOF: 0,
       },
     ],
     'func-names': ['error', 'as-needed'],
