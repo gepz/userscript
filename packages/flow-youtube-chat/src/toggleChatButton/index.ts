@@ -48,7 +48,7 @@ export default (setConfig: UserConfigSetter): RootComponent<State> => pipe(
               ...s,
               displayChats,
             },
-            [() => setConfig.displayChats(displayChats), undefined],
+            () => setConfig.displayChats(displayChats),
           ],
         ),
       }, [

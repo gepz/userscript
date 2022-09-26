@@ -86,26 +86,26 @@ export default (): Promise<unknown> => pipe(
   defaultUserConfig,
   flow(
     T.bindTo('userConfig'),
-    T.bind('configKeys', (x) => T.of(
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      Object.keys(x.userConfig) as (keyof UserConfig)[],
-    )),
-    T.bind('getConfig', (ctx): T.Task<UserConfigGetter> => T.of(pipe(
+    T.let('configKeys', (x) => Object.keys(
+      x.userConfig,
+    ) as (keyof UserConfig)[]),
+    T.let('getConfig', (ctx): UserConfigGetter => pipe(
       ctx.configKeys,
       RA.map((x) => [x, () => ctx.userConfig[x].val]),
       Object.fromEntries,
-    ))),
-    T.bind('mainState', (x): T.Task<MainState> => T.of({
+    )),
+    T.let('mainState', (x): MainState => ({
       chatPlaying: true,
       playerRect: new DOMRect(0, 0, 600, 400),
       getConfig: x.getConfig,
     })),
-    T.bind('configSubject', (ctx): T.Task<ConfigSubject> => T.of(pipe(
+    T.let('configSubject', (ctx): ConfigSubject => pipe(
       ctx.configKeys,
       RA.map((x) => [x, new Subject()]),
       Object.fromEntries,
-    ))),
-    T.bind('setConfigPlain', (ctx): T.Task<UserConfigSetter> => T.of(pipe(
+    )),
+    T.let('setConfigPlain', (ctx): UserConfigSetter => pipe(
       ctx.configKeys,
       RA.map((x) => [
         x,
@@ -118,11 +118,11 @@ export default (): Promise<unknown> => pipe(
         },
       ]),
       Object.fromEntries,
-    ))),
+    )),
     T.apS('channel', T.of(new BroadcastChannel<
     [keyof UserConfig, UserConfig[keyof UserConfig]['val']]
     >(scriptIdentifier))),
-    T.bind('setConfig', (ctx): T.Task<UserConfigSetter> => T.of(pipe(
+    T.let('setConfig', (ctx): UserConfigSetter => pipe(
       ctx.configKeys,
       RA.map((x) => [
         x,
@@ -137,23 +137,23 @@ export default (): Promise<unknown> => pipe(
         },
       ]),
       Object.fromEntries,
-    ))),
+    )),
   ),
   flow(
     T.apS('reinitSubject', T.fromIO(() => new Subject<void>())),
-    T.bind('reinitialize', (ctx) => T.of(() => {
+    T.let('reinitialize', (ctx) => () => {
       requestAnimationFrame(() => forwardTo(ctx.reinitSubject)());
-    })),
-    T.bind('toggleChatButtonInit', (ctx) => T.of({
+    }),
+    T.let('toggleChatButtonInit', (ctx) => ({
       lang: ctx.getConfig.lang(),
       displayChats: ctx.getConfig.displayChats(),
     })),
-    T.bind('wrappedToggleChatBtn', (ctx) => T.of(simpleWrap(
+    T.let('wrappedToggleChatBtn', (ctx) => simpleWrap(
       toggleChatButton(ctx.setConfig),
       ctx.toggleChatButtonInit,
-    ))),
+    )),
     T.apS('flowChats', T.of<FlowChat[]>([])),
-    T.bind('wrappedSetting', (ctx) => T.of(simpleWrap(
+    T.let('wrappedSetting', (ctx) => simpleWrap(
       settingsComponent({
         setConfig: ctx.setConfig,
         act: {
@@ -161,21 +161,21 @@ export default (): Promise<unknown> => pipe(
         },
       }),
       settingStateInit(ctx.getConfig),
-    ))),
-    T.bind('mainLog', (ctx) => T.of<Logger>(
-      (x) => () => ctx.wrappedSetting.dispatch((s): SettingState => ({
-        ...s,
-        eventLog: appendLog(s.eventLog)(x),
-      })),
     )),
-    T.bind('mixLog', (ctx) => T.of<Logger>(pipe(
+    T.let('mainLog', (ctx): Logger => (
+      x,
+    ) => () => ctx.wrappedSetting.dispatch((s): SettingState => ({
+      ...s,
+      eventLog: appendLog(s.eventLog)(x),
+    }))),
+    T.let('mixLog', (ctx): Logger => pipe(
       [
         ctx.mainLog,
         consoleLog,
       ],
       R.sequenceArray,
       R.map(IO.sequenceArray),
-    ))),
+    )),
   ),
   T.chainFirstIOK((ctx) => pipe(
     [
@@ -186,7 +186,7 @@ export default (): Promise<unknown> => pipe(
     RA.map(ctx.mainLog),
     IO.sequenceArray,
   )),
-  T.bind('cs', (ctx) => T.of<ConfigSubject>(pipe(
+  T.let('cs', (ctx): ConfigSubject => pipe(
     ctx.configSubject,
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     (x) => Object.entries(x) as {
@@ -216,13 +216,13 @@ export default (): Promise<unknown> => pipe(
       ),
     ]),
     Object.fromEntries,
-  ))),
-  T.apS('livePage', T.fromIO(livePageYt)),
-  T.bind('liveElementKeys', (ctx) => T.of(
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    Object.keys(ctx.livePage) as (keyof LivePage)[],
   )),
-  T.bind('live', (ctx) => T.of(pipe(
+  T.apS('livePage', T.fromIO(livePageYt)),
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  T.let('liveElementKeys', (ctx) => Object.keys(
+    ctx.livePage,
+  ) as (keyof LivePage)[]),
+  T.let('live', (ctx) => pipe(
     <T extends keyof LivePage>(key: T) => ({
       ele: O.none,
       read: ctx.livePage[key],
@@ -234,9 +234,9 @@ export default (): Promise<unknown> => pipe(
       RA.map((x) => [x, initState(x)]),
       Object.fromEntries,
     ),
-  ))),
+  )),
   T.apS('chatScreen', T.fromIO(createChatScreen)),
-  T.bind('config$', (ctx) => pipe(
+  T.let('config$', (ctx) => pipe(
     ctx.cs,
     (cs) => defer(() => merge(
       merge(
@@ -406,7 +406,6 @@ export default (): Promise<unknown> => pipe(
         tap(() => ctx.setConfig.filterExp(defaultFilter(ctx.getConfig))),
       ),
     )),
-    T.of,
   )),
   T.bind('all$', (ctx) => pipe(
     {

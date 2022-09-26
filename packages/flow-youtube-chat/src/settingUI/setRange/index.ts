@@ -28,7 +28,7 @@ export default (
   {
     a: Ed.value(vA),
   },
-  I.bind('b', ({
+  I.let('b', ({
     a,
   }) => bFn(a)(Ed.value(s[keyB]))),
   ({

@@ -7,11 +7,11 @@ import * as RA from 'fp-ts/ReadonlyArray';
 import * as B from 'fp-ts/boolean';
 import {
   flow,
+  flip,
 } from 'fp-ts/function';
 import * as Str from 'fp-ts/string';
 
 import DisplayText from '@/DisplayText';
-import flip from '@/flip';
 
 const inText = (text: DisplayText) => (
   x: string,

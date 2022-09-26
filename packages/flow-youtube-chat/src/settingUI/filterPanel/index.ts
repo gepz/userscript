@@ -155,7 +155,7 @@ const identifierNode = (
     type: context.type[pair.ele.name],
     nodes: [h<SettingState>('div', {}, text(pair.ele.name))],
   },
-  I.bind(
+  I.let(
     'typeMap',
     (x) => updateTypeMap(expectedType)(x.type)(m),
   ),
@@ -274,7 +274,7 @@ const callNode = (
       returnT(ctx.calleeResult.type),
       O.getOrElse<EvalType | ErrorType>(constant(errorT)),
     )),
-    I.bind(
+    I.let(
       'typeMap',
       (x) => updateTypeMap(expectedType)(x.type)(ctx.argumentResult.typeMap),
     ),
@@ -328,7 +328,7 @@ Result<SimpleType>
       )(pair.ele.value),
     ],
   }),
-  I.bind(
+  I.let(
     'typeMap',
     (ctx) => updateTypeMap(expectedType)(ctx.type)(m),
   ),
@@ -373,7 +373,7 @@ Result<TupleType>
       )(pair.ele.value),
     ],
   }),
-  I.bind(
+  I.let(
     'typeMap',
     (ctx) => updateTypeMap(expectedType)(ctx.type)(m),
   ),
