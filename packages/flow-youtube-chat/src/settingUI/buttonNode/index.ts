@@ -1,4 +1,5 @@
 import * as R from 'fp-ts/Reader';
+import * as T from 'fp-ts/Task';
 import {
   h, text, VNode,
 } from 'hyperapp';
@@ -10,13 +11,13 @@ import {
   TypeKey,
 } from '@/TypeKey';
 import getText from '@/getText';
-import doAct from '@/settingUI/doAct';
+import action from '@/settingUI/action';
 
 export default (
   label: TextKey
   & TypeKey<
-  typeof doAct,
-  R.Reader<AppCommander, R.Reader<SettingState, Promise<void>>>
+  typeof action,
+  R.Reader<AppCommander, R.Reader<SettingState, T.Task<void>>>
   >,
 ): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
   c,
@@ -24,6 +25,6 @@ export default (
   type: 'button',
   onclick: (s) => [
     s,
-    [() => doAct[label](c)(s), undefined],
+    action[label](c)(s),
   ],
 }, text(getText(label)(state.lang)));

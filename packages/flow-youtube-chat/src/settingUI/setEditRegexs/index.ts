@@ -24,7 +24,7 @@ export default (
   Str.split(/\r\n|\n/),
   RA.filter(P.not(Str.isEmpty)),
   I.bindTo('regexs'),
-  I.bind('errors', ({
+  I.let('errors', ({
     regexs,
   }) => pipe(
     regexs,
