@@ -2,7 +2,7 @@ import * as O from 'fp-ts/Option';
 import {
   contramap,
 } from 'fp-ts/Ord';
-import * as RA from 'fp-ts/ReadOnlyArray';
+import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
 } from 'fp-ts/function';
