@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased:
 
+## 1.15.10:
+### Fixed
+- Fix a UI bug caused by Youtube UI update
+
 ## 1.15.9:
 ### Fixed
 - Fix how the script retries when errored.
