@@ -5,7 +5,6 @@ import {
 
 import LivePage from '@/LivePage';
 
-// ページの要素関連
 const chatApp = (): O.Option<Element> => pipe(
   O.fromNullable(
     document.querySelector<HTMLIFrameElement>('#chatframe'),
@@ -25,17 +24,21 @@ export default (): LivePage => ({
   toggleChatBtnParent: () => O.fromNullable(
     document.querySelector('.ytp-right-controls'),
   ),
-  settingNextElement: () => O.fromNullable(
-    document.querySelector(
-      '#menu-container .dropdown-trigger.ytd-menu-renderer',
-    ),
+  settingNextElement: () => pipe(
+    document.querySelector<HTMLElement>('#menu-container'),
+    O.fromNullable,
+    O.filter((x) => x.offsetParent !== null),
+    O.chainNullableK((x) => x.querySelector(
+      '.dropdown-trigger.ytd-menu-renderer',
+    )),
+    O.alt(() => O.fromNullable(document.querySelector(
+      '#top-row .dropdown-trigger.ytd-menu-renderer',
+    ))),
   ),
   player: () => O.fromNullable(document.querySelector('#movie_player')),
-  video: () => O.fromNullable(
-    document.querySelector<HTMLVideoElement>(
-      'video.video-stream.html5-main-video',
-    ),
-  ),
+  video: () => O.fromNullable(document.querySelector<HTMLVideoElement>(
+    'video.video-stream.html5-main-video',
+  )),
   chatField: () => pipe(
     chatApp(),
     O.chainNullableK((x) => x.querySelector<HTMLElement>(
