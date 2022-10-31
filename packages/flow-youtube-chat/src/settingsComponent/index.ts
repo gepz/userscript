@@ -17,7 +17,8 @@ export default (
     tag,
     view: (s) => h(tag, {
       style: {
-        display: 'contents',
+        display: 'flex',
+        position: 'relative',
       },
     }, [
       panel(s),
