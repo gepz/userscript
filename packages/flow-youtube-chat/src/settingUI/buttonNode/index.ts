@@ -1,7 +1,9 @@
 import * as R from 'fp-ts/Reader';
 import * as T from 'fp-ts/Task';
 import {
-  h, text, VNode,
+  h,
+  text,
+  VNode,
 } from 'hyperapp';
 
 import AppCommander from '@/AppCommander';

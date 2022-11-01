@@ -21,6 +21,10 @@ import {
   flow,
 } from 'fp-ts/function';
 import {
+  Dispatch,
+  Dispatchable,
+} from 'hyperapp';
+import {
   asyncScheduler,
   EMPTY,
   fromEvent,
@@ -73,8 +77,10 @@ import setChatPlayState from '@/setChatPlayState';
 import setSettingFromConfig from '@/setSettingFromConfig';
 import settingStateInit from '@/settingStateInit';
 import settingsComponent from '@/settingsComponent';
+import settingsPanelSize from '@/settingsPanelSize';
 import simpleWrap from '@/simpleWrap';
 import toggleChatButton from '@/toggleChatButton';
+import toggleSettingsPanelComponent from '@/toggleSettingsPanelComponent';
 import videoToggleStream from '@/videoToggleStream';
 
 type LiveElementState<T> = T extends () => infer R ? {
@@ -140,31 +146,77 @@ export default (): Promise<unknown> => pipe(
     )),
   ),
   flow(
-    T.apS('reinitSubject', T.fromIO(() => new Subject<void>())),
-    T.let('reinitialize', (ctx) => () => {
-      requestAnimationFrame(() => forwardTo(ctx.reinitSubject)());
-    }),
-    T.let('toggleChatButtonInit', (ctx) => ({
-      lang: ctx.getConfig.lang(),
-      displayChats: ctx.getConfig.displayChats(),
-    })),
-    T.let('wrappedToggleChatBtn', (ctx) => simpleWrap(
-      toggleChatButton(ctx.setConfig),
-      ctx.toggleChatButtonInit,
-    )),
-    T.apS('flowChats', T.of<FlowChat[]>([])),
-    T.let('wrappedSetting', (ctx) => simpleWrap(
-      settingsComponent({
-        setConfig: ctx.setConfig,
-        act: {
-          clearFlowChats: async () => removeOldChats(0)(ctx.flowChats)(),
-        },
+    flow(
+      T.apS('reinitSubject', T.fromIO(() => new Subject<void>())),
+      T.let('reinitialize', (ctx) => () => {
+        requestAnimationFrame(() => forwardTo(ctx.reinitSubject)());
       }),
-      settingStateInit(ctx.getConfig),
+      T.let('toggleChatButtonInit', (ctx) => ({
+        lang: ctx.getConfig.lang(),
+        displayChats: ctx.getConfig.displayChats(),
+      })),
+      T.let('wrappedToggleChat', (ctx) => simpleWrap(
+        toggleChatButton(ctx.setConfig),
+        ctx.toggleChatButtonInit,
+      )()),
+      T.apS('flowChats', T.of<FlowChat[]>([])),
+      T.apS('settingSyncListeningApps', T.of<Dispatch<SettingState>[]>([])),
+      T.let('syncSettingState', (ctx) => (
+        dispatchable: Dispatchable<SettingState>,
+      ) => pipe(
+        ctx.settingSyncListeningApps,
+        RA.map((x) => () => x(dispatchable)),
+        IO.sequenceArray,
+      )),
+      T.let('wrappedSettings', (ctx) => simpleWrap(
+        settingsComponent({
+          setConfig: ctx.setConfig,
+          act: {
+            clearFlowChats: T.fromIO(removeOldChats(0)(ctx.flowChats)),
+          },
+        }),
+        settingStateInit(ctx.getConfig),
+      )()),
+      T.let('wrappedToggleSettings', (ctx) => simpleWrap(
+        toggleSettingsPanelComponent(ctx.syncSettingState),
+        settingStateInit(ctx.getConfig),
+      )()),
+    ),
+    T.chainFirstIOK((ctx) => () => ctx.settingSyncListeningApps.push(
+      ctx.wrappedSettings.dispatch,
+      ctx.wrappedToggleSettings.dispatch,
+    )),
+    T.apS('lastSettingsPosition', T.of({
+      top: 0,
+      left: 0,
+    })),
+    T.let('getNewSettingsPosition', (ctx) => () => pipe(
+      ctx.wrappedToggleSettings.node.getBoundingClientRect(),
+      (x) => ({
+        top: x.top + window.scrollY - settingsPanelSize.height,
+        left: x.right + window.scrollX - settingsPanelSize.width,
+      }),
+      O.fromPredicate((x) => x.top !== ctx.lastSettingsPosition.top
+      || x.left !== ctx.lastSettingsPosition.left),
+    )),
+    T.let('updateSettingsPosition', (ctx) => pipe(
+      ctx.getNewSettingsPosition,
+      IOO.chainFirstIOK((x) => () => Object.assign<
+      CSSStyleDeclaration,
+      Partial<CSSStyleDeclaration>
+      >(ctx.wrappedSettings.node.style, {
+        top: `${x.top}px`,
+        left: `${x.left}px`,
+      })),
+      IOO.chainFirstIOK((x) => () => {
+        ctx.lastSettingsPosition.top = x.top;
+        ctx.lastSettingsPosition.left = x.left;
+      }),
+      IO.chain(() => () => {}),
     )),
     T.let('mainLog', (ctx): Logger => (
       x,
-    ) => () => ctx.wrappedSetting.dispatch((s): SettingState => ({
+    ) => () => ctx.wrappedSettings.dispatch((s): SettingState => ({
       ...s,
       eventLog: appendLog(s.eventLog)(x),
     }))),
@@ -203,13 +255,13 @@ export default (): Promise<unknown> => pipe(
             [k]: x,
           }),
           IO.of,
-          IO.chainFirst(() => () => ctx.wrappedSetting.dispatch(
+          IO.chainFirst(() => () => ctx.wrappedSettings.dispatch(
             // eslint-disable-next-line max-len
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, max-len
             setSettingFromConfig(k)(v as UserConfig[keyof UserConfigGetter]['val']),
           )),
           IO.chain((x) => (k in ctx.toggleChatButtonInit
-            ? () => ctx.wrappedToggleChatBtn.dispatch(x)
+            ? () => ctx.wrappedToggleChat.dispatch(x)
             : () => {})),
           (x) => () => requestAnimationFrame(x),
         )()),
@@ -389,7 +441,13 @@ export default (): Promise<unknown> => pipe(
           IO.sequenceArray,
         )()),
       ),
-      cs.lang,
+      pipe(
+        cs.lang,
+        tap((lang) => ctx.syncSettingState((x) => ({
+          ...x,
+          lang,
+        }))()),
+      ),
       cs.maxChatLength,
       cs.simplifyChatField,
       cs.createBanButton,
@@ -413,12 +471,15 @@ export default (): Promise<unknown> => pipe(
       initDelay: 100,
       urlDelay: 1700,
       changeDetectInterval: 700,
+      bodyResizeDetectInterval: 300,
+      errorRetryInterval: 5000,
     },
     IO.of,
     IO.apS('css', mainCss),
     IO.apS('documentMutationPair', observePair(MutationObserver)),
     IO.apS('chatMutationPair', observePair(MutationObserver)),
     IO.apS('playerResizePair', observePair(ResizeObserver)),
+    IO.apS('bodyResizePair', observePair(ResizeObserver)),
     IO.map((c) => pipe(
       ctx.reinitSubject,
       observeOn(asyncScheduler),
@@ -426,15 +487,19 @@ export default (): Promise<unknown> => pipe(
       tap(ctx.mixLog(['Init'])),
       switchMap(() => pipe(
         interval(c.changeDetectInterval),
+        tap(ctx.updateSettingsPosition),
         filter(() => pipe(
           ctx.liveElementKeys,
           RA.map((key) => pipe(
             ctx.live[key].read(),
             O.fromPredicate((newEle) => !c.eq(ctx.live[key].ele, newEle)),
-            O.map((x) => () => {
-              ctx.live[key].ele = x;
-            }),
-            O.map(IO.apSecond(ctx.mixLog([`${key} changed`]))),
+            O.map(flow(
+              IO.of,
+              IO.chainFirst((x) => () => {
+                ctx.live[key].ele = x;
+              }),
+              IO.apSecond(ctx.mixLog([`${key} changed`])),
+            )),
           )),
           RA.compact,
           IO.sequenceArray,
@@ -453,6 +518,7 @@ export default (): Promise<unknown> => pipe(
 
         c.chatMutationPair.observer.disconnect();
         c.playerResizePair.observer.disconnect();
+        c.bodyResizePair.observer.disconnect();
         document.head.append(c.css);
         pipe(
           [
@@ -487,14 +553,26 @@ export default (): Promise<unknown> => pipe(
             ),
             pipe(
               ctx.live.toggleChatBtnParent.ele,
-              O.map((x) => () => x.append(ctx.wrappedToggleChatBtn.node)),
+              O.map((x) => () => x.append(ctx.wrappedToggleChat.node)),
             ),
             pipe(
-              ctx.live.settingNextElement.ele,
+              ctx.live.settingsToggleNextElement.ele,
               O.map((x) => () => x.insertAdjacentElement(
                 'beforebegin',
-                ctx.wrappedSetting.node,
+                ctx.wrappedToggleSettings.node,
               )),
+            ),
+            pipe(
+              ctx.live.settingsContainer.ele,
+              O.map(flow(
+                IO.of,
+                IO.chainFirst((x) => () => x.append(ctx.wrappedSettings.node)),
+              )),
+            ),
+            pipe(
+              document.body,
+              O.fromNullable,
+              O.map((x) => () => c.bodyResizePair.observer.observe(x)),
             ),
           ],
           RA.compact,
@@ -609,13 +687,22 @@ export default (): Promise<unknown> => pipe(
             ctx.mainLog,
           )),
         ),
+        pipe(
+          c.bodyResizePair.subject,
+          throttleTime(c.bodyResizeDetectInterval, undefined, {
+            leading: true,
+            trailing: true,
+          }),
+          startWith([]),
+          tap(ctx.updateSettingsPosition),
+        ),
       )),
       retry({
         delay: (e) => pipe(
           e,
           of,
           tap(ctx.mixLog(['Errored', e])),
-          delay(5000),
+          delay(c.errorRetryInterval),
           tap(ctx.reinitialize),
         ),
       }),

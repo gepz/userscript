@@ -8,6 +8,7 @@ export default interface LivePage {
   video: IO.IO<O.Option<HTMLVideoElement>>,
   player: IO.IO<O.Option<Element>>,
   toggleChatBtnParent: IO.IO<O.Option<Element>>,
-  settingNextElement: IO.IO<O.Option<Element>>,
+  settingsToggleNextElement: IO.IO<O.Option<Element>>,
+  settingsContainer: IO.IO<O.Option<Element>>,
   offlineSlate : IO.IO<O.Option<Element>>,
 }
