@@ -191,12 +191,18 @@ export default (): Promise<unknown> => pipe(
       left: 0,
     })),
     T.let('getNewSettingsPosition', (ctx) => () => pipe(
-      ctx.wrappedToggleSettings.node.getBoundingClientRect(),
-      (x) => ({
+      ctx.wrappedToggleSettings.node,
+      O.fromPredicate((x) => x.offsetParent !== null),
+      O.map((x) => x.getBoundingClientRect()),
+      O.map((x) => ({
         top: x.top + window.scrollY - settingsPanelSize.height,
         left: x.right + window.scrollX - settingsPanelSize.width,
-      }),
-      O.fromPredicate((x) => x.top !== ctx.lastSettingsPosition.top
+      })),
+      O.alt(() => O.some({
+        top: -settingsPanelSize.height,
+        left: -settingsPanelSize.width,
+      })),
+      O.filter((x) => x.top !== ctx.lastSettingsPosition.top
       || x.left !== ctx.lastSettingsPosition.left),
     )),
     T.let('updateSettingsPosition', (ctx) => pipe(
@@ -663,6 +669,7 @@ export default (): Promise<unknown> => pipe(
           map(() => window.location.href),
           distinctUntilChanged(),
           skip(1),
+          tap(ctx.updateSettingsPosition),
           tap((x) => {
             ctx.mixLog(['URL Changed', x])();
             removeOldChats(0)(ctx.flowChats)();
