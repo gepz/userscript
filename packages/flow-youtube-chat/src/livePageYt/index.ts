@@ -24,7 +24,7 @@ export default (): LivePage => ({
   toggleChatBtnParent: () => O.fromNullable(
     document.querySelector('.ytp-right-controls'),
   ),
-  settingNextElement: () => pipe(
+  settingsToggleNextElement: () => pipe(
     document.querySelector<HTMLElement>('#menu-container'),
     O.fromNullable,
     O.filter((x) => x.offsetParent !== null),
@@ -35,6 +35,7 @@ export default (): LivePage => ({
       '#top-row .dropdown-trigger.ytd-menu-renderer',
     ))),
   ),
+  settingsContainer: () => O.fromNullable(document.body),
   player: () => O.fromNullable(document.querySelector('#movie_player')),
   video: () => O.fromNullable(document.querySelector<HTMLVideoElement>(
     'video.video-stream.html5-main-video',
