@@ -160,11 +160,11 @@ export default (): Promise<unknown> => pipe(
         ctx.toggleChatButtonInit,
       )()),
       T.apS('flowChats', T.of<FlowChat[]>([])),
-      T.apS('settingSyncListeningApps', T.of<Dispatch<SettingState>[]>([])),
-      T.let('syncSettingState', (ctx) => (
+      T.apS('settingUpdateApps', T.of<Dispatch<SettingState>[]>([])),
+      T.let('updateSettingState', (ctx) => (
         dispatchable: Dispatchable<SettingState>,
       ) => pipe(
-        ctx.settingSyncListeningApps,
+        ctx.settingUpdateApps,
         RA.map((x) => () => x(dispatchable)),
         IO.sequenceArray,
       )),
@@ -178,11 +178,11 @@ export default (): Promise<unknown> => pipe(
         settingStateInit(ctx.getConfig),
       )()),
       T.let('wrappedToggleSettings', (ctx) => simpleWrap(
-        toggleSettingsPanelComponent(ctx.syncSettingState),
+        toggleSettingsPanelComponent(ctx.updateSettingState),
         settingStateInit(ctx.getConfig),
       )()),
     ),
-    T.chainFirstIOK((ctx) => () => ctx.settingSyncListeningApps.push(
+    T.chainFirstIOK((ctx) => () => ctx.settingUpdateApps.push(
       ctx.wrappedSettings.dispatch,
       ctx.wrappedToggleSettings.dispatch,
     )),
@@ -216,7 +216,7 @@ export default (): Promise<unknown> => pipe(
     )),
     T.let('mainLog', (ctx): Logger => (
       x,
-    ) => () => ctx.wrappedSettings.dispatch((s): SettingState => ({
+    ) => ctx.updateSettingState((s): SettingState => ({
       ...s,
       eventLog: appendLog(s.eventLog)(x),
     }))),
@@ -255,7 +255,7 @@ export default (): Promise<unknown> => pipe(
             [k]: x,
           }),
           IO.of,
-          IO.chainFirst(() => () => ctx.wrappedSettings.dispatch(
+          IO.chainFirst(() => ctx.updateSettingState(
             // eslint-disable-next-line max-len
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, max-len
             setSettingFromConfig(k)(v as UserConfig[keyof UserConfigGetter]['val']),
@@ -443,7 +443,7 @@ export default (): Promise<unknown> => pipe(
       ),
       pipe(
         cs.lang,
-        tap((lang) => ctx.syncSettingState((x) => ({
+        tap((lang) => ctx.updateSettingState((x) => ({
           ...x,
           lang,
         }))()),
