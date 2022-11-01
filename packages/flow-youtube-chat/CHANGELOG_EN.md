@@ -4,10 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased:
+- Nothing
+
+## 1.15.11:
+### Fixed
+- Fix a UI bug caused by Youtube UI update
 
 ## 1.15.10:
 ### Fixed
-- Fix a UI bug caused by Youtube UI update
+- **(Failed)** Fix a UI bug caused by Youtube UI update
 
 ## 1.15.9:
 ### Fixed

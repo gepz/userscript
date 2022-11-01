@@ -4,10 +4,15 @@
 フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に基づいています。
 
 ## Unreleased (未発表)
+- なし
+
+## 1.15.11
+### 修正
+- Youtube UIアップデートによるUIの不具合を修正。
 
 ## 1.15.10
 ### 修正
-- Youtube UIアップデートによるUIの不具合を修正。
+- **(失敗)** Youtube UIアップデートによるUIの不具合を修正。
 
 ## 1.15.9
 ### 修正
