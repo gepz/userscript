@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Unreleased:
 - Nothing
 
+## 1.15.12:
+### Fixed
+- Fix an event logging bug
+
 ## 1.15.11:
 ### Fixed
 - Fix a UI bug caused by Youtube UI update
