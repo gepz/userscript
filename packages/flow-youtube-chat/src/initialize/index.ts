@@ -218,7 +218,7 @@ export default (): Promise<unknown> => pipe(
         ctx.lastSettingsPosition.top = x.top;
         ctx.lastSettingsPosition.left = x.left;
       }),
-      IO.chain(() => () => {}),
+      IO.apSecond(() => {}),
     )),
     T.let('mainLog', (ctx): Logger => (
       x,
@@ -308,7 +308,7 @@ export default (): Promise<unknown> => pipe(
         tap((scale) => pipe(
           ctx.live.chatField.ele,
           IOO.fromOption,
-          IOO.chainIOK((field) => () => pipe(
+          IOO.chainIOK((field) => pipe(
             [
               pipe(
                 O.fromNullable(field.parentElement),
@@ -551,10 +551,7 @@ export default (): Promise<unknown> => pipe(
                 IO.chainFirst(
                   (x) => () => c.playerResizePair.observer.observe(x),
                 ),
-                IO.chain((x) => () => x.insertAdjacentElement(
-                  'afterbegin',
-                  ctx.chatScreen,
-                )),
+                IO.chain((x) => () => x.prepend(ctx.chatScreen)),
               )),
             ),
             pipe(
@@ -563,10 +560,7 @@ export default (): Promise<unknown> => pipe(
             ),
             pipe(
               ctx.live.settingsToggleNextElement.ele,
-              O.map((x) => () => x.insertAdjacentElement(
-                'beforebegin',
-                ctx.wrappedToggleSettings.node,
-              )),
+              O.map((x) => () => x.before(ctx.wrappedToggleSettings.node)),
             ),
             pipe(
               ctx.live.settingsContainer.ele,
