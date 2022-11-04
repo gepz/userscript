@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Unreleased:
 - Nothing
 
+## 1.15.14
+### Fixed
+- Fix chat window scaling function.
+
 ## 1.15.13
 ### Fixed
 - Stop the settings panel from showing on pages where it shouldn't.
