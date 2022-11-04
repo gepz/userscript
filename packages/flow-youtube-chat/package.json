@@ -1,7 +1,7 @@
 {
   "name": "@userscript/flow-youtube-chat",
   "description": "flow-youtube-chat",
-  "version": "1.15.13",
+  "version": "1.15.14",
   "packageManager": "pnpm@7.9.5",
   "dependencies": {
     "@effect-ts/core": "^0.60.3",
