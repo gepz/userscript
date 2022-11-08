@@ -4,7 +4,6 @@
   "version": "1.15.14",
   "dependencies": {
     "@effect-ts/core": "^0.60.3",
-    "@types/superfine": "^7.0.2",
     "@userscript/assert": "workspace:^1.0.0",
     "@userscript/forward-to": "workspace:^1.0.0",
     "@userscript/tap": "workspace:^1.0.0",
@@ -26,7 +25,6 @@
     "mithril": "^2.2.2",
     "monocle-ts": "^2.3.13",
     "rxjs": "^7.5.6",
-    "superfine": "^8.2.0",
     "sweetalert2": "^11.4.29",
     "ts-toolbelt": "^9.6.0",
     "type-fest": "^2.19.0",

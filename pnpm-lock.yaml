@@ -198,7 +198,6 @@ importers:
       '@types/mithril': ^2.0.11
       '@types/node': 18.7.20
       '@types/resize-observer-browser': ^0.1.7
-      '@types/superfine': ^7.0.2
       '@types/terser-webpack-plugin': ^5.2.0
       '@types/webpack-bundle-analyzer': ^4.4.2
       '@types/webpack-dev-server': ^4.7.2
@@ -243,7 +242,6 @@ importers:
       prettier: ^2.7.1
       rxjs: ^7.5.6
       style-loader: ^3.3.1
-      superfine: ^8.2.0
       sweetalert2: ^11.4.29
       terser-webpack-plugin: ^5.3.6
       ts-loader: ^9.4.1
@@ -262,7 +260,6 @@ importers:
       webpack-userscript: ^2.5.8
     dependencies:
       '@effect-ts/core': 0.60.3
-      '@types/superfine': 7.0.2
       '@userscript/assert': link:../assert
       '@userscript/forward-to': link:../forward-to
       '@userscript/tap': link:../tap
@@ -284,7 +281,6 @@ importers:
       mithril: 2.2.2
       monocle-ts: 2.3.13_fp-ts@2.13.1
       rxjs: 7.5.6
-      superfine: 8.2.0
       sweetalert2: 11.4.29
       ts-toolbelt: 9.6.0
       type-fest: 2.19.0
@@ -1961,10 +1957,6 @@ packages:
     resolution: {integrity: sha512-f0KEEe05NvUnat+boPTZ0dgaLZ4SfSouXUgv5noUiefG2ajgKjmETo9ZJyuqsl7dfl2aHlLJUiki6B4ZYldiiw==}
     dependencies:
       '@types/node': 18.7.20
-
-  /@types/superfine/7.0.2:
-    resolution: {integrity: sha512-QkU9/EO0EhgmLp1BumX4EuZybdEuHn/n3W2PETDXWOTSQs96Hcv9b5Gps/Po1ql0Mc4mTRKrEy212LI52jQc4A==}
-    dev: false
 
   /@types/terser-webpack-plugin/5.2.0_webpack@5.74.0:
     resolution: {integrity: sha512-iHDR2pRfFjGyDqCALX2tgUgFtGoQf2AJhKpC2XD1IMBQVJF2bny6WChGRDKj9eaZJl4F2RmvBhxJNtVPj7aTRw==}
@@ -5904,10 +5896,6 @@ packages:
     dependencies:
       webpack: 5.74.0_webpack-cli@4.10.0
     dev: true
-
-  /superfine/8.2.0:
-    resolution: {integrity: sha512-YnmDEesO2COpGEmWIYJ6StZVdJqTiRU4ur+8WwHRLOeU9Rad2ogvd3cZzuX+QXxshWWqP2HE+jWI5wACqTGBjg==}
-    dev: false
 
   /supports-color/5.5.0:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
