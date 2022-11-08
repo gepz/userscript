@@ -20,7 +20,7 @@ const chatApp = (): O.Option<Element> => pipe(
   )),
 );
 
-export default (): LivePage => ({
+export default ({
   toggleChatBtnParent: () => O.fromNullable(
     document.querySelector('.ytp-right-controls'),
   ),
@@ -63,4 +63,4 @@ export default (): LivePage => ({
       '.ytp-offline-slate',
     ),
   ),
-});
+}) satisfies LivePage;
