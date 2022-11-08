@@ -91,11 +91,11 @@ type LiveElementState<T> = T extends () => infer R ? {
 export default (): Promise<unknown> => pipe(
   defaultUserConfig,
   flow(
-    T.bindTo('userConfig'),
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    T.let('configKeys', (x) => Object.keys(
-      x.userConfig,
-    ) as (keyof UserConfig)[]),
+    T.map((x) => ({
+      userConfig: x,
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      configKeys: Object.keys(x) as (keyof UserConfig)[],
+    })),
     T.let('getConfig', (ctx): UserConfigGetter => pipe(
       ctx.configKeys,
       RA.map((x) => [x, () => ctx.userConfig[x].val]),
@@ -275,7 +275,7 @@ export default (): Promise<unknown> => pipe(
     ]),
     Object.fromEntries,
   )),
-  T.apS('livePage', T.fromIO(livePageYt)),
+  T.apS('livePage', T.of(livePageYt)),
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   T.let('liveElementKeys', (ctx) => Object.keys(
     ctx.livePage,
@@ -663,12 +663,12 @@ export default (): Promise<unknown> => pipe(
           map(() => window.location.href),
           distinctUntilChanged(),
           skip(1),
-          tap(ctx.updateSettingsPosition),
-          tap((x) => {
-            ctx.mixLog(['URL Changed', x])();
-            removeOldChats(0)(ctx.flowChats)();
-            ctx.mixLog([`Wait for ${c.urlDelay}ms...`])();
-          }),
+          tap((x) => IO.sequenceArray([
+            ctx.updateSettingsPosition,
+            ctx.mixLog(['URL Changed', x]),
+            removeOldChats(0)(ctx.flowChats),
+            ctx.mixLog([`Wait for ${c.urlDelay}ms...`]),
+          ])()),
           delay(c.urlDelay),
           tap(ctx.reinitialize),
         ),
