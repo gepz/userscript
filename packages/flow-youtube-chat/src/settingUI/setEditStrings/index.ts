@@ -19,7 +19,7 @@ export default (
   Str.split(/\r\n|\n/),
   RA.filter(P.not(Str.isEmpty)),
   (x) => constant(
-    editing ? [x, O.some([value, O.none])]
+    editing ? [x, O.of([value, O.none])]
     : Ed.of(x),
   ),
 );

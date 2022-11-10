@@ -14,7 +14,7 @@ const chatApp = (): O.Option<Element> => pipe(
     return state === 'loading' || state === 'complete';
   }),
   O.chainNullableK((x) => x.contentDocument),
-  O.alt(() => O.some(document)),
+  O.alt(() => O.of(document)),
   O.chainNullableK((x) => x.querySelector(
     'yt-live-chat-app',
   )),

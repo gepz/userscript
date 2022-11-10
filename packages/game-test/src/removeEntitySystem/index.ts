@@ -41,7 +41,7 @@ export default ({
           s.displayTreeMap.get(displayParent.v[id]),
           O.fromNullable,
           O.map((x) => x.forest),
-          O.alt(() => (s.displayTreeMap.has(id) ? O.some(s.displayRoot)
+          O.alt(() => (s.displayTreeMap.has(id) ? O.of(s.displayRoot)
           : O.none)),
           O.bindTo('forest'),
           O.bind('index', (c) => pipe(

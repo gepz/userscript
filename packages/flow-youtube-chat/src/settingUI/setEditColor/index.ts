@@ -18,4 +18,4 @@ export default (
     : Ed.setText(value))
   : (validColor(value)
     ? constant(Ed.of(value))
-    : RTu.mapSnd(constant(O.some([value, O.some('')])))));
+    : RTu.mapSnd(constant(O.of([value, O.of('')])))));

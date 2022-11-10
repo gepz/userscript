@@ -189,7 +189,7 @@ const memberNode = (
   })),
   O.bind(
     'typeMap',
-    (x) => O.some(updateTypeMap(expectedType)(x.type)(m)),
+    (x) => O.of(updateTypeMap(expectedType)(x.type)(m)),
   ),
   O.getOrElse<Result<EvalType | ErrorType>>(() => errorResult(m)),
 );
@@ -228,7 +228,7 @@ const callNode = (
   f(pipe(
     pair,
     optPairProp('callee'),
-  ))(funcT([[O.some(unknownT)], O.some(expectedType)]))(
+  ))(funcT([[O.of(unknownT)], O.of(expectedType)]))(
     typeRoot,
   )(m)(c)(s),
   O.fromPredicate((x): x is Result<FunctionType> => x.type.tag === 'func'),

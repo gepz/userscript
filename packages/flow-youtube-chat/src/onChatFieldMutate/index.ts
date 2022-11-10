@@ -59,7 +59,7 @@ export default (
             IOO.fromOption,
             IOO.filter(getConfig.createBanButton),
             IOO.chainIOK((x) => addBanButton(chat, x, getConfig, setConfig)),
-            IO.map(() => O.some(undefined)),
+            IO.map(() => O.of(undefined)),
             IOO.filter(getConfig.simplifyChatField),
             IOO.chainIOK(() => setChatFieldSimplifyStyle(chat)),
           ),
