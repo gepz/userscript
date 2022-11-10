@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Unreleased:
 - Nothing
 
+## 1.15.15
+### Changed
+- The settings panel will now fits into smaller browser page.
+It was common for part of the settings panel UI to be unreachable outside of screen for handheld device users.
+- Make the Youtube UI detection log more detailed for easier debugging in the future.
+
 ## 1.15.14
 ### Fixed
 - Fix chat window scaling function.
