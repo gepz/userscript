@@ -9,7 +9,7 @@ import {
   Action,
 } from 'hyperapp';
 
-import * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@/ui/Editable';
 
 export default <T>(
   action: Partial<Record<
@@ -17,7 +17,7 @@ export default <T>(
   | 'onchange'
   , Action<T>
   >>,
-) => (value: Ed.Editable<string>): VNode<T> => h('input', {
+) => (value: Editable<string>): VNode<T> => h('input', {
   style: {
     verticalAlign: 'middle',
     width: '5.5em',

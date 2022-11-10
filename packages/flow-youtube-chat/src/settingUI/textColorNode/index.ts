@@ -14,7 +14,7 @@ import StateKey from '@/settingUI/StateKey';
 import editAction from '@/settingUI/editAction';
 import exampleTextStyle from '@/settingUI/exampleTextStyle';
 import setEditColor from '@/settingUI/setEditColor';
-import * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@/ui/Editable';
 import colorPicker from '@/ui/colorPicker';
 import colorTextOutput from '@/ui/colorTextOutput';
 import errorText from '@/ui/errorText';
@@ -23,7 +23,7 @@ import textInput from '@/ui/textInput';
 
 export default (
   label: TextKey
-  & StateKey<Ed.Editable<string>>,
+  & StateKey<Editable<string>>,
 ): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
   c,
 ) => (s) => settingRow(

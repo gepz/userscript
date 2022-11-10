@@ -11,14 +11,14 @@ import StateKey from '@/settingUI/StateKey';
 import editAction from '@/settingUI/editAction';
 import getState from '@/settingUI/getState';
 import setEditInt from '@/settingUI/setEditInt';
-import * as Ed from '@/ui/Editable';
+import Editable from '@/ui/Editable';
 import errorText from '@/ui/errorText';
 import rangeRow from '@/ui/rangeRow';
 import settingRow from '@/ui/settingRow';
 
 export default (
   label: TextKey
-  & StateKey<Ed.Editable<number>>,
+  & StateKey<Editable<number>>,
   min: number,
   max: number,
   step: number,
@@ -32,7 +32,7 @@ export default (
       min,
       max,
       step,
-      editAction<Ed.Editable<number>>(label, setEditInt)(c),
-    )(getState<Ed.Editable<number>>(label)(s)),
+      editAction<Editable<number>>(label, setEditInt)(c),
+    )(getState<Editable<number>>(label)(s)),
   ],
 );

@@ -6,11 +6,11 @@ import {
   constant,
 } from 'fp-ts/function';
 
-import * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@/ui/Editable';
 
 export default (
   editing: boolean,
-): R.Reader<string, En.Endomorphism<Ed.Editable<string>>> => flow(
+): R.Reader<string, En.Endomorphism<Editable<string>>> => flow(
   (x) => constant(
     editing ? Ed.fromValueText(x)(x)
     : Ed.of(x),

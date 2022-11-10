@@ -12,16 +12,16 @@ import {
 import UserConfig from '@/UserConfig';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import configEffect from '@/settingUI/configEffect';
-import * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@/ui/Editable';
 
 export default (
-  keyA: TypeKey<SettingState, Ed.Editable<number>> & keyof UserConfig,
+  keyA: TypeKey<SettingState, Editable<number>> & keyof UserConfig,
 ) => (
-  keyB: TypeKey<SettingState, Ed.Editable<number>> & keyof UserConfig,
+  keyB: TypeKey<SettingState, Editable<number>> & keyof UserConfig,
 ) => (
   bFn: (vA: number) => (vB: number) => number,
 ) => (
-  vA: Ed.Editable<number>,
+  vA: Editable<number>,
 ): R.Reader<AppCommander, R.Reader<SettingState, SettingDispatchable>> => (
   c,
 ) => (s) => pipe(

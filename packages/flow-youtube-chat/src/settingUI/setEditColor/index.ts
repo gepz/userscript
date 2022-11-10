@@ -5,14 +5,14 @@ import {
   constant,
 } from 'fp-ts/function';
 
-import * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@/ui/Editable';
 import validColor from '@/validColor';
 
 export default (
   editing: boolean,
 ) => (
   value: string,
-): En.Endomorphism<Ed.Editable<string>> => (editing
+): En.Endomorphism<Editable<string>> => (editing
   ? (validColor(value)
     ? constant(Ed.fromValueText(value)(value))
     : Ed.setText(value))

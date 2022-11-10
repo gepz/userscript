@@ -9,7 +9,7 @@ import {
   Action,
 } from 'hyperapp';
 
-import * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@/ui/Editable';
 
 export default <T>(
   rows: number,
@@ -18,7 +18,7 @@ export default <T>(
   | 'onchange'
   , Action<T>
   >>,
-) => (value: Ed.Editable<readonly string[]>): VNode<T> => h('textarea', {
+) => (value: Editable<readonly string[]>): VNode<T> => h('textarea', {
   rows,
   style: {
     resize: 'horizontal',

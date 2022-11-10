@@ -5,15 +5,15 @@ import {
   constant,
 } from 'fp-ts/function';
 
-import * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@/ui/Editable';
 
 export default (
   editing: boolean,
 ) => (
   value: string,
 ) => (
-  state: Ed.Editable<number>,
-): Ed.Editable<number> => pipe(
+  state: Editable<number>,
+): Editable<number> => pipe(
   value,
   Number.parseInt,
   editing

@@ -32,6 +32,7 @@ import {
   merge,
   Subject,
   filter,
+  first,
   map,
   tap,
   delay,
@@ -45,18 +46,24 @@ import {
   bufferCount,
   defer,
   of,
+  BehaviorSubject,
+  Observable,
 } from 'rxjs';
 
 import packageJson from '@/../package.json';
 import ChatUpdateConfig from '@/ChatUpdateConfig';
-import ConfigSubject from '@/ConfigSubject';
+import ConfigSubject, {
+  makeSubject,
+} from '@/ConfigSubject';
 import FlowChat from '@/FlowChat';
 import LivePage from '@/LivePage';
 import Logger from '@/Logger';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
-import UserConfigGetter from '@/UserConfigGetter';
+import UserConfigGetter, {
+  makeGetter,
+} from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';
 import appendLog from '@/appendLog';
 import consoleLog from '@/consoleLog';
@@ -95,29 +102,19 @@ export default (): Promise<unknown> => pipe(
       userConfig: x,
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       configKeys: Object.keys(x) as (keyof UserConfig)[],
+      getConfig: makeGetter(x),
     })),
-    T.let('getConfig', (ctx): UserConfigGetter => pipe(
-      ctx.configKeys,
-      RA.map((x) => [x, () => ctx.userConfig[x].val]),
-      Object.fromEntries,
-    )),
     T.let('mainState', (x): MainState => ({
       chatPlaying: true,
       playerRect: new DOMRect(0, 0, 600, 400),
       getConfig: x.getConfig,
     })),
-    T.let('configSubject', (ctx): ConfigSubject => pipe(
-      ctx.configKeys,
-      RA.map((x) => [x, new Subject()]),
-      Object.fromEntries,
-    )),
+    T.let('configSubject', (ctx): ConfigSubject => makeSubject(ctx.configKeys)),
     T.let('setConfigPlain', (ctx): UserConfigSetter => pipe(
       ctx.configKeys,
       RA.map((x) => [
         x,
-        async (
-          val: never,
-        ) => {
+        (val: never) => async () => {
         // eslint-disable-next-line no-param-reassign
           ctx.userConfig[x].val = val;
           ctx.configSubject[x].next(val);
@@ -132,13 +129,11 @@ export default (): Promise<unknown> => pipe(
       ctx.configKeys,
       RA.map((x) => [
         x,
-        async (
-          val: never,
-        ) => {
+        (val: never) => async () => {
           if (deepEq(ctx.getConfig[x](), val)) return;
-          ctx.setConfigPlain[x](val);
-          const item = ctx.userConfig[x];
+          ctx.setConfigPlain[x](val)();
           ctx.channel.postMessage([x, val]);
+          const item = ctx.userConfig[x];
           GM.setValue(item.gmKey, item.toGm(val));
         },
       ]),
@@ -186,38 +181,28 @@ export default (): Promise<unknown> => pipe(
       ctx.wrappedSettings.dispatch,
       ctx.wrappedToggleSettings.dispatch,
     )),
-    T.apS('lastSettingsPosition', T.of({
+    T.apS('settingsPositionSubject', T.of(new BehaviorSubject({
       top: 0,
       left: 0,
-    })),
-    T.let('getNewSettingsPosition', (ctx) => () => pipe(
-      ctx.wrappedToggleSettings.node,
-      O.fromPredicate((x) => x.offsetParent !== null),
-      O.map((x) => x.getBoundingClientRect()),
-      O.map((x) => ({
+    }))),
+    T.let('updateSettingsPosition', (ctx) => (last: {
+      top: number,
+      left: number,
+    }) => pipe(
+      () => ctx.wrappedToggleSettings.node,
+      IO.map(O.fromPredicate((x) => x.offsetParent !== null)),
+      IOO.map((x) => x.getBoundingClientRect()),
+      IOO.map((x) => ({
         top: x.top + window.scrollY - settingsPanelSize.height,
         left: x.right + window.scrollX - settingsPanelSize.width,
       })),
-      O.alt(() => O.some({
+      IOO.alt(() => IOO.some({
         top: -settingsPanelSize.height,
         left: -settingsPanelSize.width,
       })),
-      O.filter((x) => x.top !== ctx.lastSettingsPosition.top
-      || x.left !== ctx.lastSettingsPosition.left),
-    )),
-    T.let('updateSettingsPosition', (ctx) => pipe(
-      ctx.getNewSettingsPosition,
-      IOO.chainFirstIOK((x) => () => Object.assign<
-      CSSStyleDeclaration,
-      Partial<CSSStyleDeclaration>
-      >(ctx.wrappedSettings.node.style, {
-        top: `${x.top}px`,
-        left: `${x.left}px`,
-      })),
-      IOO.chainFirstIOK((x) => () => {
-        ctx.lastSettingsPosition.top = x.top;
-        ctx.lastSettingsPosition.left = x.left;
-      }),
+      IOO.filter((x) => x.top !== last.top
+      || x.left !== last.left),
+      IOO.chainFirstIOK((x) => () => ctx.settingsPositionSubject.next(x)),
       IO.apSecond(() => {}),
     )),
     T.let('mainLog', (ctx): Logger => (
@@ -467,7 +452,7 @@ export default (): Promise<unknown> => pipe(
           cs.bannedWordRegexs,
           cs.bannedUsers,
         ),
-        tap(() => ctx.setConfig.filterExp(defaultFilter(ctx.getConfig))),
+        tap(() => ctx.setConfig.filterExp(defaultFilter(ctx.getConfig))()),
       ),
     )),
   )),
@@ -479,6 +464,14 @@ export default (): Promise<unknown> => pipe(
       changeDetectInterval: 700,
       bodyResizeDetectInterval: 300,
       errorRetryInterval: 5000,
+      tapUpdateSettingsPosition: <T>(
+        ob: Observable<T>,
+      ) => switchMap((value: T) => pipe(
+        ctx.settingsPositionSubject,
+        first(),
+        tap((x) => ctx.updateSettingsPosition(x)()),
+        map(() => value),
+      ))(ob),
     },
     IO.of,
     IO.apS('css', mainCss),
@@ -493,7 +486,7 @@ export default (): Promise<unknown> => pipe(
       tap(ctx.mixLog(['Init'])),
       switchMap(() => pipe(
         interval(c.changeDetectInterval),
-        tap(ctx.updateSettingsPosition),
+        c.tapUpdateSettingsPosition,
         filter(() => pipe(
           ctx.liveElementKeys,
           RA.map((key) => pipe(
@@ -609,7 +602,7 @@ export default (): Promise<unknown> => pipe(
             (x: readonly (keyof UserConfig)[]) => x.includes(key),
             // eslint-disable-next-line max-len
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            (x) => (x ? () => ctx.setConfigPlain[key](val as never)
+            (x) => (x ? ctx.setConfigPlain[key](val as never)
             : () => {}),
           )()),
         ),
@@ -663,12 +656,13 @@ export default (): Promise<unknown> => pipe(
           map(() => window.location.href),
           distinctUntilChanged(),
           skip(1),
-          tap((x) => IO.sequenceArray([
-            ctx.updateSettingsPosition,
+          c.tapUpdateSettingsPosition,
+          map((x) => IO.sequenceArray([
             ctx.mixLog(['URL Changed', x]),
             removeOldChats(0)(ctx.flowChats),
             ctx.mixLog([`Wait for ${c.urlDelay}ms...`]),
-          ])()),
+          ])),
+          tap((x) => x()),
           delay(c.urlDelay),
           tap(ctx.reinitialize),
         ),
@@ -695,7 +689,17 @@ export default (): Promise<unknown> => pipe(
             trailing: true,
           }),
           startWith([]),
-          tap(ctx.updateSettingsPosition),
+          c.tapUpdateSettingsPosition,
+        ),
+        pipe(
+          ctx.settingsPositionSubject,
+          tap((x) => Object.assign<
+          CSSStyleDeclaration,
+          Partial<CSSStyleDeclaration>
+          >(ctx.wrappedSettings.node.style, {
+            top: `${x.top}px`,
+            left: `${x.left}px`,
+          })),
         ),
       )),
       retry({

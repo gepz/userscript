@@ -13,13 +13,13 @@ import {
 } from 'fp-ts/function';
 import * as Str from 'fp-ts/string';
 
-import * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@/ui/Editable';
 
 export default (
   editing: boolean,
 ) => (
   value: string,
-): En.Endomorphism<Ed.Editable<readonly string[]>> => pipe(
+): En.Endomorphism<Editable<readonly string[]>> => pipe(
   value,
   Str.split(/\r\n|\n/),
   RA.filter(P.not(Str.isEmpty)),
@@ -53,7 +53,7 @@ export default (
       O.map((x) => RTu.mapSnd(() => O.some<
       readonly [string, O.Option<string>]
       >([value, O.some(x)]))),
-      O.getOrElse<En.Endomorphism<Ed.Editable<readonly string[]>>>(
+      O.getOrElse<En.Endomorphism<Editable<readonly string[]>>>(
         constant(constant(Ed.of(ctx.regexs))),
       ),
     )

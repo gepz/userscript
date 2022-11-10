@@ -13,4 +13,4 @@ export default <T extends keyof UserConfig>(
 ): R.Reader<UserConfigSetter, Effect<SettingState>> => (
   setConfig,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-) => () => setConfig[k](v as never);
+) => setConfig[k](v as never);
