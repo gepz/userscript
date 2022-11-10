@@ -1,7 +1,7 @@
-import * as TT from '@/TaggedType';
+import TaggedType from '@/TaggedType';
 import EvalType from '@/filter/type/EvalType';
 
-type RecordType = TT.TaggedType<'record', {
+type RecordType = TaggedType<'record', {
   [key: string]: EvalType,
 }>;
 

@@ -9,7 +9,7 @@ import UserConfig from '@/UserConfig';
 import isEditable from '@/isEditable';
 import Compound from '@/settingUI/EditableExpression/Compound';
 import fromJsepExp from '@/settingUI/EditableExpression/fromJsepExp';
-import * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@/ui/Editable';
 
 export default <T extends keyof UserConfig & keyof SettingState>(
   key: T,
@@ -21,7 +21,7 @@ export default <T extends keyof UserConfig & keyof SettingState>(
   ...state,
   [key]: isEditable(key)(value) ? Ed.setValue(value)(
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    state[key] as Ed.Editable<number>,
+    state[key] as Editable<number>,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   ) : key === 'filterExp' ? pipe(
     // eslint-disable-next-line max-len

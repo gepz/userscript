@@ -5,11 +5,12 @@ import {
   h,
 } from 'hyperapp';
 
-import RootComponent from '@/RootComponent';
+import RootComponent, {
+  makeComponent,
+} from '@/RootComponent';
 import UserConfigSetter from '@/UserConfigSetter';
 import getText from '@/getText';
 import languages from '@/languages';
-import makeRootComponent from '@/makeRootComponent';
 
 type State = {
   displayChats: boolean,
@@ -18,7 +19,7 @@ type State = {
 
 export default (setConfig: UserConfigSetter): RootComponent<State> => pipe(
   'button',
-  makeRootComponent((tag) => (state: State) => pipe(
+  makeComponent((tag) => (state: State) => pipe(
     getText(
       state.displayChats ? 'hideChat' : 'showChat',
     )(state.lang),
@@ -47,7 +48,7 @@ export default (setConfig: UserConfigSetter): RootComponent<State> => pipe(
             ...s,
             displayChats,
           },
-          () => setConfig.displayChats(displayChats),
+          setConfig.displayChats(displayChats),
         ],
       ),
     }, [

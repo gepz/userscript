@@ -5,14 +5,15 @@ import {
   h,
 } from 'hyperapp';
 
-import RootComponent from '@/RootComponent';
+import RootComponent, {
+  makeComponent,
+} from '@/RootComponent';
 import SettingState from '@/SettingState';
-import makeRootComponent from '@/makeRootComponent';
 import toggleSettingsPanelButton from '@/toggleSettingsPanelButton';
 
 export default flow(
   toggleSettingsPanelButton,
-  (button): RootComponent<SettingState> => makeRootComponent(
+  (button): RootComponent<SettingState> => makeComponent(
     (tag) => (s: SettingState) => h(tag, {
       style: {
         display: 'flex',

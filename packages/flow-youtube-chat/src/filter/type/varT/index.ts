@@ -1,4 +1,6 @@
-import * as TT from '@/TaggedType';
+import {
+  makeType,
+} from '@/TaggedType';
 import VariableType from '@/filter/type/VariableType';
 
-export default TT.makeType<VariableType>('var');
+export default makeType<VariableType>('var');

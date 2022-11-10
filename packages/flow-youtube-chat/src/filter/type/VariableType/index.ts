@@ -1,5 +1,5 @@
-import * as TT from '@/TaggedType';
+import TaggedType from '@/TaggedType';
 
-type VariableType = TT.TaggedType<'var', number>;
+type VariableType = TaggedType<'var', number>;
 
 export default VariableType;

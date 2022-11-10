@@ -9,7 +9,7 @@ import {
   Action,
 } from 'hyperapp';
 
-import * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@/ui/Editable';
 
 export default <T>(
   min: number,
@@ -20,7 +20,7 @@ export default <T>(
   | 'onchange'
   , Action<T>
   >>,
-) => (value: Ed.Editable<number>): VNode<T> => h('div', {}, [
+) => (value: Editable<number>): VNode<T> => h('div', {}, [
   h('input', {
     style: {
       width: '150px',

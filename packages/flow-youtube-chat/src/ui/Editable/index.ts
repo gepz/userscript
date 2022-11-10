@@ -6,10 +6,12 @@ import {
   flow,
 } from 'fp-ts/function';
 
-export type Editable<T> = readonly [
+type Editable<T> = readonly [
   T,
   O.Option<readonly [string, O.Option<string>]>,
 ];
+
+export default Editable;
 
 export const of: <T>(x: T) => Editable<T> = (x) => [x, O.none];
 

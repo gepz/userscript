@@ -30,7 +30,7 @@ export default (
       RA.append(id),
     )),
     IOO.chainIOK((x) => pipe(
-      () => setConfig.bannedUsers(x),
+      setConfig.bannedUsers(x),
       IO.apSecond(() => defaultToast().fire({
         title: `Added Banned User: ${id}`,
         icon: 'success',

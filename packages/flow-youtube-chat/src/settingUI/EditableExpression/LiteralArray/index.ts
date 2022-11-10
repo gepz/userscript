@@ -1,6 +1,6 @@
-import * as Ed from '@/ui/Editable';
+import Editable from '@/ui/Editable';
 
 export default interface LiteralArray {
   type: 'LiteralArray';
-  value: Ed.Editable<readonly string[]>
+  value: Editable<readonly string[]>
 }

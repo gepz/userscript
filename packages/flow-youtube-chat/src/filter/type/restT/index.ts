@@ -1,4 +1,6 @@
-import * as TT from '@/TaggedType';
+import {
+  makeType,
+} from '@/TaggedType';
 import RestType from '@/filter/type/RestType';
 
-export default TT.makeType<RestType>('rest');
+export default makeType<RestType>('rest');

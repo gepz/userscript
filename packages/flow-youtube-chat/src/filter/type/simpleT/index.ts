@@ -1,4 +1,6 @@
-import * as TT from '@/TaggedType';
+import {
+  makeType,
+} from '@/TaggedType';
 import SimpleType from '@/filter/type/SimpleType';
 
-export default TT.makeType<SimpleType>('simple');
+export default makeType<SimpleType>('simple');

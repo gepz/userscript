@@ -1,4 +1,6 @@
-import * as TT from '@/TaggedType';
+import {
+  makeType,
+} from '@/TaggedType';
 import FunctionType from '@/filter/type/FunctionType';
 
-export default TT.makeType<FunctionType>('func');
+export default makeType<FunctionType>('func');
