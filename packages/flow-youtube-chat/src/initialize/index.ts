@@ -481,7 +481,9 @@ export default (): Promise<unknown> => pipe(
               IO.chainFirst((x) => () => {
                 ctx.live[key].ele = x;
               }),
-              IO.apSecond(ctx.mixLog([`${key} changed`])),
+              IO.map(O.isSome),
+              IO.map((x) => `${key} ${x ? 'found' : 'lost'}`),
+              IO.chain((x) => ctx.mixLog([x])),
             )),
           )),
           RA.compact,
