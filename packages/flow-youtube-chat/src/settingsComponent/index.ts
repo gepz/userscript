@@ -18,7 +18,7 @@ export default (
   settingsPanel(command),
   (panel) => makeComponent((tag) => (s: SettingState) => h(tag, {
     style: {
-      position: 'absolute',
+      display: 'contents',
     },
   }, panel(s)))('span'),
 );
