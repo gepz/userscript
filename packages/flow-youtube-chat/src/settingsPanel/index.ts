@@ -29,7 +29,6 @@ import getState from '@/settingUI/getState';
 import setString from '@/settingUI/setString';
 import updateAt from '@/settingUI/updateAt';
 import updateInput from '@/settingUI/updateInput';
-import settingsPanelSize from '@/settingsPanelSize';
 import option from '@/ui/option';
 import tabContainer from '@/ui/tabContainer';
 
@@ -44,8 +43,11 @@ export default (
       zIndex: '10000',
       color: '#fff',
       fontSize: '14px',
-      width: `${settingsPanelSize.width}px`,
-      height: `${settingsPanelSize.height}px`,
+      overflow: 'scroll',
+      left: `${state.panelRect.x}px`,
+      top: `${state.panelRect.y}px`,
+      width: `${state.panelRect.width}px`,
+      height: `${state.panelRect.height}px`,
       border: 'solid 1px #666',
       fontFamily: 'MS PGothic',
       lineHeight: '1.2',

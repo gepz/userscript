@@ -104,7 +104,7 @@ export default (): Promise<unknown> => pipe(
     })),
     T.let('mainState', (x): MainState => ({
       chatPlaying: true,
-      playerRect: new DOMRect(0, 0, 600, 400),
+      playerRect: new DOMRectReadOnly(0, 0, 600, 400),
       getConfig: x.getConfig,
     })),
     T.let('configSubject', (ctx): ConfigSubject => makeSubject(ctx.configKeys)),
@@ -179,33 +179,38 @@ export default (): Promise<unknown> => pipe(
       ctx.wrappedSettings.dispatch,
       ctx.wrappedToggleSettings.dispatch,
     )),
-    T.apS('settingsPositionSubject', T.of(new BehaviorSubject({
-      top: 0,
-      left: 0,
-    }))),
-    T.let('updateSettingsPosition', (ctx) => (last: {
-      top: number,
-      left: number,
-    }) => pipe(
+    T.apS('settingsRectSubject', T.of(new BehaviorSubject(new DOMRectReadOnly(
+      0,
+      0,
+      settingsPanelSize.width,
+      settingsPanelSize.height,
+    )))),
+    T.let('updateSettingsRect', (ctx) => (last: DOMRectReadOnly) => pipe(
       () => ctx.wrappedToggleSettings.node,
       IO.map(O.fromPredicate((x) => x.offsetParent !== null)),
       IOO.map((x) => x.getBoundingClientRect()),
-      IOO.map((x) => ({
-        top: x.top + window.scrollY - settingsPanelSize.height,
-        left: x.right + window.scrollX - settingsPanelSize.width,
-      })),
-      IOO.alt(() => IOO.some({
-        top: -settingsPanelSize.height,
-        left: -settingsPanelSize.width,
-      })),
-      IOO.filter((x) => x.top !== last.top
-      || x.left !== last.left),
-      IOO.chainFirstIOK((x) => () => ctx.settingsPositionSubject.next(x)),
+      IOO.map((x) => new DOMRectReadOnly(
+        Math.max(0, x.right + window.scrollX - settingsPanelSize.width),
+        Math.max(0, x.y + window.scrollY - settingsPanelSize.height),
+        settingsPanelSize.width,
+        Math.min(x.y + window.scrollY, settingsPanelSize.height),
+      )),
+      IOO.alt(() => IOO.of(new DOMRectReadOnly(
+        -settingsPanelSize.width,
+        -settingsPanelSize.height,
+        settingsPanelSize.width,
+        settingsPanelSize.height,
+      ))),
+      IOO.filter((x) => x.x !== last.x
+      || x.y !== last.y
+      || x.width !== last.width
+      || x.height !== last.height),
+      IOO.chainFirstIOK((x) => () => ctx.settingsRectSubject.next(x)),
       IO.apSecond(() => {}),
     )),
     T.let('mainLog', (ctx): Logger => (
       x,
-    ) => ctx.updateSettingState((s): SettingState => ({
+    ) => ctx.updateSettingState((s) => ({
       ...s,
       eventLog: appendLog(s.eventLog)(x),
     }))),
@@ -448,12 +453,12 @@ export default (): Promise<unknown> => pipe(
       errorRetryInterval: 5000,
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       liveElementKeys: Object.keys(ctx.livePage) as (keyof LivePage)[],
-      tapUpdateSettingsPosition: <T>(
+      tapUpdateSettingsRect: <T>(
         ob: Observable<T>,
       ) => switchMap((value: T) => pipe(
-        ctx.settingsPositionSubject,
+        ctx.settingsRectSubject,
         first(),
-        tap((x) => ctx.updateSettingsPosition(x)()),
+        tap((x) => ctx.updateSettingsRect(x)()),
         map(() => value),
       ))(ob),
     },
@@ -470,7 +475,7 @@ export default (): Promise<unknown> => pipe(
       tap(ctx.mixLog(['Init'])),
       switchMap(() => pipe(
         interval(c.changeDetectInterval),
-        c.tapUpdateSettingsPosition,
+        c.tapUpdateSettingsRect,
         filter(() => pipe(
           c.liveElementKeys,
           RA.map((key) => pipe(
@@ -646,7 +651,7 @@ export default (): Promise<unknown> => pipe(
           map(() => window.location.href),
           distinctUntilChanged(),
           skip(1),
-          c.tapUpdateSettingsPosition,
+          c.tapUpdateSettingsRect,
           map((x) => IO.sequenceArray([
             ctx.mixLog(['URL Changed', x]),
             removeOldChats(0)(ctx.flowChats),
@@ -679,17 +684,14 @@ export default (): Promise<unknown> => pipe(
             trailing: true,
           }),
           startWith([]),
-          c.tapUpdateSettingsPosition,
+          c.tapUpdateSettingsRect,
         ),
         pipe(
-          ctx.settingsPositionSubject,
-          tap((x) => Object.assign<
-          CSSStyleDeclaration,
-          Partial<CSSStyleDeclaration>
-          >(ctx.wrappedSettings.node.style, {
-            top: `${x.top}px`,
-            left: `${x.left}px`,
-          })),
+          ctx.settingsRectSubject,
+          tap((panelRect) => ctx.updateSettingState((s) => ({
+            ...s,
+            panelRect,
+          }))()),
         ),
       )),
       retry({

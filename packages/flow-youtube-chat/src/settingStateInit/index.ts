@@ -11,6 +11,7 @@ import UserConfigGetter from '@/UserConfigGetter';
 import isEditable from '@/isEditable';
 import Compound from '@/settingUI/EditableExpression/Compound';
 import fromJsepExp from '@/settingUI/EditableExpression/fromJsepExp';
+import settingsPanelSize from '@/settingsPanelSize';
 import * as Ed from '@/ui/Editable';
 
 export default (getConfig: UserConfigGetter): SettingState => pipe(
@@ -40,5 +41,11 @@ export default (getConfig: UserConfigGetter): SettingState => pipe(
       /^steps\((\d+),.+/,
     )?.[1] ?? '150', 10)),
     eventLog: [],
+    panelRect: new DOMRectReadOnly(
+      0,
+      0,
+      settingsPanelSize.width,
+      settingsPanelSize.height,
+    ),
   }),
 );

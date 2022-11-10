@@ -7,4 +7,5 @@ export default interface SettingState extends MappedConfigState {
   logTab: number,
   timingStepCount: Editable<number>,
   eventLog: readonly string[],
+  panelRect: DOMRectReadOnly,
 }
