@@ -43,7 +43,7 @@ export default (
       zIndex: '10000',
       color: '#fff',
       fontSize: '14px',
-      overflow: 'scroll',
+      overflow: 'auto',
       left: `${state.panelRect.x}px`,
       top: `${state.panelRect.y}px`,
       width: `${state.panelRect.width}px`,
