@@ -57,6 +57,9 @@ import ConfigSubject, {
 } from '@/ConfigSubject';
 import FlowChat from '@/FlowChat';
 import LivePage from '@/LivePage';
+import LivePageState, {
+  makePageState,
+} from '@/LivePageState';
 import Logger from '@/Logger';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
@@ -89,11 +92,6 @@ import simpleWrap from '@/simpleWrap';
 import toggleChatButton from '@/toggleChatButton';
 import toggleSettingsPanelComponent from '@/toggleSettingsPanelComponent';
 import videoToggleStream from '@/videoToggleStream';
-
-type LiveElementState<T> = T extends () => infer R ? {
-  ele: R,
-  read: T,
-} : never;
 
 export default (): Promise<unknown> => pipe(
   defaultUserConfig,
@@ -141,42 +139,42 @@ export default (): Promise<unknown> => pipe(
     )),
   ),
   flow(
-    flow(
-      T.apS('reinitSubject', T.fromIO(() => new Subject<void>())),
-      T.let('reinitialize', (ctx) => () => {
-        requestAnimationFrame(() => forwardTo(ctx.reinitSubject)());
+    T.apS('reinitSubject', T.fromIO(() => new Subject<void>())),
+    T.let('reinitialize', (ctx) => () => {
+      requestAnimationFrame(() => forwardTo(ctx.reinitSubject)());
+    }),
+    T.let('toggleChatButtonInit', (ctx) => ({
+      lang: ctx.getConfig.lang(),
+      displayChats: ctx.getConfig.displayChats(),
+    })),
+    T.let('wrappedToggleChat', (ctx) => simpleWrap(
+      toggleChatButton(ctx.setConfig),
+      ctx.toggleChatButtonInit,
+    )()),
+    T.apS('flowChats', T.of<FlowChat[]>([])),
+    T.apS('settingUpdateApps', T.of<Dispatch<SettingState>[]>([])),
+    T.let('updateSettingState', (ctx) => (
+      dispatchable: Dispatchable<SettingState>,
+    ) => pipe(
+      ctx.settingUpdateApps,
+      RA.map((x) => () => x(dispatchable)),
+      IO.sequenceArray,
+    )),
+    T.let('wrappedSettings', (ctx) => simpleWrap(
+      settingsComponent({
+        setConfig: ctx.setConfig,
+        act: {
+          clearFlowChats: T.fromIO(removeOldChats(0)(ctx.flowChats)),
+        },
       }),
-      T.let('toggleChatButtonInit', (ctx) => ({
-        lang: ctx.getConfig.lang(),
-        displayChats: ctx.getConfig.displayChats(),
-      })),
-      T.let('wrappedToggleChat', (ctx) => simpleWrap(
-        toggleChatButton(ctx.setConfig),
-        ctx.toggleChatButtonInit,
-      )()),
-      T.apS('flowChats', T.of<FlowChat[]>([])),
-      T.apS('settingUpdateApps', T.of<Dispatch<SettingState>[]>([])),
-      T.let('updateSettingState', (ctx) => (
-        dispatchable: Dispatchable<SettingState>,
-      ) => pipe(
-        ctx.settingUpdateApps,
-        RA.map((x) => () => x(dispatchable)),
-        IO.sequenceArray,
-      )),
-      T.let('wrappedSettings', (ctx) => simpleWrap(
-        settingsComponent({
-          setConfig: ctx.setConfig,
-          act: {
-            clearFlowChats: T.fromIO(removeOldChats(0)(ctx.flowChats)),
-          },
-        }),
-        settingStateInit(ctx.getConfig),
-      )()),
-      T.let('wrappedToggleSettings', (ctx) => simpleWrap(
-        toggleSettingsPanelComponent(ctx.updateSettingState),
-        settingStateInit(ctx.getConfig),
-      )()),
-    ),
+      settingStateInit(ctx.getConfig),
+    )()),
+    T.let('wrappedToggleSettings', (ctx) => simpleWrap(
+      toggleSettingsPanelComponent(ctx.updateSettingState),
+      settingStateInit(ctx.getConfig),
+    )()),
+  ),
+  flow(
     T.chainFirstIOK((ctx) => () => ctx.settingUpdateApps.push(
       ctx.wrappedSettings.dispatch,
       ctx.wrappedToggleSettings.dispatch,
@@ -261,23 +259,7 @@ export default (): Promise<unknown> => pipe(
     Object.fromEntries,
   )),
   T.apS('livePage', T.of(livePageYt)),
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  T.let('liveElementKeys', (ctx) => Object.keys(
-    ctx.livePage,
-  ) as (keyof LivePage)[]),
-  T.let('live', (ctx) => pipe(
-    <T extends keyof LivePage>(key: T) => ({
-      ele: O.none,
-      read: ctx.livePage[key],
-    }),
-    (initState): {
-      [P in keyof LivePage]: LiveElementState<LivePage[P]>;
-    } => pipe(
-      ctx.liveElementKeys,
-      RA.map((x) => [x, initState(x)]),
-      Object.fromEntries,
-    ),
-  )),
+  T.let('live', (ctx): LivePageState => makePageState(ctx.livePage)),
   T.apS('chatScreen', T.fromIO(createChatScreen)),
   T.let('config$', (ctx) => pipe(
     ctx.cs,
@@ -464,6 +446,8 @@ export default (): Promise<unknown> => pipe(
       changeDetectInterval: 700,
       bodyResizeDetectInterval: 300,
       errorRetryInterval: 5000,
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      liveElementKeys: Object.keys(ctx.livePage) as (keyof LivePage)[],
       tapUpdateSettingsPosition: <T>(
         ob: Observable<T>,
       ) => switchMap((value: T) => pipe(
@@ -488,7 +472,7 @@ export default (): Promise<unknown> => pipe(
         interval(c.changeDetectInterval),
         c.tapUpdateSettingsPosition,
         filter(() => pipe(
-          ctx.liveElementKeys,
+          c.liveElementKeys,
           RA.map((key) => pipe(
             ctx.live[key].read(),
             O.fromPredicate((newEle) => !c.eq(ctx.live[key].ele, newEle)),
@@ -628,15 +612,19 @@ export default (): Promise<unknown> => pipe(
             () => EMPTY,
             (x) => pipe(
               videoToggleStream(x),
-              map((playing) => playing
-                || O.isSome(ctx.live.offlineSlate.ele)),
-              tap((chatPlaying) => {
+              map((playing) => playing || O.isSome(ctx.live.offlineSlate.ele)),
+              tap((chatPlaying) => pipe(
+                () => {
                 // eslint-disable-next-line no-param-reassign
-                ctx.mainState.chatPlaying = chatPlaying;
-                ctx.flowChats.forEach(
-                  (chat) => setChatPlayState(chat)(ctx.mainState)(),
-                );
-              }),
+                  ctx.mainState.chatPlaying = chatPlaying;
+                },
+                IO.apSecond(pipe(
+                  ctx.flowChats,
+                  RA.map(setChatPlayState),
+                  RA.map(apply(ctx.mainState)),
+                  IO.sequenceArray,
+                )),
+              )()),
             ),
           ),
         ),
