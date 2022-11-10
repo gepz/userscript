@@ -81,7 +81,7 @@ export default (
       }),
       IO.map(() => O.none),
     )
-    : IOO.some(ctx)
+    : IOO.of(ctx)
   )),
   IOO.chainFirstIOK((x) => () => {
     // eslint-disable-next-line no-param-reassign
@@ -133,7 +133,7 @@ export default (
 
           return x;
         },
-        O.some,
+        O.of,
         (x) => () => {
           // eslint-disable-next-line no-param-reassign
           chat.animation = x;

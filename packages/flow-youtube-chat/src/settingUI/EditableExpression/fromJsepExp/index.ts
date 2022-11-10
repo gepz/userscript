@@ -54,7 +54,7 @@ const callExp = (
 
 const literal = (
   exp: expEval.parse.Literal,
-): O.Option<Literal> => (typeof exp.value === 'string' ? O.some({
+): O.Option<Literal> => (typeof exp.value === 'string' ? O.of({
   type: 'Literal',
   value: Ed.of(exp.value),
 }) : O.none);
@@ -131,7 +131,7 @@ const isExpType = <T extends keyof expType>(
 
 const fromJsepExp: ExpFunc = (
   x,
-) => (isExpType('Identifier')(x) ? O.some(identifier(x))
+) => (isExpType('Identifier')(x) ? O.of(identifier(x))
 : isExpType('MemberExpression')(x) ? memberExp(fromJsepExp)(x)
 : isExpType('CallExpression')(x) ? callExp(fromJsepExp)(x)
 : isExpType('Literal')(x) ? literal(x)

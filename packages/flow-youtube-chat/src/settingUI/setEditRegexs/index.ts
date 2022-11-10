@@ -33,7 +33,7 @@ export default (
         RegExp(x, 'u');
         return O.none;
       } catch (e) {
-        return O.some(
+        return O.of(
           // eslint-disable-next-line max-len
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `${e} in regex number ${i}`,
@@ -50,9 +50,9 @@ export default (
     editing ? Ed.setText(value)
     : pipe(
       ctx.errors,
-      O.map((x) => RTu.mapSnd(() => O.some<
+      O.map((x) => RTu.mapSnd(() => O.of<
       readonly [string, O.Option<string>]
-      >([value, O.some(x)]))),
+      >([value, O.of(x)]))),
       O.getOrElse<En.Endomorphism<Editable<readonly string[]>>>(
         constant(constant(Ed.of(ctx.regexs))),
       ),

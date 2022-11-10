@@ -25,6 +25,6 @@ export default (
     : (x) => (Number.isNaN(x)
       ? pipe(
         state,
-        RTu.mapSnd(constant(O.some([value, O.some('')]))),
+        RTu.mapSnd(constant(O.of([value, O.of('')]))),
       ) : Ed.of(x)),
 );

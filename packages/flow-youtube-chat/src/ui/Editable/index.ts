@@ -17,7 +17,7 @@ export const of: <T>(x: T) => Editable<T> = (x) => [x, O.none];
 
 export const fromValueText: <T>(v: T) => (t: string) => Editable<T> = (
   v,
-) => (t) => [v, O.some([t, O.none])];
+) => (t) => [v, O.of([t, O.none])];
 
 export const value: <T>(x: Editable<T>) => T = RTu.fst;
 
@@ -40,7 +40,7 @@ export const setText: <T>(x: string) => En.Endomorphism<Editable<T>> = (
   x,
 ) => RTu.mapSnd(flow(
   O.map(RTu.mapFst(constant(x))),
-  O.alt(constant(O.some<
+  O.alt(constant(O.of<
   readonly [string, O.Option<string>]
   >([x, O.none]))),
 ));

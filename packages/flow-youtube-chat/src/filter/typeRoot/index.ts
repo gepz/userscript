@@ -15,112 +15,112 @@ import varT from '@/filter/type/varT';
 export default recordT({
   or: funcT([
     [
-      O.some(listT(simpleT({
+      O.of(listT(simpleT({
         pri: Primitive.boolean,
         ui: UI.card,
       }))),
     ],
-    O.some(primitiveT(Primitive.boolean)),
+    O.of(primitiveT(Primitive.boolean)),
   ]),
   and: funcT([
     [
-      O.some(listT(simpleT({
+      O.of(listT(simpleT({
         pri: Primitive.boolean,
         ui: UI.card,
       }))),
     ],
-    O.some(primitiveT(Primitive.boolean)),
+    O.of(primitiveT(Primitive.boolean)),
   ]),
   flip: funcT([
-    RNEA.map(O.some)([
+    RNEA.map(O.of)([
       funcT([
-        RNEA.map(O.some)([
+        RNEA.map(O.of)([
           varT(0),
           varT(1),
         ]),
-        O.some(varT(2)),
+        O.of(varT(2)),
       ]),
       varT(1),
       varT(0),
     ]),
-    O.some(varT(2)),
+    O.of(varT(2)),
   ]),
   flow: funcT([
-    RNEA.map(O.some)([
+    RNEA.map(O.of)([
       tupleT([
         funcT([
-          [O.some(varT(0))],
-          O.some(varT(1)),
+          [O.of(varT(0))],
+          O.of(varT(1)),
         ]),
         funcT([
-          [O.some(varT(1))],
-          O.some(varT(2)),
+          [O.of(varT(1))],
+          O.of(varT(2)),
         ]),
       ]),
       funcT([
-        [O.some(varT(0))],
-        O.some(varT(2)),
+        [O.of(varT(0))],
+        O.of(varT(2)),
       ]),
     ]),
-    O.some(varT(2)),
+    O.of(varT(2)),
   ]),
   RA: recordT({
     some: funcT([
-      RNEA.map(O.some)([
+      RNEA.map(O.of)([
         funcT([
-          [O.some(varT(0))],
-          O.some(primitiveT(Primitive.boolean)),
+          [O.of(varT(0))],
+          O.of(primitiveT(Primitive.boolean)),
         ]),
         listT(varT(0)),
       ]),
-      O.some(primitiveT(Primitive.boolean)),
+      O.of(primitiveT(Primitive.boolean)),
     ]),
     compact: funcT([
-      [O.some(listT(unknownT))],
-      O.some(listT(unknownT)),
+      [O.of(listT(unknownT))],
+      O.of(listT(unknownT)),
     ]),
   }),
   O: recordT({
     exists: funcT([
-      RNEA.map(O.some)([
+      RNEA.map(O.of)([
         funcT([
-          [O.some(varT(0))],
-          O.some(primitiveT(Primitive.boolean)),
+          [O.of(varT(0))],
+          O.of(primitiveT(Primitive.boolean)),
         ]),
         unknownT,
       ]),
-      O.some(primitiveT(Primitive.boolean)),
+      O.of(primitiveT(Primitive.boolean)),
     ]),
   }),
   inText: funcT([
-    RNEA.map(O.some)([
+    RNEA.map(O.of)([
       unknownT,
       primitiveT(Primitive.string),
     ]),
-    O.some(primitiveT(Primitive.boolean)),
+    O.of(primitiveT(Primitive.boolean)),
   ]),
   eqText: funcT([
-    RNEA.map(O.some)([
+    RNEA.map(O.of)([
       unknownT,
       primitiveT(Primitive.string),
     ]),
-    O.some(primitiveT(Primitive.boolean)),
+    O.of(primitiveT(Primitive.boolean)),
   ]),
   matchedByText: funcT([
-    RNEA.map(O.some)([
+    RNEA.map(O.of)([
       unknownT,
       simpleT({
         pri: Primitive.string,
         ui: UI.regex,
       }),
     ]),
-    O.some(simpleT({
+    O.of(simpleT({
       pri: Primitive.boolean,
       ui: UI.regex,
     })),
   ]),
   isVisible: funcT([
-    [O.some(unknownT)],
-    O.some(primitiveT(Primitive.boolean)),
+    [O.of(unknownT)],
+    O.of(primitiveT(Primitive.boolean)),
   ]),
 });
