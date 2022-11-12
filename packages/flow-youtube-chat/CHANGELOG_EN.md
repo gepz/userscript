@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Unreleased:
 - Nothing
 
+## 1.15.16
+### Fix
+- Correct the Japanese text on the tooltip of the chat display toggle button.
+
 ## 1.15.15
 ### Changed
 - The settings panel will now fits into smaller browser page.
