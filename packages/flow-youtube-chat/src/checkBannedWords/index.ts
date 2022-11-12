@@ -14,7 +14,7 @@ import filterContext from '@/filter/filterContext';
 export default (
   data: ChatData,
   getConfig: UserConfigGetter,
-  mainLog: Logger,
+  log: Logger,
 ): boolean => pipe(
   data,
   O.fromPredicate(() => pipe(
@@ -37,7 +37,7 @@ export default (
   ]),
   O.map(RA.map(O.getOrElse(() => ''))),
   O.map(JSON.stringify),
-  O.map((x) => mainLog([`Filtered: ${x}`])),
+  O.map((x) => log([`Filtered: ${x}`])),
   O.match(
     () => () => false,
     IO.map(() => true),
