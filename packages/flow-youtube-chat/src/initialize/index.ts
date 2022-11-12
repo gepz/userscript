@@ -80,6 +80,7 @@ import onChatFieldMutate from '@/onChatFieldMutate';
 import onPlayerResize from '@/onPlayerResize';
 import removeOldChats from '@/removeOldChats';
 import renderChat from '@/renderChat';
+import scaleChatField from '@/scaleChatField';
 import scriptIdentifier from '@/scriptIdentifier';
 import setChatAnimation from '@/setChatAnimation';
 import setChatAppCss from '@/setChatAppCss';
@@ -164,7 +165,7 @@ export default (): Promise<unknown> => pipe(
       settingsComponent({
         setConfig: ctx.setConfig,
         act: {
-          clearFlowChats: T.fromIO(removeOldChats(0)(ctx.flowChats)),
+          clearFlowChats: T.fromIO(removeOldChats(ctx.flowChats)(0)),
         },
       }),
       settingStateInit(ctx.getConfig),
@@ -208,7 +209,7 @@ export default (): Promise<unknown> => pipe(
       IOO.chainFirstIOK((x) => () => ctx.settingsRectSubject.next(x)),
       IO.apSecond(() => {}),
     )),
-    T.let('mainLog', (ctx): Logger => (
+    T.let('settingLog', (ctx): Logger => (
       x,
     ) => ctx.updateSettingState((s) => ({
       ...s,
@@ -216,7 +217,7 @@ export default (): Promise<unknown> => pipe(
     }))),
     T.let('mixLog', (ctx): Logger => pipe(
       [
-        ctx.mainLog,
+        ctx.settingLog,
         consoleLog,
       ],
       R.sequenceArray,
@@ -229,7 +230,7 @@ export default (): Promise<unknown> => pipe(
       ['User Agent', window.navigator.userAgent],
       ['UserConfig', JSON.stringify(ctx.userConfig)],
     ],
-    RA.map(ctx.mainLog),
+    RA.map(ctx.settingLog),
     IO.sequenceArray,
   )),
   T.let('cs', (ctx): ConfigSubject => pipe(
@@ -277,36 +278,8 @@ export default (): Promise<unknown> => pipe(
       pipe(
         cs.fieldScale,
         startWith(ctx.getConfig.fieldScale()),
-        tap((scale) => pipe(
-          ctx.live.chatField.ele,
-          IOO.fromOption,
-          IOO.chainIOK((field) => pipe(
-            [
-              pipe(
-                O.fromNullable(field.parentElement),
-                O.map((x) => () => Object.assign<
-                CSSStyleDeclaration,
-                Partial<CSSStyleDeclaration>
-                >(x.style, {
-                  transformOrigin: `${scale >= 1 ? 'top'
-                  : 'bottom'} left`,
-                  transform: `scale(${scale})`,
-                  width: `${100 / scale}%`,
-                  height: `${100 / scale}%`,
-                })),
-              ),
-              pipe(
-                ctx.live.chatScroller.ele,
-                O.map((scroller) => () => {
-                  // eslint-disable-next-line no-param-reassign
-                  scroller.scrollTop = scroller.scrollHeight;
-                }),
-              ),
-            ],
-            RA.compact,
-            IO.sequenceArray,
-          )),
-        )()),
+        map(scaleChatField(ctx.live)),
+        tap((x) => x()),
       ),
       pipe(
         merge(
@@ -372,7 +345,8 @@ export default (): Promise<unknown> => pipe(
             merge(
               pipe(
                 cs.maxChatCount,
-                tap((x) => removeOldChats(x)(ctx.flowChats)()),
+                map(removeOldChats(ctx.flowChats)),
+                tap((x) => x()),
               ),
               cs.noOverlap,
               cs.timingFunction,
@@ -458,7 +432,8 @@ export default (): Promise<unknown> => pipe(
       ) => switchMap((value: T) => pipe(
         ctx.settingsRectSubject,
         first(),
-        tap((x) => ctx.updateSettingsRect(x)()),
+        map(ctx.updateSettingsRect),
+        tap((x) => x()),
         map(() => value),
       ))(ob),
     },
@@ -499,7 +474,7 @@ export default (): Promise<unknown> => pipe(
       )),
       tap(ctx.mixLog(['Loading...'])),
       tap(() => {
-        removeOldChats(0)(ctx.flowChats)();
+        removeOldChats(ctx.flowChats)(0)();
         c.documentMutationPair.observer.disconnect();
         c.documentMutationPair.observer.observe(document, {
           childList: true,
@@ -606,7 +581,7 @@ export default (): Promise<unknown> => pipe(
             startWith(ctx.getConfig[key]()),
             bufferCount(2, 1),
             map(([x, y]) => diff(x, y)),
-            tap((x) => ctx.mainLog([
+            tap((x) => ctx.settingLog([
               `Config ${key}`,
               JSON.stringify(x, undefined, 2),
             ])()),
@@ -617,12 +592,12 @@ export default (): Promise<unknown> => pipe(
           ctx.live.video.ele,
           O.match(
             () => EMPTY,
-            (x) => pipe(
-              videoToggleStream(x),
+            flow(
+              videoToggleStream,
               map((playing) => playing || O.isSome(ctx.live.offlineSlate.ele)),
               tap((chatPlaying) => pipe(
                 () => {
-                // eslint-disable-next-line no-param-reassign
+                  // eslint-disable-next-line no-param-reassign
                   ctx.mainState.chatPlaying = chatPlaying;
                 },
                 IO.apSecond(pipe(
@@ -642,7 +617,7 @@ export default (): Promise<unknown> => pipe(
             ctx.flowChats,
             ctx.mainState,
             ctx.setConfig,
-            ctx.mainLog,
+            ctx.settingLog,
           )),
           tap((x) => x()),
         ),
@@ -652,12 +627,11 @@ export default (): Promise<unknown> => pipe(
           distinctUntilChanged(),
           skip(1),
           c.tapUpdateSettingsRect,
-          map((x) => IO.sequenceArray([
+          tap((x) => IO.sequenceArray([
             ctx.mixLog(['URL Changed', x]),
-            removeOldChats(0)(ctx.flowChats),
+            removeOldChats(ctx.flowChats)(0),
             ctx.mixLog([`Wait for ${c.urlDelay}ms...`]),
-          ])),
-          tap((x) => x()),
+          ])()),
           delay(c.urlDelay),
           tap(ctx.reinitialize),
         ),
@@ -674,8 +648,8 @@ export default (): Promise<unknown> => pipe(
             x,
             ctx.flowChats,
             ctx.mainState,
-            ctx.mainLog,
-          )),
+            ctx.settingLog,
+          )()),
         ),
         pipe(
           c.bodyResizePair.subject,

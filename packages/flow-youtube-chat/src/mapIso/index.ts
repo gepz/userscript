@@ -1,6 +1,7 @@
 import * as F from 'fp-ts/Functor';
 import {
-  Kind, URIS,
+  Kind,
+  URIS,
 } from 'fp-ts/HKT';
 import * as Iso from 'monocle-ts/Iso';
 

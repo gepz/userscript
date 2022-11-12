@@ -6,6 +6,7 @@ import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
   flow,
+  identity,
 } from 'fp-ts/function';
 
 import FlowChat from '@/FlowChat';
@@ -23,7 +24,7 @@ export default (
   flowChats: FlowChat[],
   mainState: MainState,
   setConfig: UserConfigSetter,
-  mainLog: Logger,
+  log: Logger,
 ): R.Reader<MutationRecord[], IO.IO<unknown>> => flow(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   RA.chain((e) => (Array.from(e.addedNodes) as HTMLElement[])),
@@ -36,36 +37,32 @@ export default (
     } = mainState;
 
     const data = getData(getConfig);
-    (checkBannedWords(data, getConfig, mainLog) ? () => {
+    (checkBannedWords(data, getConfig, log) ? () => {
       // eslint-disable-next-line no-param-reassign
       chat.style.display = 'none';
-    }
-      : pipe(
-        [
-          pipe(
-            undefined,
-            O.fromPredicate(getConfig.createChats),
-            O.filter(() => data.chatType === 'normal'),
-            IOO.fromOption,
-            IOO.chainIOK(() => addFlowChat(
-              getData,
-              flowChats,
-              chatScrn,
-              mainState,
-            )),
-          ),
-          pipe(
-            data.authorID,
-            IOO.fromOption,
-            IOO.filter(getConfig.createBanButton),
-            IOO.chainIOK((x) => addBanButton(chat, x, getConfig, setConfig)),
-            IO.map(() => O.of(undefined)),
-            IOO.filter(getConfig.simplifyChatField),
-            IOO.chainIOK(() => setChatFieldSimplifyStyle(chat)),
-          ),
-        ],
-        IO.sequenceArray,
-      )
+    } : IO.sequenceArray([
+      pipe(
+        getConfig.createChats() && data.chatType === 'normal',
+        IOO.fromPredicate(identity),
+        IOO.chainIOK(() => addFlowChat(
+          getData,
+          flowChats,
+          chatScrn,
+          mainState,
+        )),
+      ),
+      pipe(
+        data.authorID,
+        O.filter(getConfig.createBanButton),
+        IOO.fromOption,
+        IOO.chainIOK((x) => addBanButton(chat, x, getConfig, setConfig)),
+      ),
+      pipe(
+        getConfig.simplifyChatField(),
+        IOO.fromPredicate(identity),
+        IOO.chainIOK(() => setChatFieldSimplifyStyle(chat)),
+      ),
+    ])
     )();
   }),
   IO.sequenceArray,

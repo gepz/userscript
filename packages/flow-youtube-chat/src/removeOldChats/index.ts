@@ -7,9 +7,9 @@ import log from 'loglevel';
 import FlowChat from '@/FlowChat';
 
 export default (
-  maxChatCount: number,
-) => (
   flowChats: FlowChat[],
+) => (
+  maxChatCount: number,
 ): IO.IO<void> => pipe(
   () => flowChats.sort((a, b) => (a.animationEnded === b.animationEnded ? 0
   : a.animationEnded ? -1
