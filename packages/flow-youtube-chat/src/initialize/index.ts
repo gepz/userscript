@@ -10,7 +10,6 @@ import {
   eqStrict,
 } from 'fp-ts/Eq';
 import * as IO from 'fp-ts/IO';
-import * as IOO from 'fp-ts/IOOption';
 import * as O from 'fp-ts/Option';
 import * as R from 'fp-ts/Reader';
 import * as RA from 'fp-ts/ReadonlyArray';
@@ -92,6 +91,7 @@ import settingsPanelSize from '@/settingsPanelSize';
 import simpleWrap from '@/simpleWrap';
 import toggleChatButton from '@/toggleChatButton';
 import toggleSettingsPanelComponent from '@/toggleSettingsPanelComponent';
+import updateSettingsRect from '@/updateSettingsRect';
 import videoToggleStream from '@/videoToggleStream';
 
 export default (): Promise<unknown> => pipe(
@@ -186,29 +186,6 @@ export default (): Promise<unknown> => pipe(
       settingsPanelSize.width,
       settingsPanelSize.height,
     )))),
-    T.let('updateSettingsRect', (ctx) => (last: DOMRectReadOnly) => pipe(
-      () => ctx.wrappedToggleSettings.node,
-      IO.map(O.fromPredicate((x) => x.offsetParent !== null)),
-      IOO.map((x) => x.getBoundingClientRect()),
-      IOO.map((x) => new DOMRectReadOnly(
-        Math.max(0, x.right + window.scrollX - settingsPanelSize.width),
-        Math.max(0, x.y + window.scrollY - settingsPanelSize.height),
-        settingsPanelSize.width,
-        Math.min(x.y + window.scrollY, settingsPanelSize.height),
-      )),
-      IOO.alt(() => IOO.of(new DOMRectReadOnly(
-        -settingsPanelSize.width,
-        -settingsPanelSize.height,
-        settingsPanelSize.width,
-        settingsPanelSize.height,
-      ))),
-      IOO.filter((x) => x.x !== last.x
-      || x.y !== last.y
-      || x.width !== last.width
-      || x.height !== last.height),
-      IOO.chainFirstIOK((x) => () => ctx.settingsRectSubject.next(x)),
-      IO.apSecond(() => {}),
-    )),
     T.let('settingLog', (ctx): Logger => (
       x,
     ) => ctx.updateSettingState((s) => ({
@@ -432,7 +409,9 @@ export default (): Promise<unknown> => pipe(
       ) => switchMap((value: T) => pipe(
         ctx.settingsRectSubject,
         first(),
-        map(ctx.updateSettingsRect),
+        map(updateSettingsRect(ctx.wrappedToggleSettings.node)(
+          (rect) => () => ctx.settingsRectSubject.next(rect),
+        )),
         tap((x) => x()),
         map(() => value),
       ))(ob),
