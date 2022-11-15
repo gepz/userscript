@@ -14,6 +14,7 @@ import * as O from 'fp-ts/Option';
 import * as R from 'fp-ts/Reader';
 import * as RA from 'fp-ts/ReadonlyArray';
 import * as T from 'fp-ts/Task';
+import * as TO from 'fp-ts/TaskOption';
 import {
   pipe,
   apply,
@@ -109,34 +110,40 @@ export default (): Promise<unknown> => pipe(
       getConfig: x.getConfig,
     })),
     T.let('configSubject', (ctx): ConfigSubject => makeSubject(ctx.configKeys)),
-    T.let('setConfigPlain', (ctx): UserConfigSetter => pipe(
+    T.let('setterFromKeyMap', (ctx) => (
+      f: R.Reader<keyof UserConfig, R.Reader<never, T.Task<unknown>>>,
+    ): UserConfigSetter => pipe(
       ctx.configKeys,
-      RA.map((x) => [
-        x,
-        (val: never) => async () => {
-        // eslint-disable-next-line no-param-reassign
-          ctx.userConfig[x].val = val;
-          ctx.configSubject[x].next(val);
-        },
-      ]),
+      RA.map((x) => [x, f(x)]),
       Object.fromEntries,
+    )),
+    T.let('setConfigPlain', (ctx) => ctx.setterFromKeyMap(
+      (key) => (val) => async () => {
+        ctx.userConfig[key].val = val;
+        ctx.configSubject[key].next(val);
+      },
+    )),
+    T.let('setChangedConfig', (ctx) => ctx.setterFromKeyMap(
+      (key) => (val) => pipe(
+        async () => ctx.getConfig[key](),
+        T.map(O.fromPredicate((x) => !deepEq(x, val))),
+        TO.chainTaskK(() => ctx.setConfigPlain[key](val)),
+      ),
     )),
     T.apS('channel', T.of(new BroadcastChannel<
     [keyof UserConfig, UserConfig[keyof UserConfig]['val']]
     >(scriptIdentifier))),
-    T.let('setConfig', (ctx): UserConfigSetter => pipe(
-      ctx.configKeys,
-      RA.map((x) => [
-        x,
-        (val: never) => async () => {
-          if (deepEq(ctx.getConfig[x](), val)) return;
-          ctx.setConfigPlain[x](val)();
-          ctx.channel.postMessage([x, val]);
-          const item = ctx.userConfig[x];
+    T.let('setAndBroadcastChangedConfig', (ctx) => ctx.setterFromKeyMap(
+      (key) => (val) => pipe(
+        async () => ctx.getConfig[key](),
+        T.map(O.fromPredicate((x) => !deepEq(x, val))),
+        TO.chainTaskK(() => ctx.setConfigPlain[key](val)),
+        TO.chainTaskK(() => async () => {
+          ctx.channel.postMessage([key, val]);
+          const item = ctx.userConfig[key];
           GM.setValue(item.gmKey, item.toGm(val));
-        },
-      ]),
-      Object.fromEntries,
+        }),
+      ),
     )),
   ),
   flow(
@@ -149,7 +156,7 @@ export default (): Promise<unknown> => pipe(
       displayChats: ctx.getConfig.displayChats(),
     })),
     T.let('wrappedToggleChat', (ctx) => simpleWrap(
-      toggleChatButton(ctx.setConfig),
+      toggleChatButton(ctx.setAndBroadcastChangedConfig),
       ctx.toggleChatButtonInit,
     )()),
     T.apS('flowChats', T.of<FlowChat[]>([])),
@@ -163,7 +170,7 @@ export default (): Promise<unknown> => pipe(
     )),
     T.let('wrappedSettings', (ctx) => simpleWrap(
       settingsComponent({
-        setConfig: ctx.setConfig,
+        setConfig: ctx.setAndBroadcastChangedConfig,
         act: {
           clearFlowChats: T.fromIO(removeOldChats(ctx.flowChats)(0)),
         },
@@ -390,7 +397,9 @@ export default (): Promise<unknown> => pipe(
           cs.bannedWordRegexs,
           cs.bannedUsers,
         ),
-        tap(() => ctx.setConfig.filterExp(defaultFilter(ctx.getConfig))()),
+        tap(() => ctx.setAndBroadcastChangedConfig.filterExp(
+          defaultFilter(ctx.getConfig),
+        )()),
       ),
     )),
   )),
@@ -547,7 +556,7 @@ export default (): Promise<unknown> => pipe(
             (x: readonly (keyof UserConfig)[]) => x.includes(key),
             // eslint-disable-next-line max-len
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            (x) => (x ? ctx.setConfigPlain[key](val as never)
+            (x) => (x ? ctx.setChangedConfig[key](val as never)
             : () => {}),
           )()),
         ),
@@ -595,7 +604,7 @@ export default (): Promise<unknown> => pipe(
             ctx.chatScreen,
             ctx.flowChats,
             ctx.mainState,
-            ctx.setConfig,
+            ctx.setAndBroadcastChangedConfig,
             ctx.settingLog,
           )),
           tap((x) => x()),

@@ -20,7 +20,7 @@ export default (
   > => flip(
   (s, e) => pipe(
     getChecked(e),
-    (x) => updateAt(key, x),
+    updateAt(key),
     flip,
     apply(s),
   ),

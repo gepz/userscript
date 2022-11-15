@@ -1,3 +1,4 @@
+import * as IO from 'fp-ts/IO';
 import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
@@ -6,7 +7,7 @@ import {
 import UserConfig from '@/UserConfig';
 
 type UserConfigGetter = {
-  [P in keyof UserConfig]: () => UserConfig[P]['val'];
+  [P in keyof UserConfig]: IO.IO<UserConfig[P]['val']>;
 };
 
 export default UserConfigGetter;
