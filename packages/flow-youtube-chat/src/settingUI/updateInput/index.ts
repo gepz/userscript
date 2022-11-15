@@ -27,7 +27,7 @@ export default <T extends UpdateType>(
     getValue(e),
     setter,
     apply(getState(key)(s)),
-    (x) => updateAt(key, x),
+    updateAt(key),
     flip,
     apply(s),
   ),

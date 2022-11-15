@@ -62,7 +62,7 @@ readonly VNode<SettingState>[]
             flexDirection: 'column',
             padding: '6px',
           },
-        })((_, n) => updateAt('logTab', n)(c))(pipe(
+        })((_, n) => updateAt('logTab')(n)(c))(pipe(
           RA.makeBy(logPageLength, N.Show.show),
         ))(pipe(
           RA.makeBy(

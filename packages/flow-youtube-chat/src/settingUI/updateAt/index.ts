@@ -18,11 +18,7 @@ import setComputed from '@/settingUI/setComputed';
 import setState from '@/settingUI/setState';
 import Editable, * as Ed from '@/ui/Editable';
 
-export default <T extends UpdateType>(
-  k: StateKey<T>,
-  v: T,
-// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-) => pipe(
+export default <T extends UpdateType>(k: StateKey<T>) => (v: T) => pipe(
   k in setComputed ? (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     setComputed[k as keyof typeof setComputed] as (
