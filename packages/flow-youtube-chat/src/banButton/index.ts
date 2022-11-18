@@ -1,9 +1,17 @@
 import * as IO from 'fp-ts/IO';
+import * as IOO from 'fp-ts/IOOption';
+import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
+  flow,
 } from 'fp-ts/function';
+import * as Str from 'fp-ts/string';
 
-export default pipe(
+import UserConfigGetter from '@/UserConfigGetter';
+import UserConfigSetter from '@/UserConfigSetter';
+import defaultToast from '@/defaultToast';
+
+const template = pipe(
   document.createElement('button'),
   IO.of,
   IO.chainFirst((x) => () => x.classList.add(
@@ -33,3 +41,38 @@ export default pipe(
   + '</svg>';
   }),
 )();
+
+export default (
+  id: string,
+) => (
+  getConfig: UserConfigGetter,
+) => (
+  setConfig: UserConfigSetter,
+) => (
+  chat: HTMLElement,
+): IO.IO<HTMLElement> => pipe(
+  getConfig.bannedUsers,
+  IOO.fromIO,
+  IOO.filter((x) => !x.includes(id)),
+  IOO.map(flow(
+    RA.uniq(Str.Eq),
+    RA.append(id),
+  )),
+  IOO.chainIOK((x) => pipe(
+    setConfig.bannedUsers(x),
+    IO.apSecond(() => defaultToast().fire({
+      title: `Added Banned User: ${id}`,
+      icon: 'success',
+    })),
+  )),
+  IO.apSecond(() => {
+    // eslint-disable-next-line no-param-reassign
+    chat.style.display = 'none';
+  }),
+  (onclick) => pipe(
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    () => template.cloneNode(true) as HTMLElement,
+    // eslint-disable-next-line no-param-reassign
+    IO.chainFirst((x) => () => { x.onclick = onclick; }),
+  ),
+);
