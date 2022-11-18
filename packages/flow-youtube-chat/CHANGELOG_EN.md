@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Unreleased:
 - Nothing
 
+## 1.15.17
+### Fix
+- Fix a bug that prevent some ban buttons from showing in chat field.
+
+### Changed
+- Minor UI adjustments.
+
 ## 1.15.16
 ### Fix
 - Correct the Japanese text on the tooltip of the chat display toggle button.
