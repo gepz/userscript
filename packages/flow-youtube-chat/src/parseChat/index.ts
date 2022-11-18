@@ -76,7 +76,7 @@ export default (
   const authorPhotoMatches = chat.querySelector<HTMLImageElement>([
     '#author-photo',
     'img',
-  ].join(' '))?.src.match(/ytc\/(.*)=/);
+  ].join(' '))?.src.match(/ggpht\.com\/(ytc\/)?(.*)=/);
 
   const authorID = O.fromNullable(authorPhotoMatches?.at(-1));
 
