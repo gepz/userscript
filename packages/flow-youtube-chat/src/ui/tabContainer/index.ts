@@ -36,7 +36,7 @@ export default <T>(
   h('div', {
     style: {
       ...style.container,
-      overflow: 'hidden auto',
+      overflow: 'auto',
     },
   }, h('div', {
     style: {
