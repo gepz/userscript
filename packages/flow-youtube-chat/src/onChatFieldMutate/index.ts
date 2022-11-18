@@ -13,8 +13,9 @@ import FlowChat from '@/FlowChat';
 import Logger from '@/Logger';
 import MainState from '@/MainState';
 import UserConfigSetter from '@/UserConfigSetter';
-import addBanButton from '@/addBanButton';
 import addFlowChat from '@/addFlowChat';
+import appendChatMessage from '@/appendChatMessage';
+import banButton from '@/banButton';
 import checkBannedWords from '@/checkBannedWords';
 import parseChat from '@/parseChat';
 import setChatFieldSimplifyStyle from '@/setChatFieldSimplifyStyle';
@@ -55,7 +56,10 @@ export default (
         data.authorID,
         O.filter(getConfig.createBanButton),
         IOO.fromOption,
-        IOO.chainIOK((x) => addBanButton(chat, x, getConfig, setConfig)),
+        IOO.filter(() => !chat.children.namedItem('card')),
+        IOO.chainIOK(
+          (x) => appendChatMessage(banButton(x)(getConfig)(setConfig))(chat),
+        ),
       ),
       pipe(
         getConfig.simplifyChatField(),

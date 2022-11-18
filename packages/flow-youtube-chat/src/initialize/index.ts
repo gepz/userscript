@@ -67,12 +67,12 @@ import UserConfig from '@/UserConfig';
 import UserConfigGetter, {
   makeGetter,
 } from '@/UserConfigGetter';
-import UserConfigSetter from '@/UserConfigSetter';
 import appendLog from '@/appendLog';
 import consoleLog from '@/consoleLog';
 import createChatScreen from '@/createChatScreen';
 import defaultFilter from '@/defaultFilter';
 import defaultUserConfig from '@/defaultUserConfig';
+import listeningBroadcastConfigKeys from '@/listeningBroadcastConfigKeys';
 import livePageYt from '@/livePageYt';
 import mainCss from '@/mainCss';
 import observePair from '@/observePair';
@@ -86,6 +86,7 @@ import setChatAnimation from '@/setChatAnimation';
 import setChatAppCss from '@/setChatAppCss';
 import setChatPlayState from '@/setChatPlayState';
 import setSettingFromConfig from '@/setSettingFromConfig';
+import setterFromKeysMap from '@/setterFromKeysMap';
 import settingStateInit from '@/settingStateInit';
 import settingsComponent from '@/settingsComponent';
 import settingsPanelSize from '@/settingsPanelSize';
@@ -110,34 +111,29 @@ export default (): Promise<unknown> => pipe(
       getConfig: x.getConfig,
     })),
     T.let('configSubject', (ctx): ConfigSubject => makeSubject(ctx.configKeys)),
-    T.let('setterFromKeyMap', (ctx) => (
-      f: R.Reader<keyof UserConfig, R.Reader<never, T.Task<unknown>>>,
-    ): UserConfigSetter => pipe(
-      ctx.configKeys,
-      RA.map((x) => [x, f(x)]),
-      Object.fromEntries,
-    )),
-    T.let('setConfigPlain', (ctx) => ctx.setterFromKeyMap(
+    T.let('setterFromKeysMap', (ctx) => setterFromKeysMap(ctx.configKeys)),
+    T.let('setConfigPlain', (ctx) => ctx.setterFromKeysMap(
       (key) => (val) => async () => {
         ctx.userConfig[key].val = val;
         ctx.configSubject[key].next(val);
       },
     )),
-    T.let('setChangedConfig', (ctx) => ctx.setterFromKeyMap(
-      (key) => (val) => pipe(
-        async () => ctx.getConfig[key](),
-        T.map(O.fromPredicate((x) => !deepEq(x, val))),
-        TO.chainTaskK(() => ctx.setConfigPlain[key](val)),
-      ),
+    T.let('changedConfigMap', (ctx): R.Reader<
+    keyof UserConfig, R.Reader<never, TO.TaskOption<unknown>>
+    > => (key) => (val) => pipe(
+      async () => ctx.getConfig[key](),
+      T.map(O.fromPredicate((x) => !deepEq(x, val))),
+      TO.chainTaskK(() => ctx.setConfigPlain[key](val)),
+    )),
+    T.let('setChangedConfig', (ctx) => ctx.setterFromKeysMap(
+      ctx.changedConfigMap,
     )),
     T.apS('channel', T.of(new BroadcastChannel<
     [keyof UserConfig, UserConfig[keyof UserConfig]['val']]
     >(scriptIdentifier))),
-    T.let('setAndBroadcastChangedConfig', (ctx) => ctx.setterFromKeyMap(
+    T.let('setConfig', (ctx) => ctx.setterFromKeysMap(
       (key) => (val) => pipe(
-        async () => ctx.getConfig[key](),
-        T.map(O.fromPredicate((x) => !deepEq(x, val))),
-        TO.chainTaskK(() => ctx.setConfigPlain[key](val)),
+        ctx.changedConfigMap(key)(val),
         TO.chainTaskK(() => async () => {
           ctx.channel.postMessage([key, val]);
           const item = ctx.userConfig[key];
@@ -156,7 +152,7 @@ export default (): Promise<unknown> => pipe(
       displayChats: ctx.getConfig.displayChats(),
     })),
     T.let('wrappedToggleChat', (ctx) => simpleWrap(
-      toggleChatButton(ctx.setAndBroadcastChangedConfig),
+      toggleChatButton(ctx.setConfig),
       ctx.toggleChatButtonInit,
     )()),
     T.apS('flowChats', T.of<FlowChat[]>([])),
@@ -170,7 +166,7 @@ export default (): Promise<unknown> => pipe(
     )),
     T.let('wrappedSettings', (ctx) => simpleWrap(
       settingsComponent({
-        setConfig: ctx.setAndBroadcastChangedConfig,
+        setConfig: ctx.setConfig,
         act: {
           clearFlowChats: T.fromIO(removeOldChats(ctx.flowChats)(0)),
         },
@@ -397,7 +393,7 @@ export default (): Promise<unknown> => pipe(
           cs.bannedWordRegexs,
           cs.bannedUsers,
         ),
-        tap(() => ctx.setAndBroadcastChangedConfig.filterExp(
+        tap(() => ctx.setConfig.filterExp(
           defaultFilter(ctx.getConfig),
         )()),
       ),
@@ -543,17 +539,7 @@ export default (): Promise<unknown> => pipe(
             'message',
           ),
           tap(([key, val]) => pipe(
-            [
-              'lang',
-              'bannedWords',
-              'bannedWordRegexs',
-              'bannedUsers',
-              'filterExp',
-              'simplifyChatField',
-              'createBanButton',
-              'fieldScale',
-            ],
-            (x: readonly (keyof UserConfig)[]) => x.includes(key),
+            listeningBroadcastConfigKeys.includes(key),
             // eslint-disable-next-line max-len
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             (x) => (x ? ctx.setChangedConfig[key](val as never)
@@ -604,7 +590,7 @@ export default (): Promise<unknown> => pipe(
             ctx.chatScreen,
             ctx.flowChats,
             ctx.mainState,
-            ctx.setAndBroadcastChangedConfig,
+            ctx.setConfig,
             ctx.settingLog,
           )),
           tap((x) => x()),
