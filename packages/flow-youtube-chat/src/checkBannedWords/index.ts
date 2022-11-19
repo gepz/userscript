@@ -1,21 +1,19 @@
 import * as expEval from 'expression-eval';
-import * as IO from 'fp-ts/IO';
 import * as O from 'fp-ts/Option';
 import * as RA from 'fp-ts/ReadonlyArray';
+import * as S from 'fp-ts/State';
 import {
   pipe,
 } from 'fp-ts/function';
 
 import ChatData from '@/ChatData';
-import Logger from '@/Logger';
 import UserConfigGetter from '@/UserConfigGetter';
 import filterContext from '@/filter/filterContext';
 
 export default (
   data: ChatData,
   getConfig: UserConfigGetter,
-  log: Logger,
-): boolean => pipe(
+): S.State<unknown[], boolean> => pipe(
   data,
   O.fromPredicate(() => pipe(
     getConfig.filterExp(),
@@ -37,9 +35,9 @@ export default (
   ]),
   O.map(RA.map(O.getOrElse(() => ''))),
   O.map(JSON.stringify),
-  O.map((x) => log([`Filtered: ${x}`])),
-  O.match(
-    () => () => false,
-    IO.map(() => true),
+  O.map((x) => `Filtered: ${x}`),
+  O.match<string, S.State<unknown[], boolean>>(
+    () => S.of(false),
+    (x) => (s) => [true, [...s, x]],
   ),
-)();
+);
