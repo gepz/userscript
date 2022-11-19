@@ -72,6 +72,7 @@ import consoleLog from '@/consoleLog';
 import createChatScreen from '@/createChatScreen';
 import defaultFilter from '@/defaultFilter';
 import defaultUserConfig from '@/defaultUserConfig';
+import ioFromLogState from '@/ioFromLogState';
 import listeningBroadcastConfigKeys from '@/listeningBroadcastConfigKeys';
 import livePageYt from '@/livePageYt';
 import mainCss from '@/mainCss';
@@ -591,8 +592,8 @@ export default (): Promise<unknown> => pipe(
             ctx.flowChats,
             ctx.mainState,
             ctx.setConfig,
-            ctx.settingLog,
           )),
+          map(ioFromLogState(ctx.settingLog)),
           tap((x) => x()),
         ),
         pipe(
@@ -618,12 +619,11 @@ export default (): Promise<unknown> => pipe(
           startWith([]),
           map(() => ctx.live.player.ele),
           map(O.map((x) => x.getBoundingClientRect())),
-          tap((x) => onPlayerResize(
+          tap((x) => ioFromLogState(ctx.settingLog)(onPlayerResize(
             x,
             ctx.flowChats,
             ctx.mainState,
-            ctx.settingLog,
-          )()),
+          ))()),
         ),
         pipe(
           c.bodyResizePair.subject,
