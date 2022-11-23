@@ -1,10 +1,8 @@
 import * as IO from 'fp-ts/IO';
-import * as RA from 'fp-ts/ReadonlyArray';
-import {
-  pipe,
-} from 'fp-ts/function';
+import * as R from 'fp-ts/Reader';
 
 import UserConfig from '@/UserConfig';
+import mapObject from '@/mapObject';
 
 type UserConfigGetter = {
   [P in keyof UserConfig]: IO.IO<UserConfig[P]['val']>;
@@ -12,9 +10,6 @@ type UserConfigGetter = {
 
 export default UserConfigGetter;
 
-export const makeGetter = (config: UserConfig): UserConfigGetter => pipe(
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  Object.keys(config) as (keyof UserConfig)[],
-  RA.map((x) => [x, () => config[x].val]),
-  Object.fromEntries,
+export const makeGetter: R.Reader<UserConfig, UserConfigGetter> = mapObject(
+  ([x, c]) => [x, () => c.val],
 );

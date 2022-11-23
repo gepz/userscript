@@ -1,10 +1,8 @@
 import * as O from 'fp-ts/Option';
-import * as RA from 'fp-ts/ReadonlyArray';
-import {
-  pipe,
-} from 'fp-ts/function';
+import * as R from 'fp-ts/Reader';
 
 import LivePage from '@/LivePage';
+import mapObject from '@/mapObject';
 
 type LiveElementState<T> = T extends () => infer R ? {
   ele: R,
@@ -17,15 +15,12 @@ type LivePageState = {
 
 export default LivePageState;
 
-export const makePageState = (livePage: LivePage): LivePageState => pipe(
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  Object.keys(livePage) as (keyof LivePage)[],
-  RA.map((x) => [
-    x,
+export const makePageState: R.Reader<LivePage, LivePageState> = mapObject(
+  ([k, v]) => [
+    k,
     {
       ele: O.none,
-      read: livePage[x],
+      read: v,
     },
-  ]),
-  Object.fromEntries,
+  ],
 );
