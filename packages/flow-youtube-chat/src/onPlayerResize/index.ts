@@ -21,10 +21,9 @@ export default (
   O.match<DOMRectReadOnly, S.State<unknown[], IO.IO<void>>>(
     () => S.of(() => {}),
     flow(
-      (x) => () => {
-        // eslint-disable-next-line no-param-reassign
-        mainState.playerRect = x;
-      },
+      (x) => () => Object.assign(mainState, {
+        playerRect: x,
+      }),
       IO.map(() => flowChats),
       IO.map(RA.chain((x) => [
         renderChat(x)(mainState),

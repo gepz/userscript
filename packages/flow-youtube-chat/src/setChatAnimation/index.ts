@@ -32,7 +32,7 @@ const getWidth = memoize(
 
 export default (
   chat: FlowChat,
-  chats: FlowChat[],
+  chats: readonly FlowChat[],
 ) => (
   mainState: MainState,
 ): IO.IO<boolean> => pipe(
@@ -45,7 +45,7 @@ export default (
       // eslint-disable-next-line no-param-reassign
       chat.element.style.transform = `translate(${
         mainState.playerRect.width
-         * (mainState.getConfig.flowX2() - mainState.getConfig.flowX1())
+         * (mainState.config.flowX2 - mainState.config.flowX1)
       }px, -${x.fontSize * 2}px)`;
     },
   ),
@@ -71,7 +71,7 @@ export default (
     )(mainState),
   })),
   IOO.chain((ctx) => (
-    (intervalTooSmall(ctx.interval)(mainState.getConfig)) ? pipe(
+    (intervalTooSmall(ctx.interval)(mainState.config)) ? pipe(
       chat.animation,
       IOO.fromOption,
       IOO.chainIOK((x) => () => {
@@ -102,7 +102,7 @@ export default (
         [
           [
             mainState.playerRect.width
-             * (mainState.getConfig.flowX2() - mainState.getConfig.flowX1()),
+             * (mainState.config.flowX2 - mainState.config.flowX1),
             ctx.laneY,
           ],
           [
@@ -116,7 +116,7 @@ export default (
         RA.toArray,
         (x) => chat.element.animate(x, {
           duration: flowDuration,
-          easing: mainState.getConfig.timingFunction(),
+          easing: mainState.config.timingFunction,
         }),
         (x) => {
           // eslint-disable-next-line no-param-reassign

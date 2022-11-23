@@ -10,10 +10,10 @@ export default (
   chat: FlowChat,
   mainState: MainState,
 ): DOMRect => pipe(
-  mainState.getConfig,
-  (x) => (mainState.playerRect.width * x.flowX2())
+  mainState.config,
+  (x) => (mainState.playerRect.width * x.flowX2)
   - ((chat.width + (mainState.playerRect.width * (
-    x.flowX2() - x.flowX1()
+    x.flowX2 - x.flowX1
   ))) * getFlowChatProgress(chat)),
   (x) => new DOMRect(x, chat.y, chat.width, chat.height),
 );

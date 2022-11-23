@@ -14,14 +14,14 @@ import Editable, * as Ed from '@/ui/Editable';
 export default <T extends keyof UserConfig & keyof SettingState>(
   key: T,
 ) => (
-  value: UserConfig[T]['val'],
+  value: UserConfig[T],
 ) => (
   state: SettingState,
 ): SettingState => ({
   ...state,
   [key]: isEditable(key)(value) ? Ed.setValue(value)(
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    state[key] as Editable<number>,
+    state[key] as Editable<UserConfig[T]>,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   ) : key === 'filterExp' ? pipe(
     // eslint-disable-next-line max-len

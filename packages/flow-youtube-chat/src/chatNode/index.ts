@@ -8,7 +8,7 @@ import m from 'mithril';
 
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
-import UserConfigGetter from '@/UserConfigGetter';
+import UserConfig from '@/UserConfig';
 import getChatFontSize from '@/getChatFontSize';
 import textShadow from '@/textShadow';
 
@@ -18,13 +18,16 @@ const textStyle = {
 
 const parseMessage = (
   message: Element,
-  getConfig: UserConfigGetter,
+  config: UserConfig,
 ): {
   vnodes: m.Vnode[],
   length: number,
 } => {
   const eleWin = message.ownerDocument.defaultView ?? window;
-  const maxChatLength = getConfig.maxChatLength();
+  const {
+    maxChatLength,
+  } = config;
+
   const initResult: {
     vnodes: m.Vnode[],
     length: number,
@@ -42,7 +45,7 @@ const parseMessage = (
       vnodes,
       length,
     }
-    : (!getConfig.textOnly() && node instanceof eleWin.HTMLImageElement) ? {
+    : (!config.textOnly && node instanceof eleWin.HTMLImageElement) ? {
       vnodes: [
         ...vnodes,
         m('img', {
@@ -86,23 +89,23 @@ export default (
   mainState: MainState,
 ): m.Vnode => {
   const {
-    getConfig,
+    config,
   } = mainState;
 
-  const data = chat.getData(getConfig);
+  const data = chat.getData(config);
   return m('span', {
     style: {
       fontSize: `${getChatFontSize(mainState)}px`,
-      visibility: getConfig.displayChats() ? 'visible' : 'hidden',
-      color: data.authorType === 'owner' ? getConfig.ownerColor()
-      : data.authorType === 'moderator' ? getConfig.moderatorColor()
-      : data.authorType === 'member' ? getConfig.memberColor()
-      : getConfig.color(),
-      fontWeight: getConfig.fontWeight().toString(),
-      fontFamily: getConfig.font(),
-      opacity: getConfig.chatOpacity().toString(),
-      textShadow: textShadow(getConfig.shadowColor())(
-        getConfig.shadowFontWeight(),
+      visibility: config.displayChats ? 'visible' : 'hidden',
+      color: data.authorType === 'owner' ? config.ownerColor
+      : data.authorType === 'moderator' ? config.moderatorColor
+      : data.authorType === 'member' ? config.memberColor
+      : config.color,
+      fontWeight: config.fontWeight.toString(),
+      fontFamily: config.font,
+      opacity: config.chatOpacity.toString(),
+      textShadow: textShadow(config.shadowColor)(
+        config.shadowFontWeight,
       ),
     },
   }, pipe(
@@ -122,7 +125,7 @@ export default (
         data.messageElement,
         O.map((x) => parseMessage(
           x,
-          getConfig,
+          config,
         )),
         O.map((x) => m('span', {
           style: {

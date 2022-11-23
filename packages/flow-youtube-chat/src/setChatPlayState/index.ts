@@ -20,6 +20,6 @@ export default (
   : () => x.pause())),
   IOO.chainIOK((x) => () => {
     // eslint-disable-next-line no-param-reassign
-    x.playbackRate = mainState.getConfig.flowSpeed() / 15;
+    x.playbackRate = mainState.config.flowSpeed / 15;
   }),
 );

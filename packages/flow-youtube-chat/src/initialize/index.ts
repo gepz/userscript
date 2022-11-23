@@ -63,15 +63,17 @@ import LivePageState, {
 import Logger from '@/Logger';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
-import UserConfig from '@/UserConfig';
-import UserConfigGetter, {
+import UserConfig, {
+  makeValue,
+} from '@/UserConfig';
+import {
   makeGetter,
 } from '@/UserConfigGetter';
 import appendLog from '@/appendLog';
 import consoleLog from '@/consoleLog';
 import createChatScreen from '@/createChatScreen';
 import defaultFilter from '@/defaultFilter';
-import defaultUserConfig from '@/defaultUserConfig';
+import defaultGMConfig from '@/defaultGMConfig';
 import ioFromLogState from '@/ioFromLogState';
 import listeningBroadcastConfigKeys from '@/listeningBroadcastConfigKeys';
 import livePageYt from '@/livePageYt';
@@ -99,31 +101,36 @@ import updateSettingsRect from '@/updateSettingsRect';
 import videoToggleStream from '@/videoToggleStream';
 
 export default (): Promise<unknown> => pipe(
-  defaultUserConfig,
+  defaultGMConfig,
   flow(
     T.map((x) => ({
-      userConfig: x,
+      gmConfig: x,
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       configKeys: Object.keys(x) as (keyof UserConfig)[],
       getConfig: makeGetter(x),
+      config: makeValue(x),
     })),
     T.let('mainState', (x): MainState => ({
       chatPlaying: true,
       playerRect: new DOMRectReadOnly(0, 0, 600, 400),
-      getConfig: x.getConfig,
+      config: x.config,
     })),
     T.let('configSubject', (ctx): ConfigSubject => makeSubject(ctx.configKeys)),
     T.let('setterFromKeysMap', (ctx) => setterFromKeysMap(ctx.configKeys)),
     T.let('setConfigPlain', (ctx) => ctx.setterFromKeysMap(
       (key) => (val) => async () => {
-        ctx.userConfig[key].val = val;
+        ctx.gmConfig[key].val = val;
+        Object.assign(ctx.mainState.config, {
+          [key]: val,
+        });
+
         ctx.configSubject[key].next(val);
       },
     )),
     T.let('changedConfigMap', (ctx): R.Reader<
     keyof UserConfig, R.Reader<never, TO.TaskOption<unknown>>
     > => (key) => (val) => pipe(
-      async () => ctx.getConfig[key](),
+      async () => ctx.config[key],
       T.map(O.fromPredicate((x) => !deepEq(x, val))),
       TO.chainTaskK(() => ctx.setConfigPlain[key](val)),
     )),
@@ -131,14 +138,14 @@ export default (): Promise<unknown> => pipe(
       ctx.changedConfigMap,
     )),
     T.apS('channel', T.of(new BroadcastChannel<
-    [keyof UserConfig, UserConfig[keyof UserConfig]['val']]
+    [keyof UserConfig, UserConfig[keyof UserConfig]]
     >(scriptIdentifier))),
     T.let('setConfig', (ctx) => ctx.setterFromKeysMap(
       (key) => (val) => pipe(
         ctx.changedConfigMap(key)(val),
         TO.chainTaskK(() => async () => {
           ctx.channel.postMessage([key, val]);
-          const item = ctx.userConfig[key];
+          const item = ctx.gmConfig[key];
           GM.setValue(item.gmKey, item.toGm(val));
         }),
       ),
@@ -210,7 +217,7 @@ export default (): Promise<unknown> => pipe(
     [
       ['Version', packageJson.version],
       ['User Agent', window.navigator.userAgent],
-      ['UserConfig', JSON.stringify(ctx.userConfig)],
+      ['GMConfig', JSON.stringify(ctx.gmConfig)],
     ],
     RA.map(ctx.settingLog),
     IO.sequenceArray,
@@ -231,7 +238,7 @@ export default (): Promise<unknown> => pipe(
           IO.chainFirst(() => ctx.updateSettingState(
             // eslint-disable-next-line max-len
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, max-len
-            setSettingFromConfig(k)(v as UserConfig[keyof UserConfigGetter]['val']),
+            setSettingFromConfig(k)(v as UserConfig[keyof UserConfig]),
           )),
           IO.chain((x) => (k in ctx.toggleChatButtonInit
             ? () => ctx.wrappedToggleChat.dispatch(x)
@@ -587,6 +594,7 @@ export default (): Promise<unknown> => pipe(
             ctx.chatScreen,
             ctx.flowChats,
             ctx.mainState,
+            ctx.getConfig,
             ctx.setConfig,
           )),
           map(ioFromLogState(ctx.settingLog)),

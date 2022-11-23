@@ -1,6 +1,6 @@
-import UserConfigGetter from '@/UserConfigGetter';
+import UserConfig from '@/UserConfig';
 
 const overlapInterval = 0.999;
 export default (interval: number) => (
-  getConfig: UserConfigGetter,
-): boolean => getConfig.noOverlap() && interval < overlapInterval;
+  config: UserConfig,
+): boolean => config.noOverlap && interval < overlapInterval;

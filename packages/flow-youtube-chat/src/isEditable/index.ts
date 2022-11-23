@@ -3,10 +3,10 @@ import * as RA from 'fp-ts/ReadonlyArray';
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
 
-const exceptions: (keyof UserConfig & keyof SettingState)[] = [
+const exceptions = [
   'timingFunction',
   'lang',
-];
+] satisfies (keyof UserConfig & keyof SettingState)[];
 
 export default (
   k: string,

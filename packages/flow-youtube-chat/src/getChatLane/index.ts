@@ -16,7 +16,7 @@ import getFlowChatRect from '@/getFlowChatRect';
 export default (
   flowChat: FlowChat,
   progress: number,
-  flowChats: FlowChat[],
+  flowChats: readonly FlowChat[],
 ) => (
   mainState: MainState,
 ): {
@@ -24,7 +24,7 @@ export default (
   interval: number,
 } => {
   const flowWidth = mainState.playerRect.width * (
-    mainState.getConfig.flowX2() - mainState.getConfig.flowX1()
+    mainState.config.flowX2 - mainState.config.flowX1
   );
 
   const chatRect = getFlowChatRect(flowChat, mainState);
@@ -45,7 +45,7 @@ export default (
     const otherWidth = otherRect.width;
     const otherX = otherRect.x;
     const gap = ((chatHeight * otherWidth * chatWidth) ** 0.333)
-      * mainState.getConfig.minSpacing();
+      * mainState.config.minSpacing;
 
     return ((flowWidth - otherX) / (flowWidth + otherWidth)) - progress
      < (chatWidth + gap) / (flowWidth + chatWidth)
@@ -63,7 +63,7 @@ export default (
     })),
     RA.append({
       tooClose: (): boolean => true,
-      lane: mainState.getConfig.laneCount(),
+      lane: mainState.config.laneCount,
     }),
   );
 
@@ -72,7 +72,7 @@ export default (
     occupyInfo.slice(index),
     RA.findFirst((x) => x.tooClose()),
     O.map((x) => x.lane),
-    O.getOrElse(() => mainState.getConfig.laneCount()),
+    O.getOrElse(() => mainState.config.laneCount),
   );
 
   const leftFreeLane = pipe(
@@ -107,7 +107,7 @@ export default (
       const nextLane = info.lane;
       const interLane = Math.min(
         Math.max((lastLane + nextLane) / 2, 0),
-        mainState.getConfig.laneCount() - 1,
+        mainState.config.laneCount - 1,
       );
 
       const newInterval = Math.min(
