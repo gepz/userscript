@@ -28,7 +28,7 @@ export default (
   mainState: MainState,
   getConfig: UserConfigGetter,
   setConfig: UserConfigSetter,
-): R.Reader<MutationRecord[], S.State<unknown[], IO.IO<unknown>>> => flow(
+): R.Reader<MutationRecord[], S.State<unknown[][], IO.IO<unknown>>> => flow(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   RA.chain((e) => (Array.from(e.addedNodes) as HTMLElement[])),
   RA.filter((x) => x.children.length > 0),

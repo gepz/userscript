@@ -16,9 +16,9 @@ export default (
   rect: O.Option<DOMRectReadOnly>,
   flowChats: FlowChat[],
   mainState: MainState,
-): S.State<unknown[], IO.IO<void>> => pipe(
+): S.State<unknown[][], IO.IO<void>> => pipe(
   rect,
-  O.match<DOMRectReadOnly, S.State<unknown[], IO.IO<void>>>(
+  O.match<DOMRectReadOnly, S.State<unknown[][], IO.IO<void>>>(
     () => S.of(() => {}),
     flow(
       (x) => () => Object.assign(mainState, {
@@ -30,7 +30,7 @@ export default (
         setChatAnimation(x, flowChats)(mainState),
       ])),
       IO.chain(IO.sequenceArray),
-      (io) => (s) => [io, [...s, 'Resize detected']],
+      (io) => (s) => [io, [...s, ['Resize detected']]],
     ),
   ),
 );
