@@ -2,14 +2,14 @@ import {
   identity,
 } from 'fp-ts/function';
 
-import ConfigItem from '@/ConfigItem';
+import GMConfigItem from '@/GMConfigItem';
 
-export default async <T extends GM.Value>(
+export default <T extends GM.Value>(
   key: string,
-  defaultVal: T,
-): Promise<ConfigItem<T>> => ({
+  defaultValue: T,
+): GMConfigItem<T> => ({
   gmKey: key,
-  val: await GM.getValue(key) ?? defaultVal,
-  defaultVal,
+  getValue: async () => await GM.getValue(key) ?? defaultValue,
+  defaultValue,
   toGm: identity,
 });

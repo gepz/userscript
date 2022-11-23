@@ -57,14 +57,14 @@ import ConfigSubject, {
 } from '@/ConfigSubject';
 import FlowChat from '@/FlowChat';
 import LivePage from '@/LivePage';
-import LivePageState, {
+import {
   makePageState,
 } from '@/LivePageState';
 import Logger from '@/Logger';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
 import UserConfig, {
-  makeValue,
+  makeConfig,
 } from '@/UserConfig';
 import {
   makeGetter,
@@ -102,31 +102,31 @@ import videoToggleStream from '@/videoToggleStream';
 
 export default (): Promise<unknown> => pipe(
   defaultGMConfig,
-  flow(
-    T.map((x) => ({
-      gmConfig: x,
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      configKeys: Object.keys(x) as (keyof UserConfig)[],
-      getConfig: makeGetter(x),
-      config: makeValue(x),
-    })),
-    T.let('mainState', (x): MainState => ({
-      chatPlaying: true,
-      playerRect: new DOMRectReadOnly(0, 0, 600, 400),
-      config: x.config,
-    })),
-    T.let('configSubject', (ctx): ConfigSubject => makeSubject(ctx.configKeys)),
-    T.let('setterFromKeysMap', (ctx) => setterFromKeysMap(ctx.configKeys)),
-    T.let('setConfigPlain', (ctx) => ctx.setterFromKeysMap(
-      (key) => (val) => async () => {
-        ctx.gmConfig[key].val = val;
-        Object.assign(ctx.mainState.config, {
-          [key]: val,
-        });
+  (x) => ({
+    gmConfig: x,
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    configKeys: Object.keys(x) as (keyof UserConfig)[],
+  }),
+  T.of,
+  T.bind('config', (ctx) => makeConfig(ctx.gmConfig)),
+  T.let('getConfig', (ctx) => makeGetter(ctx.config)),
+  T.let('mainState', (x): MainState => ({
+    chatPlaying: true,
+    playerRect: new DOMRectReadOnly(0, 0, 600, 400),
+    config: x.config,
+  })),
+  T.let('configSubject', (ctx) => makeSubject(ctx.configKeys)),
+  T.let('setterFromKeysMap', (ctx) => setterFromKeysMap(ctx.configKeys)),
+  T.let('setConfigPlain', (ctx) => ctx.setterFromKeysMap(
+    (key) => (val) => async () => {
+      Object.assign(ctx.mainState.config, {
+        [key]: val,
+      });
 
-        ctx.configSubject[key].next(val);
-      },
-    )),
+      ctx.configSubject[key].next(val);
+    },
+  )),
+  flow(
     T.let('changedConfigMap', (ctx): R.Reader<
     keyof UserConfig, R.Reader<never, TO.TaskOption<unknown>>
     > => (key) => (val) => pipe(
@@ -150,15 +150,18 @@ export default (): Promise<unknown> => pipe(
         }),
       ),
     )),
-  ),
-  flow(
     T.apS('reinitSubject', T.fromIO(() => new Subject<void>())),
     T.let('reinitialize', (ctx) => () => {
       requestAnimationFrame(() => forwardTo(ctx.reinitSubject)());
     }),
+  ),
+  flow(
+    T.chainFirst((ctx) => ctx.setConfigPlain.filterExp(
+      defaultFilter(ctx.config),
+    )),
     T.let('toggleChatButtonInit', (ctx) => ({
-      lang: ctx.getConfig.lang(),
-      displayChats: ctx.getConfig.displayChats(),
+      lang: ctx.config.lang,
+      displayChats: ctx.config.displayChats,
     })),
     T.let('wrappedToggleChat', (ctx) => simpleWrap(
       toggleChatButton(ctx.setConfig),
@@ -180,11 +183,11 @@ export default (): Promise<unknown> => pipe(
           clearFlowChats: T.fromIO(removeOldChats(ctx.flowChats)(0)),
         },
       }),
-      settingStateInit(ctx.getConfig),
+      settingStateInit(ctx.config),
     )()),
     T.let('wrappedToggleSettings', (ctx) => simpleWrap(
       toggleSettingsPanelComponent(ctx.updateSettingState),
-      settingStateInit(ctx.getConfig),
+      settingStateInit(ctx.config),
     )()),
   ),
   flow(
@@ -212,45 +215,45 @@ export default (): Promise<unknown> => pipe(
       R.sequenceArray,
       R.map(IO.sequenceArray),
     )),
+    T.chainFirstIOK((ctx) => pipe(
+      [
+        ['Version', packageJson.version],
+        ['User Agent', window.navigator.userAgent],
+        ['GMConfig', JSON.stringify(ctx.gmConfig)],
+      ],
+      RA.map(ctx.settingLog),
+      IO.sequenceArray,
+    )),
+    T.let('cs', (ctx): ConfigSubject => pipe(
+      ctx.configSubject,
+      mapObject(([k, value]) => [
+        k,
+        pipe(
+          value,
+          tap<unknown>((v) => pipe(
+            v,
+            (x) => <T>(s: T) => ({
+              ...s,
+              [k]: x,
+            }),
+            IO.of,
+            IO.chainFirst(() => ctx.updateSettingState(
+              // eslint-disable-next-line max-len
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, max-len
+              setSettingFromConfig(k)(v as UserConfig[keyof UserConfig]),
+            )),
+            IO.chain((x) => (k in ctx.toggleChatButtonInit
+              ? () => ctx.wrappedToggleChat.dispatch(x)
+              : () => {})),
+            (x) => () => requestAnimationFrame(x),
+          )()),
+        ),
+      ]),
+    )),
+    T.apS('livePage', T.of(livePageYt)),
+    T.let('live', (ctx) => makePageState(ctx.livePage)),
+    T.apS('chatScreen', T.fromIO(createChatScreen)),
   ),
-  T.chainFirstIOK((ctx) => pipe(
-    [
-      ['Version', packageJson.version],
-      ['User Agent', window.navigator.userAgent],
-      ['GMConfig', JSON.stringify(ctx.gmConfig)],
-    ],
-    RA.map(ctx.settingLog),
-    IO.sequenceArray,
-  )),
-  T.let('cs', (ctx): ConfigSubject => pipe(
-    ctx.configSubject,
-    mapObject(([k, value]) => [
-      k,
-      pipe(
-        value,
-        tap<unknown>((v) => pipe(
-          v,
-          (x) => <T>(s: T) => ({
-            ...s,
-            [k]: x,
-          }),
-          IO.of,
-          IO.chainFirst(() => ctx.updateSettingState(
-            // eslint-disable-next-line max-len
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, max-len
-            setSettingFromConfig(k)(v as UserConfig[keyof UserConfig]),
-          )),
-          IO.chain((x) => (k in ctx.toggleChatButtonInit
-            ? () => ctx.wrappedToggleChat.dispatch(x)
-            : () => {})),
-          (x) => () => requestAnimationFrame(x),
-        )()),
-      ),
-    ]),
-  )),
-  T.apS('livePage', T.of(livePageYt)),
-  T.let('live', (ctx): LivePageState => makePageState(ctx.livePage)),
-  T.apS('chatScreen', T.fromIO(createChatScreen)),
   T.bind('all$', (ctx) => pipe(
     {
       eq: O.getEq(eqStrict).equals,
@@ -282,7 +285,7 @@ export default (): Promise<unknown> => pipe(
           ),
           pipe(
             cs.fieldScale,
-            startWith(ctx.getConfig.fieldScale()),
+            startWith(ctx.config.fieldScale),
             map(scaleChatField(ctx.live)),
             tap((x) => x()),
           ),
@@ -299,13 +302,13 @@ export default (): Promise<unknown> => pipe(
                   cs.flowY2,
                   pipe(
                     cs.flowX1,
-                    startWith(ctx.getConfig.flowX1()),
+                    startWith(ctx.config.flowX1),
                     tap((x) => Object.assign<
                     CSSStyleDeclaration,
                     Partial<CSSStyleDeclaration>
                     >(ctx.chatScreen.style, {
                       left: `${x * 100}%`,
-                      width: `${(ctx.getConfig.flowX2() - x) * 100}%`,
+                      width: `${(ctx.config.flowX2 - x) * 100}%`,
                     })),
                   ),
                   pipe(
@@ -314,8 +317,8 @@ export default (): Promise<unknown> => pipe(
                     CSSStyleDeclaration,
                     Partial<CSSStyleDeclaration>
                     >(ctx.chatScreen.style, {
-                      left: `${ctx.getConfig.flowX1() * 100}%`,
-                      width: `${(x - ctx.getConfig.flowX1()) * 100}%`,
+                      left: `${ctx.config.flowX1 * 100}%`,
+                      width: `${(x - ctx.config.flowX1) * 100}%`,
                     })),
                   ),
                   cs.textOnly,
@@ -419,7 +422,7 @@ export default (): Promise<unknown> => pipe(
               cs.bannedUsers,
             ),
             tap(() => ctx.setConfig.filterExp(
-              defaultFilter(ctx.getConfig),
+              defaultFilter(ctx.config),
             )()),
           ),
         )),
@@ -529,8 +532,9 @@ export default (): Promise<unknown> => pipe(
             O.alt(() => ctx.live.offlineSlate.ele),
             O.isSome,
             (x) => () => {
-              // eslint-disable-next-line no-param-reassign
-              ctx.mainState.chatPlaying = x;
+              Object.assign(ctx.mainState, {
+                chatPlaying: x,
+              });
             },
           )),
           IO.sequenceArray,
@@ -556,7 +560,7 @@ export default (): Promise<unknown> => pipe(
             // eslint-disable-next-line max-len
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             (ctx.cs[key] as Subject<unknown>),
-            startWith(ctx.getConfig[key]()),
+            startWith(ctx.config[key]),
             bufferCount(2, 1),
             map(([x, y]) => diff(x, y)),
             tap((x) => ctx.settingLog([

@@ -1,21 +1,24 @@
+import * as I from 'fp-ts/Identity';
+import * as T from 'fp-ts/Task';
 import {
   pipe,
 } from 'fp-ts/function';
 
-import ConfigItem from '@/ConfigItem';
+import GMConfigItem from '@/GMConfigItem';
 
-export default async <T1 extends GM.Value, T2>(
+export default <T1 extends GM.Value, T2>(
   key: string,
-  defaultVal: T2,
-  toItem: (x: T1) => T2,
+  defaultValue: T2,
+  toConfig: (x: T1) => T2,
   toGm: (x: T2) => GM.Value,
-): Promise<ConfigItem<T2>> => pipe(
-  await GM.getValue<T1>(key),
-  (x) => (x !== undefined ? toItem(x) : defaultVal),
-  (x) => ({
+): GMConfigItem<T2> => pipe(
+  {
     gmKey: key,
-    val: x,
-    defaultVal,
+    defaultValue,
     toGm,
-  }),
+  },
+  I.apS('getValue', pipe(
+    () => GM.getValue<T1>(key),
+    T.map((x) => (x !== undefined ? toConfig(x) : defaultValue)),
+  )),
 );

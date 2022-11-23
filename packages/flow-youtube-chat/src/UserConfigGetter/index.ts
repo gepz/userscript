@@ -1,7 +1,9 @@
 import * as IO from 'fp-ts/IO';
 import * as R from 'fp-ts/Reader';
+import {
+  pipe,
+} from 'fp-ts/function';
 
-import GMConfig from '@/GMConfig';
 import UserConfig from '@/UserConfig';
 import mapObject from '@/mapObject';
 
@@ -11,6 +13,7 @@ type UserConfigGetter = {
 
 export default UserConfigGetter;
 
-export const makeGetter: R.Reader<GMConfig, UserConfigGetter> = mapObject(
-  ([x, c]) => [x, () => c.val],
+export const makeGetter: R.Reader<UserConfig, UserConfigGetter> = (c) => pipe(
+  c,
+  mapObject(([x]) => [x, () => c[x]]),
 );

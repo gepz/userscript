@@ -7,7 +7,7 @@ import {
 
 import MappedConfigState from '@/MappedConfigState';
 import SettingState from '@/SettingState';
-import UserConfigGetter from '@/UserConfigGetter';
+import UserConfig from '@/UserConfig';
 import isEditable from '@/isEditable';
 import mapObject from '@/mapObject';
 import Compound from '@/settingUI/EditableExpression/Compound';
@@ -15,10 +15,9 @@ import fromJsepExp from '@/settingUI/EditableExpression/fromJsepExp';
 import settingsPanelSize from '@/settingsPanelSize';
 import * as Ed from '@/ui/Editable';
 
-export default (getConfig: UserConfigGetter): SettingState => pipe(
-  getConfig,
+export default (config: UserConfig): SettingState => pipe(
+  config,
   mapObject(flow(
-    ([k, v]) => [k, v()] as const,
     ([k, v]) => [
       k,
       isEditable(k)(v) ? Ed.of(v)
@@ -39,7 +38,7 @@ export default (getConfig: UserConfigGetter): SettingState => pipe(
     showPanel: false,
     mainTab: 0,
     logTab: 0,
-    timingStepCount: Ed.of(parseInt(getConfig.timingFunction().match(
+    timingStepCount: Ed.of(parseInt(config.timingFunction.match(
       /^steps\((\d+),.+/,
     )?.[1] ?? '150', 10)),
     eventLog: [],

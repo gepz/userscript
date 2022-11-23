@@ -13,7 +13,7 @@ import filterContext from '@/filter/filterContext';
 export default (
   data: ChatData,
   config: UserConfig,
-): S.State<unknown[], boolean> => pipe(
+): S.State<unknown[][], boolean> => pipe(
   data,
   O.fromPredicate(() => pipe(
     config.filterExp,
@@ -35,8 +35,8 @@ export default (
   ]),
   O.map(RA.map(O.getOrElse(() => ''))),
   O.map(JSON.stringify),
-  O.map((x) => `Filtered: ${x}`),
-  O.match<string, S.State<unknown[], boolean>>(
+  O.map((x) => [`Filtered: ${x}`]),
+  O.match<string[], S.State<unknown[][], boolean>>(
     () => S.of(false),
     (x) => (s) => [true, [...s, x]],
   ),
