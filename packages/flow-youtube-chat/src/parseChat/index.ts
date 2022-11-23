@@ -7,13 +7,13 @@ import {
 } from 'fp-ts/function';
 
 import ChatData from '@/ChatData';
-import UserConfigGetter from '@/UserConfigGetter';
+import UserConfig from '@/UserConfig';
 
 // チャット欄に追加されたチャットを抽出する
 export default (
   chat: HTMLElement,
 ): (
-  getConfig: UserConfigGetter,
+  config: UserConfig,
   ) => ChatData => {
   const chatType = chat.querySelector<HTMLElement>(
     '.yt-live-chat-ticker-paid-message-item-renderer',
@@ -102,7 +102,7 @@ export default (
     })),
   );
 
-  return (getConfig) => ({
+  return (config) => ({
     chatType,
     authorType,
     authorID,
@@ -111,10 +111,10 @@ export default (
       O.map((x) => ({
         visible: (
           authorType === 'moderator'
-      && getConfig.displayModName()
+      && config.displayModName
         ) || (
           O.isSome(paymentInfo)
-      && getConfig.displaySuperChatAuthor()
+      && config.displaySuperChatAuthor
         ),
         content: x,
       })),

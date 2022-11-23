@@ -45,7 +45,7 @@ export default <T extends UpdateType>(k: StateKey<T>) => (v: T) => pipe(
         && isEditable(k)(v[0]) ? Ed.value(
           // eslint-disable-next-line max-len
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-          v as unknown as Editable<UserConfig[keyof UserConfig]['val']>,
+          v as unknown as Editable<UserConfig[keyof UserConfig]>,
         // eslint-disable-next-line max-len
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         ) : k === 'filterExp' ? toJsepExp(v as Expression)

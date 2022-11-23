@@ -6,13 +6,10 @@ import {
   Subject,
 } from 'rxjs';
 
-import ConfigItem from '@/ConfigItem';
 import UserConfig from '@/UserConfig';
 
 type ConfigSubject = {
-  [P in keyof UserConfig]:
-  UserConfig[P] extends ConfigItem<infer R> ? Subject<R>
-  : never;
+  [P in keyof UserConfig]: Subject<UserConfig[P]>;
 };
 
 export default ConfigSubject;

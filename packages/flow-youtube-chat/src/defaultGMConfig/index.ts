@@ -11,7 +11,7 @@ import {
 } from 'fp-ts/function';
 import * as Str from 'fp-ts/string';
 
-import UserConfig from '@/UserConfig';
+import GMConfig from '@/GMConfig';
 import fycKey from '@/fycKey';
 import indirectConfig from '@/indirectConfig';
 import languages from '@/languages';
@@ -42,7 +42,7 @@ const ic = <T1 extends GM.Value, T2>(
   g: (x: T2) => GM.Value,
 ) => indirectConfig(fycKey(k), d, i, g);
 
-export default (): Promise<UserConfig> => pipe(
+export default (): Promise<GMConfig> => pipe(
   async () => ({
     lang: await ic<string, typeof languages[number]>(
       'LANG',

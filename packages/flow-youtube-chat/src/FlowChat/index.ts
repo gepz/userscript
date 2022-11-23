@@ -1,10 +1,10 @@
 import * as O from 'fp-ts/Option';
 
 import ChatData from '@/ChatData';
-import UserConfigGetter from '@/UserConfigGetter';
+import UserConfig from '@/UserConfig';
 
 export default interface FlowChat {
-  getData: (getConfig: UserConfigGetter) => ChatData,
+  getData: (config: UserConfig) => ChatData,
   element: HTMLElement,
   lane: number,
   animation: O.Option<Animation>,

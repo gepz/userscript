@@ -7,16 +7,16 @@ import {
 } from 'fp-ts/function';
 
 import ChatData from '@/ChatData';
-import UserConfigGetter from '@/UserConfigGetter';
+import UserConfig from '@/UserConfig';
 import filterContext from '@/filter/filterContext';
 
 export default (
   data: ChatData,
-  getConfig: UserConfigGetter,
+  config: UserConfig,
 ): S.State<unknown[], boolean> => pipe(
   data,
   O.fromPredicate(() => pipe(
-    getConfig.filterExp(),
+    config.filterExp,
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     (x) => expEval.eval(
       x,

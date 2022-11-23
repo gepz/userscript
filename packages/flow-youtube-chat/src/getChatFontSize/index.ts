@@ -2,7 +2,7 @@ import MainState from '@/MainState';
 
 export default (
   mainState: MainState,
-): number => Math.round((Math.max(mainState.getConfig.fontSize() - 0.2, 0.01)
-   * mainState.playerRect.height / mainState.getConfig.laneCount()
-   * (mainState.getConfig.flowY2() - mainState.getConfig.flowY1())
+): number => Math.round((Math.max(mainState.config.fontSize - 0.2, 0.01)
+   * mainState.playerRect.height / mainState.config.laneCount
+   * (mainState.config.flowY2 - mainState.config.flowY1)
 ) * 100) / 100;

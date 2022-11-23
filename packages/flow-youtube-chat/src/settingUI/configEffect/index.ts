@@ -9,7 +9,7 @@ import UserConfigSetter from '@/UserConfigSetter';
 
 export default <T extends keyof UserConfig>(
   k: T,
-  v: UserConfig[T]['val'],
+  v: UserConfig[T],
 ): R.Reader<UserConfigSetter, Effect<SettingState>> => (
   setConfig,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

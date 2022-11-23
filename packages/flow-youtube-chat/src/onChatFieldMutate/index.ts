@@ -13,6 +13,7 @@ import {
 
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
+import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';
 import addFlowChat from '@/addFlowChat';
 import appendChatMessage from '@/appendChatMessage';
@@ -25,6 +26,7 @@ export default (
   chatScrn: HTMLElement,
   flowChats: FlowChat[],
   mainState: MainState,
+  getConfig: UserConfigGetter,
   setConfig: UserConfigSetter,
 ): R.Reader<MutationRecord[], S.State<unknown[], IO.IO<unknown>>> => flow(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -34,19 +36,19 @@ export default (
   RA.map((chat) => pipe(
     {
       getData: parseChat(chat),
-      getConfig: mainState.getConfig,
+      config: mainState.config,
     },
-    I.let('data', (x) => x.getData(x.getConfig)),
+    I.let('data', (x) => x.getData(x.config)),
     S.of,
-    S.bind('banned', (ctx) => pipe(
-      checkBannedWords(ctx.data, ctx.getConfig),
+    S.bind('banned', (x) => pipe(
+      checkBannedWords(x.data, x.config),
     )),
     S.map((ctx) => (ctx.banned ? () => {
       // eslint-disable-next-line no-param-reassign
       chat.style.display = 'none';
     } : IO.sequenceArray([
       pipe(
-        ctx.getConfig.createChats() && ctx.data.chatType === 'normal',
+        ctx.config.createChats && ctx.data.chatType === 'normal',
         IOO.fromPredicate(identity),
         IOO.chainIOK(() => addFlowChat(
           ctx.getData,
@@ -57,15 +59,15 @@ export default (
       ),
       pipe(
         ctx.data.authorID,
-        O.filter(ctx.getConfig.createBanButton),
+        O.filter(() => ctx.config.createBanButton),
         IOO.fromOption,
         IOO.filter(() => !chat.children.namedItem('card')),
         IOO.chainIOK((x) => R.chain(appendChatMessage)(
-          banButton(x)(ctx.getConfig)(setConfig),
+          banButton(x)(getConfig)(setConfig),
         )(chat)),
       ),
       pipe(
-        ctx.getConfig.simplifyChatField(),
+        ctx.config.simplifyChatField,
         IOO.fromPredicate(identity),
         IOO.chainIOK(() => setChatFieldSimplifyStyle(chat)),
       ),

@@ -4,7 +4,7 @@ import UserConfig from '@/UserConfig';
 
 type UserConfigSetter = {
   [P in keyof UserConfig]: (
-    val: UserConfig[P]['val'],
+    val: UserConfig[P],
   ) => T.Task<void>;
 };
 

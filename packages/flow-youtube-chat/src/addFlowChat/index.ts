@@ -10,7 +10,7 @@ import log from 'loglevel';
 import ChatData from '@/ChatData';
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
-import UserConfigGetter from '@/UserConfigGetter';
+import UserConfig from '@/UserConfig';
 import getChatFontSize from '@/getChatFontSize';
 import getChatLane from '@/getChatLane';
 import intervalTooSmall from '@/intervalTooSmall';
@@ -20,7 +20,7 @@ import setChatAnimation from '@/setChatAnimation';
 const emptyElement = document.createElement('span');
 
 export default (
-  getData: (getConfig: UserConfigGetter) => ChatData,
+  getData: (config: UserConfig) => ChatData,
   flowChats: FlowChat[],
   chatScrn: HTMLElement,
   mainState: MainState,
@@ -42,14 +42,14 @@ export default (
     flowChats,
   )(mainState).interval,
   intervalTooSmall,
-  (x) => x(mainState.getConfig),
+  (x) => x(mainState.config),
 ) ? () => {}
 : () => {
   const offScreenIndex = pipe(
     flowChats,
     RA.findIndex(
       (chat) => chat.animationEnded
-   || flowChats.length >= mainState.getConfig.maxChatCount(),
+   || flowChats.length >= mainState.config.maxChatCount,
     ),
   );
 
