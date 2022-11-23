@@ -76,6 +76,7 @@ import ioFromLogState from '@/ioFromLogState';
 import listeningBroadcastConfigKeys from '@/listeningBroadcastConfigKeys';
 import livePageYt from '@/livePageYt';
 import mainCss from '@/mainCss';
+import mapObject from '@/mapObject';
 import observePair from '@/observePair';
 import onChatFieldMutate from '@/onChatFieldMutate';
 import onPlayerResize from '@/onPlayerResize';
@@ -216,11 +217,7 @@ export default (): Promise<unknown> => pipe(
   )),
   T.let('cs', (ctx): ConfigSubject => pipe(
     ctx.configSubject,
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    (x) => Object.entries(x) as {
-      [K in keyof ConfigSubject]: [K, ConfigSubject[K]];
-    }[keyof ConfigSubject][],
-    RA.map(([k, value]) => [
+    mapObject(([k, value]) => [
       k,
       pipe(
         value,
@@ -243,163 +240,10 @@ export default (): Promise<unknown> => pipe(
         )()),
       ),
     ]),
-    Object.fromEntries,
   )),
   T.apS('livePage', T.of(livePageYt)),
   T.let('live', (ctx): LivePageState => makePageState(ctx.livePage)),
   T.apS('chatScreen', T.fromIO(createChatScreen)),
-  T.let('config$', (ctx) => pipe(
-    ctx.cs,
-    (cs) => defer(() => merge(
-      merge(
-        cs.bannedWordRegexs,
-        cs.bannedWords,
-        cs.bannedUsers,
-      ),
-      pipe(
-        cs.fieldScale,
-        startWith(ctx.getConfig.fieldScale()),
-        map(scaleChatField(ctx.live)),
-        tap((x) => x()),
-      ),
-      pipe(
-        merge(
-          pipe(
-            merge(
-              cs.font,
-              cs.fontSize,
-              cs.fontWeight,
-              cs.laneCount,
-              cs.minSpacing,
-              cs.flowY1,
-              cs.flowY2,
-              pipe(
-                cs.flowX1,
-                startWith(ctx.getConfig.flowX1()),
-                tap((x) => Object.assign<
-                CSSStyleDeclaration,
-                Partial<CSSStyleDeclaration>
-                >(ctx.chatScreen.style, {
-                  left: `${x * 100}%`,
-                  width: `${(ctx.getConfig.flowX2() - x) * 100}%`,
-                })),
-              ),
-              pipe(
-                cs.flowX2,
-                tap((x) => Object.assign<
-                CSSStyleDeclaration,
-                Partial<CSSStyleDeclaration>
-                >(ctx.chatScreen.style, {
-                  left: `${ctx.getConfig.flowX1() * 100}%`,
-                  width: `${(x - ctx.getConfig.flowX1()) * 100}%`,
-                })),
-              ),
-              cs.textOnly,
-            ),
-            map(() => ({
-              render: true,
-              setAnimation: true,
-            })),
-          ),
-          pipe(
-            merge(
-              cs.color,
-              cs.ownerColor,
-              cs.moderatorColor,
-              cs.memberColor,
-              cs.shadowColor,
-              cs.chatOpacity,
-              cs.shadowFontWeight,
-              cs.displayChats,
-            ),
-            map(() => ({
-              render: true,
-            })),
-          ),
-          pipe(
-            cs.flowSpeed,
-            map(() => ({
-              setPlayState: true,
-            })),
-          ),
-          pipe(
-            merge(
-              pipe(
-                cs.maxChatCount,
-                map(removeOldChats(ctx.flowChats)),
-                tap((x) => x()),
-              ),
-              cs.noOverlap,
-              cs.timingFunction,
-            ),
-            map(() => ({
-              setAnimation: true,
-            })),
-          ),
-        ),
-        throttleTime(180, undefined, {
-          leading: true,
-          trailing: true,
-        }),
-        tap((config: Partial<ChatUpdateConfig>) => pipe(
-          ctx.flowChats,
-          RA.filter((x) => !x.animationEnded),
-          RA.map((chat) => pipe(
-            {
-              render: false,
-              setAnimation: false,
-              setPlayState: false,
-              ...config,
-            } satisfies ChatUpdateConfig,
-            (x: ChatUpdateConfig) => pipe(
-              [
-                pipe(
-                  renderChat(chat),
-                  O.fromPredicate(() => x.render),
-                ),
-                pipe(
-                  setChatAnimation(chat, ctx.flowChats),
-                  O.fromPredicate(() => x.setAnimation),
-                  O.alt(() => pipe(
-                    setChatPlayState(chat),
-                    O.fromPredicate(() => x.setPlayState),
-                  )),
-                ),
-              ],
-              RA.compact,
-              RA.map(apply(ctx.mainState)),
-              IO.sequenceArray,
-            ),
-          )),
-          IO.sequenceArray,
-        )()),
-      ),
-      pipe(
-        cs.lang,
-        tap((lang) => ctx.updateSettingState((x) => ({
-          ...x,
-          lang,
-        }))()),
-      ),
-      cs.maxChatLength,
-      cs.simplifyChatField,
-      cs.createBanButton,
-      cs.createChats,
-      cs.displayModName,
-      cs.displaySuperChatAuthor,
-      cs.fieldScale,
-      pipe(
-        merge(
-          cs.bannedWords,
-          cs.bannedWordRegexs,
-          cs.bannedUsers,
-        ),
-        tap(() => ctx.setConfig.filterExp(
-          defaultFilter(ctx.getConfig),
-        )()),
-      ),
-    )),
-  )),
   T.bind('all$', (ctx) => pipe(
     {
       eq: O.getEq(eqStrict).equals,
@@ -421,6 +265,158 @@ export default (): Promise<unknown> => pipe(
         tap((x) => x()),
         map(() => value),
       ))(ob),
+      config$: pipe(
+        ctx.cs,
+        (cs) => defer(() => merge(
+          merge(
+            cs.bannedWordRegexs,
+            cs.bannedWords,
+            cs.bannedUsers,
+          ),
+          pipe(
+            cs.fieldScale,
+            startWith(ctx.getConfig.fieldScale()),
+            map(scaleChatField(ctx.live)),
+            tap((x) => x()),
+          ),
+          pipe(
+            merge(
+              pipe(
+                merge(
+                  cs.font,
+                  cs.fontSize,
+                  cs.fontWeight,
+                  cs.laneCount,
+                  cs.minSpacing,
+                  cs.flowY1,
+                  cs.flowY2,
+                  pipe(
+                    cs.flowX1,
+                    startWith(ctx.getConfig.flowX1()),
+                    tap((x) => Object.assign<
+                    CSSStyleDeclaration,
+                    Partial<CSSStyleDeclaration>
+                    >(ctx.chatScreen.style, {
+                      left: `${x * 100}%`,
+                      width: `${(ctx.getConfig.flowX2() - x) * 100}%`,
+                    })),
+                  ),
+                  pipe(
+                    cs.flowX2,
+                    tap((x) => Object.assign<
+                    CSSStyleDeclaration,
+                    Partial<CSSStyleDeclaration>
+                    >(ctx.chatScreen.style, {
+                      left: `${ctx.getConfig.flowX1() * 100}%`,
+                      width: `${(x - ctx.getConfig.flowX1()) * 100}%`,
+                    })),
+                  ),
+                  cs.textOnly,
+                ),
+                map(() => ({
+                  render: true,
+                  setAnimation: true,
+                })),
+              ),
+              pipe(
+                merge(
+                  cs.color,
+                  cs.ownerColor,
+                  cs.moderatorColor,
+                  cs.memberColor,
+                  cs.shadowColor,
+                  cs.chatOpacity,
+                  cs.shadowFontWeight,
+                  cs.displayChats,
+                ),
+                map(() => ({
+                  render: true,
+                })),
+              ),
+              pipe(
+                cs.flowSpeed,
+                map(() => ({
+                  setPlayState: true,
+                })),
+              ),
+              pipe(
+                merge(
+                  pipe(
+                    cs.maxChatCount,
+                    map(removeOldChats(ctx.flowChats)),
+                    tap((x) => x()),
+                  ),
+                  cs.noOverlap,
+                  cs.timingFunction,
+                ),
+                map(() => ({
+                  setAnimation: true,
+                })),
+              ),
+            ),
+            throttleTime(180, undefined, {
+              leading: true,
+              trailing: true,
+            }),
+            tap((config: Partial<ChatUpdateConfig>) => pipe(
+              ctx.flowChats,
+              RA.filter((x) => !x.animationEnded),
+              RA.map((chat) => pipe(
+                {
+                  render: false,
+                  setAnimation: false,
+                  setPlayState: false,
+                  ...config,
+                } satisfies ChatUpdateConfig,
+                (x: ChatUpdateConfig) => pipe(
+                  [
+                    pipe(
+                      renderChat(chat),
+                      O.fromPredicate(() => x.render),
+                    ),
+                    pipe(
+                      setChatAnimation(chat, ctx.flowChats),
+                      O.fromPredicate(() => x.setAnimation),
+                      O.alt(() => pipe(
+                        setChatPlayState(chat),
+                        O.fromPredicate(() => x.setPlayState),
+                      )),
+                    ),
+                  ],
+                  RA.compact,
+                  RA.map(apply(ctx.mainState)),
+                  IO.sequenceArray,
+                ),
+              )),
+              IO.sequenceArray,
+            )()),
+          ),
+          pipe(
+            cs.lang,
+            tap((lang) => ctx.updateSettingState((x) => ({
+              ...x,
+              lang,
+            }))()),
+          ),
+          cs.maxChatLength,
+          cs.simplifyChatField,
+          cs.createBanButton,
+          cs.createChats,
+          cs.displayModName,
+          cs.displaySuperChatAuthor,
+          cs.fieldScale,
+          pipe(
+            merge(
+              cs.bannedWords,
+              cs.bannedWordRegexs,
+              cs.bannedUsers,
+            ),
+            tap(() => ctx.setConfig.filterExp(
+              defaultFilter(ctx.getConfig),
+            )()),
+          ),
+        )),
+      ),
     },
     IO.of,
     IO.apS('css', mainCss),
@@ -562,7 +558,7 @@ export default (): Promise<unknown> => pipe(
             ])()),
           )),
         ),
-        ctx.config$,
+        c.config$,
         pipe(
           ctx.live.video.ele,
           O.match(
