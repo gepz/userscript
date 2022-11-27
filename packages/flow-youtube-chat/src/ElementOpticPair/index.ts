@@ -27,3 +27,13 @@ export const filter = <S, A, B extends A>(
     ),
   })),
 );
+
+export const prop = <A, P extends keyof A>(p: P) => <S>(
+  pair: ElementOpticPair<S, A>,
+): ElementOpticPair<S, A[P]> => ({
+  ele: pair.ele[p],
+  opt: pipe(
+    pair.opt,
+    Op.prop(p),
+  ),
+});
