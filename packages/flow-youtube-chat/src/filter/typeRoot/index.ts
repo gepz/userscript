@@ -57,10 +57,7 @@ export default recordT({
           O.of(varT(2)),
         ]),
       ]),
-      funcT([
-        [O.of(varT(0))],
-        O.of(varT(2)),
-      ]),
+      varT(0),
     ]),
     O.of(varT(2)),
   ]),
