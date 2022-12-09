@@ -1,6 +1,7 @@
 import * as O from 'fp-ts/Option';
 import {
   pipe,
+  flow,
 } from 'fp-ts/function';
 
 import LivePage from '@/LivePage';
@@ -9,10 +10,10 @@ const chatApp = (): O.Option<Element> => pipe(
   O.fromNullable(
     document.querySelector<HTMLIFrameElement>('#chatframe'),
   ),
-  O.filter((x) => {
-    const state = x.contentDocument?.readyState;
-    return state === 'loading' || state === 'complete';
-  }),
+  O.filter(flow(
+    (x) => x.contentDocument?.readyState,
+    (x) => x === 'loading' || x === 'complete',
+  )),
   O.chainNullableK((x) => x.contentDocument),
   O.alt(() => O.of(document)),
   O.chainNullableK((x) => x.querySelector(

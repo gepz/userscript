@@ -17,22 +17,20 @@ import * as Ed from '@/ui/Editable';
 
 export default (config: UserConfig): SettingState => pipe(
   config,
-  mapObject(flow(
-    ([k, v]) => [
-      k,
-      isEditable(k)(v) ? Ed.of(v)
-      : k === 'filterExp' ? pipe(
-        // eslint-disable-next-line max-len
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        fromJsepExp(v as expEval.parse.Expression),
-        O.getOrElseW((): Compound => ({
-          type: 'Compound',
-          body: [],
-        })),
-      )
-      : v,
-    ],
-  )),
+  mapObject(([k, v]) => [
+    k,
+    isEditable(k)(v) ? Ed.of(v)
+    : k === 'filterExp' ? pipe(
+      // eslint-disable-next-line max-len
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      fromJsepExp(v as expEval.parse.Expression),
+      O.getOrElseW((): Compound => ({
+        type: 'Compound',
+        body: [],
+      })),
+    )
+    : v,
+  ]),
   (x: MappedConfigState) => ({
     ...x,
     showPanel: false,

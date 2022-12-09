@@ -1,14 +1,19 @@
 import {
+  sequenceT,
+} from 'fp-ts/Apply';
+import {
   tailRec,
 } from 'fp-ts/ChainRec';
 import * as E from 'fp-ts/Either';
 import * as En from 'fp-ts/Endomorphism';
 import * as I from 'fp-ts/Identity';
+import {
+  concatAll,
+} from 'fp-ts/Monoid';
 import * as O from 'fp-ts/Option';
 import * as R from 'fp-ts/Reader';
 import * as RA from 'fp-ts/ReadonlyArray';
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray';
-import * as RTu from 'fp-ts/ReadonlyTuple';
 import {
   Refinement,
 } from 'fp-ts/Refinement';
@@ -39,16 +44,17 @@ import RestType from '@/filter/type/RestType';
 import SimpleType from '@/filter/type/SimpleType';
 import TupleType from '@/filter/type/TupleType';
 import UI from '@/filter/type/UI';
-import VariableType from '@/filter/type/VariableType';
 import errorT from '@/filter/type/errorT';
 import funcT from '@/filter/type/funcT';
 import listT from '@/filter/type/listT';
+import recordT from '@/filter/type/recordT';
 import restT from '@/filter/type/restT';
 import returnT from '@/filter/type/returnT';
 import simpleT from '@/filter/type/simpleT';
 import tupleT from '@/filter/type/tupleT';
 import unknownT from '@/filter/type/unknownT';
 import typeRoot from '@/filter/typeRoot';
+import mapObject from '@/mapObject';
 import setRecord from '@/setRecord';
 import ArrayExpression from '@/settingUI/EditableExpression/ArrayExpression';
 import CallExpression from '@/settingUI/EditableExpression/CallExpression';
@@ -85,38 +91,53 @@ const replaceVarType = (
 ) => (
   type: EvalType,
 ): EvalType => pipe(
-  type,
-  O.fromPredicate((x): x is VariableType => x.tag === 'var'),
-  O.filter((x) => x.type in typeMap),
-  O.map((x) => typeMap[x.type]),
-  O.getOrElse(constant(type)),
+  replaceVarType(typeMap),
+  (r) => (
+    type.tag === 'var' && type.type in typeMap ? typeMap[type.type]
+    : type.tag === 'func' ? funcT([
+      RNEA.map(O.map(r))(type.type[0]),
+      O.map(r)(type.type[1]),
+    ])
+    : type.tag === 'tuple' ? pipe(
+      type.type,
+      RA.map((x) => (x.tag === 'rest' ? restT(r(x.type))
+      : r(x))),
+      tupleT,
+    )
+    : type.tag === 'record' ? pipe(
+      type.type,
+      mapObject(([k, v]) => [k, r(v)]),
+      recordT,
+    )
+    : type),
 );
 
-const assignableToVarType = (
-  a: VariableType,
+const assignableToFunc = (
+  a: FunctionType,
 ) => (
-  b: EvalType,
+  b: FunctionType,
 ): boolean => pipe(
   true,
 );
 
 const updateTypeMap = (
-  expectedType: EvalType,
+  e: EvalType,
 ) => (
-  actualType: EvalType | ErrorType,
-) => pipe(
-  expectedType,
-  O.fromPredicate((x): x is VariableType => x.tag === 'var'),
-  O.chain((et) => pipe(
-    actualType,
-    O.fromPredicate((x): x is EvalType => x.tag !== 'error'),
-    O.filter(assignableToVarType(et)),
-    O.map(setRecord<number, EvalType>(et.type)),
-  )),
-  O.getOrElse<En.Endomorphism<Record<number, EvalType>>>(
-    constant(identity),
-  ),
-);
+  a: EvalType | ErrorType,
+): En.Endomorphism<Record<number, EvalType>> => (
+  e.tag === 'var' && a.tag !== 'error' ? setRecord<number, EvalType>(e.type)(a)
+  : e.tag === 'func' && a.tag === e.tag ? pipe(
+    RA.zip([...e.type[0], e.type[1]], [...a.type[0], a.type[1]]),
+    RA.map((x) => sequenceT(O.Apply)(...x)),
+    RA.compact,
+    RA.map((x) => updateTypeMap(x[0])(x[1])),
+    concatAll(En.getMonoid()),
+  )
+  : e.tag === 'tuple' && a.tag === e.tag ? pipe(
+    RA.zip(e.type, a.type),
+    () => identity,
+  )
+  : identity);
 
 type ExpNodeFunc = (
   expectedType: EvalType,
@@ -133,9 +154,9 @@ type ExpNodeFunc = (
 ) => Result<EvalType | ErrorType>;
 
 const identifierNode = (
-  context: RecordType,
-) => (
   expectedType: EvalType,
+) => (
+  context: RecordType,
 ) => (
   m: Record<number, EvalType>,
 ) => (
@@ -179,10 +200,7 @@ const memberNode = (
     type: x.type,
     nodes: x.nodes,
   })),
-  O.bind(
-    'typeMap',
-    (x) => O.of(updateTypeMap(expectedType)(x.type)(m)),
-  ),
+  O.let('typeMap', (x) => updateTypeMap(expectedType)(x.type)(m)),
   O.getOrElse<Result<EvalType | ErrorType>>(() => errorResult(m)),
 );
 
@@ -198,11 +216,6 @@ const primitiveTupleUI = (
   O.filter((x) => x.pri === pri),
   O.map((x) => x.ui),
 );
-
-/*
-(1 => 2) => (2 => 3) => 1 => 3
-(1 => 2 => 3) => 2 => 1 => 3
-*/
 
 const callNode = (
   f: ExpNodeFunc,
@@ -228,31 +241,28 @@ const callNode = (
   O.bind('argumentResult', (ctx) => pipe(
     pair.ele.argument,
     O.map((arg) => pipe(
-      ctx.calleeResult.type.type,
-      RTu.fst,
-      ([x]) => x,
+      ctx.calleeResult.type.type[0][0],
       O.getOrElse<EvalType>(constant(unknownT)),
-      (x) => (f(x)(typeRoot)(ctx.calleeResult.typeMap)(c)(s)({
+      replaceVarType(ctx.calleeResult.typeMap),
+      (x) => f(x)(typeRoot)({})(c)(s)({
         ele: arg,
         opt: pipe(
           pair.opt,
           Op.prop('argument'),
           Op.some,
         ),
-      })),
+      }),
     )),
     O.alt(constant(O.of<Result<EvalType | ErrorType>>(errorResult(m)))),
   )),
   O.map((ctx) => pipe(
     ctx.argumentResult,
-    (result) => ([
+    (result) => [
       ...ctx.calleeResult.nodes,
       ...pipe(
         result.nodes,
         pipe(
-          ctx.calleeResult.type.type,
-          RTu.fst,
-          (x) => x[0],
+          ctx.calleeResult.type.type[0][0],
           O.chain(primitiveTupleUI(Primitive.boolean)),
           O.exists((x) => x === UI.card),
         ) ? RA.map((x) => h('div', {
@@ -260,7 +270,7 @@ const callNode = (
         }, [x]))
         : identity,
       ),
-    ]),
+    ],
     I.bindTo('nodes'),
     I.apS('type', pipe(
       returnT(ctx.calleeResult.type),
@@ -382,133 +392,124 @@ const arrayNode = (
 ) => (
   pair: EOP.ElementOpticPair<Expression, ArrayExpression>,
 ): Result<EvalType | ErrorType> => pipe(
-  pair.ele.elements,
-  RA.mapWithIndex(pipe(
-    pair.opt,
-    Op.prop('elements'),
-    (elementsOpt) => (i: number, e) => pipe(
-      elementsOpt,
-      Op.component(i),
-      (x): EOP.ElementOpticPair<Expression, Expression> => ({
-        ele: e,
-        opt: x,
-      }),
-      (p) => pipe(
-        nodeF,
-        R.map(apply(typeRoot)),
-        (x) => (
-          et: EvalType,
-        ) => (
-          m: Record<number, EvalType>,
-        ) => x(et)(m)(c)(s)(p),
-      ),
-    ),
-  )),
-  flow(
-    (f) => tailRec<{
-      matches: readonly {
-        types: (EvalType | ErrorType)[],
-        nodes: VNode<SettingState>[],
-        typeMap: Record<number, EvalType>,
-        eTypes: RNEA.ReadonlyNonEmptyArray<EvalType | RestType>,
-      }[],
-      fns: readonly (R.Reader<EvalType,
-      R.Reader<Record<number, EvalType>,
-      Result<EvalType | ErrorType>>>)[],
-    }, O.Option<{
+  pair,
+  EOP.prop('elements'),
+  (elements) => pipe(
+    elements.ele,
+    RA.mapWithIndex((i: number, e) => pipe(
+      elements.opt,
+      Op.index(i),
+      EOP.of(e),
+      (p) => (
+        et: EvalType,
+      ) => (
+        m: Record<number, EvalType>,
+      ) => nodeF(et)(typeRoot)(m)(c)(s)(p),
+    )),
+  ),
+  (f) => tailRec<{
+    matches: readonly {
       types: (EvalType | ErrorType)[],
       nodes: VNode<SettingState>[],
       typeMap: Record<number, EvalType>,
-    }>>(pipe(
-            expectedType,
-            RA.fromPredicate((x): x is TupleType => x.tag === 'tuple'),
-            RA.map((x) => x.type),
-            RA.filterMap(RNEA.fromReadonlyArray),
-            RA.append<RNEA.ReadonlyNonEmptyArray<EvalType | RestType>>(
-              [restT(unknownT)] as const,
-            ),
-            RA.map((x) => ({
-              types: [],
-              nodes: [],
-              typeMap: map,
-              eTypes: x,
-            })),
-            I.bindTo('matches'),
-            I.apS('fns', f),
-          ), (current) => (pipe(
-            current.fns,
-            RNEA.fromReadonlyArray,
-            O.map(RNEA.matchLeft((currentFn, restFns) => pipe(
-              current.matches,
-              RA.chain((match) => pipe(
-                match.eTypes,
-                RNEA.matchLeft((head, tail) => (head.tag === 'rest' ? ([
-                  head.type,
-                  [tail, match.eTypes],
-                ] as const) : ([
-                  head,
-                  [tail],
-                ] as const))),
-                ([eType, restETypes]) => ({
-                  eType,
-                  restETypes: pipe(
-                    restETypes,
-                    RA.filterMap(RNEA.fromReadonlyArray),
-                    RNEA.fromReadonlyArray,
-                  ),
-                }),
-                (ctx) => pipe(
-                  ctx.restETypes,
-                  O.map((arr) => pipe(
-                    currentFn(ctx.eType)(match.typeMap),
-                    (result) => pipe(
-                      arr,
-                      RA.map((x) => ({
-                        types: [...match.types, result.type],
-                        nodes: [...match.nodes, h('div', {}, result.nodes)],
-                        typeMap: result.typeMap,
-                        eTypes: x,
-                      })),
-                    ),
-                  )),
-                  O.getOrElseW(constant([])),
+      eTypes: RNEA.ReadonlyNonEmptyArray<EvalType | RestType>,
+    }[],
+    fns: readonly (R.Reader<EvalType,
+    R.Reader<Record<number, EvalType>,
+    Result<EvalType | ErrorType>>>)[],
+  }, O.Option<{
+    types: (EvalType | ErrorType)[],
+    nodes: VNode<SettingState>[],
+    typeMap: Record<number, EvalType>,
+  }>>(pipe(
+          expectedType,
+          RA.fromPredicate((x): x is TupleType => x.tag === 'tuple'),
+          RA.map((x) => x.type),
+          RA.filterMap(RNEA.fromReadonlyArray),
+          RA.append<RNEA.ReadonlyNonEmptyArray<EvalType | RestType>>(
+            [restT(unknownT)] as const,
+          ),
+          RA.map((x) => ({
+            types: [],
+            nodes: [],
+            typeMap: map,
+            eTypes: x,
+          })),
+          I.bindTo('matches'),
+          I.apS('fns', f),
+        ), (current) => (pipe(
+          current.fns,
+          RNEA.fromReadonlyArray,
+          O.map(RNEA.matchLeft((currentFn, restFns) => pipe(
+            current.matches,
+            RA.chain((match) => pipe(
+              match.eTypes,
+              RNEA.matchLeft((head, tail) => (head.tag === 'rest' ? ([
+                head.type,
+                [tail, match.eTypes],
+              ] as const) : ([
+                head,
+                [tail],
+              ] as const))),
+              ([eType, restETypes]) => ({
+                eType,
+                restETypes: pipe(
+                  restETypes,
+                  RA.filterMap(RNEA.fromReadonlyArray),
+                  RNEA.fromReadonlyArray,
                 ),
-              )),
-              (x) => ({
-                matches: x,
-                fns: restFns,
               }),
-            ))),
-            E.fromOption(constant(pipe(
-              current.matches,
-              RA.head,
-              O.map((x) => ({
-                types: x.types,
-                nodes: x.nodes,
-                typeMap: x.typeMap,
-              })),
-            ))),
-            E.swap,
+              (ctx) => pipe(
+                ctx.restETypes,
+                O.map((arr) => pipe(
+                  currentFn(ctx.eType)(match.typeMap),
+                  (result) => pipe(
+                    arr,
+                    RA.map((x) => ({
+                      types: [...match.types, result.type],
+                      nodes: [...match.nodes, h('div', {}, result.nodes)],
+                      typeMap: result.typeMap,
+                      eTypes: x,
+                    })),
+                  ),
+                )),
+                O.getOrElseW(constant([])),
+              ),
+            )),
+            (x) => ({
+              matches: x,
+              fns: restFns,
+            }),
           ))),
-    O.map((ctx) => ({
-      type: pipe(
-        ctx.types,
-        O.fromPredicate((v): v is EvalType[] => pipe(
-          v,
-          RA.every((x) => x.tag !== 'error'),
-        )),
-        O.map(tupleT),
-        O.getOrElse<EvalType | ErrorType>(() => errorT),
-      ),
-      nodes: ctx.nodes,
-      typeMap: ctx.typeMap,
-    })),
-    O.map((ctx) => ({
-      ...ctx,
-      typeMap: updateTypeMap(expectedType)(ctx.type)(ctx.typeMap),
-    })),
-    O.getOrElseW(constant(errorResult(map))),
-  ),
+          E.fromOption(constant(pipe(
+            current.matches,
+            RA.head,
+            O.map((x) => ({
+              types: x.types,
+              nodes: x.nodes,
+              typeMap: x.typeMap,
+            })),
+          ))),
+          E.swap,
+        ))),
+  O.map((ctx) => ({
+    type: pipe(
+      ctx.types,
+      O.fromPredicate((v): v is EvalType[] => pipe(
+        v,
+        RA.every((x) => x.tag !== 'error'),
+      )),
+      O.map(tupleT),
+      O.getOrElse<EvalType | ErrorType>(() => errorT),
+    ),
+    nodes: ctx.nodes,
+    typeMap: ctx.typeMap,
+  })),
+  O.map((ctx) => ({
+    ...ctx,
+    typeMap: updateTypeMap(expectedType)(ctx.type)(ctx.typeMap),
+  })),
+  O.getOrElseW(constant(errorResult(map))),
 );
 
 const chainPairElse = <T extends Expression>(
@@ -537,13 +538,12 @@ const expNode: ExpNodeFunc = (
   pair,
 ) => pipe(
   expectedType,
-  replaceVarType(m),
   (t) => pipe(
     pair,
     E.right,
     chainPairElse(
       (x): x is Identifier => x.type === 'Identifier',
-    )(identifierNode(context)(t)(m)(c)(s)),
+    )(identifierNode(t)(context)(m)(c)(s)),
     chainPairElse(
       (x): x is MemberExpression => x.type === 'MemberExpression',
     )(memberNode(expNode)(t)(m)(c)(s)),
