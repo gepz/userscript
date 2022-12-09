@@ -2,7 +2,7 @@ import * as RA from 'fp-ts/ReadonlyArray';
 import * as T from 'fp-ts/Task';
 import {
   pipe,
-} from 'fp-ts/lib/function';
+} from 'fp-ts/function';
 
 import GMConfig from '@/GMConfig';
 import GMConfigItem from '@/GMConfigItem';

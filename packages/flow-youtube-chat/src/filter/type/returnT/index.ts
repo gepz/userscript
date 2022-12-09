@@ -19,9 +19,7 @@ export default (type: FunctionType): O.Option<EvalType> => pipe(
   ], O.Option<EvalType>] => RTu.fst(x).length > 1),
   O.map(flow(
     RTu.mapFst(
-      ([, ...tail]): RNEA.ReadonlyNonEmptyArray<
-      O.Option<EvalType>
-      > => tail,
+      ([, ...tail]): RNEA.ReadonlyNonEmptyArray<O.Option<EvalType>> => tail,
     ),
     funcT,
   )),

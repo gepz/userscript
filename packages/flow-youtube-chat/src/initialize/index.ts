@@ -52,7 +52,8 @@ import {
 
 import packageJson from '@/../package.json';
 import ChatUpdateConfig from '@/ChatUpdateConfig';
-import ConfigSubject, {
+import ConfigObservable from '@/ConfigObservable';
+import {
   makeSubject,
 } from '@/ConfigSubject';
 import FlowChat from '@/FlowChat';
@@ -224,7 +225,7 @@ export default (): Promise<unknown> => pipe(
       RA.map(ctx.settingLog),
       IO.sequenceArray,
     )),
-    T.let('cs', (ctx): ConfigSubject => pipe(
+    T.let('co', (ctx): ConfigObservable => pipe(
       ctx.configSubject,
       mapObject(([k, value]) => [
         k,
@@ -276,15 +277,15 @@ export default (): Promise<unknown> => pipe(
         map(() => value),
       ))(ob),
       config$: pipe(
-        ctx.cs,
-        (cs) => defer(() => merge(
+        ctx.co,
+        (co) => defer(() => merge(
           merge(
-            cs.bannedWordRegexs,
-            cs.bannedWords,
-            cs.bannedUsers,
+            co.bannedWordRegexs,
+            co.bannedWords,
+            co.bannedUsers,
           ),
           pipe(
-            cs.fieldScale,
+            co.fieldScale,
             startWith(ctx.config.fieldScale),
             map(scaleChatField(ctx.live)),
             tap((x) => x()),
@@ -293,15 +294,15 @@ export default (): Promise<unknown> => pipe(
             merge(
               pipe(
                 merge(
-                  cs.font,
-                  cs.fontSize,
-                  cs.fontWeight,
-                  cs.laneCount,
-                  cs.minSpacing,
-                  cs.flowY1,
-                  cs.flowY2,
+                  co.font,
+                  co.fontSize,
+                  co.fontWeight,
+                  co.laneCount,
+                  co.minSpacing,
+                  co.flowY1,
+                  co.flowY2,
                   pipe(
-                    cs.flowX1,
+                    co.flowX1,
                     startWith(ctx.config.flowX1),
                     tap((x) => Object.assign<
                     CSSStyleDeclaration,
@@ -312,7 +313,7 @@ export default (): Promise<unknown> => pipe(
                     })),
                   ),
                   pipe(
-                    cs.flowX2,
+                    co.flowX2,
                     tap((x) => Object.assign<
                     CSSStyleDeclaration,
                     Partial<CSSStyleDeclaration>
@@ -321,7 +322,7 @@ export default (): Promise<unknown> => pipe(
                       width: `${(x - ctx.config.flowX1) * 100}%`,
                     })),
                   ),
-                  cs.textOnly,
+                  co.textOnly,
                 ),
                 map(() => ({
                   render: true,
@@ -330,21 +331,21 @@ export default (): Promise<unknown> => pipe(
               ),
               pipe(
                 merge(
-                  cs.color,
-                  cs.ownerColor,
-                  cs.moderatorColor,
-                  cs.memberColor,
-                  cs.shadowColor,
-                  cs.chatOpacity,
-                  cs.shadowFontWeight,
-                  cs.displayChats,
+                  co.color,
+                  co.ownerColor,
+                  co.moderatorColor,
+                  co.memberColor,
+                  co.shadowColor,
+                  co.chatOpacity,
+                  co.shadowFontWeight,
+                  co.displayChats,
                 ),
                 map(() => ({
                   render: true,
                 })),
               ),
               pipe(
-                cs.flowSpeed,
+                co.flowSpeed,
                 map(() => ({
                   setPlayState: true,
                 })),
@@ -352,12 +353,12 @@ export default (): Promise<unknown> => pipe(
               pipe(
                 merge(
                   pipe(
-                    cs.maxChatCount,
+                    co.maxChatCount,
                     map(removeOldChats(ctx.flowChats)),
                     tap((x) => x()),
                   ),
-                  cs.noOverlap,
-                  cs.timingFunction,
+                  co.noOverlap,
+                  co.timingFunction,
                 ),
                 map(() => ({
                   setAnimation: true,
@@ -402,24 +403,24 @@ export default (): Promise<unknown> => pipe(
             )()),
           ),
           pipe(
-            cs.lang,
+            co.lang,
             tap((lang) => ctx.updateSettingState((x) => ({
               ...x,
               lang,
             }))()),
           ),
-          cs.maxChatLength,
-          cs.simplifyChatField,
-          cs.createBanButton,
-          cs.createChats,
-          cs.displayModName,
-          cs.displaySuperChatAuthor,
-          cs.fieldScale,
+          co.maxChatLength,
+          co.simplifyChatField,
+          co.createBanButton,
+          co.createChats,
+          co.displayModName,
+          co.displaySuperChatAuthor,
+          co.fieldScale,
           pipe(
             merge(
-              cs.bannedWords,
-              cs.bannedWordRegexs,
-              cs.bannedUsers,
+              co.bannedWords,
+              co.bannedWordRegexs,
+              co.bannedUsers,
             ),
             tap(() => ctx.setConfig.filterExp(
               defaultFilter(ctx.config),
@@ -429,7 +430,7 @@ export default (): Promise<unknown> => pipe(
       ),
     },
     IO.of,
-    IO.apS('css', mainCss),
+    IO.apS('cos', mainCss),
     IO.apS('documentMutationPair', observePair(MutationObserver)),
     IO.apS('chatMutationPair', observePair(MutationObserver)),
     IO.apS('playerResizePair', observePair(ResizeObserver)),
@@ -475,7 +476,7 @@ export default (): Promise<unknown> => pipe(
         c.chatMutationPair.observer.disconnect();
         c.playerResizePair.observer.disconnect();
         c.bodyResizePair.observer.disconnect();
-        document.head.append(c.css);
+        document.head.append(c.cos);
         pipe(
           [
             pipe(
@@ -559,7 +560,7 @@ export default (): Promise<unknown> => pipe(
           RA.map((key) => pipe(
             // eslint-disable-next-line max-len
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            (ctx.cs[key] as Subject<unknown>),
+            (ctx.co[key] as Subject<unknown>),
             startWith(ctx.config[key]),
             bufferCount(2, 1),
             map(([x, y]) => diff(x, y)),

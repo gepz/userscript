@@ -7,10 +7,15 @@ import {
 } from 'fp-ts/function';
 import * as Op from 'monocle-ts/Optional';
 
-export type ElementOpticPair<T1, T2> = {
-  ele: T2,
-  opt: Op.Optional<T1, T2>
+export type ElementOpticPair<S, A> = {
+  ele: A,
+  opt: Op.Optional<S, A>
 };
+
+export const of = <A>(ele: A) => <S>(opt: Op.Optional<S, A>) => ({
+  ele,
+  opt,
+});
 
 export const filter = <S, A, B extends A>(
   refinement: Refinement<A, B>,

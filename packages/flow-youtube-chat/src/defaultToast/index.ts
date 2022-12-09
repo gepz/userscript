@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
 
-export default (): typeof Swal => Swal.mixin({
+export default Swal.mixin({
   toast: true,
   position: 'bottom-left',
   timer: 2500,
