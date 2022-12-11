@@ -507,7 +507,7 @@ export default (): Promise<unknown> => pipe(
             ),
             pipe(
               ctx.live.toggleChatBtnParent.ele,
-              O.map((x) => () => x.append(ctx.wrappedToggleChat.node)),
+              O.map((x) => () => x.prepend(ctx.wrappedToggleChat.node)),
             ),
             pipe(
               ctx.live.settingsToggleNextElement.ele,
