@@ -135,6 +135,7 @@ const updateTypeMap = (
   )
   : e.tag === 'tuple' && a.tag === e.tag ? pipe(
     RA.zip(e.type, a.type),
+    (x) => x,
     () => identity,
   )
   : identity);
@@ -192,13 +193,11 @@ const memberNode = (
     EOP.prop('object'),
   )),
   O.fromPredicate((x): x is Result<RecordType> => x.type.tag === 'record'),
-  O.map((x) => f(unknownT)(x.type)(m)(c)(s)(pipe(
+  O.map((x) => f(expectedType)(x.type)(m)(c)(s)(pipe(
     pair,
     EOP.prop('property'),
   ))),
-  O.map(omit(['typeMap'])),
-  O.let('typeMap', (x) => updateTypeMap(expectedType)(x.type)(m)),
-  O.getOrElse<Result<EvalType | ErrorType>>(() => errorResult(m)),
+  O.getOrElseW(() => errorResult(m)),
 );
 
 const primitiveTupleUI = (
@@ -239,7 +238,7 @@ const callNode = (
     pair.ele.argument,
     O.map((arg) => pipe(
       ctx.calleeResult.type.type[0][0],
-      O.getOrElse<EvalType>(constant(unknownT)),
+      O.getOrElseW(constant(unknownT)),
       replaceVarType(ctx.calleeResult.typeMap),
       (x) => f(x)(typeRoot)({})(c)(s)({
         ele: arg,
@@ -250,7 +249,7 @@ const callNode = (
         ),
       }),
     )),
-    O.alt(constant(O.of<Result<EvalType | ErrorType>>(errorResult(m)))),
+    O.alt(() => O.of<Result<EvalType | ErrorType>>(errorResult(m))),
   )),
   O.map((ctx) => pipe(
     ctx.argumentResult,
@@ -271,14 +270,14 @@ const callNode = (
     I.bindTo('nodes'),
     I.apS('type', pipe(
       returnT(ctx.calleeResult.type),
-      O.getOrElse<EvalType | ErrorType>(constant(errorT)),
+      O.getOrElse<EvalType | ErrorType>(() => errorT),
     )),
     I.let(
       'typeMap',
-      (x) => updateTypeMap(expectedType)(x.type)(ctx.argumentResult.typeMap),
+      (x) => updateTypeMap(expectedType)(x.type)(ctx.calleeResult.typeMap),
     ),
   )),
-  O.getOrElse<Result<EvalType | ErrorType>>(constant(errorResult(m))),
+  O.getOrElse<Result<EvalType | ErrorType>>(() => errorResult(m)),
 );
 
 const expressionSetter = <T>(
@@ -306,11 +305,11 @@ const literalNode = (
   m: Record<number, EvalType>,
 ) => (
   c: AppCommander,
-) => (
-  pair: EOP.ElementOpticPair<Expression, Literal>,
-): Result<SimpleType> => pipe(
-  pair.opt,
-  Op.prop('value'),
+): R.Reader<
+EOP.ElementOpticPair<Expression, Literal>,
+Result<SimpleType>
+> => flow(
+  EOP.prop('value'),
   (value) => ({
     type: simpleT({
       pri: Primitive.string,
@@ -321,15 +320,12 @@ const literalNode = (
       textInput(
         editAction(
           'filterExp',
-          expressionSetter(setEditString)(value)(Ed.of('')),
+          expressionSetter(setEditString)(value.opt)(Ed.of('')),
         )(c),
-      )(pair.ele.value),
+      )(value.ele),
     ],
   }),
-  I.let(
-    'typeMap',
-    (ctx) => updateTypeMap(expectedType)(ctx.type)(m),
-  ),
+  I.let('typeMap', (x) => updateTypeMap(expectedType)(x.type)(m)),
 );
 
 const literalArrayNode = (
@@ -338,11 +334,11 @@ const literalArrayNode = (
   m: Record<number, EvalType>,
 ) => (
   c: AppCommander,
-) => (
-  pair: EOP.ElementOpticPair<Expression, LiteralArray>,
-): Result<TupleType> => pipe(
-  pair.opt,
-  Op.prop('value'),
+): R.Reader<
+EOP.ElementOpticPair<Expression, LiteralArray>,
+Result<TupleType>
+> => flow(
+  EOP.prop('value'),
   (value) => ({
     type: listT(simpleT({
       pri: Primitive.string,
@@ -365,12 +361,12 @@ const literalArrayNode = (
             ) === UI.regex
               ? setEditRegexs
               : setEditStrings,
-          )(value)(Ed.of([''])),
+          )(value.opt)(Ed.of([''])),
         )(c),
-      )(pair.ele.value),
+      )(value.ele),
     ],
   }),
-  I.let('typeMap', (ctx) => updateTypeMap(expectedType)(ctx.type)(m)),
+  I.let('typeMap', (x) => updateTypeMap(expectedType)(x.type)(m)),
 );
 
 const arrayNode = (
@@ -447,19 +443,17 @@ const arrayNode = (
   )),
   RA.head,
   O.map(omit(['expectedTupleTypes'])),
-  O.map((ctx) => ({
-    type: pipe(
-      ctx.types,
-      O.fromPredicate(RA.every((x): x is EvalType => x.tag !== 'error')),
-      O.matchW(() => errorT, tupleT),
-    ),
-    nodes: ctx.nodes,
-    typeMap: ctx.typeMap,
-  })),
-  O.matchW(() => errorResult(map), (ctx) => ({
-    ...ctx,
-    typeMap: updateTypeMap(expectedType)(ctx.type)(ctx.typeMap),
-  })),
+  O.map((ctx) => pipe(
+    ctx.types,
+    O.fromPredicate(RA.every((x): x is EvalType => x.tag !== 'error')),
+    O.matchW(() => errorT, tupleT),
+    (type) => ({
+      type,
+      nodes: ctx.nodes,
+      typeMap: updateTypeMap(expectedType)(type)(ctx.typeMap),
+    }),
+  )),
+  O.getOrElseW(() => errorResult(map)),
 );
 
 const chainPairElse = <T extends Expression>(
