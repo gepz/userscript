@@ -121,22 +121,33 @@ const assignableToFunc = (
 );
 
 const updateTypeMap = (
-  e: EvalType,
+  expected: EvalType,
 ) => (
-  a: EvalType | ErrorType,
+  actual: EvalType | ErrorType,
 ): En.Endomorphism<Record<number, EvalType>> => (
-  e.tag === 'var' && a.tag !== 'error' ? setRecord<number, EvalType>(e.type)(a)
-  : e.tag === 'func' && a.tag === e.tag ? pipe(
-    RA.zip([...e.type[0], e.type[1]], [...a.type[0], a.type[1]]),
+  expected.tag === 'var'
+  && actual.tag !== 'error'
+  && actual.tag !== 'var' ? setRecord<number, EvalType>(
+    expected.type,
+  )(actual)
+  : expected.tag === 'func' && actual.tag === expected.tag ? pipe(
+    RA.zip(
+      [...expected.type[0], expected.type[1]],
+      [...actual.type[0], actual.type[1]],
+    ),
     RA.map((x) => sequenceT(O.Apply)(...x)),
     RA.compact,
-    RA.map((x) => updateTypeMap(x[0])(x[1])),
+    RA.map(([e, a]) => updateTypeMap(e)(a)),
     concatAll(En.getMonoid()),
   )
-  : e.tag === 'tuple' && a.tag === e.tag ? pipe(
-    RA.zip(e.type, a.type),
-    (x) => x,
-    () => identity,
+  : expected.tag === 'tuple' && actual.tag === expected.tag ? pipe(
+    RA.zip(expected.type, actual.type),
+    RA.takeLeftWhile(
+      (x): x is readonly [EvalType, EvalType] => x[0].tag !== 'rest'
+      && x[1].tag !== 'rest',
+    ),
+    RA.map(([e, a]) => updateTypeMap(e)(a)),
+    concatAll(En.getMonoid()),
   )
   : identity);
 
@@ -235,19 +246,20 @@ const callNode = (
   O.fromPredicate((x): x is Result<FunctionType> => x.type.tag === 'func'),
   O.bindTo('calleeResult'),
   O.bind('argumentResult', (ctx) => pipe(
-    pair.ele.argument,
+    pair,
+    EOP.prop('argument'),
+    EOP.some,
     O.map((arg) => pipe(
       ctx.calleeResult.type.type[0][0],
-      O.getOrElseW(constant(unknownT)),
+      O.getOrElseW(() => unknownT),
       replaceVarType(ctx.calleeResult.typeMap),
-      (x) => f(x)(typeRoot)({})(c)(s)({
-        ele: arg,
-        opt: pipe(
-          pair.opt,
-          Op.prop('argument'),
-          Op.some,
-        ),
-      }),
+      (expected) => pipe(
+        f(expected)(typeRoot)({})(c)(s)(arg),
+        (x) => ({
+          ...x,
+          typeMap: updateTypeMap(expected)(x.type)(x.typeMap),
+        }),
+      ),
     )),
     O.alt(() => O.of<Result<EvalType | ErrorType>>(errorResult(m))),
   )),
@@ -345,7 +357,7 @@ Result<TupleType>
       ui: pipe(
         expectedType,
         primitiveTupleUI(Primitive.string),
-        O.getOrElseW(constant(UI.unknown)),
+        O.getOrElseW(() => UI.unknown),
       ),
     })),
     nodes: [
@@ -357,7 +369,7 @@ Result<TupleType>
             pipe(
               expectedType,
               primitiveTupleUI(Primitive.string),
-              O.getOrElseW(constant(UI.unknown)),
+              O.getOrElseW(() => UI.unknown),
             ) === UI.regex
               ? setEditRegexs
               : setEditStrings,
@@ -384,19 +396,12 @@ const arrayNode = (
 ): Result<EvalType | ErrorType> => pipe(
   pair,
   EOP.prop('elements'),
-  (elements) => pipe(
-    elements.ele,
-    RA.mapWithIndex((i: number, e) => pipe(
-      elements.opt,
-      Op.index(i),
-      EOP.of(e),
-      (p) => (
-        et: EvalType,
-      ) => (
-        m: Record<number, EvalType>,
-      ) => nodeF(et)(typeRoot)(m)(c)(s)(p),
-    )),
-  ),
+  EOP.toArray,
+  RA.mapWithIndex((i, e) => (
+    et: EvalType,
+  ) => (
+    m: Record<number, EvalType>,
+  ) => nodeF(et)(typeRoot)(m)(c)(s)(e)),
   RA.reduce(pipe(
     expectedType,
     RA.fromPredicate((x): x is TupleType => x.tag === 'tuple'),
@@ -514,17 +519,10 @@ const expNode: ExpNodeFunc = (
   ),
 );
 
-const filterPanel: R.Reader<
-AppCommander,
-R.Reader<SettingState, readonly VNode<SettingState>[]>
-> = (c) => (s) => pipe(
-  s.filterExp,
-  (x): EOP.ElementOpticPair<Expression, Expression> => ({
-    ele: x,
-    opt: Op.id(),
-  }),
-  expNode(unknownT)(typeRoot)({})(c)(s),
-  (x) => x.nodes,
-);
-
-export default filterPanel;
+export default (
+  c: AppCommander,
+) => (
+  s: SettingState,
+): readonly VNode<SettingState>[] => expNode(unknownT)(typeRoot)({})(c)(s)(
+  EOP.of(s.filterExp),
+).nodes;
