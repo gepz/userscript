@@ -1,6 +1,7 @@
 import * as O from 'fp-ts/Option';
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray';
 
+import EvalType from '@/filter/type/EvalType';
 import Primitive from '@/filter/type/Primitive';
 import UI from '@/filter/type/UI';
 import funcT from '@/filter/type/funcT';
@@ -12,112 +13,120 @@ import tupleT from '@/filter/type/tupleT';
 import unknownT from '@/filter/type/unknownT';
 import varT from '@/filter/type/varT';
 
+const noVoidFuncT = (
+  argTypes: RNEA.ReadonlyNonEmptyArray<EvalType>,
+  returnType: EvalType,
+) => funcT([
+  RNEA.map(O.of)(argTypes),
+  O.of(returnType),
+]);
+
 export default recordT({
-  or: funcT([
+  or: noVoidFuncT(
     [
-      O.of(listT(simpleT({
+      listT(simpleT({
         pri: Primitive.boolean,
         ui: UI.card,
-      }))),
+      })),
     ],
-    O.of(primitiveT(Primitive.boolean)),
-  ]),
-  and: funcT([
+    primitiveT(Primitive.boolean),
+  ),
+  and: noVoidFuncT(
     [
-      O.of(listT(simpleT({
+      listT(simpleT({
         pri: Primitive.boolean,
         ui: UI.card,
-      }))),
+      })),
     ],
-    O.of(primitiveT(Primitive.boolean)),
-  ]),
-  flip: funcT([
-    RNEA.map(O.of)([
-      funcT([
-        RNEA.map(O.of)([
+    primitiveT(Primitive.boolean),
+  ),
+  flip: noVoidFuncT(
+    [
+      noVoidFuncT(
+        [
           varT(0),
           varT(1),
-        ]),
-        O.of(varT(2)),
-      ]),
+        ],
+        varT(2),
+      ),
       varT(1),
       varT(0),
-    ]),
-    O.of(varT(2)),
-  ]),
-  flow: funcT([
-    RNEA.map(O.of)([
+    ],
+    varT(2),
+  ),
+  flow: noVoidFuncT(
+    [
       tupleT([
-        funcT([
-          [O.of(varT(0))],
-          O.of(varT(1)),
-        ]),
-        funcT([
-          [O.of(varT(1))],
-          O.of(varT(2)),
-        ]),
+        noVoidFuncT(
+          [varT(0)],
+          varT(1),
+        ),
+        noVoidFuncT(
+          [varT(1)],
+          varT(2),
+        ),
       ]),
       varT(0),
-    ]),
-    O.of(varT(2)),
-  ]),
+    ],
+    varT(2),
+  ),
   RA: recordT({
-    some: funcT([
-      RNEA.map(O.of)([
-        funcT([
-          [O.of(varT(0))],
-          O.of(primitiveT(Primitive.boolean)),
-        ]),
+    some: noVoidFuncT(
+      [
+        noVoidFuncT(
+          [varT(0)],
+          primitiveT(Primitive.boolean),
+        ),
         listT(varT(0)),
-      ]),
-      O.of(primitiveT(Primitive.boolean)),
-    ]),
-    compact: funcT([
-      [O.of(listT(unknownT))],
-      O.of(listT(unknownT)),
-    ]),
+      ],
+      primitiveT(Primitive.boolean),
+    ),
+    compact: noVoidFuncT(
+      [listT(unknownT)],
+      listT(unknownT),
+    ),
   }),
   O: recordT({
-    exists: funcT([
-      RNEA.map(O.of)([
-        funcT([
-          [O.of(varT(0))],
-          O.of(primitiveT(Primitive.boolean)),
-        ]),
+    exists: noVoidFuncT(
+      [
+        noVoidFuncT(
+          [varT(0)],
+          primitiveT(Primitive.boolean),
+        ),
         unknownT,
-      ]),
-      O.of(primitiveT(Primitive.boolean)),
-    ]),
+      ],
+      primitiveT(Primitive.boolean),
+    ),
   }),
-  inText: funcT([
-    RNEA.map(O.of)([
+  inText: noVoidFuncT(
+    [
       unknownT,
       primitiveT(Primitive.string),
-    ]),
-    O.of(primitiveT(Primitive.boolean)),
-  ]),
-  eqText: funcT([
-    RNEA.map(O.of)([
+    ],
+    primitiveT(Primitive.boolean),
+  ),
+  eqText: noVoidFuncT(
+    [
       unknownT,
       primitiveT(Primitive.string),
-    ]),
-    O.of(primitiveT(Primitive.boolean)),
-  ]),
-  matchedByText: funcT([
-    RNEA.map(O.of)([
+    ],
+    primitiveT(Primitive.boolean),
+  ),
+  matchedByText: noVoidFuncT(
+    [
       unknownT,
       simpleT({
         pri: Primitive.string,
         ui: UI.regex,
       }),
-    ]),
-    O.of(simpleT({
+    ],
+    simpleT({
       pri: Primitive.boolean,
       ui: UI.regex,
-    })),
-  ]),
-  isVisible: funcT([
-    [O.of(unknownT)],
-    O.of(primitiveT(Primitive.boolean)),
-  ]),
+    }),
+  ),
+  isVisible: noVoidFuncT(
+    [unknownT],
+    primitiveT(Primitive.boolean),
+  ),
 });
