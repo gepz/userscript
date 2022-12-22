@@ -1,0 +1,1 @@
+filterPanel: re-replace var
