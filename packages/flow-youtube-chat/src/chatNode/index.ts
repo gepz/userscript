@@ -54,7 +54,7 @@ const parseMessage = (
             width: '1em',
             verticalAlign: 'text-top',
           },
-          src: node.src,
+          src: node.src.replace(/=w\d+-h\d+-c-k-nd$/, ''),
           alt: node.alt,
         }),
       ],
@@ -87,13 +87,16 @@ const parseMessage = (
 export default (
   chat: FlowChat,
   mainState: MainState,
-): m.Vnode => {
-  const {
+): m.Vnode => pipe(
+  mainState.config,
+  (config) => ({
+    data: chat.getData(config),
     config,
-  } = mainState;
-
-  const data = chat.getData(config);
-  return m('span', {
+  }),
+  ({
+    data,
+    config,
+  }) => m('span', {
     style: {
       fontSize: `${getChatFontSize(mainState)}px`,
       visibility: config.displayChats ? 'visible' : 'hidden',
@@ -150,5 +153,5 @@ export default (
     ],
     RA.compact,
     RA.toArray,
-  ));
-};
+  )),
+);
