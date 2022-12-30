@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Unreleased:
 - Nothing
 
+## 1.15.18
+### Changed
+- The full-sized version of emoji images will now be used in flow chats to display them with higher quality.
+
 ## 1.15.17
 ### Fix
 - Fix a bug that prevent some ban buttons from showing in chat field.
