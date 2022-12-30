@@ -463,18 +463,15 @@ const arrayNode = (
 
 const chainPairElse = <T extends Expression>(
   r: Refinement<Expression, T>,
-) => <E, R>(f: (
-  pair: EOP.ElementOpticPair<Expression, T>
-) => R) => chainOptionElse<
-EOP.ElementOpticPair<Expression, Expression>,
-R,
-E>(flow(
+) => <E, R>(
+  f: R.Reader<EOP.ElementOpticPair<Expression, T>, R>,
+) => chainOptionElse<EOP.ElementOpticPair<Expression, Expression>, R, E>(flow(
   EOP.filter<Expression, Expression, T>(r),
   O.map(f),
 ));
 
 const expNode: ExpNodeFunc = (
-  expectedType,
+  t,
 ) => (
   context,
 ) => (
@@ -483,40 +480,32 @@ const expNode: ExpNodeFunc = (
   c,
 ) => (
   s,
-) => (
-  pair,
-) => pipe(
-  expectedType,
-  (t) => pipe(
-    pair,
-    E.right,
-    chainPairElse(
-      (x): x is Identifier => x.type === 'Identifier',
-    )(identifierNode(t)(context)(m)(c)(s)),
-    chainPairElse(
-      (x): x is MemberExpression => x.type === 'MemberExpression',
-    )(memberNode(expNode)(t)(m)(c)(s)),
-    chainPairElse(
-      (x): x is CallExpression => x.type === 'CallExpression',
-    )(callNode(expNode)(t)(m)(c)(s)),
-    chainPairElse(
-      (x): x is Literal => x.type === 'Literal',
-    )(literalNode(t)(m)(c)),
-    chainPairElse(
-      (x): x is LiteralArray => x.type === 'LiteralArray',
-    )(literalArrayNode(t)(m)(c)),
-    chainPairElse(
-      (x): x is ArrayExpression => x.type === 'ArrayExpression',
-    )(arrayNode(expNode)(t)(m)(c)(s)),
-    E.map(() => (
-      {
-        type: unknownT,
-        nodes: [],
-        typeMap: m,
-      }
-    )),
-    E.toUnion,
-  ),
+) => flow(
+  E.right,
+  chainPairElse(
+    (x): x is Identifier => x.type === 'Identifier',
+  )(identifierNode(t)(context)(m)(c)(s)),
+  chainPairElse(
+    (x): x is MemberExpression => x.type === 'MemberExpression',
+  )(memberNode(expNode)(t)(m)(c)(s)),
+  chainPairElse(
+    (x): x is CallExpression => x.type === 'CallExpression',
+  )(callNode(expNode)(t)(m)(c)(s)),
+  chainPairElse(
+    (x): x is Literal => x.type === 'Literal',
+  )(literalNode(t)(m)(c)),
+  chainPairElse(
+    (x): x is LiteralArray => x.type === 'LiteralArray',
+  )(literalArrayNode(t)(m)(c)),
+  chainPairElse(
+    (x): x is ArrayExpression => x.type === 'ArrayExpression',
+  )(arrayNode(expNode)(t)(m)(c)(s)),
+  E.map(() => ({
+    type: unknownT,
+    nodes: [],
+    typeMap: m,
+  })),
+  E.toUnion,
 );
 
 export default (
