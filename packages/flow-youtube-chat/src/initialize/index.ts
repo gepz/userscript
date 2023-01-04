@@ -72,13 +72,13 @@ import {
 } from '@/UserConfigGetter';
 import appendLog from '@/appendLog';
 import consoleLog from '@/consoleLog';
-import createChatScreen from '@/createChatScreen';
 import defaultFilter from '@/defaultFilter';
 import defaultGMConfig from '@/defaultGMConfig';
 import ioFromLogState from '@/ioFromLogState';
 import listeningBroadcastConfigKeys from '@/listeningBroadcastConfigKeys';
 import livePageYt from '@/livePageYt';
 import mainCss from '@/mainCss';
+import makeChatScreen from '@/makeChatScreen';
 import mapObject from '@/mapObject';
 import observePair from '@/observePair';
 import onChatFieldMutate from '@/onChatFieldMutate';
@@ -253,7 +253,7 @@ export default (): Promise<unknown> => pipe(
     )),
     T.apS('livePage', T.of(livePageYt)),
     T.let('live', (ctx) => makePageState(ctx.livePage)),
-    T.apS('chatScreen', T.fromIO(createChatScreen)),
+    T.apS('chatScreen', T.fromIO(makeChatScreen)),
   ),
   T.bind('all$', (ctx) => pipe(
     {
