@@ -1,6 +1,6 @@
 import {
   makeType,
-} from '@/TaggedType';
+} from '@/TaggedValue';
 import RestType from '@/filter/type/RestType';
 
 export default makeType<RestType>('rest');

@@ -1,6 +1,6 @@
 import {
   makeType,
-} from '@/TaggedType';
+} from '@/TaggedValue';
 import Primitive from '@/filter/type/Primitive';
 import SimpleType from '@/filter/type/SimpleType';
 import UI from '@/filter/type/UI';

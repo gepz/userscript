@@ -1,5 +1,5 @@
-import TaggedType from '@/TaggedType';
+import TaggedValue from '@/TaggedValue';
 
-type VariableType = TaggedType<'var', number>;
+type VariableType = TaggedValue<'var', number>;
 
 export default VariableType;
