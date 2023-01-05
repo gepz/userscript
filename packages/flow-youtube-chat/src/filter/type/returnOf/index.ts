@@ -11,20 +11,20 @@ import FunctionType from '@/filter/type/FunctionType';
 import funcT from '@/filter/type/funcT';
 
 export default (type: FunctionType): O.Option<EvalType> => pipe(
-  type.type,
+  type.value.type,
   O.fromPredicate((x): x is readonly [readonly [
     O.Option<EvalType>,
     O.Option<EvalType>,
     ...O.Option<EvalType>[],
-  ], O.Option<EvalType>] => RTu.fst(x).length > 1),
+  ], O.Option<Exclude<EvalType, FunctionType>>] => RTu.fst(x).length > 1),
   O.map(flow(
     RTu.mapFst(
       ([, ...tail]): RNEA.ReadonlyNonEmptyArray<O.Option<EvalType>> => tail,
     ),
-    funcT,
+    (x) => funcT({
+      typeMap: {},
+      type: x,
+    }),
   )),
-  O.alt(() => pipe(
-    type.type,
-    RTu.snd,
-  )),
+  O.altW(() => RTu.snd(type.value.type)),
 );

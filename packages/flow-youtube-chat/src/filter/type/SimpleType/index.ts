@@ -1,8 +1,8 @@
-import TaggedType from '@/TaggedType';
+import TaggedValue from '@/TaggedValue';
 import Primitive from '@/filter/type/Primitive';
 import UI from '@/filter/type/UI';
 
-type SimpleType = TaggedType<'simple', {
+type SimpleType = TaggedValue<'simple', {
   pri: Primitive,
   ui: UI,
 }>;

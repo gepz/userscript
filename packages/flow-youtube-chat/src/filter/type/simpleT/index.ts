@@ -1,6 +1,6 @@
 import {
   makeType,
-} from '@/TaggedType';
+} from '@/TaggedValue';
 import SimpleType from '@/filter/type/SimpleType';
 
 export default makeType<SimpleType>('simple');

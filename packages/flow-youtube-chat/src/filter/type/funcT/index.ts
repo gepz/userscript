@@ -1,6 +1,6 @@
 import {
   makeType,
-} from '@/TaggedType';
+} from '@/TaggedValue';
 import FunctionType from '@/filter/type/FunctionType';
 
 export default makeType<FunctionType>('func');

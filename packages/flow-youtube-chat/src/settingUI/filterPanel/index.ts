@@ -1,4 +1,7 @@
 import {
+  generate,
+} from 'astring';
+import {
   omit,
 } from 'fp-ts-std/ReadonlyStruct';
 import {
@@ -35,6 +38,7 @@ import AppCommander from '@/AppCommander';
 import * as EOP from '@/ElementOpticPair';
 import SettingState from '@/SettingState';
 import chainOptionElse from '@/chainOptionElse';
+import VarTypeMap from '@/filter/VarTypeMap';
 import ErrorType from '@/filter/type/ErrorType';
 import EvalType from '@/filter/type/EvalType';
 import FunctionType from '@/filter/type/FunctionType';
@@ -46,10 +50,11 @@ import TupleType from '@/filter/type/TupleType';
 import UI from '@/filter/type/UI';
 import errorT from '@/filter/type/errorT';
 import funcT from '@/filter/type/funcT';
+import functionOf from '@/filter/type/functionOf';
 import listT from '@/filter/type/listT';
 import recordT from '@/filter/type/recordT';
 import restT from '@/filter/type/restT';
-import returnT from '@/filter/type/returnT';
+import returnOf from '@/filter/type/returnOf';
 import simpleT from '@/filter/type/simpleT';
 import tupleT from '@/filter/type/tupleT';
 import unknownT from '@/filter/type/unknownT';
@@ -63,6 +68,7 @@ import Identifier from '@/settingUI/EditableExpression/Identifier';
 import Literal from '@/settingUI/EditableExpression/Literal';
 import LiteralArray from '@/settingUI/EditableExpression/LiteralArray';
 import MemberExpression from '@/settingUI/EditableExpression/MemberExpression';
+import toJsepExp from '@/settingUI/EditableExpression/toJsepExp';
 import editAction from '@/settingUI/editAction';
 import errorNode from '@/settingUI/errorNode';
 import setEditRegexs from '@/settingUI/setEditRegexs';
@@ -74,38 +80,182 @@ import panelBoxStyle from '@/ui/panelBoxStyle';
 import textAreaRow from '@/ui/textAreaRow';
 import textInput from '@/ui/textInput';
 
+const simplifyExpressionForLog = (obj: unknown): unknown => pipe(
+  Array.isArray(obj) ? RA.map(simplifyExpressionForLog)(obj)
+  : typeof obj === 'object' && obj !== null ? pipe(
+    obj,
+    E.right,
+    chainOptionElse(flow(
+      O.fromPredicate((x): x is {
+        computed: unknown
+      } => 'computed' in x),
+      O.map(omit(['computed'])),
+    )),
+    E.extend(E.toUnion),
+    chainOptionElse(flow(
+      O.fromPredicate((x): x is {
+        type: unknown
+      } => 'type' in x && Object.keys(x).length === 2),
+      O.chain((o) => pipe(
+        Object.entries(o),
+        RA.findFirst(([k]) => k !== 'type'),
+        O.map(([, v]) => ({
+        // eslint-disable-next-line max-len
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          [o.type as string]: v,
+        })),
+      )),
+      O.map(simplifyExpressionForLog),
+    )),
+    E.extend(E.toUnion),
+    chainOptionElse(flow(
+      O.fromPredicate((x): x is {
+        Identifier: string
+      } => typeof x === 'object' && x !== null && 'Identifier' in x
+       && typeof x.Identifier === 'string' && Object.keys(x).length === 1),
+      O.map((x) => x.Identifier),
+      O.map(simplifyExpressionForLog),
+    )),
+    E.extend(E.toUnion),
+    chainOptionElse(flow(
+      O.fromPredicate(
+        // eslint-disable-next-line no-underscore-dangle
+        (x): x is O.Option<unknown> => typeof x === 'object'
+         && x !== null && '_tag' in x,
+      ),
+      O.map(O.getOrElseW(() => 'None')),
+      O.map(simplifyExpressionForLog),
+    )),
+    E.toUnion,
+    (x) => (typeof x === 'object' && x !== null
+      ? mapObject(([k, v]) => [k, simplifyExpressionForLog(v)])(x)
+      : x),
+  ) : obj,
+);
+
+const simplifyTypeForLog = (obj: unknown): unknown => pipe(
+  Array.isArray(obj) ? RA.map(simplifyTypeForLog)(obj)
+  : typeof obj === 'object' && obj !== null ? pipe(
+    obj,
+    E.right,
+    chainOptionElse(flow(
+      O.fromPredicate((x): x is {
+        tag: unknown
+      } => 'tag' in x && Object.keys(x).length === 2),
+      O.chain((o) => pipe(
+        Object.entries(o),
+        RA.findFirst(([k]) => k !== 'tag'),
+        O.map(([, v]) => ({
+        // eslint-disable-next-line max-len
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          [o.tag as string]: v,
+        })),
+      )),
+      O.map(simplifyTypeForLog),
+    )),
+    E.extend(E.toUnion),
+    chainOptionElse(flow(
+      O.fromPredicate((x): x is {
+        tag: unknown
+      } => typeof x === 'object'
+      && x !== null && 'tag' in x && Object.keys(x).length === 1),
+      O.map((x) => x.tag),
+      O.map(simplifyTypeForLog),
+    )),
+    E.extend(E.toUnion),
+    chainOptionElse(flow(
+      O.fromPredicate((x): x is {
+        var: number
+      } => typeof x === 'object'
+      && x !== null && 'var' in x && typeof x.var === 'number'
+       && Object.keys(x).length === 1),
+      O.map((x) => `var-${x.var}`),
+      O.map(simplifyTypeForLog),
+    )),
+    E.extend(E.toUnion),
+    chainOptionElse(flow(
+      O.fromPredicate((x): x is {
+        simple: SimpleType['value']
+      } => typeof x === 'object'
+      && x !== null && 'simple' in x && Object.keys(x).length === 1),
+      O.map(({
+        simple: {
+          pri, ui,
+        },
+      }) => `${pri === Primitive.boolean ? 'bool'
+      : pri === Primitive.string ? 'string'
+      : 'unknown'}-${ui === UI.card ? 'card'
+      : ui === UI.regex ? 'regex'
+      : 'unknown'}`),
+      O.map(simplifyTypeForLog),
+    )),
+    E.extend(E.toUnion),
+    chainOptionElse(flow(
+      O.fromPredicate(
+        // eslint-disable-next-line no-underscore-dangle
+        (x): x is O.Option<unknown> => typeof x === 'object'
+         && x !== null && '_tag' in x,
+      ),
+      O.map(O.getOrElseW(() => 'None')),
+      O.map(simplifyTypeForLog),
+    )),
+    E.toUnion,
+    (x) => (typeof x === 'object' && x !== null
+      ? mapObject(([k, v]) => [k, simplifyTypeForLog(v)])(x)
+      : x),
+  ) : obj,
+);
+
 type Result<T extends EvalType | ErrorType> = {
   type: T,
   nodes: readonly VNode<SettingState>[],
-  typeMap: Record<number, EvalType>,
+  typeMap: VarTypeMap,
 };
 
-const errorResult = (typeMap: Record<number, EvalType>): Result<ErrorType> => ({
+const errorResult = (typeMap: VarTypeMap): Result<ErrorType> => ({
   type: errorT,
   nodes: [errorNode],
   typeMap,
 });
 
 const replaceVarType = (
-  typeMap: Record<number, EvalType>,
+  typeMap: VarTypeMap,
 ) => (
   type: EvalType,
 ): EvalType => pipe(
   replaceVarType(typeMap),
   (r) => (
-    type.tag === 'var' && type.type in typeMap ? typeMap[type.type]
-    : type.tag === 'func' ? funcT([
-      RNEA.map(O.map(r))(type.type[0]),
-      O.map(r)(type.type[1]),
-    ])
+    type.tag === 'var' && type.value in typeMap ? typeMap[type.value]
+    : type.tag === 'func' ? pipe(
+      RNEA.map(O.map(r))(type.value.type[0]),
+      (replacedParams) => pipe(
+        type.value.type[1],
+        O.map(r),
+        O.map((x) => (x.tag === 'func' ? funcT({
+          typeMap: {},
+          type: [
+            RNEA.concat(x.value.type[0])(replacedParams),
+            x.value.type[1],
+          ],
+        })
+        : funcT({
+          typeMap: {},
+          type: [replacedParams, O.of(x)],
+        }))),
+        O.getOrElse(() => funcT({
+          typeMap: {},
+          type: [replacedParams, O.none],
+        })),
+      ),
+    )
     : type.tag === 'tuple' ? pipe(
-      type.type,
-      RA.map((x) => (x.tag === 'rest' ? restT(r(x.type))
+      type.value,
+      RA.map((x) => (x.tag === 'rest' ? restT(r(x.value))
       : r(x))),
       tupleT,
     )
     : type.tag === 'record' ? pipe(
-      type.type,
+      type.value,
       mapObject(([k, v]) => [k, r(v)]),
       recordT,
     )
@@ -124,16 +274,37 @@ const updateTypeMap = (
   expected: EvalType,
 ) => (
   actual: EvalType | ErrorType,
-): En.Endomorphism<Record<number, EvalType>> => (
+): En.Endomorphism<VarTypeMap> => (
   expected.tag === 'var'
   && actual.tag !== 'error'
+  && actual.tag !== 'unknown'
   && actual.tag !== 'var' ? setRecord<number, EvalType>(
-    expected.type,
+    expected.value,
   )(actual)
   : expected.tag === 'func' && actual.tag === expected.tag ? pipe(
-    RA.zip(
-      [...expected.type[0], expected.type[1]],
-      [...actual.type[0], actual.type[1]],
+    expected.value.type[0].length,
+    (x) => (x < actual.value.type[0].length ? pipe(
+      actual.value.type[0],
+      RNEA.splitAt(x),
+      ([a, b]) => [
+        a,
+        O.of(funcT({
+          typeMap: {},
+          type: [
+            pipe(
+              RNEA.fromReadonlyArray(b),
+              O.getOrElse(
+                (): RNEA.ReadonlyNonEmptyArray<O.Option<EvalType>> => [O.none],
+              ),
+            ),
+            actual.value.type[1],
+          ],
+        })),
+      ] as const,
+    ) : actual.value.type),
+    (x) => RA.zip(
+      [...expected.value.type[0], expected.value.type[1]],
+      [...x[0], x[1]],
     ),
     RA.map((x) => sequenceT(O.Apply)(...x)),
     RA.compact,
@@ -141,7 +312,7 @@ const updateTypeMap = (
     concatAll(En.getMonoid()),
   )
   : expected.tag === 'tuple' && actual.tag === expected.tag ? pipe(
-    RA.zip(expected.type, actual.type),
+    RA.zip(expected.value, actual.value),
     RA.takeLeftWhile(
       (x): x is readonly [EvalType, EvalType] => x[0].tag !== 'rest'
       && x[1].tag !== 'rest',
@@ -156,7 +327,7 @@ type ExpNodeFunc = (
 ) => (
   context: RecordType,
 ) => (
-  m: Record<number, EvalType>,
+  m: VarTypeMap,
 ) => (
   c: AppCommander,
 ) => (
@@ -170,15 +341,25 @@ const identifierNode = (
 ) => (
   context: RecordType,
 ) => (
-  m: Record<number, EvalType>,
+  m: VarTypeMap,
 ) => (
   c: AppCommander,
 ) => (
   s: SettingState,
 ) => (
   pair: EOP.ElementOpticPair<Expression, Identifier>,
-): Result<EvalType | ErrorType> => (pair.ele.name in context.type ? pipe(
-  context.type[pair.ele.name],
+): Result<EvalType | ErrorType> => (pair.ele.name in context.value ? pipe(
+  context.value[pair.ele.name],
+  (type) => pipe(
+    updateTypeMap(type)(expectedType)({}),
+    (x) => (console.log(
+      `Before Replace: ${generate(toJsepExp(pair.ele))}\n`,
+      `${JSON.stringify(simplifyTypeForLog(type), null, 2)}\n`,
+      Object.keys(m).length === 0 ? undefined : m,
+      Object.keys(x).length === 0 ? undefined : x,
+    ), x),
+    (x) => replaceVarType(x)(type),
+  ),
   (type) => ({
     type,
     nodes: [h<SettingState>('div', {}, text(pair.ele.name))],
@@ -191,7 +372,7 @@ const memberNode = (
 ) => (
   expectedType: EvalType,
 ) => (
-  m: Record<number, EvalType>,
+  m: VarTypeMap,
 ) => (
   c: AppCommander,
 ) => (
@@ -215,11 +396,11 @@ const primitiveTupleUI = (
   pri: Primitive,
 ): R.Reader<EvalType, O.Option<UI>> => flow(
   O.fromPredicate((x): x is TupleType => x.tag === 'tuple'),
-  O.map((x) => x.type),
+  O.map((x) => x.value),
   O.filter((x): x is [RestType] => x.length === 1 && x[0].tag === 'rest'),
-  O.map(([x]) => x.type),
+  O.map(([x]) => x.value),
   O.filter((x): x is SimpleType => x.tag === 'simple'),
-  O.map((x) => x.type),
+  O.map((x) => x.value),
   O.filter((x) => x.pri === pri),
   O.map((x) => x.ui),
 );
@@ -229,7 +410,7 @@ const callNode = (
 ) => (
   expectedType: EvalType,
 ) => (
-  m: Record<number, EvalType>,
+  m: VarTypeMap,
 ) => (
   c: AppCommander,
 ) => (
@@ -237,7 +418,7 @@ const callNode = (
 ) => (
   pair: EOP.ElementOpticPair<Expression, CallExpression>,
 ): Result<EvalType | ErrorType> => pipe(
-  f(funcT([[O.of(unknownT)], O.of(expectedType)]))(
+  f(functionOf(unknownT)(expectedType))(
     typeRoot,
   )(m)(c)(s)(pipe(
     pair,
@@ -250,7 +431,7 @@ const callNode = (
     EOP.prop('argument'),
     EOP.some,
     O.map((arg) => pipe(
-      ctx.calleeResult.type.type[0][0],
+      ctx.calleeResult.type.value.type[0][0],
       O.getOrElseW(() => unknownT),
       replaceVarType(ctx.calleeResult.typeMap),
       (expected) => pipe(
@@ -270,7 +451,7 @@ const callNode = (
       ...pipe(
         result.nodes,
         pipe(
-          ctx.calleeResult.type.type[0][0],
+          ctx.calleeResult.type.value.type[0][0],
           O.chain(primitiveTupleUI(Primitive.boolean)),
           O.exists((x) => x === UI.card),
         ) ? RA.map((x) => h('div', {
@@ -281,7 +462,7 @@ const callNode = (
     ],
     I.bindTo('nodes'),
     I.apS('type', pipe(
-      returnT(ctx.calleeResult.type),
+      returnOf(ctx.calleeResult.type),
       O.getOrElse<EvalType | ErrorType>(() => errorT),
     )),
     I.let(
@@ -314,7 +495,7 @@ const expressionSetter = <T>(
 const literalNode = (
   expectedType: EvalType,
 ) => (
-  m: Record<number, EvalType>,
+  m: VarTypeMap,
 ) => (
   c: AppCommander,
 ): R.Reader<
@@ -325,7 +506,7 @@ Result<SimpleType>
   (value) => ({
     type: simpleT({
       pri: Primitive.string,
-      ui: expectedType.tag === 'simple' ? expectedType.type.ui
+      ui: expectedType.tag === 'simple' ? expectedType.value.ui
       : UI.unknown,
     }),
     nodes: [
@@ -343,7 +524,7 @@ Result<SimpleType>
 const literalArrayNode = (
   expectedType: EvalType,
 ) => (
-  m: Record<number, EvalType>,
+  m: VarTypeMap,
 ) => (
   c: AppCommander,
 ): R.Reader<
@@ -386,7 +567,7 @@ const arrayNode = (
 ) => (
   expectedType: EvalType,
 ) => (
-  map: Record<number, EvalType>,
+  map: VarTypeMap,
 ) => (
   c: AppCommander,
 ) => (
@@ -400,12 +581,12 @@ const arrayNode = (
   RA.mapWithIndex((i, e) => (
     et: EvalType,
   ) => (
-    m: Record<number, EvalType>,
+    m: VarTypeMap,
   ) => nodeF(et)(typeRoot)(m)(c)(s)(e)),
   RA.reduce(pipe(
     expectedType,
     RA.fromPredicate((x): x is TupleType => x.tag === 'tuple'),
-    RA.map((x) => x.type),
+    RA.map((x) => x.value),
     RA.filter(RA.isNonEmpty),
     RA.append<RNEA.ReadonlyNonEmptyArray<EvalType | RestType>>(
       [restT(unknownT)] as const,
@@ -413,7 +594,7 @@ const arrayNode = (
     RA.map((x): {
       types: (EvalType | ErrorType)[],
       nodes: VNode<SettingState>[],
-      typeMap: Record<number, EvalType>,
+      typeMap: VarTypeMap,
       expectedTupleTypes: RNEA.ReadonlyNonEmptyArray<EvalType | RestType>,
     } => ({
       types: [],
@@ -426,7 +607,7 @@ const arrayNode = (
     RA.chain((match) => pipe(
       match.expectedTupleTypes,
       RNEA.matchLeft((first, rest) => (first.tag === 'rest' ? ([
-        first.type,
+        first.value,
         [rest, match.expectedTupleTypes],
       ] as const) : ([first, [rest]] as const))),
       ([firstType, restTypesList]) => pipe(
@@ -434,7 +615,7 @@ const arrayNode = (
         RA.filter(RA.isNonEmpty),
         RA.match(() => [], (() => flow(
           RA.map(pipe(
-            elementFn(firstType)(match.typeMap),
+            elementFn(replaceVarType(match.typeMap)(firstType))(match.typeMap),
             (x) => (restTypes) => ({
               types: [...match.types, x.type],
               nodes: [...match.nodes, h('div', {}, x.nodes)],
@@ -471,7 +652,7 @@ const chainPairElse = <T extends Expression>(
 ));
 
 const expNode: ExpNodeFunc = (
-  t,
+  e,
 ) => (
   context,
 ) => (
@@ -480,32 +661,47 @@ const expNode: ExpNodeFunc = (
   c,
 ) => (
   s,
-) => flow(
-  E.right,
-  chainPairElse(
-    (x): x is Identifier => x.type === 'Identifier',
-  )(identifierNode(t)(context)(m)(c)(s)),
-  chainPairElse(
-    (x): x is MemberExpression => x.type === 'MemberExpression',
-  )(memberNode(expNode)(t)(m)(c)(s)),
-  chainPairElse(
-    (x): x is CallExpression => x.type === 'CallExpression',
-  )(callNode(expNode)(t)(m)(c)(s)),
-  chainPairElse(
-    (x): x is Literal => x.type === 'Literal',
-  )(literalNode(t)(m)(c)),
-  chainPairElse(
-    (x): x is LiteralArray => x.type === 'LiteralArray',
-  )(literalArrayNode(t)(m)(c)),
-  chainPairElse(
-    (x): x is ArrayExpression => x.type === 'ArrayExpression',
-  )(arrayNode(expNode)(t)(m)(c)(s)),
+) => (
+  pair,
+) => pipe(
+  pair,
+  flow(
+    (x) => (console.log(
+      `${generate(toJsepExp(x.ele))}\n`,
+      `${JSON.stringify(simplifyTypeForLog(e), null, 2)}\n`,
+      Object.keys(m).length === 0 ? undefined : m,
+    ), x),
+    E.right,
+    chainPairElse(
+      (x): x is Identifier => x.type === 'Identifier',
+    )(identifierNode(e)(context)(m)(c)(s)),
+    chainPairElse(
+      (x): x is MemberExpression => x.type === 'MemberExpression',
+    )(memberNode(expNode)(e)(m)(c)(s)),
+    chainPairElse(
+      (x): x is CallExpression => x.type === 'CallExpression',
+    )(callNode(expNode)(e)(m)(c)(s)),
+    chainPairElse(
+      (x): x is Literal => x.type === 'Literal',
+    )(literalNode(e)(m)(c)),
+    chainPairElse(
+      (x): x is LiteralArray => x.type === 'LiteralArray',
+    )(literalArrayNode(e)(m)(c)),
+    chainPairElse(
+      (x): x is ArrayExpression => x.type === 'ArrayExpression',
+    )(arrayNode(expNode)(e)(m)(c)(s)),
+  ),
   E.map(() => ({
     type: unknownT,
     nodes: [],
     typeMap: m,
   })),
   E.toUnion,
+  (x) => (console.log(
+    `Return: ${generate(toJsepExp(pair.ele))}\n`,
+    `${JSON.stringify(simplifyTypeForLog(x.type), null, 2)}\n`,
+    Object.keys(x.typeMap).length === 0 ? undefined : x.typeMap,
+  ), x),
 );
 
 export default (

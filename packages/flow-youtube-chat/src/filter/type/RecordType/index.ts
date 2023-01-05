@@ -1,7 +1,7 @@
-import TaggedType from '@/TaggedType';
+import TaggedValue from '@/TaggedValue';
 import EvalType from '@/filter/type/EvalType';
 
-type RecordType = TaggedType<'record', {
+type RecordType = TaggedValue<'record', {
   [key: string]: EvalType,
 }>;
 
