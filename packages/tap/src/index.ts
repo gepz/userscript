@@ -1,7 +1,6 @@
-import tapIs from '@/tapIs';
 import tapNonNull from '@/tapNonNull';
 
 export {
-  tapIs,
+  // eslint-disable-next-line import/prefer-default-export
   tapNonNull,
 };

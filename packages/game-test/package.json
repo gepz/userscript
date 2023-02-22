@@ -5,7 +5,7 @@
   "dependencies": {
     "@stdlib/blas": "^0.0.12",
     "@types/node": "18.13.0",
-    "@userscript/assert": "workspace:^1.0.0",
+    "zod": "^3.20.6",
     "@userscript/forward-to": "workspace:^1.0.0",
     "@userscript/tap": "workspace:^1.0.0",
     "bitecs": "^0.3.38",

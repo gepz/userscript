@@ -1,6 +1,4 @@
-import assert from '@userscript/assert';
 import {
-  tapIs,
   tapNonNull,
 } from '@userscript/tap';
 import {
@@ -36,6 +34,9 @@ import {
   bufferCount,
 } from 'rxjs';
 import Swal from 'sweetalert2';
+import {
+  z,
+} from 'zod';
 
 import {
   PageContainer,
@@ -124,10 +125,10 @@ const adjustPager = ({
 
         const display = reachedLastPage ? 'none' : '';
         lastPageAnchor.style.display = display;
-        assert(nextPageAnchor);
-        nextPageAnchor.style.display = display;
+        const existingNextPageAnchor = tapNonNull(nextPageAnchor);
+        existingNextPageAnchor.style.display = display;
         if (!reachedLastPage) {
-          return [() => [nextPageAnchor, nextPage] as const];
+          return [() => [existingNextPageAnchor, nextPage] as const];
         }
       } else if (nextPageAnchor) {
         return [() => [nextPageAnchor, nextPage] as const];
@@ -281,7 +282,10 @@ export default async (): Promise<void> => {
           pager.style.display = 'none';
         }),
         map((pager) => {
-          const clonedPager = tapIs(HTMLElement)(pager.cloneNode(true));
+          const clonedPager = z.instanceof(HTMLElement).parse(
+            pager.cloneNode(true),
+          );
+
           clonedPager.style.display = '';
           return [pager, clonedPager];
         }),
@@ -341,7 +345,7 @@ export default async (): Promise<void> => {
         url,
       }) => pageFromUrl.delete(url)),
       pluck('container'),
-      map(tapNonNull),
+      map((x) => tapNonNull(x)),
       tap(removeEmbeddedPage),
     ),
 

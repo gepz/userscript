@@ -1,7 +1,4 @@
 import forwardTo from '@userscript/forward-to';
-import {
-  tapIs,
-} from '@userscript/tap';
 import m from 'mithril';
 import {
   merge,
@@ -11,6 +8,9 @@ import {
   startWith,
   tap,
 } from 'rxjs';
+import {
+  z,
+} from 'zod';
 
 import classAttr from '@/classAttr';
 import conditionPresets from '@/conditionPresets';
@@ -88,7 +88,7 @@ export default class implements m.Component {
         this.conditionChange$,
         this.presetSelectChange$.pipe(
           tap((e) => {
-            this.state.condition = tapIs(HTMLSelectElement)(
+            this.state.condition = z.instanceof(HTMLSelectElement).parse(
               e.currentTarget,
             ).value;
           }),
@@ -150,7 +150,7 @@ export default class implements m.Component {
         'btn-info',
       ])}`, {
         onupdate: (vnode) => {
-          tapIs(HTMLSelectElement)(vnode.dom).selectedIndex = 0;
+          z.instanceof(HTMLSelectElement).parse(vnode.dom).selectedIndex = 0;
         },
         style: {
           width: '95px',
