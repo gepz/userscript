@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "author": "",
   "dependencies": {
-    "@userscript/assert": "workspace:^1.0.0"
+    "@userscript/assert": "workspace:^1.0.0",
+    "typescript-transform-paths": "^3.3.1"
   },
   "devDependencies": {
     "@types/node": "18.13.0",
