@@ -1,4 +1,3 @@
-import tapIs from "./tapIs";
 import tapNonNull from "./tapNonNull";
-export { tapIs, tapNonNull, };
+export { tapNonNull, };
 //# sourceMappingURL=index.d.ts.map

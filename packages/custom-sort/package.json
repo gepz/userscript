@@ -3,7 +3,7 @@
   "description": "custom-sort",
   "version": "1.1.0",
   "dependencies": {
-    "@userscript/assert": "workspace:^1.0.0",
+    "zod": "^3.20.6",
     "@userscript/forward-to": "workspace:^1.0.0",
     "@userscript/tap": "workspace:^1.0.0",
     "broadcast-channel": "^4.14.0",
