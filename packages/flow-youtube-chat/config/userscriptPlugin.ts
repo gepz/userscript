@@ -1,5 +1,7 @@
 import cdnFromDependency from '@userscript/cdn-from-dependency';
-import WebpackUserscript from 'webpack-userscript';
+import WebpackUserscript, {
+  RunAtValue,
+} from 'webpack-userscript';
 
 import {
   dependencies,
@@ -11,8 +13,10 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
   headers: (data) => ({
     name: 'Flow Youtube Chat',
     namespace: 'FlowYoutubeChatScript',
-    version: `${data.version}${devMode ? `.${data.buildTime}` : ''}`,
-    'run-at': 'document-end',
+    version: `${
+      data.headers.version ?? ''
+    }${devMode ? `.${Date.now()}` : ''}`,
+    'run-at': RunAtValue.DocumentEnd,
     grant: [
       'GM.setValue',
       'GM.getValue',

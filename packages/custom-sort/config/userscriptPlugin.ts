@@ -1,5 +1,7 @@
 import cdnFromDependency from '@userscript/cdn-from-dependency';
-import WebpackUserscript from 'webpack-userscript';
+import WebpackUserscript, {
+  RunAtValue,
+} from 'webpack-userscript';
 
 import {
   dependencies,
@@ -9,10 +11,12 @@ const cdnSegment = cdnFromDependency.bind(undefined, dependencies);
 
 export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
   headers: (data) => ({
-    version: `${data.version}${devMode ? `.${data.buildTime}` : ''}`,
+    version: `${
+      data.headers.version ?? ''
+    }${devMode ? `.${Date.now()}` : ''}`,
     name: 'Iwara Custom Sort',
     'name:ja': 'Iwara Custom ソート',
-    'run-at': 'document-end',
+    'run-at': RunAtValue.DocumentEnd,
     grant: [
       'GM.setValue',
       'GM.getValue',
