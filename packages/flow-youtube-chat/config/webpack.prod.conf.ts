@@ -30,10 +30,10 @@ export default merge(
       },
     ],
     plugins: [
-      new BundleAnalyzerPlugin({
-        analyzerMode: 'static',
-      }),
-      // userscriptPlugin(false),
+      // new BundleAnalyzerPlugin({
+      //   analyzerMode: 'static',
+      // }),
+      userscriptPlugin(false),
     ],
     optimization: {
       minimizer: [
