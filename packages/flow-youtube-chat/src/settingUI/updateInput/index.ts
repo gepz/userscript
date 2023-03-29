@@ -1,9 +1,8 @@
-import * as En from 'fp-ts/Endomorphism';
-import * as R from 'fp-ts/Reader';
 import {
   apply,
   pipe,
 } from '@effect/data/Function';
+import * as En from 'fp-ts/Endomorphism';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
@@ -16,13 +15,12 @@ import updateAt from '@/settingUI/updateAt';
 import getValue from '@/ui/getValue';
 
 export default <T extends UpdateType>(
-  setter: R.Reader<string, En.Endomorphism<T>>,
+  setter: (x: string) => En.Endomorphism<T>,
 ) => (
   key: StateKey<T>,
-): R.Reader<
-  AppCommander,
-  (s: SettingState, e: Event) => SettingDispatchable
-  > => flip(
+): (
+    c: AppCommander
+  ) => (s: SettingState, e: Event) => SettingDispatchable => flip(
   (s, e) => pipe(
     getValue(e),
     setter,

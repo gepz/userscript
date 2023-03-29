@@ -1,7 +1,7 @@
 import {
+  identity,
   pipe,
 } from '@effect/data/Function';
-import * as R from 'fp-ts/Reader';
 import {
   h,
   text,
@@ -15,16 +15,18 @@ import buttonNode from '@/settingUI/buttonNode';
 import checkboxNode from '@/settingUI/checkboxNode';
 import colorNode from '@/settingUI/colorNode';
 import intNode from '@/settingUI/intNode';
+import mapSettingNodes from '@/settingUI/mapSettingNodes';
 import numberNode from '@/settingUI/numberNode';
 import selectFontNode from '@/settingUI/selectFontNode';
 import stepTimingNode from '@/settingUI/stepTimingNode';
 import textColorNode from '@/settingUI/textColorNode';
 import panelBoxStyle from '@/ui/panelBoxStyle';
 
-const flowChatPanel: R.Reader<
-AppCommander,
-R.Reader<SettingState, readonly VNode<SettingState>[]>
-> = pipe(
+const flowChatPanel: (
+  c: AppCommander
+) => (
+  s: SettingState
+) => readonly VNode<SettingState>[] = pipe(
   [
     pipe(
       [
@@ -35,11 +37,9 @@ R.Reader<SettingState, readonly VNode<SettingState>[]>
         textColorNode('memberColor'),
         colorNode('shadowColor'),
       ],
-      R.sequenceArray,
-      R.map(R.sequenceArray),
-      R.map(R.map((x) => h('div', {
+      mapSettingNodes((x) => h('div', {
         style: panelBoxStyle(212),
-      }, x))),
+      }, x)),
     ),
     pipe(
       [
@@ -52,11 +52,9 @@ R.Reader<SettingState, readonly VNode<SettingState>[]>
         intNode('maxChatLength', 5, 200, 5),
         intNode('laneCount', 1, 25, 1),
       ],
-      R.sequenceArray,
-      R.map(R.sequenceArray),
-      R.map(R.map((x) => h('div', {
+      mapSettingNodes((x) => h('div', {
         style: panelBoxStyle(212),
-      }, x))),
+      }, x)),
     ),
     pipe(
       [
@@ -89,15 +87,12 @@ R.Reader<SettingState, readonly VNode<SettingState>[]>
         // ),
         buttonNode('clearFlowChats'),
       ],
-      R.sequenceArray,
-      R.map(R.sequenceArray),
-      R.map(R.map((x) => h('div', {
+      mapSettingNodes((x) => h('div', {
         style: panelBoxStyle(212),
-      }, x))),
+      }, x)),
     ),
   ],
-  R.sequenceArray,
-  R.map(R.sequenceArray),
+  mapSettingNodes(identity),
 );
 
 export default flowChatPanel;

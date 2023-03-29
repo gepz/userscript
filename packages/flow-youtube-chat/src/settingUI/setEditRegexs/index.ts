@@ -10,7 +10,7 @@ import * as Tu from '@effect/data/Tuple';
 import {
   intercalate,
 } from '@effect/data/typeclass/Semigroup';
-import * as P from 'fp-ts/Predicate';
+import * as P from '@effect/data/Predicate';
 
 import Editable, * as Ed from '@/ui/Editable';
 

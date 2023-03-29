@@ -1,4 +1,3 @@
-import * as R from 'fp-ts/Reader';
 import {
   h,
   VNode,
@@ -12,9 +11,9 @@ import intNode from '@/settingUI/intNode';
 
 export default (
   c: AppCommander,
-): R.Reader<SettingState, VNode<SettingState>> => (
-  s,
-) => h('div', {}, [
+) => (
+  s: SettingState,
+): VNode<SettingState> => h('div', {}, [
   checkboxNode('useStepTiming')(c)(s),
   h('div', {
     style: {

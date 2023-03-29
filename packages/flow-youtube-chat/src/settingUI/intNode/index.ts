@@ -1,4 +1,3 @@
-import * as R from 'fp-ts/Reader';
 import {
   VNode,
 } from 'hyperapp';
@@ -22,9 +21,11 @@ export default (
   min: number,
   max: number,
   step: number,
-): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
-  c,
-) => (s) => settingRow(
+) => (
+  c: AppCommander,
+) => (
+  s: SettingState,
+): VNode<SettingState> => settingRow(
   getText(label)(s.lang),
   errorText(getText('inputNonNumberic')(s.lang))(s[label]),
   [

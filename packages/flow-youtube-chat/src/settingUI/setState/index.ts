@@ -1,8 +1,6 @@
 import {
   pipe,
 } from '@effect/data/Function';
-import * as RA from '@effect/data/ReadonlyArray';
-import * as R from 'fp-ts/Reader';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
@@ -15,7 +13,7 @@ import * as Ed from '@/ui/Editable';
 const setState: Partial<{
   [K in keyof SettingState]: (
     v: SettingState[K]
-  ) => R.Reader<AppCommander, R.Reader<SettingState, SettingDispatchable>>
+  ) => (c: AppCommander) => (s: SettingState) => SettingDispatchable
 }> = {
   flowY1: setRange('flowY1')('flowY2')((a) => (b) => Math.max(b, a + 0.05)),
   flowY2: setRange('flowY2')('flowY1')((a) => (b) => Math.min(b, a - 0.05)),

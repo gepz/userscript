@@ -1,8 +1,7 @@
 import {
+  identity,
   pipe,
 } from '@effect/data/Function';
-import * as RA from '@effect/data/ReadonlyArray';
-import * as R from 'fp-ts/Reader';
 import {
   h,
   VNode,
@@ -11,13 +10,15 @@ import {
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import checkboxNode from '@/settingUI/checkboxNode';
+import mapSettingNodes from '@/settingUI/mapSettingNodes';
 import numberNode from '@/settingUI/numberNode';
 import panelBoxStyle from '@/ui/panelBoxStyle';
 
-const chatFieldPanel:R.Reader<
-AppCommander,
-R.Reader<SettingState, readonly VNode<SettingState>[]>
-> = pipe(
+const chatFieldPanel: (
+  c: AppCommander
+) => (
+  s: SettingState
+) => readonly VNode<SettingState>[] = pipe(
   [
     pipe(
       [
@@ -25,19 +26,12 @@ R.Reader<SettingState, readonly VNode<SettingState>[]>
         checkboxNode('simplifyChatField'),
         checkboxNode('createBanButton'),
       ],
-      (xs) => (c: AppCommander) => (s: SettingState) => pipe(
-        xs,
-        RA.map((x) => x(c)(s)),
-        (x) => h('div', {
-          style: panelBoxStyle(644),
-        }, x),
-      ),
+      mapSettingNodes((x) => h('div', {
+        style: panelBoxStyle(644),
+      }, x)),
     ),
   ],
-  (xs) => (c: AppCommander) => (s: SettingState) => pipe(
-    xs,
-    RA.map((x) => x(c)(s)),
-  ),
+  mapSettingNodes(identity),
 );
 
 export default chatFieldPanel;
