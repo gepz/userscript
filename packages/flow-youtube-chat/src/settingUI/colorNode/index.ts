@@ -1,7 +1,6 @@
-import * as R from 'fp-ts/Reader';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
 import {
   VNode,
 } from 'hyperapp';
@@ -22,9 +21,11 @@ import textInput from '@/ui/textInput';
 export default (
   label: TextKey
   & StateKey<Editable<string>>,
-): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
-  c,
-) => (s) => settingRow(
+) => (
+  c: AppCommander,
+) => (
+  s: SettingState,
+): VNode<SettingState> => settingRow(
   getText(label)(s.lang),
   errorText(getText('invalidColor')(s.lang))(s[label]),
   pipe(

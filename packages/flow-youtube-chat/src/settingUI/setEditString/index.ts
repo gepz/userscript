@@ -1,10 +1,9 @@
-import * as En from 'fp-ts/Endomorphism';
-import * as O from 'fp-ts/Option';
-import * as R from 'fp-ts/Reader';
 import {
   flow,
   constant,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as En from 'fp-ts/Endomorphism';
+import * as R from 'fp-ts/Reader';
 
 import Editable, * as Ed from '@/ui/Editable';
 

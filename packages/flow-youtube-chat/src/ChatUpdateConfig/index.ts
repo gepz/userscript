@@ -1,5 +1,15 @@
-export default interface ChatUpdateConfig {
+type ChatUpdateConfig = {
   render: boolean,
-  setAnimation: boolean,
-  setPlayState: boolean,
-}
+  setAnimation: true,
+  setPlayState: false,
+} | {
+  render: boolean,
+  setAnimation: false,
+  setPlayState: true,
+} | {
+  render: boolean,
+  setAnimation: false,
+  setPlayState: false,
+};
+
+export default ChatUpdateConfig;

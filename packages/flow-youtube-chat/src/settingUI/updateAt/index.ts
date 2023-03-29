@@ -1,15 +1,16 @@
-import * as R from 'fp-ts/Reader';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as R from 'fp-ts/Reader';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
 import UserConfigSetter from '@/UserConfigSetter';
 import isEditable from '@/isEditable';
-import Expression from '@/settingUI/EditableExpression/Expression';
-import toJsepExp from '@/settingUI/EditableExpression/toJsepExp';
+// import Expression from '@/settingUI/EditableExpression/Expression';
+// eslint-disable-next-line max-len
+// import editableExpressionToJsep from '@/settingUI/EditableExpression/editableExpressionToJsep';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import StateKey from '@/settingUI/StateKey';
 import UpdateType from '@/settingUI/UpdateType';
@@ -35,7 +36,7 @@ export default <T extends UpdateType>(k: StateKey<T>) => (v: T) => pipe(
       ...s,
       [k]: v,
     },
-    ...(k in c.setConfig) ? [
+    ...(k in c.setConfig && k !== 'filterExp') ? [
       configEffect(
         // eslint-disable-next-line max-len
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -48,7 +49,8 @@ export default <T extends UpdateType>(k: StateKey<T>) => (v: T) => pipe(
           v as unknown as Editable<UserConfig[keyof UserConfig]>,
         // eslint-disable-next-line max-len
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        ) : k === 'filterExp' ? toJsepExp(v as Expression)
+        )
+        //  : k === 'filterExp' ? editableExpressionToJsep(v as Expression)
         // eslint-disable-next-line max-len
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         : v as never,

@@ -1,25 +1,25 @@
-import * as IO from 'fp-ts/IO';
-import * as IOO from 'fp-ts/IOOption';
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
   flow,
-} from 'fp-ts/function';
-import * as Str from 'fp-ts/string';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Str from '@effect/data/String';
+import * as Z from '@effect/io/Effect';
 
 import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';
 import defaultToast from '@/defaultToast';
 
-const template = pipe(
+const template = Z.runPromise(pipe(
   document.createElement('button'),
-  IO.of,
-  IO.chainFirst((x) => () => x.classList.add(
+  Z.succeed,
+  Z.tap((x) => Z.sync(() => x.classList.add(
     'style-scope',
     'yt-icon-button',
     'fyc_button',
-  )),
-  IO.chainFirst((x) => () => Object.assign<
+  ))),
+  Z.tap((x) => Z.sync(() => Object.assign<
   CSSStyleDeclaration,
   Partial<CSSStyleDeclaration>
   >(x.style, {
@@ -27,20 +27,20 @@ const template = pipe(
     width: '20px',
     height: '20px',
     fill: '#fff',
-  })),
-  IO.chainFirst((x) => () => x.setAttribute(
+  }))),
+  Z.tap((x) => Z.sync(() => x.setAttribute(
     'aria-label',
     'NGに入れる(Ban this user)',
-  )),
-  IO.chainFirst((x) => () => {
+  ))),
+  Z.tap((x) => Z.sync(() => {
     // eslint-disable-next-line no-param-reassign
     x.innerHTML = '<svg class="style-scope yt-icon" style="width: 100%;'
   + ' height: 75%; fill: var(--yt-spec-text-secondary);" viewBox="0 0 512 512">'
   // eslint-disable-next-line max-len
   + '<path d="M440 78A256 256 0 1 0 73 435 256 256 0 0 0 440 78zm-99 35L113 341C37 179 212 44 341 113zM177 405l228-228c76 162-99 297-228 228z" fill-rule="evenodd"/>'
   + '</svg>';
-  }),
-)();
+  })),
+));
 
 export default (
   id: string,
@@ -50,29 +50,30 @@ export default (
   setConfig: UserConfigSetter,
 ) => (
   chat: HTMLElement,
-): IO.IO<HTMLElement> => pipe(
+): Z.Effect<never, never, HTMLElement> => pipe(
   getConfig.bannedUsers,
-  IOO.fromIO,
-  IOO.filter((x) => !x.includes(id)),
-  IOO.map(flow(
-    RA.uniq(Str.Eq),
+  Z.filterOrFail((x) => !x.includes(id), O.none),
+  Z.map(flow(
+    RA.uniq(Str.Equivalence),
     RA.append(id),
   )),
-  IOO.chainIOK((x) => pipe(
+  Z.flatMap((x) => pipe(
     setConfig.bannedUsers(x),
-    IO.apSecond(() => defaultToast.fire({
+    Z.zipRight(Z.sync(() => defaultToast.fire({
       title: `Added Banned User: ${id}`,
       icon: 'success',
-    })),
+    }))),
   )),
-  IO.apSecond(() => {
+  Z.ignore,
+  Z.zipRight(Z.sync(() => {
     // eslint-disable-next-line no-param-reassign
     chat.style.display = 'none';
-  }),
+  })),
   (onclick) => pipe(
+    Z.promise(() => template),
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    () => template.cloneNode(true) as HTMLElement,
+    Z.map((x) => x.cloneNode(true) as HTMLElement),
     // eslint-disable-next-line no-param-reassign
-    IO.chainFirst((x) => () => { x.onclick = onclick; }),
+    Z.tap((x) => Z.sync(() => { x.onclick = () => Z.runPromise(onclick); })),
   ),
 );

@@ -1,7 +1,8 @@
-import * as R from 'fp-ts/Reader';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as R from 'fp-ts/Reader';
 import {
   h,
   VNode,
@@ -24,15 +25,19 @@ R.Reader<SettingState, readonly VNode<SettingState>[]>
         checkboxNode('simplifyChatField'),
         checkboxNode('createBanButton'),
       ],
-      R.sequenceArray,
-      R.map(R.sequenceArray),
-      R.map(R.map((x) => h('div', {
-        style: panelBoxStyle(644),
-      }, x))),
+      (xs) => (c: AppCommander) => (s: SettingState) => pipe(
+        xs,
+        RA.map((x) => x(c)(s)),
+        (x) => h('div', {
+          style: panelBoxStyle(644),
+        }, x),
+      ),
     ),
   ],
-  R.sequenceArray,
-  R.map(R.sequenceArray),
+  (xs) => (c: AppCommander) => (s: SettingState) => pipe(
+    xs,
+    RA.map((x) => x(c)(s)),
+  ),
 );
 
 export default chatFieldPanel;

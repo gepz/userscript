@@ -1,26 +1,30 @@
-import * as O from 'fp-ts/Option';
-import * as R from 'fp-ts/Reader';
+import * as O from '@effect/data/Option';
+import * as Z from '@effect/io/Effect';
 
 import LivePage from '@/LivePage';
 import mapObject from '@/mapObject';
 
-type LiveElementState<T> = T extends () => infer R ? {
-  ele: R,
-  read: T,
-} : never;
+type LiveElementState<T> = {
+  ele: O.Option<T>,
+  read: Z.Effect<never, O.Option<never>, T>,
+};
 
 type LivePageState = {
-  [P in keyof LivePage]: LiveElementState<LivePage[P]>;
+  [P in keyof LivePage]: LivePage[P] extends Z.Effect<
+  never,
+  O.Option<never>,
+  infer R
+  > ? LiveElementState<R> : never;
 };
 
 export default LivePageState;
 
-export const makePageState: R.Reader<LivePage, LivePageState> = mapObject(
+export const makePageState: (p: LivePage) => LivePageState = mapObject(
   ([k, v]) => [
     k,
     {
-      ele: O.none,
+      ele: O.none(),
       read: v,
-    },
+    } satisfies LivePageState[typeof k],
   ],
 );

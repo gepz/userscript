@@ -1,11 +1,9 @@
-import * as IO from 'fp-ts/IO';
-import * as IOO from 'fp-ts/IOOption';
-import * as O from 'fp-ts/Option';
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
-} from 'fp-ts/function';
-import log from 'loglevel';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Z from '@effect/io/Effect';
 
 import ChatData from '@/ChatData';
 import FlowChat from '@/FlowChat';
@@ -24,12 +22,12 @@ export default (
   flowChats: FlowChat[],
   chatScrn: HTMLElement,
   mainState: MainState,
-): IO.IO<void> => (pipe(
+): Z.Effect<never, never, void> => (pipe(
   {
     getData,
     element: emptyElement,
     lane: -1,
-    animation: O.none,
+    animation: O.none(),
     animationDuration: 0,
     animationEnded: false,
     width: 2,
@@ -43,60 +41,57 @@ export default (
   )(mainState).interval,
   intervalTooSmall,
   (x) => x(mainState.config),
-) ? () => {}
-: () => {
-  const offScreenIndex = pipe(
-    flowChats,
-    RA.findIndex(
-      (chat) => chat.animationEnded
-   || flowChats.length >= mainState.config.maxChatCount,
-    ),
-  );
-
-  const element: HTMLElement = pipe(
+) ? Z.unit()
+: pipe(
+  flowChats,
+  RA.findFirstIndex((chat) => chat.animationEnded
+     || flowChats.length >= mainState.config.maxChatCount),
+  (offScreenIndex) => pipe(
     offScreenIndex,
-    O.map((x) => flowChats[x].element),
-    O.getOrElseW(() => document.createElement('span')),
-  );
-
-  pipe(
-    offScreenIndex,
-    O.match(
-      () => () => {
-        log.debug('CreateFlowChat');
-        chatScrn.append(element);
-      },
-      (i) => pipe(
-        () => flowChats.splice(i, 1)[0].animation,
-        IOO.chainIOK(
-          (oldAnimation) => () => oldAnimation.cancel(),
+    O.map((index) => pipe(
+      flowChats,
+      RA.unsafeGet(index),
+      (x) => x.element,
+    )),
+    O.getOrElse(() => document.createElement('span')),
+    Z.succeed,
+    Z.tap((element) => pipe(
+      offScreenIndex,
+      O.match(
+        () => Z.sync(() => chatScrn.append(element)),
+        (i) => pipe(
+          Z.sync(() => flowChats.splice(i, 1)?.[0]?.animation ?? O.none()),
+          Z.some,
+          Z.flatMap((oldAnimation) => Z.sync(() => oldAnimation.cancel())),
+          Z.ignore,
         ),
       ),
-    ),
-  )();
-
-  const flowChat: FlowChat = {
-    getData,
-    element,
-    lane: -1,
-    animation: O.none,
-    animationDuration: 0,
-    animationEnded: false,
-    width: 2,
-    height: getChatFontSize(mainState),
-    y: 0,
-  };
-
-  element.classList.add('fyc_chat');
-  pipe(
+    )),
+  ),
+  Z.flatMap((element) => pipe(
+    {
+      getData,
+      element,
+      lane: -1,
+      animation: O.none(),
+      animationDuration: 0,
+      animationEnded: false,
+      width: 2,
+      height: getChatFontSize(mainState),
+      y: 0,
+    },
+    Z.succeed<FlowChat>,
+    Z.zipLeft(Z.sync(() => element.classList.add('fyc_chat'))),
+  )),
+  Z.flatMap((flowChat) => pipe(
     mainState,
-    IO.of,
-    IO.chainFirst(renderChat(flowChat)),
-    IO.chain(setChatAnimation(
+    Z.succeed,
+    Z.tap(renderChat(flowChat)),
+    Z.flatMap(setChatAnimation(
       flowChat,
       flowChats,
     )),
-    IO.chain((x) => (x ? () => flowChats.push(flowChat)
-    : () => flowChat.element.remove())),
-  )();
-});
+    Z.flatMap((x) => (x ? Z.sync(() => flowChats.push(flowChat))
+    : Z.sync(() => flowChat.element.remove()))),
+  )),
+));

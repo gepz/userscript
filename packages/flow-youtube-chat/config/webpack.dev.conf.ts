@@ -11,6 +11,9 @@ export default merge(
   webpackBaseConf,
   devConfig(path.join(__dirname, '../')),
   {
+    devServer: {
+      hot: false,
+    },
     devtool: 'eval-source-map',
     plugins: [userscriptPlugin(true)],
   },

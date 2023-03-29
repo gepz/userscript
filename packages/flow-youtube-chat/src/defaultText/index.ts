@@ -9,7 +9,6 @@ export default {
   memberColor: ['Color(Member)', '色(メンバー)'],
   feedback: ['Feedback', 'バグ報告と要望'],
   eventLog: ['Event log', 'イベントログ'],
-  // eslint-disable-next-line max-len
   giveFeedback: [
     // eslint-disable-next-line max-len
     'Give your feedbacks here(Please attach the event log if they\'re bug related)',

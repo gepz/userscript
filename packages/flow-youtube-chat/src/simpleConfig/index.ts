@@ -1,6 +1,7 @@
 import {
   identity,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as Z from '@effect/io/Effect';
 
 import GMConfigItem from '@/GMConfigItem';
 
@@ -9,7 +10,7 @@ export default <T extends GM.Value>(
   defaultValue: T,
 ): GMConfigItem<T> => ({
   gmKey: key,
-  getValue: async () => await GM.getValue(key) ?? defaultValue,
+  getValue: Z.promise(async () => await GM.getValue(key) ?? defaultValue),
   defaultValue,
   toGm: identity,
 });

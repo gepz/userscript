@@ -1,6 +1,6 @@
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
 import {
   h,
 } from 'hyperapp';

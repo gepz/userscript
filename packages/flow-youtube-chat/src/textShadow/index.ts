@@ -1,15 +1,15 @@
-import * as R from 'fp-ts/Reader';
 import {
   flow,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as RA from '@effect/data/ReadonlyArray';
 
-export default (shadowColor: string): R.Reader<number, string> => flow(
+export default (shadowColor: string): (x: number) => string => flow(
   (x) => `${x}px`,
   (x) => (a: string, b: string) => `${a}${x} ${b}${x} ${shadowColor}99`,
-  (x) => [
+  (x) => RA.join(', ')([
     x('-', '-'),
     x('', '-'),
     x('-', ''),
     x('', ''),
-  ].join(', '),
+  ]),
 );

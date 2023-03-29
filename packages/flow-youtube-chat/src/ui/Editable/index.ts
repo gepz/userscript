@@ -1,10 +1,10 @@
-import * as En from 'fp-ts/Endomorphism';
-import * as O from 'fp-ts/Option';
-import * as RTu from 'fp-ts/ReadonlyTuple';
 import {
   constant,
   flow,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as Tu from '@effect/data/Tuple';
+import * as En from 'fp-ts/Endomorphism';
 
 type Editable<T> = readonly [
   T,
@@ -13,36 +13,36 @@ type Editable<T> = readonly [
 
 export default Editable;
 
-export const of: <T>(x: T) => Editable<T> = (x) => [x, O.none];
+export const of: <T>(x: T) => Editable<T> = (x) => [x, O.none()];
 
 export const fromValueText: <T>(v: T) => (t: string) => Editable<T> = (
   v,
-) => (t) => [v, O.of([t, O.none])];
+) => (t) => [v, O.some([t, O.none()])];
 
-export const value: <T>(x: Editable<T>) => T = RTu.fst;
+export const value: <T>(x: Editable<T>) => T = Tu.getFirst;
 
 export const text: <T>(x: Editable<T>) => O.Option<string> = flow(
-  RTu.snd,
-  O.map(RTu.fst),
+  Tu.getSecond,
+  O.map(Tu.getFirst),
 );
 
 export const error: <T>(x: Editable<T>) => O.Option<string> = flow(
-  RTu.snd,
-  O.chain(RTu.snd),
+  Tu.getSecond,
+  O.flatMap(Tu.getSecond),
 );
 
 export const setValue: <T>(x: T) => En.Endomorphism<Editable<T>> = flow(
   constant,
-  RTu.mapFst,
+  (x) => Tu.mapFirst(x),
 );
 
 export const setText: <T>(x: string) => En.Endomorphism<Editable<T>> = (
   x,
-) => RTu.mapSnd(flow(
-  O.map(RTu.mapFst(constant(x))),
-  O.alt(constant(O.of<
+) => Tu.mapSecond(flow(
+  O.map(Tu.mapFirst(constant(x))),
+  O.orElse(constant(O.some<
   readonly [string, O.Option<string>]
-  >([x, O.none]))),
+  >([x, O.none()]))),
 ));
 
 export const hasError = flow(

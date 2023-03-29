@@ -1,4 +1,4 @@
-import * as RA from 'fp-ts/ReadonlyArray';
+import * as RA from '@effect/data/ReadonlyArray';
 
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';

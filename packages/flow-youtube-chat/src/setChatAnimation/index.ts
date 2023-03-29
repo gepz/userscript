@@ -1,11 +1,10 @@
-import * as IO from 'fp-ts/IO';
-import * as IOO from 'fp-ts/IOOption';
-import * as O from 'fp-ts/Option';
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
-  flow,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as tuple from '@effect/data/Tuple';
+import * as Z from '@effect/io/Effect';
 import hash from 'hash-it';
 import memoize from 'micro-memoize';
 
@@ -23,10 +22,7 @@ const getWidth = memoize(
   (ele: Element | null): number => ele?.getBoundingClientRect().width ?? 0,
   {
     maxSize: 2000,
-    transformKey: flow(
-      RA.map(hash),
-      RA.toArray,
-    ),
+    transformKey: RA.map(hash),
   },
 );
 
@@ -35,68 +31,64 @@ export default (
   chats: readonly FlowChat[],
 ) => (
   mainState: MainState,
-): IO.IO<boolean> => pipe(
+): Z.Effect<never, never, boolean> => pipe(
   {
     fontSize: getChatFontSize(mainState),
   },
-  IO.of,
-  IO.chainFirst(
-    (x) => () => {
-      // eslint-disable-next-line no-param-reassign
-      chat.element.style.transform = `translate(${
-        mainState.playerRect.width
+  Z.succeed,
+  Z.tap((x) => Z.sync(() => {
+    // eslint-disable-next-line no-param-reassign
+    chat.element.style.transform = `translate(${
+      mainState.playerRect.width
          * (mainState.config.flowX2 - mainState.config.flowX1)
-      }px, -${x.fontSize * 2}px)`;
-    },
-  ),
-  IOO.fromIO,
-  IOO.filter(() => !chat.animationEnded),
-  IOO.chainFirstIOK((x) => () => {
+    }px, -${x.fontSize * 2}px)`;
+  })),
+  Z.filterOrFail(() => !chat.animationEnded, O.none),
+  Z.tap((x) => Z.sync(() => {
     // eslint-disable-next-line no-param-reassign
     chat.animationDuration = flowDuration;
     // eslint-disable-next-line no-param-reassign
     chat.width = getWidth(chat.element.firstElementChild);
     // eslint-disable-next-line no-param-reassign
     chat.height = x.fontSize;
-  }),
-  IOO.map(() => ({
-    progress: getFlowChatProgress(chat),
   })),
-  IOO.map((x) => ({
-    ...x,
+  Z.map(() => getFlowChatProgress(chat)),
+  Z.map((progress) => ({
+    progress,
     ...getChatLane(
       chat,
-      x.progress,
+      progress,
       chats,
     )(mainState),
   })),
-  IOO.chain((ctx) => (
-    (intervalTooSmall(ctx.interval)(mainState.config)) ? pipe(
+  Z.filterOrElse(
+    (x) => !intervalTooSmall(x.interval)(mainState.config),
+    () => pipe(
       chat.animation,
-      IOO.fromOption,
-      IOO.chainIOK((x) => () => {
+      Z.fromOption,
+      Z.flatMap((x) => Z.sync(() => {
         x.finish();
         // eslint-disable-next-line no-param-reassign
-        chat.animation = O.none;
-      }),
-      IO.map(() => O.none),
-    )
-    : IOO.of(ctx)
-  )),
-  IOO.chainFirstIOK((x) => () => {
+        chat.animation = O.none();
+      })),
+      Z.zipRight(Z.fail(O.none())),
+    ),
+  ),
+  Z.tap((x) => Z.sync(() => {
     // eslint-disable-next-line no-param-reassign
     chat.lane = x.lane;
-  }),
-  IOO.map((x) => ({
+  })),
+  Z.map((x) => ({
     ...x,
     laneY: getLaneY(chat.lane, mainState),
   })),
-  IOO.chain((ctx) => pipe(
+  Z.tap((ctx) => pipe(
     [
       pipe(
         chat.animation,
-        IOO.fromOption,
-        IOO.chainIOK((x) => () => x.cancel()),
+        Z.fromOption,
+        Z.flatMap((x) => Z.sync(() => x.cancel())),
+        Z.ignore,
       ),
       pipe(
         [
@@ -109,16 +101,18 @@ export default (
             -chat.width,
             ctx.laneY,
           ],
-        ],
-        RA.map(RA.map(((x) => `${x}px`))),
+        ] as const,
+        RA.map(pipe(
+          (x: number) => `${x}px`,
+          (x) => tuple.bimap(x, x),
+        )),
         RA.map((([x, y]) => `translate(${x}, ${y})`)),
         RA.bindTo('transform'),
-        RA.toArray,
-        (x) => chat.element.animate(x, {
+        (x) => Z.sync(() => chat.element.animate(x, {
           duration: flowDuration,
           easing: mainState.config.timingFunction,
-        }),
-        (x) => {
+        })),
+        Z.tap((x) => Z.sync(() => {
           // eslint-disable-next-line no-param-reassign
           x.onfinish = () => {
             // eslint-disable-next-line no-param-reassign
@@ -130,19 +124,15 @@ export default (
           const newTime = ctx.progress * flowDuration;
           // eslint-disable-next-line no-param-reassign
           x.currentTime = newTime;
-
-          return x;
-        },
-        O.of,
-        (x) => () => {
+        })),
+        Z.flatMap((x) => Z.sync(() => {
           // eslint-disable-next-line no-param-reassign
-          chat.animation = x;
-        },
-        IO.apSecond(setChatPlayState(chat)(mainState)),
+          chat.animation = O.some(x);
+        })),
+        Z.zipRight(setChatPlayState(chat)(mainState)),
       ),
     ],
-    IO.sequenceArray,
-    IOO.fromIO,
+    (x) => Z.all(x),
   )),
-  IO.map(O.isSome),
+  Z.isSuccess,
 );

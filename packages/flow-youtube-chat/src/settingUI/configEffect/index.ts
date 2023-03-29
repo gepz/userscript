@@ -1,4 +1,4 @@
-import * as R from 'fp-ts/Reader';
+import * as Z from '@effect/io/Effect';
 import {
   Effect,
 } from 'hyperapp';
@@ -10,7 +10,7 @@ import UserConfigSetter from '@/UserConfigSetter';
 export default <T extends keyof UserConfig>(
   k: T,
   v: UserConfig[T],
-): R.Reader<UserConfigSetter, Effect<SettingState>> => (
+): (setter: UserConfigSetter) => Effect<SettingState> => (
   setConfig,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-) => setConfig[k](v as never);
+) => () => Z.runPromise(setConfig[k](v as never));

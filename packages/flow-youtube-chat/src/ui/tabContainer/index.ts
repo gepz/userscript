@@ -1,7 +1,7 @@
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as RA from '@effect/data/ReadonlyArray';
 import {
   h,
   VNode,
@@ -24,7 +24,7 @@ export default <T>(
 ): VNode<T> => h('div', {}, [
   h('div', {}, pipe(
     labels,
-    RA.mapWithIndex((i, x) => h('span', {
+    RA.map((x, i) => h('span', {
       style: {
         ...style.label,
         ...(mainTab === i ? style.labelFocus : {}),

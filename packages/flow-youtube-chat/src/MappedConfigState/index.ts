@@ -1,5 +1,5 @@
 import UserConfig from '@/UserConfig';
-import Expression from '@/settingUI/EditableExpression/Expression';
+// import Expression from '@/settingUI/EditableExpression/Expression';
 import Editable from '@/ui/Editable';
 
 type MappedConfigState = {
@@ -10,7 +10,8 @@ type MappedConfigState = {
       ? Editable<UserConfig[P]>
       : UserConfig[P]
     : P extends 'filterExp'
-      ? Expression
+      ? undefined
+      // ? Expression
       : UserConfig[P];
 };
 

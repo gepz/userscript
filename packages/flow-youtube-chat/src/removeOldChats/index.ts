@@ -1,8 +1,8 @@
-import * as IO from 'fp-ts/IO';
 import {
+  flow,
   pipe,
-} from 'fp-ts/function';
-import log from 'loglevel';
+} from '@effect/data/Function';
+import * as Z from '@effect/io/Effect';
 
 import FlowChat from '@/FlowChat';
 
@@ -10,16 +10,20 @@ export default (
   flowChats: FlowChat[],
 ) => (
   maxChatCount: number,
-): IO.IO<void> => pipe(
-  () => flowChats.sort((a, b) => (a.animationEnded === b.animationEnded ? 0
-  : a.animationEnded ? -1
-  : 1)),
-  IO.apSecond(() => flowChats.splice(
+): Z.Effect<never, never, void> => pipe(
+  Z.sync(() => flowChats.sort(
+    (a, b) => (a.animationEnded === b.animationEnded ? 0
+    : a.animationEnded ? -1
+    : 1),
+  )),
+  Z.zipRight(Z.sync(() => flowChats.splice(
     0,
     Math.max(0, flowChats.length - maxChatCount),
-  )),
-  IO.chain((removed) => () => removed.forEach((x) => {
-    log.debug('RemoveChat');
-    x.element.remove();
-  })),
+  ))),
+  Z.flatMap(Z.forEach((x) => pipe(
+    Z.logDebug('RemoveChat'),
+    Z.zipRight(Z.sync(() => {
+      x.element.remove();
+    })),
+  ))),
 );

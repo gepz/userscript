@@ -1,15 +1,12 @@
-import * as IO from 'fp-ts/IO';
-import * as IOO from 'fp-ts/IOOption';
-import * as I from 'fp-ts/Identity';
-import * as O from 'fp-ts/Option';
-import * as R from 'fp-ts/Reader';
-import * as RA from 'fp-ts/ReadonlyArray';
-import * as S from 'fp-ts/State';
 import {
   pipe,
   flow,
   identity,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as I from '@effect/data/Identity';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Z from '@effect/io/Effect';
 
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
@@ -28,9 +25,9 @@ export default (
   mainState: MainState,
   getConfig: UserConfigGetter,
   setConfig: UserConfigSetter,
-): R.Reader<MutationRecord[], S.State<unknown[][], IO.IO<unknown>>> => flow(
+): (r: MutationRecord[]) => Z.Effect<never, never, unknown> => flow(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  RA.chain((e) => (Array.from(e.addedNodes) as HTMLElement[])),
+  RA.flatMap((e) => (Array.from(e.addedNodes) as HTMLElement[])),
   RA.filter((x) => x.children.length > 0),
   RA.reverse,
   RA.map((chat) => pipe(
@@ -39,18 +36,19 @@ export default (
       config: mainState.config,
     },
     I.let('data', (x) => x.getData(x.config)),
-    S.of,
-    S.bind('banned', (x) => pipe(
+    Z.succeed,
+    Z.bind('banned', (x) => pipe(
       checkBannedWords(x.data, x.config),
     )),
-    S.map((ctx) => (ctx.banned ? () => {
+    Z.flatMap((ctx) => (ctx.banned ? Z.sync(() => {
       // eslint-disable-next-line no-param-reassign
       chat.style.display = 'none';
-    } : IO.sequenceArray([
+    }) : Z.all([
       pipe(
         ctx.config.createChats && ctx.data.chatType === 'normal',
-        IOO.fromPredicate(identity),
-        IOO.chainIOK(() => addFlowChat(
+        O.liftPredicate(identity<boolean>),
+        Z.fromOption,
+        Z.flatMap(() => addFlowChat(
           ctx.getData,
           flowChats,
           chatScrn,
@@ -60,19 +58,20 @@ export default (
       pipe(
         ctx.data.authorID,
         O.filter(() => ctx.config.createBanButton),
-        IOO.fromOption,
-        IOO.filter(() => !chat.children.namedItem('card')),
-        IOO.chainIOK((x) => R.chain(appendChatMessage)(
-          banButton(x)(getConfig)(setConfig),
+        O.filter(() => !chat.children.namedItem('card')),
+        Z.fromOption,
+        Z.flatMap((x) => appendChatMessage(
+          banButton(x)(getConfig)(setConfig)(chat),
         )(chat)),
       ),
       pipe(
         ctx.config.simplifyChatField,
-        IOO.fromPredicate(identity),
-        IOO.chainIOK(() => setChatFieldSimplifyStyle(chat)),
+        O.liftPredicate(identity<boolean>),
+        Z.fromOption,
+        Z.flatMap(() => setChatFieldSimplifyStyle(chat)),
       ),
     ]))),
+    Z.ignore,
   )),
-  S.sequenceArray,
-  S.map(IO.sequenceArray),
+  (x) => Z.all(x),
 );

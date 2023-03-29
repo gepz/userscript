@@ -1,6 +1,6 @@
-import * as IO from 'fp-ts/IO';
-import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Z from '@effect/io/Effect';
 
 export default interface Logger {
-  (as: RNEA.ReadonlyNonEmptyArray<unknown>): IO.IO<void>,
+  (as: RA.NonEmptyReadonlyArray<unknown>): Z.Effect<never, never, void>,
 }

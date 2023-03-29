@@ -1,4 +1,4 @@
-import * as O from 'fp-ts/Option';
+import * as O from '@effect/data/Option';
 
 import ChatData from '@/ChatData';
 import UserConfig from '@/UserConfig';

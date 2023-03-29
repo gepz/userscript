@@ -1,15 +1,15 @@
 import {
+  flow,
+  pipe,
+} from '@effect/data/Function';
+import * as I from '@effect/data/Identity';
+import * as P from '@effect/data/Predicate';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Str from '@effect/data/String';
+import {
   generate,
 } from 'astring';
 import * as expEval from 'expression-eval';
-import * as I from 'fp-ts/Identity';
-import * as P from 'fp-ts/Predicate';
-import * as RA from 'fp-ts/ReadonlyArray';
-import {
-  flow,
-  pipe,
-} from 'fp-ts/function';
-import * as Str from 'fp-ts/string';
 
 import GMConfig from '@/GMConfig';
 import fycKey from '@/fycKey';
@@ -27,7 +27,7 @@ const stringsArgs: [
     Str.split(/\r\n|\n/),
     RA.filter(P.not(Str.isEmpty)),
   ),
-  (x) => x.join('\n'),
+  RA.join('\n'),
 ];
 
 const sc = <T extends GM.Value>(
@@ -136,7 +136,7 @@ export default defaultGMConfig;
 //     )),
 //   ),
 //   flow(
-//     RA.map((x) => x.join()),
-//     (x) => x.join(','),
+//     RA.map(RA.join('')),
+//     RA.join(','),
 //   ),
 // ),

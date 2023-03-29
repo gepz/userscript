@@ -1,10 +1,10 @@
-import * as P from 'fp-ts/Predicate';
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
   flow,
   constant,
-} from 'fp-ts/function';
-import * as Str from 'fp-ts/string';
+} from '@effect/data/Function';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Str from '@effect/data/String';
+import * as P from 'fp-ts/Predicate';
 
 export default flow(
   Str.split(/\r\n|\n/),
