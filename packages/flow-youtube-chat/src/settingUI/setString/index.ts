@@ -2,7 +2,7 @@ import {
   constant,
   flow,
   identity,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
 
 export default flow(
   identity,

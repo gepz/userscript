@@ -1,9 +1,8 @@
-import * as O from 'fp-ts/Option';
-import * as R from 'fp-ts/Reader';
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
 import {
   h,
   VNode,
@@ -24,7 +23,7 @@ import settingRow from '@/ui/settingRow';
 
 export default (
   c: AppCommander,
-): R.Reader<SettingState, VNode<SettingState>> => (
+): (s: SettingState) => VNode<SettingState> => (
   s,
 ) => pipe(
   Ed.value(s.font),
@@ -34,16 +33,16 @@ export default (
       onchange: updateInput(setEditString(false))('font')(c),
     }, pipe(
       fonts(font),
-      RA.findIndex((x) => x[0] === font),
+      RA.findFirstIndex((x) => x[0] === font),
       O.getOrElse(() => 0),
       (index) => pipe(
         fonts(font),
-        RA.mapWithIndex((i, f) => option(
+        RA.map((f, i) => option(
           f[0],
           pipe(
             languages,
-            RA.findIndex((x) => x === s.lang),
-            O.map((x) => f[x + 1]),
+            RA.findFirstIndex((x) => x === s.lang),
+            O.map((x) => RA.unsafeGet(x + 1)(f)),
             O.getOrElse(() => 'Error'),
           ),
           i === index,

@@ -1,8 +1,8 @@
-import * as I from 'fp-ts/Identity';
+import * as I from '@effect/data/Identity';
 import * as R from 'fp-ts/Reader';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';

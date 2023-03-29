@@ -1,11 +1,11 @@
-import * as T from 'fp-ts/Task';
+import * as Z from '@effect/io/Effect';
 
 import UserConfig from '@/UserConfig';
 
 type UserConfigSetter = {
   [P in keyof UserConfig]: (
     val: UserConfig[P],
-  ) => T.Task<void>;
+  ) => Z.Effect<never, never, void>;
 };
 
 export default UserConfigSetter;

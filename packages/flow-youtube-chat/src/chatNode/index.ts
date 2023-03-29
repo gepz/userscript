@@ -1,9 +1,9 @@
-import * as O from 'fp-ts/Option';
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
-} from 'fp-ts/function';
-import * as Str from 'fp-ts/string';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Str from '@effect/data/String';
 import m from 'mithril';
 
 import FlowChat from '@/FlowChat';
@@ -118,7 +118,7 @@ export default (
         O.filter((x) => x.visible),
         O.map((x) => m('span', {
           style: {
-            color: O.toUndefined(data.textColor),
+            color: O.getOrUndefined(data.textColor),
             fontSize: '0.84em',
             ...textStyle,
           } satisfies Partial<CSSStyleDeclaration>,
@@ -132,7 +132,7 @@ export default (
         )),
         O.map((x) => m('span', {
           style: {
-            color: O.toUndefined(data.textColor),
+            color: O.getOrUndefined(data.textColor),
             ...textStyle,
           } satisfies Partial<CSSStyleDeclaration>,
         }, x.vnodes)),
@@ -142,7 +142,7 @@ export default (
         O.filter((x) => x.visible),
         O.map((x) => m('span', {
           style: {
-            color: O.toUndefined(data.paidColor),
+            color: O.getOrUndefined(data.paidColor),
             fontSize: '0.84em',
             ...textStyle,
           } satisfies Partial<CSSStyleDeclaration>,
@@ -152,6 +152,5 @@ export default (
       ),
     ],
     RA.compact,
-    RA.toArray,
   )),
 );

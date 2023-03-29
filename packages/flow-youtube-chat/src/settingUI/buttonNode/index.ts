@@ -1,5 +1,4 @@
-import * as R from 'fp-ts/Reader';
-import * as T from 'fp-ts/Task';
+import * as Z from '@effect/io/Effect';
 import {
   h,
   text,
@@ -19,14 +18,14 @@ export default (
   label: TextKey
   & TypeKey<
   typeof action,
-  R.Reader<AppCommander, R.Reader<SettingState, T.Task<void>>>
+  (c: AppCommander) => (s: SettingState) => Z.Effect<never, never, void>
   >,
-): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
+): (c: AppCommander) => (s: SettingState) => VNode<SettingState> => (
   c,
 ) => (state) => h('button', {
   type: 'button',
   onclick: (s) => [
     s,
-    action[label](c)(s),
+    () => Z.runPromise(action[label](c)(s)),
   ],
 }, text(getText(label)(state.lang)));

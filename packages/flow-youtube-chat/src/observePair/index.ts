@@ -1,18 +1,20 @@
-import forwardTo from '@userscript/forward-to';
-import * as IO from 'fp-ts/IO';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as Z from '@effect/io/Effect';
+import forwardTo from '@userscript/forward-to';
 import {
   Subject,
 } from 'rxjs';
 
-export default <T, T2>(con: new (x: (a: T2) => void) => T): IO.IO<{
+export default <T, T2>(
+  con: new (x: (a: T2) => void) => T,
+): Z.Effect<never, never, {
   subject: Subject<T2>;
   observer: T;
 }> => pipe(
-  () => new Subject<T2>(),
-  IO.bindTo('subject'),
+  Z.Do(),
+  Z.bind('subject', () => Z.sync(() => new Subject<T2>())),
   // eslint-disable-next-line new-cap
-  IO.bind('observer', (x) => () => new con(forwardTo(x.subject))),
+  Z.bind('observer', (x) => Z.sync(() => new con(forwardTo(x.subject)))),
 );

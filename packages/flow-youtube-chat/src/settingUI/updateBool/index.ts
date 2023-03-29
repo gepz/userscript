@@ -2,7 +2,7 @@ import * as R from 'fp-ts/Reader';
 import {
   apply,
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';

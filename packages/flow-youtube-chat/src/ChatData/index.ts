@@ -1,4 +1,4 @@
-import * as O from 'fp-ts/Option';
+import * as O from '@effect/data/Option';
 
 import DisplayText from '@/DisplayText';
 

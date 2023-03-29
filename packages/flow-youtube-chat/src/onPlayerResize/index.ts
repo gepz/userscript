@@ -1,11 +1,10 @@
-import * as IO from 'fp-ts/IO';
-import * as O from 'fp-ts/Option';
-import * as RA from 'fp-ts/ReadonlyArray';
-import * as S from 'fp-ts/State';
 import {
   pipe,
   flow,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Z from '@effect/io/Effect';
 
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
@@ -16,21 +15,20 @@ export default (
   rect: O.Option<DOMRectReadOnly>,
   flowChats: FlowChat[],
   mainState: MainState,
-): S.State<unknown[][], IO.IO<void>> => pipe(
+): Z.Effect<never, never, void> => pipe(
   rect,
-  O.match<DOMRectReadOnly, S.State<unknown[][], IO.IO<void>>>(
-    () => S.of(() => {}),
-    flow(
-      (x) => () => Object.assign(mainState, {
-        playerRect: x,
-      }),
-      IO.map(() => flowChats),
-      IO.map(RA.chain((x) => [
-        renderChat(x)(mainState),
-        setChatAnimation(x, flowChats)(mainState),
-      ])),
-      IO.chain(IO.sequenceArray),
-      (io) => (s) => [io, [...s, ['Resize detected']]],
-    ),
-  ),
+  Z.fromOption,
+  Z.flatMap(flow(
+    (x) => Z.sync(() => Object.assign(mainState, {
+      playerRect: x,
+    })),
+    Z.map(() => flowChats),
+    Z.map(RA.flatMap((x) => [
+      renderChat(x)(mainState),
+      setChatAnimation(x, flowChats)(mainState),
+    ])),
+    Z.flatMap((x) => Z.all(x)),
+    Z.zipLeft(Z.logInfo('Resize detected')),
+  )),
+  Z.ignore,
 );

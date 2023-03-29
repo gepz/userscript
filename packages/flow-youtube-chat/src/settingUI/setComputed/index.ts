@@ -1,7 +1,7 @@
-import * as R from 'fp-ts/Reader';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as R from 'fp-ts/Reader';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
@@ -14,7 +14,7 @@ import * as Ed from '@/ui/Editable';
 const setComputed: {
   [K in keyof typeof computed]: (
     v: ReturnType<(typeof computed)[K]>
-  ) => R.Reader<AppCommander, R.Reader<SettingState, SettingDispatchable>>
+  ) => (c: AppCommander) => (s: SettingState) => SettingDispatchable
 } = {
   useStepTiming: (v) => (c) => (s) => pipe(
     v ? stepTiming(Ed.value(s.timingStepCount))

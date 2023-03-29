@@ -10,10 +10,11 @@ import {
 const cdnSegment = cdnFromDependency.bind(undefined, dependencies);
 
 export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
-  headers: (data) => ({
+  strict: false,
+  headers: (headers, ctx) => ({
     version: `${
-      data.headers.version ?? ''
-    }${devMode ? `.${Date.now()}` : ''}`,
+      headers.version ?? ''
+    }${devMode ? `+${ctx.buildTime.getTime()}` : ''}`,
     name: 'Iwara Custom Sort',
     'name:ja': 'Iwara Custom ソート',
     'run-at': RunAtValue.DocumentEnd,

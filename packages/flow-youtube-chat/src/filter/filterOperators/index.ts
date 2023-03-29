@@ -1,15 +1,15 @@
 import {
-  concatAll,
-} from 'fp-ts/Monoid';
-import * as O from 'fp-ts/Option';
-// import * as P from 'fp-ts/Predicate';
-import * as RA from 'fp-ts/ReadonlyArray';
-import * as B from 'fp-ts/boolean';
-import {
   flow,
   flip,
-} from 'fp-ts/function';
-import * as Str from 'fp-ts/string';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Str from '@effect/data/String';
+import {
+  booleanEvery,
+  booleanSome,
+} from '@effect/data/typeclass/Monoid';
+// import * as P from '@effect/data/Predicate';
 
 import DisplayText from '@/DisplayText';
 
@@ -29,8 +29,8 @@ const filterOperators = {
   flip,
   flow: (fns: Parameters<typeof flow>): (
   ...a: readonly unknown[]) => unknown => flow(...fns),
-  and: concatAll(B.MonoidAll),
-  or: concatAll(B.MonoidAny),
+  and: booleanEvery.combineAll,
+  or: booleanSome.combineAll,
   RA: {
     some: RA.some,
     compact: RA.compact,

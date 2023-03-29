@@ -1,8 +1,9 @@
-import * as O from 'fp-ts/Option';
 import {
   constant,
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
 import {
   h,
   VNode,
@@ -31,7 +32,7 @@ export default <T>(
     Ed.text,
     O.getOrElse(pipe(
       Ed.value(value),
-      (x) => x.join('\n'),
+      RA.join('\n'),
       constant,
     )),
   ),

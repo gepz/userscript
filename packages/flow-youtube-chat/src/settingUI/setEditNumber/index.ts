@@ -1,9 +1,9 @@
-import * as O from 'fp-ts/Option';
-import * as RTu from 'fp-ts/ReadonlyTuple';
 import {
   pipe,
   constant,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as Tu from '@effect/data/Tuple';
 
 import Editable, * as Ed from '@/ui/Editable';
 
@@ -25,6 +25,6 @@ export default (
     : (x) => (Number.isNaN(x)
       ? pipe(
         state,
-        RTu.mapSnd(constant(O.of([value, O.of('')]))),
+        Tu.mapSecond(constant(O.some([value, O.some('')]))),
       ) : Ed.of(x)),
 );

@@ -1,6 +1,7 @@
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as Z from '@effect/io/Effect';
 import {
   h,
 } from 'hyperapp';
@@ -48,7 +49,7 @@ export default (setConfig: UserConfigSetter): RootComponent<State> => pipe(
             ...s,
             displayChats,
           },
-          setConfig.displayChats(displayChats),
+          () => Z.runPromise(setConfig.displayChats(displayChats)),
         ],
       ),
     }, [

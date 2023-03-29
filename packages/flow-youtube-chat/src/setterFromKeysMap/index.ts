@@ -1,15 +1,14 @@
-import * as R from 'fp-ts/Reader';
-import * as RA from 'fp-ts/ReadonlyArray';
-import * as T from 'fp-ts/Task';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Z from '@effect/io/Effect';
 
 import UserConfig from '@/UserConfig';
 import UserConfigSetter from '@/UserConfigSetter';
 
 export default (keys: (keyof UserConfig)[]) => (
-  f: R.Reader<keyof UserConfig, R.Reader<never, T.Task<unknown>>>,
+  f: (k: keyof UserConfig) => (v: never) => Z.Effect<never, unknown, unknown>,
 ): UserConfigSetter => pipe(
   keys,
   RA.map((x) => [x, f(x)]),

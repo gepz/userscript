@@ -1,12 +1,12 @@
-import * as En from 'fp-ts/Endomorphism';
-import * as O from 'fp-ts/Option';
-import * as P from 'fp-ts/Predicate';
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
   constant,
-} from 'fp-ts/function';
-import * as Str from 'fp-ts/string';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as P from '@effect/data/Predicate';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Str from '@effect/data/String';
+import * as En from 'fp-ts/Endomorphism';
 
 import Editable, * as Ed from '@/ui/Editable';
 
@@ -19,7 +19,7 @@ export default (
   Str.split(/\r\n|\n/),
   RA.filter(P.not(Str.isEmpty)),
   (x) => constant(
-    editing ? [x, O.of([value, O.none])]
+    editing ? [x, O.some([value, O.none()])]
     : Ed.of(x),
   ),
 );

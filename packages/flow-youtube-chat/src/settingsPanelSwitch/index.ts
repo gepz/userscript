@@ -1,12 +1,12 @@
 import {
-  tapIs,
-} from '@userscript/tap';
-import {
   VNode,
   h,
   text,
   Effect,
 } from 'hyperapp';
+import {
+  z,
+} from 'zod';
 
 import SettingState from '@/SettingState';
 import getText from '@/getText';
@@ -20,7 +20,7 @@ const togglePanel = (x: SettingState, e: MouseEvent): [
     showPanel: !x.showPanel,
   },
   [
-    x.showPanel ? () => tapIs(HTMLElement)(e.currentTarget).blur()
+    x.showPanel ? () => z.instanceof(HTMLElement).parse(e.currentTarget).blur()
     : () => {},
     undefined,
   ],

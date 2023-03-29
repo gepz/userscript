@@ -1,10 +1,10 @@
-import * as expEval from 'expression-eval';
-import * as O from 'fp-ts/Option';
-import * as RA from 'fp-ts/ReadonlyArray';
-import * as S from 'fp-ts/State';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Z from '@effect/io/Effect';
+import * as expEval from 'expression-eval';
 
 import ChatData from '@/ChatData';
 import UserConfig from '@/UserConfig';
@@ -13,9 +13,9 @@ import filterContext from '@/filter/filterContext';
 export default (
   data: ChatData,
   config: UserConfig,
-): S.State<unknown[][], boolean> => pipe(
+): Z.Effect<never, never, boolean> => pipe(
   data,
-  O.fromPredicate(() => pipe(
+  O.liftPredicate(() => pipe(
     config.filterExp,
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     (x) => expEval.eval(
@@ -35,9 +35,7 @@ export default (
   ]),
   O.map(RA.map(O.getOrElse(() => ''))),
   O.map(JSON.stringify),
-  O.map((x) => [`Filtered: ${x}`]),
-  O.match<string[], S.State<unknown[][], boolean>>(
-    () => S.of(false),
-    (x) => (s) => [true, [...s, x]],
-  ),
+  Z.fromOption,
+  Z.flatMap((x) => Z.logDebug(`Filtered: ${x}`)),
+  Z.isSuccess,
 );

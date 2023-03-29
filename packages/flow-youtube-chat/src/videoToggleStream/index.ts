@@ -1,7 +1,7 @@
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as RA from '@effect/data/ReadonlyArray';
 import {
   fromEvent,
   merge,
@@ -11,8 +11,8 @@ import {
 
 export default (video: HTMLVideoElement): Observable<boolean> => pipe(
   [['playing'], ['waiting', 'pause']],
-  RA.mapWithIndex((i, x) => [x, i === 0] as const),
-  RA.chain(([xs, b]) => pipe(
+  RA.map((x, i) => [x, i === 0] as const),
+  RA.flatMap(([xs, b]) => pipe(
     xs,
     RA.map((x) => [x, b] as const),
   )),

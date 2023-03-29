@@ -1,12 +1,8 @@
 import {
-  tapIs,
-} from '@userscript/tap';
-import * as IO from 'fp-ts/IO';
-import * as R from 'fp-ts/Reader';
-import {
   flow,
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as Z from '@effect/io/Effect';
 import {
   h,
   VNode,
@@ -14,6 +10,9 @@ import {
   Effect,
   Dispatchable,
 } from 'hyperapp';
+import {
+  z,
+} from 'zod';
 
 import RootComponent, {
   makeComponent,
@@ -22,7 +21,7 @@ import SettingState from '@/SettingState';
 import getText from '@/getText';
 
 const togglePanel = (
-  syncState: R.Reader<Dispatchable<SettingState>, IO.IO<void>>,
+  syncState: (x: Dispatchable<SettingState>) => Z.Effect<never, never, void>,
 ) => (x: SettingState, e: MouseEvent): [
   s: SettingState,
   ...e: Effect<SettingState>[],
@@ -33,12 +32,12 @@ const togglePanel = (
   },
   (newState) => [
     newState,
-    x.showPanel ? () => tapIs(HTMLElement)(e.currentTarget).blur()
+    x.showPanel ? () => z.instanceof(HTMLElement).parse(e.currentTarget).blur()
     : () => {},
-    syncState((oldState) => ({
+    () => Z.runPromise(syncState((oldState) => ({
       ...oldState,
       ...newState,
-    })),
+    }))),
   ],
 );
 

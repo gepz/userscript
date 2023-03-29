@@ -1,12 +1,12 @@
-import * as O from 'fp-ts/Option';
-import {
-  contramap,
-} from 'fp-ts/Ord';
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
-} from 'fp-ts/function';
-import * as N from 'fp-ts/number';
+} from '@effect/data/Function';
+import * as N from '@effect/data/Number';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
+import {
+  contramap,
+} from '@effect/data/typeclass/Order';
 import memoize from 'micro-memoize';
 
 import FlowChat from '@/FlowChat';
@@ -35,13 +35,13 @@ export default (
   const chatIndex = flowChats.indexOf(flowChat);
   const movingChats = pipe(
     flowChats,
-    RA.takeLeft(chatIndex >= 0 ? chatIndex : -1),
+    RA.take(chatIndex >= 0 ? chatIndex : flowChats.length),
     RA.filter((chat) => !chat.animationEnded && chat.width > 0),
-    RA.sort(contramap((x: FlowChat) => x.lane)(N.Ord)),
+    RA.sort(contramap((x: FlowChat) => x.lane)(N.Order)),
   );
 
-  const tooCloseTo = memoize((i: number) => {
-    const otherRect = getFlowChatRect(movingChats[i], mainState);
+  const tooCloseTo = memoize((x: FlowChat) => {
+    const otherRect = getFlowChatRect(x, mainState);
     const otherWidth = otherRect.width;
     const otherX = otherRect.x;
     const gap = ((chatHeight * otherWidth * chatWidth) ** 0.333)
@@ -57,8 +57,8 @@ export default (
   const occupyInfo = pipe(
     movingChats,
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    RA.mapWithIndex((i, x) => ({
-      tooClose: () => tooCloseTo(i),
+    RA.map((x) => ({
+      tooClose: () => tooCloseTo(x),
       lane: x.lane,
     })),
     RA.append({
@@ -68,14 +68,14 @@ export default (
   );
 
   const index = occupyInfo.findIndex((x) => x.lane >= flowChat.lane);
-  const rightFreeLane = pipe(
+  const bottomFreeLane = pipe(
     occupyInfo.slice(index),
     RA.findFirst((x) => x.tooClose()),
     O.map((x) => x.lane),
     O.getOrElse(() => mainState.config.laneCount),
   );
 
-  const leftFreeLane = pipe(
+  const topFreeLane = pipe(
     occupyInfo.slice(0, index),
     RA.findLast((x) => x.tooClose()),
     O.map((x) => x.lane),
@@ -83,8 +83,8 @@ export default (
   );
 
   const formerLaneInterval = Math.min(
-    flowChat.lane - leftFreeLane,
-    rightFreeLane - flowChat.lane,
+    flowChat.lane - topFreeLane,
+    bottomFreeLane - flowChat.lane,
     1,
   );
 

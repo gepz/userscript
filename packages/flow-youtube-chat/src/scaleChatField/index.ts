@@ -1,21 +1,24 @@
-import * as IO from 'fp-ts/IO';
-import * as IOO from 'fp-ts/IOOption';
-import * as O from 'fp-ts/Option';
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Z from '@effect/io/Effect';
 
 import LivePageState from '@/LivePageState';
 
-export default (live: LivePageState) => (scale: number): IO.IO<void> => pipe(
+export default (
+  live: LivePageState,
+) => (
+  scale: number,
+): Z.Effect<never, never, void> => pipe(
   live.chatField.ele,
-  IOO.fromOption,
-  IOO.chainIOK((field) => pipe(
+  Z.fromOption,
+  Z.flatMap((field) => pipe(
     [
       pipe(
         O.fromNullable(field.parentElement),
-        O.map((x) => () => Object.assign<
+        O.map((x) => Z.sync(() => Object.assign<
         CSSStyleDeclaration,
         Partial<CSSStyleDeclaration>
         >(x.style, {
@@ -24,17 +27,18 @@ export default (live: LivePageState) => (scale: number): IO.IO<void> => pipe(
           transform: `scale(${scale})`,
           width: `${100 / scale}%`,
           height: `${100 / scale}%`,
-        })),
+        }))),
       ),
       pipe(
         live.chatScroller.ele,
-        O.map((scroller) => () => {
+        O.map((scroller) => Z.sync(() => {
           // eslint-disable-next-line no-param-reassign
           scroller.scrollTop = scroller.scrollHeight;
-        }),
+        })),
       ),
     ],
     RA.compact,
-    IO.sequenceArray,
+    (x) => Z.all(x),
   )),
+  Z.ignore,
 );

@@ -1,15 +1,15 @@
-import * as IO from 'fp-ts/IO';
-import * as O from 'fp-ts/Option';
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Z from '@effect/io/Effect';
 
 export default (
   chat: HTMLElement,
-): IO.IO<void> => (chat.querySelector(
+): Z.Effect<never, never, void> => (chat.querySelector(
   '.style-scope.yt-live-chat-paid-message-renderer',
-) ? () => {}
+) ? Z.unit()
 : pipe(
   [
     '#author-photo',
@@ -17,13 +17,13 @@ export default (
   ],
   RA.map((x) => O.fromNullable(chat.querySelector<HTMLElement>(x))),
   RA.compact,
-  RA.map((x) => () => {
+  RA.map((x) => Z.sync(() => {
     // eslint-disable-next-line no-param-reassign
     x.style.display = 'none';
-  }),
-  RA.append(() => {
+  })),
+  RA.append(Z.sync(() => {
     // eslint-disable-next-line no-param-reassign
     chat.style.borderBottom = '1px solid var(--yt-spec-text-secondary)';
-  }),
-  IO.sequenceArray,
+  })),
+  (x) => Z.all(x),
 ));

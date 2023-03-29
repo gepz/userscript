@@ -1,7 +1,7 @@
-import * as O from 'fp-ts/Option';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
 
 import ChatData from '@/ChatData';
 import filterOperators from '@/filter/filterOperators';

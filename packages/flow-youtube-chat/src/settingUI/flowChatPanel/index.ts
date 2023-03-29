@@ -1,7 +1,7 @@
-import * as R from 'fp-ts/Reader';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as R from 'fp-ts/Reader';
 import {
   h,
   text,

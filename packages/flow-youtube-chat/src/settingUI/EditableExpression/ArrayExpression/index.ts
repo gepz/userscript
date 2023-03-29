@@ -1,4 +1,4 @@
-import Expression from '@/settingUI/EditableExpression/Expression';
+import type Expression from '@/settingUI/EditableExpression/Expression';
 
 export default interface ArrayExpression {
   type: 'ArrayExpression';

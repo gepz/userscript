@@ -1,8 +1,8 @@
-import * as RA from 'fp-ts/ReadonlyArray';
-import * as T from 'fp-ts/Task';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Z from '@effect/io/Effect';
 
 import GMConfig from '@/GMConfig';
 import GMConfigItem from '@/GMConfigItem';
@@ -13,12 +13,17 @@ type UserConfig = {
 
 export default UserConfig;
 
-export const makeConfig = (config: GMConfig): T.Task<UserConfig> => pipe(
+export const makeConfig = (
+  config: GMConfig,
+): Z.Effect<never, never, UserConfig> => pipe(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   Object.entries(config) as [(keyof GMConfig), GMConfig[keyof GMConfig]][],
-  RA.map(([x, c]) => async () => [x, await c.getValue()] as const),
-  T.sequenceArray,
-  T.map<
+  RA.map(([k, c]) => pipe(
+    c.getValue,
+    Z.map((x: UserConfig[keyof GMConfig]) => [k, x] as const),
+  )),
+  (x) => Z.all(x),
+  Z.map<
   readonly (readonly [keyof UserConfig, UserConfig[keyof UserConfig]])[],
   UserConfig
   >(Object.fromEntries),

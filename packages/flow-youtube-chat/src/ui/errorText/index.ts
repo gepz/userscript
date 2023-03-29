@@ -1,8 +1,8 @@
-import * as O from 'fp-ts/Option';
+import * as O from '@effect/data/Option';
 import {
   constant,
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
 
 import Editable, * as Ed from '@/ui/Editable';
 

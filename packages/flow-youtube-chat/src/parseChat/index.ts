@@ -1,10 +1,11 @@
 import {
+  pipe,
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
+import {
   tapNonNull,
 } from '@userscript/tap';
-import * as O from 'fp-ts/Option';
-import {
-  pipe,
-} from 'fp-ts/function';
 
 import ChatData from '@/ChatData';
 import UserConfig from '@/UserConfig';
@@ -31,11 +32,13 @@ export default (
   );
 
   const paymentInfo = pipe(
-    O.fromNullable(isPaid ? chat.querySelector<HTMLElement>([
-      '#purchase-amount',
-      '#purchase-amount-chip',
-      '#content>#text',
-    ].join(','))?.textContent : undefined),
+    O.fromNullable(isPaid ? chat.querySelector<HTMLElement>(RA.join(', ')(
+      [
+        '#purchase-amount',
+        '#purchase-amount-chip',
+        '#content>#text',
+      ],
+    ))?.textContent : undefined),
     O.map((x) => ({
       visible: true,
       content: x,
@@ -73,10 +76,10 @@ export default (
       '--yt-live-chat-paid-sticker-background-color',
     ) : undefined);
 
-  const authorPhotoMatches = chat.querySelector<HTMLImageElement>([
+  const authorPhotoMatches = chat.querySelector<HTMLImageElement>(RA.join(' ')([
     '#author-photo',
     'img',
-  ].join(' '))?.src.match(/ggpht\.com\/(ytc\/)?(.*)=/);
+  ]))?.src.match(/ggpht\.com\/(ytc\/)?(.*)=/);
 
   const authorID = O.fromNullable(authorPhotoMatches?.at(-1));
 

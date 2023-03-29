@@ -1,8 +1,8 @@
-import * as I from 'fp-ts/Identity';
-import * as T from 'fp-ts/Task';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as I from '@effect/data/Identity';
+import * as Z from '@effect/io/Effect';
 
 import GMConfigItem from '@/GMConfigItem';
 
@@ -17,8 +17,8 @@ export default <T1 extends GM.Value, T2>(
     defaultValue,
     toGm,
   },
-  I.apS('getValue', pipe(
-    () => GM.getValue<T1>(key),
-    T.map((x) => (x !== undefined ? toConfig(x) : defaultValue)),
+  I.andThenBind('getValue', pipe(
+    Z.promise(() => GM.getValue<T1>(key)),
+    Z.map((x) => (x !== undefined ? toConfig(x) : defaultValue)),
   )),
 );

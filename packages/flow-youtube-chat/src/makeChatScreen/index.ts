@@ -1,11 +1,11 @@
-import * as IO from 'fp-ts/IO';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as Z from '@effect/io/Effect';
 
 export default pipe(
-  () => document.createElement('div'),
-  IO.chainFirst((x) => () => Object.assign<
+  Z.sync(() => document.createElement('div')),
+  Z.tap((x) => Z.sync(() => Object.assign<
   CSSStyleDeclaration,
   Partial<CSSStyleDeclaration>
   >(x.style, {
@@ -15,5 +15,5 @@ export default pipe(
     overflow: 'hidden',
     height: '100%',
     width: '100%',
-  })),
-);
+  }))),
+) satisfies Z.Effect<never, never, HTMLElement>;

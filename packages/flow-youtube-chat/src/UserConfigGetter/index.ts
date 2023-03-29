@@ -1,19 +1,18 @@
-import * as IO from 'fp-ts/IO';
-import * as R from 'fp-ts/Reader';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as Z from '@effect/io/Effect';
 
 import UserConfig from '@/UserConfig';
 import mapObject from '@/mapObject';
 
 type UserConfigGetter = {
-  [P in keyof UserConfig]: IO.IO<UserConfig[P]>;
+  [P in keyof UserConfig]: Z.Effect<never, never, UserConfig[P]>;
 };
 
 export default UserConfigGetter;
 
-export const makeGetter: R.Reader<UserConfig, UserConfigGetter> = (c) => pipe(
+export const makeGetter = (c: UserConfig): UserConfigGetter => pipe(
   c,
   mapObject(([x]) => [x, () => c[x]]),
 );

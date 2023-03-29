@@ -1,17 +1,16 @@
-import * as En from 'fp-ts/Endomorphism';
-import * as I from 'fp-ts/Identity';
-import {
-  concatAll,
-} from 'fp-ts/Monoid';
-import * as O from 'fp-ts/Option';
-import * as P from 'fp-ts/Predicate';
-import * as RA from 'fp-ts/ReadonlyArray';
-import * as RTu from 'fp-ts/ReadonlyTuple';
 import {
   pipe,
   constant,
-} from 'fp-ts/function';
-import * as Str from 'fp-ts/string';
+} from '@effect/data/Function';
+import * as I from '@effect/data/Identity';
+import * as O from '@effect/data/Option';
+import * as RA from '@effect/data/ReadonlyArray';
+import * as Str from '@effect/data/String';
+import * as Tu from '@effect/data/Tuple';
+import {
+  intercalate,
+} from '@effect/data/typeclass/Semigroup';
+import * as P from 'fp-ts/Predicate';
 
 import Editable, * as Ed from '@/ui/Editable';
 
@@ -19,7 +18,7 @@ export default (
   editing: boolean,
 ) => (
   value: string,
-): En.Endomorphism<Editable<readonly string[]>> => pipe(
+): (x: Editable<readonly string[]>) => Editable<readonly string[]> => pipe(
   value,
   Str.split(/\r\n|\n/),
   RA.filter(P.not(Str.isEmpty)),
@@ -28,32 +27,30 @@ export default (
     regexs,
   }) => pipe(
     regexs,
-    RA.mapWithIndex((i, x) => {
+    RA.map((x, i) => {
       try {
         RegExp(x, 'u');
-        return O.none;
+        return O.none();
       } catch (e) {
-        return O.of(
+        return O.some(
           // eslint-disable-next-line max-len
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `${e} in regex number ${i}`,
         );
       }
     }),
-    concatAll(O.getMonoid({
-      concat(x, y) {
-        return `${x}\n${y}`;
-      },
-    })),
+    O.getOptionalMonoid<string>(
+      intercalate('\n')(Str.Semigroup),
+    ).combineAll,
   )),
   (ctx) => (
     editing ? Ed.setText(value)
     : pipe(
       ctx.errors,
-      O.map((x) => RTu.mapSnd(() => O.of<
+      O.map((x) => Tu.mapSecond(() => O.some<
       readonly [string, O.Option<string>]
-      >([value, O.of(x)]))),
-      O.getOrElse<En.Endomorphism<Editable<readonly string[]>>>(
+      >([value, O.some(x)]))),
+      O.getOrElse(
         constant(constant(Ed.of(ctx.regexs))),
       ),
     )

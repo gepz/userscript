@@ -1,3 +1,4 @@
+import Log from '@/Log';
 import MappedConfigState from '@/MappedConfigState';
 import Editable from '@/ui/Editable';
 
@@ -6,6 +7,6 @@ export default interface SettingState extends MappedConfigState {
   mainTab: number,
   logTab: number,
   timingStepCount: Editable<number>,
-  eventLog: readonly string[],
+  eventLog: Log,
   panelRect: DOMRectReadOnly,
 }

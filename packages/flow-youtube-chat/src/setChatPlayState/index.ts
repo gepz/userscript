@@ -1,25 +1,25 @@
-import * as IO from 'fp-ts/IO';
-import * as IOO from 'fp-ts/IOOption';
-import * as O from 'fp-ts/Option';
-import * as R from 'fp-ts/Reader';
 import {
   pipe,
-} from 'fp-ts/function';
+} from '@effect/data/Function';
+import * as O from '@effect/data/Option';
+import * as Z from '@effect/io/Effect';
 
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
 
 export default (
   chat: FlowChat,
-): R.Reader<MainState, IO.IO<void>> => (mainState) => pipe(
+) => (mainState: MainState): Z.Effect<never, never, void> => pipe(
   chat,
-  O.fromPredicate((x) => !x.animationEnded),
-  IOO.fromOption,
-  IOO.chainOptionK((x) => x.animation),
-  IOO.chainFirstIOK((x) => (mainState.chatPlaying ? () => x.play()
+  O.liftPredicate((x) => !x.animationEnded),
+  Z.fromOption,
+  Z.map((x) => x.animation),
+  Z.flatMap(Z.fromOption),
+  Z.tap((x) => Z.sync(mainState.chatPlaying ? () => x.play()
   : () => x.pause())),
-  IOO.chainIOK((x) => () => {
+  Z.flatMap((x) => Z.sync(() => {
     // eslint-disable-next-line no-param-reassign
     x.playbackRate = mainState.config.flowSpeed / 15;
-  }),
+  })),
+  Z.ignore,
 );

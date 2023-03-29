@@ -1,9 +1,7 @@
-import * as R from 'fp-ts/Reader';
-import * as RA from 'fp-ts/ReadonlyArray';
 import {
   pipe,
-} from 'fp-ts/function';
-import * as N from 'fp-ts/number';
+} from '@effect/data/Function';
+import * as RA from '@effect/data/ReadonlyArray';
 import {
   h,
   text,
@@ -11,6 +9,7 @@ import {
 } from 'hyperapp';
 
 import AppCommander from '@/AppCommander';
+import Log from '@/Log';
 import SettingState from '@/SettingState';
 import getText from '@/getText';
 import buttonNode from '@/settingUI/buttonNode';
@@ -19,12 +18,13 @@ import updateAt from '@/settingUI/updateAt';
 import panelBoxStyle from '@/ui/panelBoxStyle';
 import tabContainer from '@/ui/tabContainer';
 
-export default (c: AppCommander): R.Reader<
-SettingState,
-readonly VNode<SettingState>[]
-> => (s) => pipe(
+export default (
+  c: AppCommander,
+) => (
+  s: SettingState,
+): readonly VNode<SettingState>[] => pipe(
   Math.trunc((
-    getState<readonly string[]>('eventLog')(s).length
+    getState<Log>('eventLog')(s).entries.length
   ) / 100) + 1,
   (logPageLength) => [
     h('div', {
@@ -63,15 +63,15 @@ readonly VNode<SettingState>[]
             padding: '6px',
           },
         })((_, n) => updateAt('logTab')(n)(c))(pipe(
-          RA.makeBy(logPageLength, N.Show.show),
+          RA.makeBy(logPageLength, (x) => `${x}`),
         ))(pipe(
           RA.makeBy(
             logPageLength,
             (i) => () => pipe(
-              getState<readonly string[]>('eventLog')(
+              getState<Log>('eventLog')(
                 s,
-              ).slice(i * 100, (i + 1) * 100),
-              RA.mapWithIndex((j, x) => h('div', {
+              ).entries.slice(i * 100, (i + 1) * 100),
+              RA.map((x, j) => h('div', {
                 style: {
                   display: 'flex',
                 },
@@ -81,7 +81,7 @@ readonly VNode<SettingState>[]
                     userSelect: 'none',
                     flex: '0 0 2em',
                   },
-                }, text((i * 100) + j)),
+                }, text(x.id)),
                 h('div', {
                   style: {
                     background: j % 2 === 0 ? '#fff'
@@ -89,9 +89,10 @@ readonly VNode<SettingState>[]
                     color: '#000',
                     flex: 'auto',
                     wordBreak: 'break-all',
+                    whiteSpace: 'pre-wrap',
                     padding: '0 2px',
                   },
-                }, text(x)),
+                }, text(x.text)),
               ])),
             ),
           ),
