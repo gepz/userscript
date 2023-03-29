@@ -1,7 +1,6 @@
 import {
   pipe,
 } from '@effect/data/Function';
-import * as R from 'fp-ts/Reader';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';

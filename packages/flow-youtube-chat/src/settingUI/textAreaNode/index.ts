@@ -1,4 +1,3 @@
-import * as R from 'fp-ts/Reader';
 import {
   VNode,
 } from 'hyperapp';
@@ -21,9 +20,11 @@ export default (
   & StateKey<Editable<readonly string[]>>,
   rows: number,
   setter: EditSetter<Editable<readonly string[]>>,
-): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
-  c,
-) => (s) => settingRow(
+) => (
+  c: AppCommander,
+) => (
+  s: SettingState,
+): VNode<SettingState> => settingRow(
   getText(label)(s.lang),
   errorText(getText('invalidSetting')(s.lang))(s[label]),
   [

@@ -1,4 +1,3 @@
-import * as R from 'fp-ts/Reader';
 import {
   h,
   VNode,
@@ -11,10 +10,11 @@ import setEditStrings from '@/settingUI/setEditStrings';
 import textAreaNode from '@/settingUI/textAreaNode';
 import panelBoxStyle from '@/ui/panelBoxStyle';
 
-export default (c: AppCommander): R.Reader<
-SettingState,
-readonly VNode<SettingState>[]
-> => (s) => [
+export default (
+  c: AppCommander,
+) => (
+  s: SettingState,
+): readonly VNode<SettingState>[] => [
   h('div', {
     style: panelBoxStyle(212),
   }, textAreaNode(

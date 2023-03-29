@@ -1,7 +1,6 @@
 import {
   pipe,
 } from '@effect/data/Function';
-import * as R from 'fp-ts/Reader';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
@@ -24,13 +23,13 @@ export default <T extends UpdateType>(k: StateKey<T>) => (v: T) => pipe(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     setComputed[k as keyof typeof setComputed] as (
       v: unknown
-    ) => R.Reader<AppCommander, R.Reader<SettingState, SettingDispatchable>>
+    ) => (c: AppCommander) => (s: SettingState) => SettingDispatchable
   )(v)
   : k in setState ? (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     setState[k as keyof typeof setState] as (
       v: unknown
-    ) => R.Reader<AppCommander, R.Reader<SettingState, SettingDispatchable>>
+    ) => (c: AppCommander) => (s: SettingState) => SettingDispatchable
   )(v) : (c: AppCommander) => (s: SettingState): SettingDispatchable => [
     {
       ...s,
