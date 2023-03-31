@@ -15,7 +15,6 @@ import {
 
 import ChatUpdateConfig from '@/ChatUpdateConfig';
 import ConfigObservable from '@/ConfigObservable';
-import FlowChat from '@/FlowChat';
 import LivePageState from '@/LivePageState';
 import MainState from '@/MainState';
 import removeOldChats from '@/removeOldChats';
@@ -30,7 +29,6 @@ export default (
   mainState: MainState,
   co: ConfigObservable,
   chatScreen: HTMLElement,
-  flowChats: FlowChat[],
   live: LivePageState,
 ) => defer(() => merge(
   merge(
@@ -108,7 +106,7 @@ export default (
         merge(
           pipe(
             co.maxChatCount,
-            map(removeOldChats(flowChats)),
+            map(removeOldChats(mainState)),
             tapEffect(provideLog),
           ),
           co.noOverlap,
@@ -130,7 +128,7 @@ export default (
       ...x,
     }) satisfies ChatUpdateConfig),
     tapEffect((c) => provideLog(pipe(
-      flowChats,
+      mainState.flowChats,
       RA.filter((x) => !x.animationEnded),
       RA.map((chat) => pipe(
         [
@@ -139,7 +137,7 @@ export default (
             O.liftPredicate(() => c.render),
           ),
           (c.setAnimation ? O.some(
-            setChatAnimation(chat, flowChats),
+            setChatAnimation(chat),
           ) : c.setPlayState ? O.some(setChatPlayState(chat))
           : O.none()),
         ],

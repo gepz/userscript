@@ -21,18 +21,17 @@ import metaLogger from '@/metaLogger';
 
 export default (
   settingUpdateApps: BehaviorSubject<Dispatch<SettingState>[]>,
-) => (
-  effect: Z.Effect<never, never, void>,
-): Z.Effect<never, never, void> => pipe(
+) => <T>(
+  effect: Z.Effect<never, never, T>,
+): Z.Effect<never, never, T> => pipe(
   Z.succeed(Logger.replace(
     Logger.defaultLogger,
     Logger.zip(metaLogger)(eventLogger(settingUpdateApps)),
   )),
-  Z.tap((x) => pipe(
+  Z.flatMap((x) => pipe(
     effect,
     Z.provideSomeLayer(x),
   )),
   Z.logAnnotate(LogAnnotationKeys.name, 'FYC'),
   withMinimumLogLevel(LogLevel.Debug),
-  Z.catchAllCause((x) => Z.logInfoCauseMessage('Defect', x)),
 );

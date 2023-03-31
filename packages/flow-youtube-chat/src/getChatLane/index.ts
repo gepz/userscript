@@ -16,7 +16,6 @@ import getFlowChatRect from '@/getFlowChatRect';
 export default (
   flowChat: FlowChat,
   progress: number,
-  flowChats: readonly FlowChat[],
 ) => (
   mainState: MainState,
 ): {
@@ -31,6 +30,9 @@ export default (
   const chatWidth = chatRect.width;
   const chatHeight = chatRect.height;
   const chatX = chatRect.x;
+  const {
+    flowChats,
+  } = mainState;
 
   const chatIndex = flowChats.indexOf(flowChat);
   const movingChats = pipe(

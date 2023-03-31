@@ -13,7 +13,6 @@ import setChatAnimation from '@/setChatAnimation';
 
 export default (
   rect: O.Option<DOMRectReadOnly>,
-  flowChats: FlowChat[],
   mainState: MainState,
 ): Z.Effect<never, never, void> => pipe(
   rect,
@@ -22,10 +21,10 @@ export default (
     (x) => Z.sync(() => Object.assign(mainState, {
       playerRect: x,
     })),
-    Z.map(() => flowChats),
+    Z.map(() => mainState.flowChats),
     Z.map(RA.flatMap((x) => [
       renderChat(x)(mainState),
-      setChatAnimation(x, flowChats)(mainState),
+      setChatAnimation(x)(mainState),
     ])),
     Z.flatMap((x) => Z.all(x)),
     Z.zipLeft(Z.logInfo('Resize detected')),

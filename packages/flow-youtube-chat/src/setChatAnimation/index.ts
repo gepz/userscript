@@ -28,7 +28,6 @@ const getWidth = memoize(
 
 export default (
   chat: FlowChat,
-  chats: readonly FlowChat[],
 ) => (
   mainState: MainState,
 ): Z.Effect<never, never, boolean> => pipe(
@@ -58,7 +57,6 @@ export default (
     ...getChatLane(
       chat,
       progress,
-      chats,
     )(mainState),
   })),
   Z.filterOrElse(

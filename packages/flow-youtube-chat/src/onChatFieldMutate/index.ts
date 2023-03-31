@@ -21,7 +21,6 @@ import setChatFieldSimplifyStyle from '@/setChatFieldSimplifyStyle';
 
 export default (
   chatScrn: HTMLElement,
-  flowChats: FlowChat[],
   mainState: MainState,
   getConfig: UserConfigGetter,
   setConfig: UserConfigSetter,
@@ -50,7 +49,6 @@ export default (
         Z.fromOption,
         Z.flatMap(() => addFlowChat(
           ctx.getData,
-          flowChats,
           chatScrn,
           mainState,
         )),
