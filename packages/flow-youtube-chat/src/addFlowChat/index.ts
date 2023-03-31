@@ -19,7 +19,6 @@ const emptyElement = document.createElement('span');
 
 export default (
   getData: (config: UserConfig) => ChatData,
-  flowChats: FlowChat[],
   chatScrn: HTMLElement,
   mainState: MainState,
 ): Z.Effect<never, never, void> => (pipe(
@@ -37,19 +36,18 @@ export default (
   (x: FlowChat) => getChatLane(
     x,
     0,
-    flowChats,
   )(mainState).interval,
   intervalTooSmall,
   (x) => x(mainState.config),
 ) ? Z.unit()
 : pipe(
-  flowChats,
+  mainState.flowChats,
   RA.findFirstIndex((chat) => chat.animationEnded
-     || flowChats.length >= mainState.config.maxChatCount),
+     || mainState.flowChats.length >= mainState.config.maxChatCount),
   (offScreenIndex) => pipe(
     offScreenIndex,
     O.map((index) => pipe(
-      flowChats,
+      mainState.flowChats,
       RA.unsafeGet(index),
       (x) => x.element,
     )),
@@ -60,7 +58,10 @@ export default (
       O.match(
         () => Z.sync(() => chatScrn.append(element)),
         (i) => pipe(
-          Z.sync(() => flowChats.splice(i, 1)?.[0]?.animation ?? O.none()),
+          Z.sync(() => mainState.flowChats.splice(
+            i,
+            1,
+          )?.[0]?.animation ?? O.none()),
           Z.some,
           Z.flatMap((oldAnimation) => Z.sync(() => oldAnimation.cancel())),
           Z.ignore,
@@ -87,11 +88,8 @@ export default (
     mainState,
     Z.succeed,
     Z.tap(renderChat(flowChat)),
-    Z.flatMap(setChatAnimation(
-      flowChat,
-      flowChats,
-    )),
-    Z.flatMap((x) => (x ? Z.sync(() => flowChats.push(flowChat))
+    Z.flatMap(setChatAnimation(flowChat)),
+    Z.flatMap((x) => (x ? Z.sync(() => mainState.flowChats.push(flowChat))
     : Z.sync(() => flowChat.element.remove()))),
   )),
 ));

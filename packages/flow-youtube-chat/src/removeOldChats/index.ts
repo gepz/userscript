@@ -4,21 +4,21 @@ import {
 } from '@effect/data/Function';
 import * as Z from '@effect/io/Effect';
 
-import FlowChat from '@/FlowChat';
+import MainState from '@/MainState';
 
 export default (
-  flowChats: FlowChat[],
+  mainState: MainState,
 ) => (
   maxChatCount: number,
 ): Z.Effect<never, never, void> => pipe(
-  Z.sync(() => flowChats.sort(
+  Z.sync(() => mainState.flowChats.sort(
     (a, b) => (a.animationEnded === b.animationEnded ? 0
     : a.animationEnded ? -1
     : 1),
   )),
-  Z.zipRight(Z.sync(() => flowChats.splice(
+  Z.zipRight(Z.sync(() => mainState.flowChats.splice(
     0,
-    Math.max(0, flowChats.length - maxChatCount),
+    Math.max(0, mainState.flowChats.length - maxChatCount),
   ))),
   Z.flatMap(Z.forEach((x) => pipe(
     Z.logDebug('RemoveChat'),
