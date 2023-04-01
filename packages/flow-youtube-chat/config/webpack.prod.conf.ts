@@ -27,6 +27,7 @@ export default merge(
         jsep: 'jsep',
         'hash-it': 'window[\'hash-it\']',
         'micro-memoize': 'window[\'micro-memoize\']',
+        'lz-string': 'LZString',
       },
     ],
     plugins: [
