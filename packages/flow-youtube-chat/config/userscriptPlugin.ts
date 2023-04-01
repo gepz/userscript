@@ -53,6 +53,8 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
           x.nameVer}/dist/${x.name}${x.end}`,
         (x = cdnSegment('micro-memoize')) => `${x.begin}cdn.jsdelivr.net/npm/${
           x.nameVer}/dist/${x.name}${x.end}`,
+        (x = cdnSegment('lz-string')) => `${x.begin}cdn.jsdelivr.net/npm/${
+          x.nameVer}/libs/${x.name}${x.end}`,
       ].map((x) => x()),
     },
   }),
