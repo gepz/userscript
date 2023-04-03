@@ -6,9 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Unreleased:
 - Nothing
 
-## 1.15.20
+## 1.15.21
 ### Changed
-- Fix a bug that caused some event logs to be missing.
+- Improving event logging functionality.
+  - Add "Enable event logging" option.
+  - Add "Import event log" button .
+  - Older logs are now compressed to enhance memory efficiency.
+  - More events are logged.
+### Fixed
+- Fix a bug that stop certain options from being applied when other options were unchecked.
+- Fix a bug that caused errors when modifying chat filters.
+
+## 1.15.20
+### Fixed
+- Fix a bug that resulted in missing event logs.
 
 ## 1.15.19
 ### Changed
