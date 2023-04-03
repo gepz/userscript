@@ -151,7 +151,7 @@ importers:
         version: 2.19.0
       zod:
         specifier: ^3.20.6
-        version: 3.20.6
+        version: 3.21.4
     devDependencies:
       '@types/feather-icons':
         specifier: ^4.7.0
@@ -336,9 +336,6 @@ importers:
       fp-ts-contrib:
         specifier: ^0.1.29
         version: 0.1.29(fp-ts@2.13.1)
-      fp-ts-std:
-        specifier: ^0.15.1
-        version: 0.15.1(fp-ts@2.13.1)(monocle-ts@2.3.13)(newtype-ts@0.3.0)
       hash-it:
         specifier: ^5.0.2
         version: 5.0.2
@@ -592,7 +589,7 @@ importers:
         version: 2.0.22
       micro-memoize:
         specifier: ^4.0.11
-        version: 4.0.11
+        version: 4.0.14
       pixi.js:
         specifier: ^6.5.2
         version: 6.5.4
@@ -607,7 +604,7 @@ importers:
         version: 2.19.0
       zod:
         specifier: ^3.20.6
-        version: 3.20.6
+        version: 3.21.4
     devDependencies:
       '@types/feather-icons':
         specifier: ^4.7.0
@@ -746,7 +743,7 @@ importers:
         version: 2.0.22
       micro-memoize:
         specifier: ^4.0.11
-        version: 4.0.11
+        version: 4.0.14
       rxjs:
         specifier: ^7.5.6
         version: 7.5.6
@@ -758,7 +755,7 @@ importers:
         version: 2.19.0
       zod:
         specifier: ^3.20.6
-        version: 3.20.6
+        version: 3.21.4
     devDependencies:
       '@types/feather-icons':
         specifier: ^4.7.0
@@ -888,7 +885,7 @@ importers:
         version: 3.3.1(typescript@4.9.5)
       zod:
         specifier: ^3.20.6
-        version: 3.20.6
+        version: 3.21.4
     devDependencies:
       '@types/node':
         specifier: 18.13.0
@@ -4030,19 +4027,6 @@ packages:
       fp-ts: 2.13.1
     dev: false
 
-  /fp-ts-std@0.15.1(fp-ts@2.13.1)(monocle-ts@2.3.13)(newtype-ts@0.3.0):
-    resolution: {integrity: sha512-JvWjUki14fxuse8QAFubdNi4g+o7qWq94n31sxlD8hobl8KbyfguK69yQZBkNQu+q+8b5yYxgyevs003w6sDNA==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      fp-ts: ^2.11.0
-      monocle-ts: ^2.3.0
-      newtype-ts: ^0.3.0
-    dependencies:
-      fp-ts: 2.13.1
-      monocle-ts: 2.3.13(fp-ts@2.13.1)
-      newtype-ts: 0.3.0(fp-ts@2.13.1)(monocle-ts@2.3.13)
-    dev: false
-
   /fp-ts@2.13.1:
     resolution: {integrity: sha512-0eu5ULPS2c/jsa1lGFneEFFEdTbembJv8e4QKXeVJ3lm/5hyve06dlKZrpxmMwJt6rYen7sxmHHK2CLaXvWuWQ==}
     dev: false
@@ -4826,10 +4810,6 @@ packages:
   /methods@1.1.2:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
-
-  /micro-memoize@4.0.11:
-    resolution: {integrity: sha512-CjxsaYe4j43df32DtzzNCwanPqZjZDwuQAZilsCYpa2ZVtSPDjHXbTlR4gsEZRyO9/twHs0b7HLjvy/sowl7sA==}
-    dev: false
 
   /micro-memoize@4.0.14:
     resolution: {integrity: sha512-2tzWP1w2Hh+r7kCYa4f//jpBEA6dAueiuLco38NxfjF9Py3KCCI7wVOTdCvOhmTC043t+ulclVBdl3v+s+UJIQ==}
@@ -6815,10 +6795,6 @@ packages:
   /yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
-
-  /zod@3.20.6:
-    resolution: {integrity: sha512-oyu0m54SGCtzh6EClBVqDDlAYRz4jrVtKwQ7ZnsEmMI9HnzuZFj8QFwAY1M5uniIYACdGvv0PBWPF2kO0aNofA==}
-    dev: false
 
   /zod@3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
