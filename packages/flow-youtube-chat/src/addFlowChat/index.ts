@@ -56,7 +56,10 @@ export default (
     Z.tap((element) => pipe(
       offScreenIndex,
       O.match(
-        () => Z.sync(() => chatScrn.append(element)),
+        () => pipe(
+          Z.sync(() => chatScrn.append(element)),
+          Z.zipLeft(Z.logDebug('Flow chat added')),
+        ),
         (i) => pipe(
           Z.sync(() => mainState.flowChats.splice(
             i,
@@ -90,6 +93,9 @@ export default (
     Z.tap(renderChat(flowChat)),
     Z.flatMap(setChatAnimation(flowChat)),
     Z.flatMap((x) => (x ? Z.sync(() => mainState.flowChats.push(flowChat))
-    : Z.sync(() => flowChat.element.remove()))),
+    : pipe(
+      Z.sync(() => flowChat.element.remove()),
+      Z.zipLeft(Z.logDebug('Flow chat removed')),
+    ))),
   )),
 ));

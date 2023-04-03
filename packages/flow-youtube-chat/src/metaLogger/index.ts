@@ -46,7 +46,7 @@ export default Logger.make<string, void>((
   (getStr) => pipe(
     FiberRefs.getOrDefault(context, logMeta),
     O.match(
-      () => (LogLevel.greaterThanEqual(LogLevel.Info)(logLevel) ? Z.sync(
+      () => (LogLevel.greaterThanEqual(LogLevel.Warning)(logLevel) ? Z.sync(
         () => getConsoleLog(logLevel)(getStr()),
       ) : Z.unit()),
       (meta) => Z.sync(() => getConsoleLog(logLevel)(

@@ -4,13 +4,13 @@ import {
 } from '@effect/data/Function';
 import * as I from '@effect/data/Identity';
 import * as O from '@effect/data/Option';
+import * as P from '@effect/data/Predicate';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Str from '@effect/data/String';
 import * as Tu from '@effect/data/Tuple';
 import {
   intercalate,
 } from '@effect/data/typeclass/Semigroup';
-import * as P from '@effect/data/Predicate';
 
 import Editable, * as Ed from '@/ui/Editable';
 
@@ -50,9 +50,7 @@ export default (
       O.map((x) => Tu.mapSecond(() => O.some<
       readonly [string, O.Option<string>]
       >([value, O.some(x)]))),
-      O.getOrElse(
-        constant(constant(Ed.of(ctx.regexs))),
-      ),
+      O.getOrElse(() => () => Ed.of(ctx.regexs)),
     )
   ),
 );

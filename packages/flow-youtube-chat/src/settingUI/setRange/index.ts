@@ -10,7 +10,6 @@ import {
   TypeKey,
 } from '@/TypeKey';
 import UserConfig from '@/UserConfig';
-import UserConfigSetter from '@/UserConfigSetter';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import configEffect from '@/settingUI/configEffect';
 import Editable, * as Ed from '@/ui/Editable';
@@ -24,7 +23,7 @@ export default (
 ) => (
   vA: Editable<number>,
 ) => (
-  c: AppCommander,
+  commander: AppCommander,
 ) => (
   s: SettingState,
 ): SettingDispatchable => pipe(
@@ -42,9 +41,9 @@ export default (
       configEffect(keyA, a),
       configEffect(keyB, b),
     ],
-    (xs) => (setter: UserConfigSetter) => pipe(
+    (xs) => (c: AppCommander) => pipe(
       xs,
-      RA.map((x) => x(setter)),
+      RA.map((x) => x(c)),
       (effects): SettingDispatchable => [
         {
           ...s,
@@ -54,5 +53,5 @@ export default (
         ...effects,
       ],
     ),
-  )(c.setConfig),
+  )(commander),
 );

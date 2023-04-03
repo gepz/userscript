@@ -15,10 +15,11 @@ import provideLog from '@/provideLog';
 
 Z.runPromise(pipe(
   Z.Do(),
-  Z.bindValue(
+  Z.letDiscard(
     'settingUpdateApps',
-    () => new BehaviorSubject<Dispatch<SettingState>[]>([]),
+    new BehaviorSubject<Dispatch<SettingState>[]>([]),
   ),
-  Z.bindValue('provideLog', (x) => provideLog(x.settingUpdateApps)),
+  Z.let('provideLog', (x) => provideLog(x.settingUpdateApps)),
   Z.flatMap(initialize),
+  Z.withParallelismUnbounded,
 ));

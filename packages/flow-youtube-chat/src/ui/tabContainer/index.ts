@@ -1,6 +1,7 @@
 import {
   pipe,
 } from '@effect/data/Function';
+import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
 import {
   h,
@@ -21,7 +22,9 @@ export default <T>(
   tabs: readonly (() => readonly VNode<T>[])[],
 ) => (
   mainTab: number,
-): VNode<T> => h('div', {}, [
+): VNode<T> => h('div', {
+  style: style.container,
+}, [
   h('div', {}, pipe(
     labels,
     RA.map((x, i) => h('span', {
@@ -35,12 +38,13 @@ export default <T>(
   )),
   h('div', {
     style: {
-      ...style.container,
-      overflow: 'auto',
-    },
-  }, h('div', {
-    style: {
       ...style.tab,
+      overflow: 'auto',
+      boxSizing: 'border-box',
     },
-  }, tabs.find((_, i) => i === mainTab)?.())),
+  }, pipe(
+    tabs,
+    RA.get(mainTab),
+    O.match(() => undefined, (x) => x()),
+  )),
 ]);

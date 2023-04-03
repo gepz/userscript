@@ -12,14 +12,15 @@ import appendEventLog from '@/appendEventLog';
 import updateSettingState from '@/updateSettingState';
 
 export default (
-  settingApps: BehaviorSubject<Dispatch<SettingState>[]>,
+  apps: BehaviorSubject<Dispatch<SettingState>[]>,
 ) => Logger.make<string, void>((
   fiberId,
   logLevel,
   message,
-) => Z.runPromise(updateSettingState(
-  settingApps.getValue(),
-)((s) => ({
+) => Z.runPromise(updateSettingState(apps.getValue())((s) => (s.logEvents ? ({
   ...s,
-  eventLog: appendEventLog(message)(s.eventLog),
-}))));
+  eventLog: appendEventLog(
+    message,
+    logLevel.label,
+  )(s.eventLog),
+}) : s))));

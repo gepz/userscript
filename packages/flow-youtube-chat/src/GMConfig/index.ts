@@ -37,6 +37,7 @@ export default interface GMConfig {
   flowX1: GMConfigItem<number>,
   flowX2: GMConfigItem<number>,
   shadowColor: GMConfigItem<string>,
+  logEvents: GMConfigItem<boolean>,
   filterExp: GMConfigItem<expEval.parse.Expression>,
   // displayMatrix: ConfigItem<readonly (readonly boolean[])[]>,
 }

@@ -8,7 +8,6 @@ import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Z from '@effect/io/Effect';
 
-import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
 import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';
@@ -36,6 +35,7 @@ export default (
     },
     I.let('data', (x) => x.getData(x.config)),
     Z.succeed,
+    Z.zipLeft(Z.logDebug('Chat detected')),
     Z.bind('banned', (x) => pipe(
       checkBannedWords(x.data, x.config),
     )),
@@ -52,6 +52,7 @@ export default (
           chatScrn,
           mainState,
         )),
+        Z.ignore,
       ),
       pipe(
         ctx.data.authorID,
@@ -61,15 +62,18 @@ export default (
         Z.flatMap((x) => appendChatMessage(
           banButton(x)(getConfig)(setConfig)(chat),
         )(chat)),
+        Z.zipLeft(Z.logDebug('Ban button added')),
+        Z.ignore,
       ),
       pipe(
         ctx.config.simplifyChatField,
         O.liftPredicate(identity<boolean>),
         Z.fromOption,
         Z.flatMap(() => setChatFieldSimplifyStyle(chat)),
+        Z.zipLeft(Z.logDebug('Chat simplified')),
+        Z.ignore,
       ),
     ]))),
-    Z.ignore,
   )),
   (x) => Z.all(x),
 );

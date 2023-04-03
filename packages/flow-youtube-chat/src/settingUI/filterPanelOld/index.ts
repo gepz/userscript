@@ -14,7 +14,7 @@ export default (
   c: AppCommander,
 ) => (
   s: SettingState,
-): readonly VNode<SettingState>[] => [
+): readonly VNode<SettingState>[] => ([
   h('div', {
     style: panelBoxStyle(212),
   }, textAreaNode(
@@ -36,4 +36,4 @@ export default (
     18,
     setEditStrings,
   )(c)(s)),
-];
+]);

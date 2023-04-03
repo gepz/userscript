@@ -126,7 +126,7 @@ export const targetLowerBound = (
     (result) => pipe(
       result.right,
       RA.map(E.liftPredicate(
-        (x) => x >= RA.size(source.value),
+        (x) => x >= source.value.length,
         () => 'Source has too many elements',
       )),
       RA.separate,

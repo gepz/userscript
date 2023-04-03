@@ -1,6 +1,7 @@
 import {
   pipe,
 } from '@effect/data/Function';
+import * as Cause from '@effect/io/Cause';
 import * as Z from '@effect/io/Effect';
 import * as Logger from '@effect/io/Logger';
 import {
@@ -28,9 +29,10 @@ export default (
     Logger.defaultLogger,
     Logger.zip(metaLogger)(eventLogger(settingUpdateApps)),
   )),
-  Z.flatMap((x) => pipe(
+  Z.flatMap((logLayer) => pipe(
     effect,
-    Z.provideSomeLayer(x),
+    Z.tapErrorCause((x) => Z.logError(Cause.pretty(x))),
+    Z.provideSomeLayer(logLayer),
   )),
   Z.logAnnotate(LogAnnotationKeys.name, 'FYC'),
   withMinimumLogLevel(LogLevel.Debug),

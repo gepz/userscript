@@ -1,7 +1,6 @@
 import {
-  merge,
   omit,
-} from 'fp-ts-std/ReadonlyStruct';
+} from '@effect/data/Struct';
 import * as E from '@effect/data/Either';
 import * as I from '@effect/data/Identity';
 import * as O from '@effect/data/Option';

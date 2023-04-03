@@ -6,17 +6,19 @@ import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Z from '@effect/io/Effect';
 
-import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
 import renderChat from '@/renderChat';
 import setChatAnimation from '@/setChatAnimation';
 
 export default (
-  rect: O.Option<DOMRectReadOnly>,
+  rect: DOMRectReadOnly,
   mainState: MainState,
 ): Z.Effect<never, never, void> => pipe(
   rect,
-  Z.fromOption,
+  Z.succeed,
+  Z.tap((x) => Z.logDebug(
+    `Resize [${x.width.toFixed(1)}, ${x.height.toFixed(1)}]`,
+  )),
   Z.flatMap(flow(
     (x) => Z.sync(() => Object.assign(mainState, {
       playerRect: x,
@@ -27,7 +29,5 @@ export default (
       setChatAnimation(x)(mainState),
     ])),
     Z.flatMap((x) => Z.all(x)),
-    Z.zipLeft(Z.logInfo('Resize detected')),
   )),
-  Z.ignore,
 );

@@ -22,7 +22,7 @@ export default (setConfig: UserConfigSetter): RootComponent<State> => pipe(
   'button',
   makeComponent((tag) => (state: State) => pipe(
     getText(
-      state.displayChats ? 'hideChat' : 'showChat',
+      state.displayChats ? 'hideChats' : 'showChats',
     )(state.lang),
     (label) => h(tag, {
       class: 'ytp-button',
