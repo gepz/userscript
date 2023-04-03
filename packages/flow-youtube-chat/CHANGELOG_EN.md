@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Improving event logging functionality.
   - Add "Enable event logging" option.
-  - Add "Import event log" button .
+  - Add "Import event log" button.
   - Older logs are now compressed to enhance memory efficiency.
   - More events are logged.
 ### Fixed
