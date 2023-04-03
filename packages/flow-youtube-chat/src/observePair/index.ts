@@ -14,7 +14,7 @@ export default <T, T2>(
   observer: T;
 }> => pipe(
   Z.Do(),
-  Z.bind('subject', () => Z.sync(() => new Subject<T2>())),
+  Z.bindDiscard('subject', Z.sync(() => new Subject<T2>())),
   // eslint-disable-next-line new-cap
   Z.bind('observer', (x) => Z.sync(() => new con(forwardTo(x.subject)))),
 );

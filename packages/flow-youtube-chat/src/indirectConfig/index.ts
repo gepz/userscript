@@ -17,7 +17,7 @@ export default <T1 extends GM.Value, T2>(
     defaultValue,
     toGm,
   },
-  I.andThenBind('getValue', pipe(
+  I.letDiscard('getValue', pipe(
     Z.promise(() => GM.getValue<T1>(key)),
     Z.map((x) => (x !== undefined ? toConfig(x) : defaultValue)),
   )),

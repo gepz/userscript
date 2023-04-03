@@ -7,4 +7,5 @@ export default interface AppCommander {
   act: {
     clearFlowChats: Z.Effect<never, never, void>,
   }
+  provideLog: <T>(x: Z.Effect<never, never, T>) => Z.Effect<never, never, T>
 }

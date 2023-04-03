@@ -39,7 +39,7 @@ export default (
   style: {
     backgroundColor: 'rgba(30,30,30,0.9)',
     position: 'absolute',
-    zIndex: '10000',
+    zIndex: '1000',
     color: '#fff',
     fontSize: '14px',
     overflow: 'auto',
@@ -73,9 +73,7 @@ export default (
     )),
   ]),
   tabContainer<SettingState>({
-    container: {
-      height: '364px',
-    },
+    container: {},
     label: {
       padding: '6px',
     },
@@ -83,6 +81,7 @@ export default (
       background: '#666',
     },
     tab: {
+      height: '364px',
       display: 'flex',
       padding: '6px',
     },

@@ -6,7 +6,7 @@ import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
 import {
   omit,
-} from 'fp-ts-std/ReadonlyStruct';
+} from '@effect/data/Struct';
 import {
   h,
   VNode,

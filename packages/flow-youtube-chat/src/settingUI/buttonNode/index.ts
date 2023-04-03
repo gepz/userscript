@@ -1,3 +1,6 @@
+import {
+  pipe,
+} from '@effect/data/Function';
 import * as Z from '@effect/io/Effect';
 import {
   h,
@@ -18,7 +21,7 @@ export default (
   label: TextKey
   & TypeKey<
   typeof action,
-  (c: AppCommander) => (s: SettingState) => Z.Effect<never, never, void>
+  (c: AppCommander) => (s: SettingState) => Z.Effect<never, never, SettingState>
   >,
 ): (c: AppCommander) => (s: SettingState) => VNode<SettingState> => (
   c,
@@ -26,6 +29,9 @@ export default (
   type: 'button',
   onclick: (s) => [
     s,
-    () => Z.runPromise(action[label](c)(s)),
+    (d) => Z.runPromise(c.provideLog(pipe(
+      action[label](c)(s),
+      Z.flatMap((newS) => Z.sync(() => d(newS))),
+    ))),
   ],
 }, text(getText(label)(state.lang)));

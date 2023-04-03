@@ -53,7 +53,7 @@ export default <T extends UpdateType>(k: StateKey<T>) => (v: T) => pipe(
         // eslint-disable-next-line max-len
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         : v as never,
-      )(c.setConfig),
+      )(c),
     ]
     : [],
   ],

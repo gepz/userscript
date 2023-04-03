@@ -86,6 +86,7 @@ const defaultGMConfig: GMConfig = pipe(
     flowX1: sc<number>('flowX1', 0.0),
     flowX2: sc<number>('flowX2', 1.0),
     shadowColor: sc<string>('shadowColor', '#000000'),
+    logEvents: sc<boolean>('logEvents', true),
   },
   I.bind(
     'filterExp',

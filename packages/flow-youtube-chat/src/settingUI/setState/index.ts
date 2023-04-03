@@ -27,7 +27,7 @@ const setState: Partial<{
         timingStepCount: v,
         timingFunction,
       },
-      configEffect('timingFunction', timingFunction)(c.setConfig),
+      configEffect('timingFunction', timingFunction)(c),
     ],
   ),
 };

@@ -37,8 +37,8 @@ type TextKey = 'setting'
 | 'minSpacing'
 | 'fieldScale'
 | 'copy'
-| 'showChat'
-| 'hideChat'
+| 'showChats'
+| 'hideChats'
 | 'flowY1'
 | 'flowY2'
 | 'flowX1'
@@ -46,6 +46,8 @@ type TextKey = 'setting'
 | 'shadowColor'
 | 'invalidColor'
 | 'inputNonNumberic'
-| 'invalidSetting';
+| 'invalidSetting'
+| 'logEvents'
+| 'importLog';
 
 export default TextKey;

@@ -11,7 +11,7 @@ export default {
   eventLog: ['Event log', 'イベントログ'],
   giveFeedback: [
     // eslint-disable-next-line max-len
-    'Give your feedbacks here(Please attach the event log if they\'re bug related)',
+    'Give your feedbacks here(Please attach the event log for bug reports)',
     'バグ報告、要望はこちら(バグの場合は、イベントログを添付してください)',
   ],
   chatOpacity: ['Opacity', '不透明度'],
@@ -29,7 +29,7 @@ export default {
   createBanButton: ['Show ban button', 'NGボタンを表示する'],
   displayModName: ['Show moderator\'s name', 'モデレーターの名前を表示する'],
   displaySuperChatAuthor: ['Show super chat author', 'スパチャの作成者を表示する'],
-  createChats: ['Display flowing chats', 'チャットを流す'],
+  createChats: ['Create flowing chats', 'チャットを流す'],
   textOnly: ['Text only(ignore emojis)', '文字のみ(絵文字を無視する)'],
   error: ['Error', 'エラー'],
   video: ['Video', '画面'],
@@ -45,8 +45,8 @@ export default {
   minSpacing: ['Min spacing between chats', 'チャットの最小間隔'],
   fieldScale: ['Scale', '拡大率'],
   copy: ['Copy', 'コピーする'],
-  showChat: ['Show chats', 'チャットを表示する'],
-  hideChat: ['Hide chats', 'チャットを非表示にする'],
+  showChats: ['Show chats', 'チャットを表示する'],
+  hideChats: ['Hide chats', 'チャットを非表示にする'],
   flowY1: ['Flow area top edge', '流れ範囲の上端'],
   flowY2: ['Flow area bottom edge', '流れ範囲の下端'],
   flowX1: ['Flow area left edge', '流れ範囲の左端'],
@@ -55,4 +55,6 @@ export default {
   invalidColor: ['Invalid color', '無効な色'],
   inputNonNumberic: ['Input isn\'t a number', '入力値が数字でない'],
   invalidSetting: ['Invalid setting', '無効な設定値'],
+  logEvents: ['Enable event logging', 'イベントログを有効にする'],
+  importLog: ['Import event log', 'イベントログを取り込む'],
 } as const satisfies Record<TextKey, readonly string[]>;

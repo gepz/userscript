@@ -1,6 +1,7 @@
 import {
   pipe,
 } from '@effect/data/Function';
+import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
 import {
   h,
@@ -9,11 +10,13 @@ import {
 } from 'hyperapp';
 
 import AppCommander from '@/AppCommander';
-import Log from '@/Log';
+import Log, * as log from '@/Log';
 import SettingState from '@/SettingState';
 import getText from '@/getText';
 import buttonNode from '@/settingUI/buttonNode';
+import checkboxNode from '@/settingUI/checkboxNode';
 import getState from '@/settingUI/getState';
+import mapSettingNodes from '@/settingUI/mapSettingNodes';
 import updateAt from '@/settingUI/updateAt';
 import panelBoxStyle from '@/ui/panelBoxStyle';
 import tabContainer from '@/ui/tabContainer';
@@ -23,32 +26,33 @@ export default (
 ) => (
   s: SettingState,
 ): readonly VNode<SettingState>[] => pipe(
-  Math.trunc((
-    getState<Log>('eventLog')(s).entries.length
-  ) / 100) + 1,
-  (logPageLength) => [
+  getState<Log>('eventLog')(s).compressedBlocks.length + 1,
+  (logPageCount) => [
+    pipe(
+      [
+        checkboxNode('logEvents'),
+        buttonNode('importLog'),
+      ],
+      mapSettingNodes((x) => h('div', {
+        style: panelBoxStyle(212),
+      }, x)),
+    )(c)(s),
     h('div', {
-      style: panelBoxStyle(644),
+      style: panelBoxStyle(428),
     }, [
-      h('div', {
-        style: {
-          float: 'right',
-        },
-      }, h('a', {
+      h('a', {
         style: {
           color: '#f0f',
         },
         // eslint-disable-next-line max-len
         href: 'https://greasyfork.org/en/scripts/411442-flow-youtube-chat/feedback',
         target: '_blank',
-      }, text(getText('giveFeedback')(s.lang)))),
+      }, text(getText('giveFeedback')(s.lang))),
       h('div', {}, [
         h('span', {}, text(getText('eventLog')(s.lang))),
         buttonNode('copy')(c)(s),
         tabContainer<SettingState>({
-          container: {
-            height: '276px',
-          },
+          container: {},
           label: {
             padding: '4px',
             width: '2em',
@@ -58,19 +62,21 @@ export default (
             background: '#666',
           },
           tab: {
+            height: '251px',
             display: 'flex',
             flexDirection: 'column',
             padding: '6px',
           },
         })((_, n) => updateAt('logTab')(n)(c))(pipe(
-          RA.makeBy(logPageLength, (x) => `${x}`),
+          RA.makeBy(logPageCount, (x) => `${x}`),
         ))(pipe(
-          RA.makeBy(
-            logPageLength,
+          getState<Log>('eventLog')(s),
+          (l) => RA.makeBy(
+            logPageCount,
             (i) => () => pipe(
-              getState<Log>('eventLog')(
-                s,
-              ).entries.slice(i * 100, (i + 1) * 100),
+              RA.get(l.compressedBlocks, i),
+              O.map(log.decompressBlock),
+              O.getOrElse(() => l.lastBlock),
               RA.map((x, j) => h('div', {
                 style: {
                   display: 'flex',
@@ -92,7 +98,7 @@ export default (
                     whiteSpace: 'pre-wrap',
                     padding: '0 2px',
                   },
-                }, text(x.text)),
+                }, text(`[${x.level}] ${x.text}`)),
               ])),
             ),
           ),
