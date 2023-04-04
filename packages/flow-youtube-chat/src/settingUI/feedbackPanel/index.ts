@@ -95,7 +95,7 @@ export default (
                     color: '#000',
                     flex: 'auto',
                     wordBreak: 'break-all',
-                    whiteSpace: 'pre-wrap',
+                    whiteSpace: 'break-spaces',
                     padding: '0 2px',
                   },
                 }, text(`[${x.level}] ${x.text}`)),
