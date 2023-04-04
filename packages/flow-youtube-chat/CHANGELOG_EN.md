@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Unreleased:
 - Nothing
 
+## 1.16.0
+### Fixed
+- Fix logging import function
+
 ## 1.15.21
 ### Changed
 - Improving event logging functionality.
@@ -15,7 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - More events are logged.
 ### Fixed
 - Fix a bug that stop certain options from being applied when other options were unchecked.
-- Fix a bug that caused errors when modifying chat filters.
+- Fix a bug that causes errors when modifying chat filters.
 
 ## 1.15.20
 ### Fixed
