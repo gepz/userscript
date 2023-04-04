@@ -214,7 +214,7 @@ export default ({
       [
         `Version: ${packageJson.version}`,
         `User Agent: ${window.navigator.userAgent}`,
-        `GMConfig: ${JSON.stringify(ctx.config, undefined, 2)}`,
+        `GMConfig: ${JSON.stringify(ctx.config, undefined, '\t')}`,
       ],
       RA.map(Z.logDebug),
       (x) => Z.all(x),
