@@ -1,7 +1,7 @@
 {
   "name": "@userscript/flow-youtube-chat",
   "description": "flow-youtube-chat",
-  "version": "1.15.21",
+  "version": "1.15.22",
   "dependencies": {
     "@effect/data": "^0.10.3",
     "@effect/io": "^0.17.0",
