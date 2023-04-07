@@ -3,14 +3,14 @@ import {
   flow,
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
+import * as Cause from '@effect/io/Cause';
 import * as Z from '@effect/io/Effect';
 
 import LivePage from '@/LivePage';
-import flatMapOption from '@/flatMapOption';
 
-const chatApp: Z.Effect<never, O.Option<never>, Element> = pipe(
+const chatApp: Z.Effect<never, Cause.NoSuchElementException, Element> = pipe(
   Z.sync(() => document.querySelector<HTMLIFrameElement>('#chatframe')),
-  Z.map(flow(
+  Z.flatMap(flow(
     O.fromNullable,
     O.filter(flow(
       (x: HTMLIFrameElement) => x.contentDocument?.readyState,
@@ -22,18 +22,16 @@ const chatApp: Z.Effect<never, O.Option<never>, Element> = pipe(
       'yt-live-chat-app',
     )),
   )),
-  Z.some,
 );
 
 export default ({
   toggleChatBtnParent: pipe(
     Z.sync(() => document.querySelector('.ytp-right-controls')),
-    Z.map(O.fromNullable),
-    Z.some,
+    Z.flatMap(O.fromNullable),
   ),
   settingsToggleNextElement: pipe(
     Z.sync(() => document.querySelector<HTMLElement>('#menu-container')),
-    Z.map(flow(
+    Z.flatMap(flow(
       O.fromNullable,
       O.filter((x) => x.offsetParent !== null),
       O.flatMapNullable((x) => x.querySelector(
@@ -43,28 +41,24 @@ export default ({
         '#top-row .dropdown-trigger.ytd-menu-renderer',
       ))),
     )),
-    Z.some,
   ),
   settingsContainer: pipe(
     Z.sync(() => document.body),
-    Z.map(O.fromNullable),
-    Z.some,
+    Z.flatMap(O.fromNullable),
   ),
   player: pipe(
     Z.sync(() => document.querySelector('#movie_player')),
-    Z.map(O.fromNullable),
-    Z.some,
+    Z.flatMap(O.fromNullable),
   ),
   video: pipe(
     Z.sync(() => document.querySelector<HTMLVideoElement>(
       'video.video-stream.html5-main-video',
     )),
-    Z.map(O.fromNullable),
-    Z.some,
+    Z.flatMap(O.fromNullable),
   ),
   chatField: pipe(
     chatApp,
-    flatMapOption(flow(
+    Z.flatMap(flow(
       (x) => x.querySelector<HTMLElement>(
         '#items.yt-live-chat-item-list-renderer',
       ),
@@ -73,7 +67,7 @@ export default ({
   ),
   chatTicker: pipe(
     chatApp,
-    flatMapOption(flow(
+    Z.flatMap(flow(
       (x) => x.querySelector<HTMLElement>(
         '#items.yt-live-chat-ticker-renderer',
       ),
@@ -82,7 +76,7 @@ export default ({
   ),
   chatScroller: pipe(
     chatApp,
-    flatMapOption(flow(
+    Z.flatMap(flow(
       (x) => x.querySelector<HTMLElement>(
         '#item-scroller.yt-live-chat-item-list-renderer',
       ),
@@ -93,7 +87,6 @@ export default ({
     Z.sync(() => document.querySelector(
       '.ytp-offline-slate',
     )),
-    Z.map(O.fromNullable),
-    Z.some,
+    Z.flatMap(O.fromNullable),
   ),
 }) satisfies LivePage;
