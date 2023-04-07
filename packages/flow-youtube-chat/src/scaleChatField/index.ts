@@ -13,8 +13,7 @@ export default (
   scale: number,
 ): Z.Effect<never, never, void> => pipe(
   live.chatField.ele,
-  Z.fromOption,
-  Z.flatMap((field) => pipe(
+  Z.flatMap((field: HTMLElement) => pipe(
     [
       pipe(
         O.fromNullable(field.parentElement),

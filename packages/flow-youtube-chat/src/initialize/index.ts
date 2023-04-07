@@ -13,6 +13,7 @@ import * as Str from '@effect/data/String';
 import {
   strict,
 } from '@effect/data/typeclass/Equivalence';
+import * as Cause from '@effect/io/Cause';
 import * as Z from '@effect/io/Effect';
 import * as LogLevel from '@effect/io/Logger/Level';
 import * as Schedule from '@effect/io/Schedule';
@@ -317,8 +318,18 @@ export default ({
             c.liveElementKeys,
             RA.map((key) => pipe(
               ctx.live[key],
-              (x): Z.Effect<never, O.Option<never>, Element> => x.read,
-              Z.unsome,
+              (x): Z.Effect<
+              never,
+              Cause.NoSuchElementException,
+              Element
+              > => x.read,
+              Z.matchEffect(
+                () => Z.succeed(O.none()),
+                flow(
+                  O.some,
+                  Z.succeed,
+                ),
+              ),
               Z.map(O.liftPredicate(
                 (newEle) => !c.eq(ctx.live[key].ele, newEle),
               )),

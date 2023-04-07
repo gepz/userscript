@@ -63,8 +63,7 @@ export default (
     (x) => !intervalTooSmall(x.interval)(mainState.config),
     () => pipe(
       chat.animation,
-      Z.fromOption,
-      Z.flatMap((x) => Z.sync(() => {
+      Z.flatMap((x: Animation) => Z.sync(() => {
         x.finish();
         // eslint-disable-next-line no-param-reassign
         chat.animation = O.none();
@@ -84,8 +83,7 @@ export default (
     [
       pipe(
         chat.animation,
-        Z.fromOption,
-        Z.flatMap((x) => Z.sync(() => x.cancel())),
+        Z.flatMap((x: Animation) => Z.sync(() => x.cancel())),
         Z.ignore,
       ),
       pipe(

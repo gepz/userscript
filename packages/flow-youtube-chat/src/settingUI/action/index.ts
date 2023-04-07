@@ -5,7 +5,7 @@ import * as Z from '@effect/io/Effect';
 import Swal from 'sweetalert2';
 
 import AppCommander from '@/AppCommander';
-import Log, * as log from '@/Log';
+import * as log from '@/Log';
 import SettingState from '@/SettingState';
 import getText from '@/getText';
 

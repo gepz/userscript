@@ -3,6 +3,9 @@ import {
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import * as Z from '@effect/io/Effect';
+import {
+  identity,
+} from 'fp-ts/lib/function';
 
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
@@ -12,9 +15,8 @@ export default (
 ) => (mainState: MainState): Z.Effect<never, never, void> => pipe(
   chat,
   O.liftPredicate((x) => !x.animationEnded),
-  Z.fromOption,
-  Z.map((x) => x.animation),
-  Z.flatMap(Z.fromOption),
+  Z.map((x: FlowChat) => x.animation),
+  Z.flatMap(identity),
   Z.tap((x) => Z.sync(mainState.chatPlaying ? () => x.play()
   : () => x.pause())),
   Z.flatMap((x) => Z.sync(() => {

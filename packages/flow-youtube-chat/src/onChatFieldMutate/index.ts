@@ -46,8 +46,7 @@ export default (
       pipe(
         ctx.config.createChats && ctx.data.chatType === 'normal',
         O.liftPredicate(identity<boolean>),
-        Z.fromOption,
-        Z.flatMap(() => addFlowChat(
+        Z.flatMap<boolean, never, never, void>(() => addFlowChat(
           ctx.getData,
           chatScrn,
           mainState,
@@ -58,8 +57,7 @@ export default (
         ctx.data.authorID,
         O.filter(() => ctx.config.createBanButton),
         O.filter(() => !chat.children.namedItem('card')),
-        Z.fromOption,
-        Z.flatMap((x) => appendChatMessage(
+        Z.flatMap((x: string) => appendChatMessage(
           banButton(x)(getConfig)(setConfig)(chat),
         )(chat)),
         Z.zipLeft(Z.logDebug('Ban button added')),
@@ -68,8 +66,9 @@ export default (
       pipe(
         ctx.config.simplifyChatField,
         O.liftPredicate(identity<boolean>),
-        Z.fromOption,
-        Z.flatMap(() => setChatFieldSimplifyStyle(chat)),
+        Z.flatMap<boolean, never, never, void>(
+          () => setChatFieldSimplifyStyle(chat),
+        ),
         Z.zipLeft(Z.logDebug('Chat simplified')),
         Z.ignore,
       ),
