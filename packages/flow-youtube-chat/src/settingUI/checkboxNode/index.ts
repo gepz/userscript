@@ -1,4 +1,3 @@
-import * as R from 'fp-ts/Reader';
 import {
   VNode,
 } from 'hyperapp';
@@ -15,7 +14,7 @@ import checkboxRow from '@/ui/checkboxRow';
 export default (
   label: TextKey
   & StateKey<boolean>,
-): R.Reader<AppCommander, R.Reader<SettingState, VNode<SettingState>>> => (
+): (c: AppCommander) => (s: SettingState) => VNode<SettingState> => (
   c,
 ) => (s) => checkboxRow(
   getText(label)(s.lang),

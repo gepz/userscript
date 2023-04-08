@@ -10,7 +10,7 @@ export default <T extends GM.Value>(
   defaultValue: T,
 ): GMConfigItem<T> => ({
   gmKey: key,
-  getValue: Z.promise(async () => await GM.getValue(key) ?? defaultValue),
+  getValue: Z.promise(async () => await GM.getValue(key, defaultValue)),
   defaultValue,
   toGm: identity,
 });

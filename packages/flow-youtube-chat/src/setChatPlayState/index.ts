@@ -1,11 +1,9 @@
 import {
   pipe,
+  identity,
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import * as Z from '@effect/io/Effect';
-import {
-  identity,
-} from 'fp-ts/lib/function';
 
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';

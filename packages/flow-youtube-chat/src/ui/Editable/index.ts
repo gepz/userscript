@@ -4,7 +4,6 @@ import {
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import * as Tu from '@effect/data/Tuple';
-import * as En from 'fp-ts/Endomorphism';
 
 type Editable<T> = readonly [
   T,
@@ -31,12 +30,12 @@ export const error: <T>(x: Editable<T>) => O.Option<string> = flow(
   O.flatMap(Tu.getSecond),
 );
 
-export const setValue: <T>(x: T) => En.Endomorphism<Editable<T>> = flow(
+export const setValue: <T>(x: T) => (e: Editable<T>) => Editable<T> = flow(
   constant,
   (x) => Tu.mapFirst(x),
 );
 
-export const setText: <T>(x: string) => En.Endomorphism<Editable<T>> = (
+export const setText: <T>(x: string) => (e: Editable<T>) => Editable<T> = (
   x,
 ) => Tu.mapSecond(flow(
   O.map(Tu.mapFirst(constant(x))),

@@ -41,8 +41,6 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
           x.nameVer}/dist/bundles/${x.name}.umd${x.end}`,
         (x = cdnSegment('mithril')) => `${x.begin}unpkg.com/${
           x.nameVer}/${x.name}${x.end}`,
-        (x = cdnSegment('check-types')) => `${x.begin}cdn.jsdelivr.net/npm/${
-          x.nameVer}/src/${x.name}${x.end}`,
         (x = cdnSegment('deep-diff')) => `${x.begin}cdn.jsdelivr.net/npm/${
           x.nameVer}/index${x.end}`,
         (x = cdnSegment('astring')) => `${x.begin}cdn.jsdelivr.net/npm/${
@@ -50,7 +48,7 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
         (x = cdnSegment('jsep')) => `${x.begin}cdn.jsdelivr.net/npm/${
           x.nameVer}/dist/iife/${x.name}.iife${x.end}`,
         (x = cdnSegment('hash-it')) => `${x.begin}cdn.jsdelivr.net/npm/${
-          x.nameVer}/dist/${x.name}${x.end}`,
+          x.nameVer}/dist/min/index.js`,
         (x = cdnSegment('micro-memoize')) => `${x.begin}cdn.jsdelivr.net/npm/${
           x.nameVer}/dist/${x.name}${x.end}`,
         (x = cdnSegment('lz-string')) => `${x.begin}cdn.jsdelivr.net/npm/${

@@ -1,8 +1,8 @@
-import * as O from '@effect/data/Option';
 import {
   constant,
   pipe,
 } from '@effect/data/Function';
+import * as O from '@effect/data/Option';
 import {
   h,
   VNode,

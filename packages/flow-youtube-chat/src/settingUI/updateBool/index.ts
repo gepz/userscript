@@ -1,11 +1,11 @@
 import {
   apply,
   pipe,
+  flip,
 } from '@effect/data/Function';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import flip from '@/flip';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import StateKey from '@/settingUI/StateKey';
 import updateAt from '@/settingUI/updateAt';
