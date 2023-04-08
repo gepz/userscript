@@ -33,7 +33,10 @@ export default merge(
               ).toString(),
             },
             compress: {
-              ecma: 2015,
+              ecma: 2020,
+              sequences: false,
+              toplevel: true,
+              passes: 2,
             },
           },
         }),
