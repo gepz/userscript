@@ -5,8 +5,7 @@
   "author": "",
   "dependencies": {
     "zod": "^3.21.4",
-    "typed-assert": "^1.0.9",
-    "typescript-transform-paths": "^3.4.6"
+    "typed-assert": "^1.0.9"
   },
   "devDependencies": {
     "@types/node": "18.15.11",

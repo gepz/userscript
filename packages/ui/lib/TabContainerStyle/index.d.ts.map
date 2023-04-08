@@ -1,0 +1,1 @@
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../src/TabContainerStyle/index.ts"],"names":[],"mappings":"AAAA,OAAO,EACL,SAAS,EACV,MAAM,UAAU,CAAC;AAElB,MAAM,CAAC,OAAO,WAAW,iBAAiB;IACxC,SAAS,EAAE,SAAS,CAAC;IACrB,KAAK,EAAE,SAAS,CAAC;IACjB,UAAU,EAAE,SAAS,CAAC;IACtB,GAAG,EAAE,SAAS,CAAC;CAChB"}
