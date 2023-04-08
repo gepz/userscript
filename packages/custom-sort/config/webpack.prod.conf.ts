@@ -14,7 +14,6 @@ export default merge(
     externals: {
       sweetalert2: 'Swal',
       rxjs: 'rxjs',
-      'feather-icons': 'feather',
       loglevel: 'log',
       mithril: 'm',
     },

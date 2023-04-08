@@ -2,6 +2,7 @@ import {
   pipe,
   apply,
   constant,
+  flip
 } from '@effect/data/Function';
 import * as RA from '@effect/data/ReadonlyArray';
 import {
@@ -12,7 +13,6 @@ import {
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import flip from '@/flip';
 import getText from '@/getText';
 import languageLabels from '@/languageLabels';
 import languages from '@/languages';

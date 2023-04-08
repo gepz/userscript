@@ -2,9 +2,9 @@
   "name": "root",
   "private": true,
   "devDependencies": {
-    "@commitlint/cli": "^17.1.2",
-    "@commitlint/config-conventional": "^17.1.0",
-    "husky": "^8.0.1"
+    "@commitlint/cli": "^17.5.1",
+    "@commitlint/config-conventional": "^17.4.4",
+    "husky": "^8.0.3"
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",

@@ -9,31 +9,32 @@
     "allowJs": true,
     "lib": [
       "esnext",
-      "dom"
+      "dom",
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
     },
     "esModuleInterop": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
     "noUncheckedIndexedAccess": true,
-    "strict": true
+    "strict": true,
   },
   "include": [
-    "./src/**/*.ts"
+    "./src/**/*.ts",
   ],
   "exclude": [
     "node_modules",
     "dist",
     "**/*.spec.ts",
+    "./src/ElementOpticPair",
+    "./src/filter/filterContextType",
+    "./src/mapIso",
+    "./src/restrictedExpression",
+    "./src/settingUI/EditableExpression",
+    "./src/settingUI/filter",
+    "./src/settingUI/filterPanel",
     "./src/type",
     "./src/typedExpression",
-    "./src/restrictedExpression",
-    "./src/filter/filterContextType",
-    "./src/settingUI/filterPanel",
-    "./src/settingUI/filter",
-    "./src/settingUI/EditableExpression",
-    "./src/ElementOpticPair"
   ]
 }
