@@ -1,3 +1,2 @@
-import tapNonNull from "./tapNonNull";
-export { tapNonNull, };
+export { default as tapNonNull, } from "./tapNonNull";
 //# sourceMappingURL=index.d.ts.map

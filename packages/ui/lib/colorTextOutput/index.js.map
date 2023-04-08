@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../src/colorTextOutput/index.ts"],"names":[],"mappings":"AAAA,OAAO,EACL,CAAC,EAGD,IAAI,GACL,MAAM,UAAU,CAAC;AAElB,eAAe,CACb,SAAoB,EACpB,EAAE,CAAC,CAAC,KAAa,EAAY,EAAE,CAAC,CAAC,CAAC,MAAM,EAAE;IAC1C,KAAK,EAAE;QACL,GAAG,SAAS;QACZ,KAAK;KACN;CACF,EAAE,IAAI,CAAC,QAAQ,CAAC,CAAC,CAAC"}
