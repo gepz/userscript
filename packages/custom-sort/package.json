@@ -47,9 +47,7 @@
     "ts-loader": "^9.4.1",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0",
-    "ttypescript": "^1.5.15",
-    "typescript": "^5.0.0-dev.20230222",
-    "typescript-transform-paths": "^3.3.1",
+    "typescript": "^5.1.0-dev.20230408",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.10.1",
@@ -59,6 +57,7 @@
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
+    "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.dev.conf.ts",
     "prod_webpack": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.prod.conf.ts",
     "prod_prettify": "prettier --config ./config/prettier.config.js --write ./dist/main/index.user.js",
     "prod": "run-s prod_webpack prod_prettify",
