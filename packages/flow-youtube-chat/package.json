@@ -27,7 +27,6 @@
     "sweetalert2": "^11.7.3",
     "ts-toolbelt": "^9.6.0",
     "type-fest": "^3.8.0",
-    "validate-color": "^2.2.4",
     "zod": "^3.21.4"
   },
   "devDependencies": {

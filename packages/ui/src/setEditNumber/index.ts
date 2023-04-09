@@ -4,7 +4,8 @@ import {
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import * as Tu from '@effect/data/Tuple';
-import Editable, * as Ed from '@userscript/ui/Editable';
+
+import Editable, * as Ed from '@/Editable';
 
 export default (
   editing: boolean,
@@ -14,7 +15,7 @@ export default (
   state: Editable<number>,
 ): Editable<number> => pipe(
   value,
-  Number.parseInt,
+  Number.parseFloat,
   editing
     ? (x) => (Number.isNaN(x) || value.at(-1) === '.'
       ? pipe(

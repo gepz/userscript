@@ -6,6 +6,7 @@ import {
 } from '@effect/data/Function';
 import * as RA from '@effect/data/ReadonlyArray';
 import option from '@userscript/ui/option';
+import setString from '@userscript/ui/setString';
 import tabContainer from '@userscript/ui/tabContainer';
 import {
   h,
@@ -26,7 +27,6 @@ import filterPanel from '@/settingUI/filterPanelOld';
 // import filterPanel from '@/settingUI/filterPanel';
 import flowChatPanel from '@/settingUI/flowChatPanel';
 import getState from '@/settingUI/getState';
-import setString from '@/settingUI/setString';
 import updateAt from '@/settingUI/updateAt';
 import updateInput from '@/settingUI/updateInput';
 
