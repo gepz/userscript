@@ -9,7 +9,7 @@ import SettingState from '@/SettingState';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import StateKey from '@/settingUI/StateKey';
 import updateAt from '@/settingUI/updateAt';
-import getChecked from '@/ui/getChecked';
+import getChecked from '@userscript/ui/getChecked';
 
 export default (
   key: StateKey<boolean>,

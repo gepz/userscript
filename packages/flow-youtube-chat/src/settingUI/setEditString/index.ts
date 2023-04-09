@@ -3,7 +3,7 @@ import {
   constant,
 } from '@effect/data/Function';
 
-import Editable, * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@userscript/ui/Editable';
 
 export default (
   editing: boolean,

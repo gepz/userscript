@@ -245,6 +245,9 @@ importers:
       '@userscript/tap':
         specifier: workspace:^1.0.0
         version: link:../tap
+      '@userscript/ui':
+        specifier: workspace:^1.0.0
+        version: link:../ui
       astring:
         specifier: ^1.8.4
         version: 1.8.4

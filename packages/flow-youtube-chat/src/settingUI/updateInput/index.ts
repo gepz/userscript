@@ -3,6 +3,7 @@ import {
   pipe,
   flip,
 } from '@effect/data/Function';
+import getValue from '@userscript/ui/getValue';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
@@ -11,7 +12,6 @@ import StateKey from '@/settingUI/StateKey';
 import UpdateType from '@/settingUI/UpdateType';
 import getState from '@/settingUI/getState';
 import updateAt from '@/settingUI/updateAt';
-import getValue from '@/ui/getValue';
 
 export default <T extends UpdateType>(
   setter: (x: string) => (t: T) => T,

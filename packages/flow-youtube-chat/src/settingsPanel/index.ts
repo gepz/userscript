@@ -27,8 +27,8 @@ import getState from '@/settingUI/getState';
 import setString from '@/settingUI/setString';
 import updateAt from '@/settingUI/updateAt';
 import updateInput from '@/settingUI/updateInput';
-import option from '@/ui/option';
-import tabContainer from '@/ui/tabContainer';
+import option from '@userscript/ui/option';
+import tabContainer from '@userscript/ui/tabContainer';
 
 export default (
   c: AppCommander,

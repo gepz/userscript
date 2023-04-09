@@ -8,7 +8,7 @@ import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
 import isEditable from '@/isEditable';
 // import Compound from '@/settingUI/EditableExpression/Compound';
-import Editable, * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@userscript/ui/Editable';
 
 // import fromJsepExp from '@/settingUI/EditableExpression/fromJsepExp';
 

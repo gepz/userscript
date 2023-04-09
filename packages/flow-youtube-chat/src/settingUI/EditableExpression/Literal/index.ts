@@ -1,4 +1,4 @@
-import Editable from '@/ui/Editable';
+import Editable from '@userscript/ui/Editable';
 
 export default interface Literal {
   type: 'Literal';

@@ -16,7 +16,7 @@ import Identifier from '@/settingUI/EditableExpression/Identifier';
 import Literal from '@/settingUI/EditableExpression/Literal';
 import LiteralArray from '@/settingUI/EditableExpression/LiteralArray';
 import MemberExpression from '@/settingUI/EditableExpression/MemberExpression';
-import * as Ed from '@/ui/Editable';
+import * as Ed from '@userscript/ui/Editable';
 
 type JsepExpressionFunction = (x: Expression) => expEval.parse.Expression;
 

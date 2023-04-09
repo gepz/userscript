@@ -8,7 +8,7 @@ import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import configEffect from '@/settingUI/configEffect';
 import setRange from '@/settingUI/setRange';
 import stepTiming from '@/settingUI/stepTiming';
-import * as Ed from '@/ui/Editable';
+import * as Ed from '@userscript/ui/Editable';
 
 const setState: Partial<{
   [K in keyof SettingState]: (

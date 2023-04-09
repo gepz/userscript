@@ -12,7 +12,7 @@ import {
   intercalate,
 } from '@effect/data/typeclass/Semigroup';
 
-import Editable, * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@userscript/ui/Editable';
 
 export default (
   editing: boolean,

@@ -4,7 +4,7 @@ import {
 
 import SettingState from '@/SettingState';
 import textShadow from '@/textShadow';
-import * as Ed from '@/ui/Editable';
+import * as Ed from '@userscript/ui/Editable';
 
 export default (s: SettingState): StyleProp => ({
   fontFamily: Ed.value(s.font),

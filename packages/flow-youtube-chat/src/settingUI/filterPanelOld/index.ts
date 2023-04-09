@@ -8,7 +8,7 @@ import SettingState from '@/SettingState';
 import setEditRegexs from '@/settingUI/setEditRegexs';
 import setEditStrings from '@/settingUI/setEditStrings';
 import textAreaNode from '@/settingUI/textAreaNode';
-import panelBoxStyle from '@/ui/panelBoxStyle';
+import panelBoxStyle from '@userscript/ui/panelBoxStyle';
 
 export default (
   c: AppCommander,

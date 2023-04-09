@@ -17,9 +17,9 @@ import editAction from '@/settingUI/editAction';
 import setEditString from '@/settingUI/setEditString';
 import textRowStyle from '@/settingUI/textRowStyle';
 import updateInput from '@/settingUI/updateInput';
-import * as Ed from '@/ui/Editable';
-import option from '@/ui/option';
-import settingRow from '@/ui/settingRow';
+import * as Ed from '@userscript/ui/Editable';
+import option from '@userscript/ui/option';
+import settingRow from '@userscript/ui/settingRow';
 
 export default (
   c: AppCommander,
