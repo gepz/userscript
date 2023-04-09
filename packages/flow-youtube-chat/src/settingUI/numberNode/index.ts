@@ -1,6 +1,7 @@
 import Editable from '@userscript/ui/Editable';
 import errorText from '@userscript/ui/errorText';
 import rangeRow from '@userscript/ui/rangeRow';
+import setEditNumber from '@userscript/ui/setEditNumber';
 import settingRow from '@userscript/ui/settingRow';
 import {
   VNode,
@@ -13,7 +14,6 @@ import getText from '@/getText';
 import StateKey from '@/settingUI/StateKey';
 import editAction from '@/settingUI/editAction';
 import getState from '@/settingUI/getState';
-import setEditNumber from '@/settingUI/setEditNumber';
 
 export default (
   label: TextKey

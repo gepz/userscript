@@ -4,6 +4,7 @@ import {
 import Editable, * as Ed from '@userscript/ui/Editable';
 import colorPicker from '@userscript/ui/colorPicker';
 import errorText from '@userscript/ui/errorText';
+import setEditColor from '@userscript/ui/setEditColor';
 import settingRow from '@userscript/ui/settingRow';
 import textInput from '@userscript/ui/textInput';
 import {
@@ -16,7 +17,6 @@ import TextKey from '@/TextKey';
 import getText from '@/getText';
 import StateKey from '@/settingUI/StateKey';
 import editAction from '@/settingUI/editAction';
-import setEditColor from '@/settingUI/setEditColor';
 
 export default (
   label: TextKey

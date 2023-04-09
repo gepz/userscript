@@ -1,4 +1,6 @@
 import panelBoxStyle from '@userscript/ui/panelBoxStyle';
+import setEditRegexs from '@userscript/ui/setEditRegexs';
+import setEditStrings from '@userscript/ui/setEditStrings';
 import {
   h,
   VNode,
@@ -6,8 +8,6 @@ import {
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import setEditRegexs from '@/settingUI/setEditRegexs';
-import setEditStrings from '@/settingUI/setEditStrings';
 import textAreaNode from '@/settingUI/textAreaNode';
 
 export default (

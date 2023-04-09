@@ -1,10 +1,13 @@
 import {
+  LazyArg,
   constant,
   flow,
   identity,
 } from '@effect/data/Function';
 
-export default flow(
+const setString: <A>(a: A) => LazyArg<A> = flow(
   identity,
   constant,
 );
+
+export default setString;

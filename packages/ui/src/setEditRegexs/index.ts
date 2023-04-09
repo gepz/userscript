@@ -1,6 +1,5 @@
 import {
   pipe,
-  constant,
 } from '@effect/data/Function';
 import * as I from '@effect/data/Identity';
 import * as O from '@effect/data/Option';
@@ -11,7 +10,8 @@ import * as Tu from '@effect/data/Tuple';
 import {
   intercalate,
 } from '@effect/data/typeclass/Semigroup';
-import Editable, * as Ed from '@userscript/ui/Editable';
+
+import Editable, * as Ed from '@/Editable';
 
 export default (
   editing: boolean,
