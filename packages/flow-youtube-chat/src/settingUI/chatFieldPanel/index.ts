@@ -12,7 +12,7 @@ import SettingState from '@/SettingState';
 import checkboxNode from '@/settingUI/checkboxNode';
 import mapSettingNodes from '@/settingUI/mapSettingNodes';
 import numberNode from '@/settingUI/numberNode';
-import panelBoxStyle from '@/ui/panelBoxStyle';
+import panelBoxStyle from '@userscript/ui/panelBoxStyle';
 
 const chatFieldPanel: (
   c: AppCommander

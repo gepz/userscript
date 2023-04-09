@@ -8,7 +8,7 @@ import * as R from 'fp-ts/Reader';
 import * as Op from 'monocle-ts/Optional';
 
 import Expression from '@/settingUI/EditableExpression/Expression';
-import EditSetter from '@/ui/EditSetter';
+import EditSetter from '@userscript/ui/EditSetter';
 
 export default <T>(
   setter: EditSetter<T>,

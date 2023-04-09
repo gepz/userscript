@@ -12,7 +12,7 @@ import isEditable from '@/isEditable';
 import mapObject from '@/mapObject';
 // import Compound from '@/settingUI/EditableExpression/Compound';
 import settingsPanelSize from '@/settingsPanelSize';
-import * as Ed from '@/ui/Editable';
+import * as Ed from '@userscript/ui/Editable';
 
 // import fromJsepExp from '@/settingUI/EditableExpression/fromJsepExp';
 

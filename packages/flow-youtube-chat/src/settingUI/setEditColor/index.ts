@@ -4,7 +4,7 @@ import {
 import * as O from '@effect/data/Option';
 import * as Tu from '@effect/data/Tuple';
 
-import Editable, * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@userscript/ui/Editable';
 import validColor from '@/validColor';
 
 export default (

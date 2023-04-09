@@ -16,7 +16,7 @@ import type Literal from '@/settingUI/EditableExpression/Literal';
 import LiteralArray from '@/settingUI/EditableExpression/LiteralArray';
 // eslint-disable-next-line max-len
 import type MemberExpression from '@/settingUI/EditableExpression/MemberExpression';
-import * as Ed from '@/ui/Editable';
+import * as Ed from '@userscript/ui/Editable';
 
 type Expression = ArrayExpression
 | CallExpression

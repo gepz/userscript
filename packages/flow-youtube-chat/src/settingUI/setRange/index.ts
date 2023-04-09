@@ -12,7 +12,7 @@ import {
 import UserConfig from '@/UserConfig';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import configEffect from '@/settingUI/configEffect';
-import Editable, * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@userscript/ui/Editable';
 
 export default (
   keyA: TypeKey<SettingState, Editable<number>> & keyof UserConfig,

@@ -11,8 +11,8 @@ import Literal from '@/settingUI/EditableExpression/Literal';
 import editAction from '@/settingUI/editAction';
 import type NodeFunction from '@/settingUI/filter/NodeFunction';
 import setEditString from '@/settingUI/setEditString';
-import * as Ed from '@/ui/Editable';
-import textInput from '@/ui/textInput';
+import * as Ed from '@userscript/ui/Editable';
+import textInput from '@userscript/ui/textInput';
 
 export default (
   f: NodeFunction,

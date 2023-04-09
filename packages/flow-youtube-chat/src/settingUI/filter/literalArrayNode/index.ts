@@ -15,8 +15,8 @@ import Primitive from '@/type/Primitive';
 import * as simpleType from '@/type/SimpleType';
 import * as tupleType from '@/type/TupleType';
 import UI from '@/type/UI';
-import * as Ed from '@/ui/Editable';
-import textAreaRow from '@/ui/textAreaRow';
+import * as Ed from '@userscript/ui/Editable';
+import textAreaRow from '@userscript/ui/textAreaRow';
 
 export default (
   f: NodeFunction,

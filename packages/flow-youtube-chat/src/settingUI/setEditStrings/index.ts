@@ -7,7 +7,7 @@ import * as P from '@effect/data/Predicate';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Str from '@effect/data/String';
 
-import Editable, * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@userscript/ui/Editable';
 
 export default (
   editing: boolean,

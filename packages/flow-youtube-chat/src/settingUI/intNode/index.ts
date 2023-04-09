@@ -10,10 +10,10 @@ import StateKey from '@/settingUI/StateKey';
 import editAction from '@/settingUI/editAction';
 import getState from '@/settingUI/getState';
 import setEditInt from '@/settingUI/setEditInt';
-import Editable from '@/ui/Editable';
-import errorText from '@/ui/errorText';
-import rangeRow from '@/ui/rangeRow';
-import settingRow from '@/ui/settingRow';
+import Editable from '@userscript/ui/Editable';
+import errorText from '@userscript/ui/errorText';
+import rangeRow from '@userscript/ui/rangeRow';
+import settingRow from '@userscript/ui/settingRow';
 
 export default (
   label: TextKey

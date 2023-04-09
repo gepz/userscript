@@ -9,7 +9,7 @@ import getText from '@/getText';
 import StateKey from '@/settingUI/StateKey';
 import getState from '@/settingUI/getState';
 import updateBool from '@/settingUI/updateBool';
-import checkboxRow from '@/ui/checkboxRow';
+import checkboxRow from '@userscript/ui/checkboxRow';
 
 export default (
   label: TextKey

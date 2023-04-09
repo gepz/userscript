@@ -18,8 +18,8 @@ import checkboxNode from '@/settingUI/checkboxNode';
 import getState from '@/settingUI/getState';
 import mapSettingNodes from '@/settingUI/mapSettingNodes';
 import updateAt from '@/settingUI/updateAt';
-import panelBoxStyle from '@/ui/panelBoxStyle';
-import tabContainer from '@/ui/tabContainer';
+import panelBoxStyle from '@userscript/ui/panelBoxStyle';
+import tabContainer from '@userscript/ui/tabContainer';
 
 export default (
   c: AppCommander,

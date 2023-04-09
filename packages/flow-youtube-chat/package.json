@@ -7,6 +7,7 @@
     "@effect/io": "^0.19.2",
     "@userscript/forward-to": "workspace:^1.0.0",
     "@userscript/tap": "workspace:^1.0.0",
+    "@userscript/ui": "workspace:^1.0.0",
     "astring": "^1.8.4",
     "broadcast-channel": "^5.0.3",
     "deep-diff": "^1.0.2",
@@ -73,8 +74,8 @@
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.dev.conf.ts",
-    "prod_webpack": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.prod.conf.ts",
+    "dev": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.dev.conf.ts",
+    "prod_webpack": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.prod.conf.ts",
     "prod_prettify": "prettier --config ./config/prettier.config.js --write ./dist/main/index.user.js",
     "prod": "run-s prod_webpack prod_prettify",
     "start": "pnpm dev"

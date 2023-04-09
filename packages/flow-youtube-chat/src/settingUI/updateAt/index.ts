@@ -16,7 +16,7 @@ import UpdateType from '@/settingUI/UpdateType';
 import configEffect from '@/settingUI/configEffect';
 import setComputed from '@/settingUI/setComputed';
 import setState from '@/settingUI/setState';
-import Editable, * as Ed from '@/ui/Editable';
+import Editable, * as Ed from '@userscript/ui/Editable';
 
 export default <T extends UpdateType>(k: StateKey<T>) => (v: T) => pipe(
   k in setComputed ? (

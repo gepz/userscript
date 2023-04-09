@@ -12,11 +12,11 @@ import getText from '@/getText';
 import StateKey from '@/settingUI/StateKey';
 import editAction from '@/settingUI/editAction';
 import setEditColor from '@/settingUI/setEditColor';
-import Editable, * as Ed from '@/ui/Editable';
-import colorPicker from '@/ui/colorPicker';
-import errorText from '@/ui/errorText';
-import settingRow from '@/ui/settingRow';
-import textInput from '@/ui/textInput';
+import Editable, * as Ed from '@userscript/ui/Editable';
+import colorPicker from '@userscript/ui/colorPicker';
+import errorText from '@userscript/ui/errorText';
+import settingRow from '@userscript/ui/settingRow';
+import textInput from '@userscript/ui/textInput';
 
 export default (
   label: TextKey

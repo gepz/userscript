@@ -20,7 +20,7 @@ import numberNode from '@/settingUI/numberNode';
 import selectFontNode from '@/settingUI/selectFontNode';
 import stepTimingNode from '@/settingUI/stepTimingNode';
 import textColorNode from '@/settingUI/textColorNode';
-import panelBoxStyle from '@/ui/panelBoxStyle';
+import panelBoxStyle from '@userscript/ui/panelBoxStyle';
 
 const flowChatPanel: (
   c: AppCommander

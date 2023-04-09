@@ -8,7 +8,7 @@ import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import computed from '@/settingUI/computed';
 import configEffect from '@/settingUI/configEffect';
 import stepTiming from '@/settingUI/stepTiming';
-import * as Ed from '@/ui/Editable';
+import * as Ed from '@userscript/ui/Editable';
 
 const setComputed: {
   [K in keyof typeof computed]: (
