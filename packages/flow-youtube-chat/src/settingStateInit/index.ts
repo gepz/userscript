@@ -4,6 +4,8 @@ import {
 // import * as O from '@effect/data/Option';
 // import * as expEval from 'expression-eval';
 
+import * as Ed from '@userscript/ui/Editable';
+
 import * as log from '@/Log';
 import MappedConfigState from '@/MappedConfigState';
 import SettingState from '@/SettingState';
@@ -12,7 +14,6 @@ import isEditable from '@/isEditable';
 import mapObject from '@/mapObject';
 // import Compound from '@/settingUI/EditableExpression/Compound';
 import settingsPanelSize from '@/settingsPanelSize';
-import * as Ed from '@userscript/ui/Editable';
 
 // import fromJsepExp from '@/settingUI/EditableExpression/fromJsepExp';
 

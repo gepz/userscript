@@ -1,6 +1,7 @@
 import {
   pipe,
 } from '@effect/data/Function';
+import * as Ed from '@userscript/ui/Editable';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
@@ -8,7 +9,6 @@ import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import computed from '@/settingUI/computed';
 import configEffect from '@/settingUI/configEffect';
 import stepTiming from '@/settingUI/stepTiming';
-import * as Ed from '@userscript/ui/Editable';
 
 const setComputed: {
   [K in keyof typeof computed]: (

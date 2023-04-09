@@ -2,6 +2,7 @@ import {
   identity,
   pipe,
 } from '@effect/data/Function';
+import panelBoxStyle from '@userscript/ui/panelBoxStyle';
 import {
   h,
   text,
@@ -20,7 +21,6 @@ import numberNode from '@/settingUI/numberNode';
 import selectFontNode from '@/settingUI/selectFontNode';
 import stepTimingNode from '@/settingUI/stepTimingNode';
 import textColorNode from '@/settingUI/textColorNode';
-import panelBoxStyle from '@userscript/ui/panelBoxStyle';
 
 const flowChatPanel: (
   c: AppCommander

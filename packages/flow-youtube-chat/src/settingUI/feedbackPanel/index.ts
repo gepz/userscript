@@ -3,6 +3,8 @@ import {
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
+import panelBoxStyle from '@userscript/ui/panelBoxStyle';
+import tabContainer from '@userscript/ui/tabContainer';
 import {
   h,
   text,
@@ -18,8 +20,6 @@ import checkboxNode from '@/settingUI/checkboxNode';
 import getState from '@/settingUI/getState';
 import mapSettingNodes from '@/settingUI/mapSettingNodes';
 import updateAt from '@/settingUI/updateAt';
-import panelBoxStyle from '@userscript/ui/panelBoxStyle';
-import tabContainer from '@userscript/ui/tabContainer';
 
 export default (
   c: AppCommander,

@@ -1,6 +1,7 @@
 import {
   pipe,
 } from '@effect/data/Function';
+import Editable, * as Ed from '@userscript/ui/Editable';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
@@ -16,7 +17,6 @@ import UpdateType from '@/settingUI/UpdateType';
 import configEffect from '@/settingUI/configEffect';
 import setComputed from '@/settingUI/setComputed';
 import setState from '@/settingUI/setState';
-import Editable, * as Ed from '@userscript/ui/Editable';
 
 export default <T extends UpdateType>(k: StateKey<T>) => (v: T) => pipe(
   k in setComputed ? (

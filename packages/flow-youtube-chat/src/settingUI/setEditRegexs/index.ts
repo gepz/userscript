@@ -11,7 +11,6 @@ import * as Tu from '@effect/data/Tuple';
 import {
   intercalate,
 } from '@effect/data/typeclass/Semigroup';
-
 import Editable, * as Ed from '@userscript/ui/Editable';
 
 export default (

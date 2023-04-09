@@ -1,6 +1,7 @@
+import Editable from '@userscript/ui/Editable';
+
 import UserConfig from '@/UserConfig';
 // import Expression from '@/settingUI/EditableExpression/Expression';
-import Editable from '@userscript/ui/Editable';
 
 type MappedConfigState = {
   [P in keyof UserConfig]: UserConfig[P] extends number

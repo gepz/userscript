@@ -1,6 +1,7 @@
+import Editable from '@userscript/ui/Editable';
+
 import Log from '@/Log';
 import MappedConfigState from '@/MappedConfigState';
-import Editable from '@userscript/ui/Editable';
 
 export default interface SettingState extends MappedConfigState {
   showPanel: boolean,
