@@ -3,13 +3,13 @@ import {
   pipe,
   flip,
 } from '@effect/data/Function';
+import getChecked from '@userscript/ui/getChecked';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import StateKey from '@/settingUI/StateKey';
 import updateAt from '@/settingUI/updateAt';
-import getChecked from '@userscript/ui/getChecked';
 
 export default (
   key: StateKey<boolean>,

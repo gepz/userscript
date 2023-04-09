@@ -2,6 +2,7 @@ import {
   identity,
   pipe,
 } from '@effect/data/Function';
+import panelBoxStyle from '@userscript/ui/panelBoxStyle';
 import {
   h,
   VNode,
@@ -12,7 +13,6 @@ import SettingState from '@/SettingState';
 import checkboxNode from '@/settingUI/checkboxNode';
 import mapSettingNodes from '@/settingUI/mapSettingNodes';
 import numberNode from '@/settingUI/numberNode';
-import panelBoxStyle from '@userscript/ui/panelBoxStyle';
 
 const chatFieldPanel: (
   c: AppCommander

@@ -1,3 +1,8 @@
+import EditSetter from '@userscript/ui/EditSetter';
+import Editable from '@userscript/ui/Editable';
+import errorText from '@userscript/ui/errorText';
+import settingRow from '@userscript/ui/settingRow';
+import textAreaRow from '@userscript/ui/textAreaRow';
 import {
   VNode,
 } from 'hyperapp';
@@ -9,11 +14,6 @@ import getText from '@/getText';
 import StateKey from '@/settingUI/StateKey';
 import editAction from '@/settingUI/editAction';
 import getState from '@/settingUI/getState';
-import EditSetter from '@userscript/ui/EditSetter';
-import Editable from '@userscript/ui/Editable';
-import errorText from '@userscript/ui/errorText';
-import settingRow from '@userscript/ui/settingRow';
-import textAreaRow from '@userscript/ui/textAreaRow';
 
 export default (
   label: TextKey

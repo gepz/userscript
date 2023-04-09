@@ -3,6 +3,9 @@ import {
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
+import * as Ed from '@userscript/ui/Editable';
+import option from '@userscript/ui/option';
+import settingRow from '@userscript/ui/settingRow';
 import {
   h,
   VNode,
@@ -17,9 +20,6 @@ import editAction from '@/settingUI/editAction';
 import setEditString from '@/settingUI/setEditString';
 import textRowStyle from '@/settingUI/textRowStyle';
 import updateInput from '@/settingUI/updateInput';
-import * as Ed from '@userscript/ui/Editable';
-import option from '@userscript/ui/option';
-import settingRow from '@userscript/ui/settingRow';
 
 export default (
   c: AppCommander,

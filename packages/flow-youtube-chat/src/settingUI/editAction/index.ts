@@ -1,10 +1,11 @@
+import EditSetter from '@userscript/ui/EditSetter';
+
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import StateKey from '@/settingUI/StateKey';
 import UpdateType from '@/settingUI/UpdateType';
 import updateInput from '@/settingUI/updateInput';
-import EditSetter from '@userscript/ui/EditSetter';
 
 export default <T extends UpdateType>(
   key: StateKey<T>,

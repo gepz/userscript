@@ -2,7 +2,6 @@ import {
   flow,
   constant,
 } from '@effect/data/Function';
-
 import Editable, * as Ed from '@userscript/ui/Editable';
 
 export default (

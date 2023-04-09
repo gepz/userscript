@@ -1,10 +1,10 @@
+import * as Ed from '@userscript/ui/Editable';
 import {
   StyleProp,
 } from 'hyperapp';
 
 import SettingState from '@/SettingState';
 import textShadow from '@/textShadow';
-import * as Ed from '@userscript/ui/Editable';
 
 export default (s: SettingState): StyleProp => ({
   fontFamily: Ed.value(s.font),

@@ -3,6 +3,7 @@ import {
 } from '@effect/data/Function';
 import * as I from '@effect/data/Identity';
 import * as RA from '@effect/data/ReadonlyArray';
+import Editable, * as Ed from '@userscript/ui/Editable';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
@@ -12,7 +13,6 @@ import {
 import UserConfig from '@/UserConfig';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import configEffect from '@/settingUI/configEffect';
-import Editable, * as Ed from '@userscript/ui/Editable';
 
 export default (
   keyA: TypeKey<SettingState, Editable<number>> & keyof UserConfig,

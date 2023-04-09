@@ -2,9 +2,11 @@ import {
   pipe,
   apply,
   constant,
-  flip
+  flip,
 } from '@effect/data/Function';
 import * as RA from '@effect/data/ReadonlyArray';
+import option from '@userscript/ui/option';
+import tabContainer from '@userscript/ui/tabContainer';
 import {
   h,
   text,
@@ -27,8 +29,6 @@ import getState from '@/settingUI/getState';
 import setString from '@/settingUI/setString';
 import updateAt from '@/settingUI/updateAt';
 import updateInput from '@/settingUI/updateInput';
-import option from '@userscript/ui/option';
-import tabContainer from '@userscript/ui/tabContainer';
 
 export default (
   c: AppCommander,

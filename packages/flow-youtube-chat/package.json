@@ -73,6 +73,7 @@
   },
   "license": "AGPL-3.0-or-later",
   "scripts": {
+    "lint": "eslint . --ext .ts --fix",
     "preinstall": "npx only-allow pnpm",
     "dev": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.dev.conf.ts",
     "prod_webpack": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.prod.conf.ts",

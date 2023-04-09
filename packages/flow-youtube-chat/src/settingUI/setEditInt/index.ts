@@ -4,7 +4,6 @@ import {
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import * as Tu from '@effect/data/Tuple';
-
 import Editable, * as Ed from '@userscript/ui/Editable';
 
 export default (
