@@ -1,4 +1,4 @@
-import { LazyArg } from '@effect/data/Function';
-declare const setStrings: (self: string) => LazyArg<string[]>;
+import Setter from "../setter/Setter";
+declare const setStrings: Setter<string, readonly string[]>;
 export default setStrings;
 //# sourceMappingURL=index.d.ts.map

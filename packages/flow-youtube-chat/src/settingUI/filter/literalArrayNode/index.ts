@@ -9,8 +9,8 @@ import * as EOP from '@/ElementOpticPair';
 import LiteralArray from '@/settingUI/EditableExpression/LiteralArray';
 import editAction from '@/settingUI/editAction';
 import type NodeFunction from '@/settingUI/filter/NodeFunction';
-import setEditRegexs from '@/settingUI/setEditRegexs';
-import setEditStrings from '@/settingUI/setEditStrings';
+import setEditRegexes from '@/settingUi/setter/setEditRegexes';
+import setEditStrings from '@/settingUi/setter/setEditStrings';
 import Primitive from '@/type/Primitive';
 import * as simpleType from '@/type/SimpleType';
 import * as tupleType from '@/type/TupleType';
@@ -46,7 +46,7 @@ export default (
               primitiveTupleUI(Primitive.string),
               O.getOrElse(() => UI.unknown),
             ) === UI.regex
-              ? setEditRegexs
+              ? setEditRegexes
               : setEditStrings,
           )(value.opt)(Ed.of([''])),
         )(commander),

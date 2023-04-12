@@ -26,6 +26,7 @@
   "exclude": [
     "node_modules",
     "dist",
+    "lib",
     "**/*.spec.ts",
     "./src/ElementOpticPair",
     "./src/filter/filterContextType",

@@ -249,7 +249,7 @@ export default ({
             [
               'bannedWords',
               'bannedUsers',
-              'bannedWordRegexs',
+              'bannedWordRegexes',
             ] as const,
             RA.contains(Str.Equivalence)(k),
             (x) => (x ? ctx.setConfig.filterExp(

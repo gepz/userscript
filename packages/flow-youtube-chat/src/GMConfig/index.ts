@@ -19,7 +19,7 @@ export default interface GMConfig {
   maxChatLength: GMConfigItem<number>,
   laneCount: GMConfigItem<number>,
   bannedWords: GMConfigItem<readonly string[]>,
-  bannedWordRegexs: GMConfigItem<readonly string[]>,
+  bannedWordRegexes: GMConfigItem<readonly string[]>,
   bannedUsers: GMConfigItem<readonly string[]>,
   createChats: GMConfigItem<boolean>,
   displayChats: GMConfigItem<boolean>,

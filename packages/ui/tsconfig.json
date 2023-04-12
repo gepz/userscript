@@ -2,7 +2,7 @@
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "module": "commonjs",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true
   },

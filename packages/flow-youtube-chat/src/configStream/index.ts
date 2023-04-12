@@ -32,7 +32,7 @@ export default (
   live: LivePageState,
 ) => defer(() => merge(
   merge(
-    co.bannedWordRegexs,
+    co.bannedWordRegexes,
     co.bannedWords,
     co.bannedUsers,
   ),
