@@ -1,6 +1,6 @@
 import panelBoxStyle from '@userscript/ui/panelBoxStyle';
-import setEditRegexs from '@userscript/ui/setEditRegexs';
-import setEditStrings from '@userscript/ui/setEditStrings';
+import setEditRegexes from '@userscript/ui/setter/setEditRegexes';
+import setEditStrings from '@userscript/ui/setter/setEditStrings';
 import {
   h,
   VNode,
@@ -25,9 +25,9 @@ export default (
   h('div', {
     style: panelBoxStyle(212),
   }, textAreaNode(
-    'bannedWordRegexs',
+    'bannedWordRegexes',
     18,
-    setEditRegexs,
+    setEditRegexes,
   )(c)(s)),
   h('div', {
     style: panelBoxStyle(212),

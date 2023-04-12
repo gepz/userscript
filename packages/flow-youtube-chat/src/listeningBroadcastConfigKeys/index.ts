@@ -3,7 +3,7 @@ import UserConfig from '@/UserConfig';
 const listeningBroadcastConfigKeys: (keyof UserConfig)[] = [
   'lang',
   'bannedWords',
-  'bannedWordRegexs',
+  'bannedWordRegexes',
   'bannedUsers',
   'filterExp',
   'simplifyChatField',

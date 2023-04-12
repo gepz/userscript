@@ -1,7 +1,6 @@
 import {
   apply,
   pipe,
-  flip,
 } from '@effect/data/Function';
 import getValue from '@userscript/ui/getValue';
 
@@ -17,15 +16,15 @@ export default <T extends UpdateType>(
   setter: (x: string) => (t: T) => T,
 ) => (
   key: StateKey<T>,
-): (
-    c: AppCommander
-  ) => (s: SettingState, e: Event) => SettingDispatchable => flip(
-  (s, e) => pipe(
-    getValue(e),
-    setter,
-    apply(getState(key)(s)),
-    updateAt(key),
-    flip,
-    apply(s),
-  ),
+) => (
+  c: AppCommander,
+) => (
+  s: SettingState,
+  e: Event,
+): SettingDispatchable => pipe(
+  getValue(e),
+  setter,
+  apply(getState(key)(s)),
+  updateAt(key),
+  (x) => x(c)(s),
 );

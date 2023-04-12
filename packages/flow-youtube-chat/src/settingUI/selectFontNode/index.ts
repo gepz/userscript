@@ -5,7 +5,7 @@ import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Ed from '@userscript/ui/Editable';
 import option from '@userscript/ui/option';
-import setEditString from '@userscript/ui/setEditString';
+import setEditString from '@userscript/ui/setter/setEditString';
 import settingRow from '@userscript/ui/settingRow';
 import {
   h,

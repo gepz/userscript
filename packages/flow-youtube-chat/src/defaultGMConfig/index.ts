@@ -68,7 +68,7 @@ const defaultGMConfig: GMConfig = pipe(
     maxChatLength: sc<number>('MAX', 100),
     laneCount: sc<number>('LANE_DIV', 12),
     bannedWords: ic('NG_WORDS', ...stringsArgs),
-    bannedWordRegexs: ic('NG_REG_WORDS', ...stringsArgs),
+    bannedWordRegexes: ic('NG_REG_WORDS', ...stringsArgs),
     bannedUsers: ic('NG_USERS', ...stringsArgs),
     createChats: sc<boolean>('TOGGLE_CREATE_COMMENTS', true),
     noOverlap: sc<boolean>('NO_OVERLAP', true),
@@ -102,7 +102,7 @@ const defaultGMConfig: GMConfig = pipe(
   ])),
   RA.some(
     flip(flow([matchedByText, RA.some]))(${
-  JSON.stringify(x.bannedWordRegexs.defaultValue)
+  JSON.stringify(x.bannedWordRegexes.defaultValue)
 })
   )(RA.compact([
     messageText,

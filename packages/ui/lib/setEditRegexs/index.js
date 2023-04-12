@@ -7,6 +7,7 @@ import * as Str from '@effect/data/String';
 import * as Tu from '@effect/data/Tuple';
 import { intercalate, } from '@effect/data/typeclass/Semigroup';
 import * as Ed from "../Editable";
+import Setter from "../setter/Setter";
 export default (editing) => (value) => pipe(value, Str.split(/\r\n|\n/), RA.filter(P.not(Str.isEmpty)), I.bindTo('regexs'), I.let('errors', ({ regexs, }) => pipe(regexs, RA.map((x, i) => {
     try {
         RegExp(x, 'u');

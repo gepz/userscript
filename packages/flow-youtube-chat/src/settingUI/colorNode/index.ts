@@ -4,7 +4,7 @@ import {
 import Editable, * as Ed from '@userscript/ui/Editable';
 import colorPicker from '@userscript/ui/colorPicker';
 import errorText from '@userscript/ui/errorText';
-import setEditColor from '@userscript/ui/setEditColor';
+import setEditColor from '@userscript/ui/setter/setEditColor';
 import settingRow from '@userscript/ui/settingRow';
 import textInput from '@userscript/ui/textInput';
 import {

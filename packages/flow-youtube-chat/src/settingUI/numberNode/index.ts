@@ -1,7 +1,7 @@
 import Editable from '@userscript/ui/Editable';
 import errorText from '@userscript/ui/errorText';
 import rangeRow from '@userscript/ui/rangeRow';
-import setEditNumber from '@userscript/ui/setEditNumber';
+import setEditNumber from '@userscript/ui/setter/setEditNumber';
 import settingRow from '@userscript/ui/settingRow';
 import {
   VNode,

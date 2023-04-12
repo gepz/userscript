@@ -23,7 +23,7 @@ export default {
   maxChatLength: ['Max number of characters', '最大文字数'],
   laneCount: ['Number of rows', '行数'],
   bannedWords: ['Banned Words', 'NGワード'],
-  bannedWordRegexs: ['Banned Words(Regex)', 'NGワード(正規表現)'],
+  bannedWordRegexes: ['Banned Words(Regex)', 'NGワード(正規表現)'],
   bannedUsers: ['Banned Users', 'NGユーザー'],
   simplifyChatField: ['Simplify', '簡略化する'],
   createBanButton: ['Show ban button', 'NGボタンを表示する'],

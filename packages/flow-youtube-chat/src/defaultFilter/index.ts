@@ -14,7 +14,7 @@ RA.some(
 ])),
 RA.some(
   flip(flow([matchedByText, RA.some]))(${
-  JSON.stringify(config.bannedWordRegexs)
+  JSON.stringify(config.bannedWordRegexes)
 })
 )(RA.compact([
   messageText,
