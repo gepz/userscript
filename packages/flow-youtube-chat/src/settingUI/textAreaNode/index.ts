@@ -11,13 +11,13 @@ import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import TextKey from '@/TextKey';
 import getText from '@/getText';
-import StateKey from '@/settingUI/StateKey';
+import SettingKeys from '@/settingUI/SettingKeys';
 import editAction from '@/settingUI/editAction';
 import getState from '@/settingUI/getState';
 
 export default (
   label: TextKey
-  & StateKey<Editable<readonly string[]>>,
+  & SettingKeys<Editable<readonly string[]>>,
   rows: number,
   setter: EditSetter<Editable<readonly string[]>>,
 ) => (

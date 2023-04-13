@@ -7,7 +7,7 @@ import getValue from '@userscript/ui/getValue';
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
-import StateKey from '@/settingUI/StateKey';
+import SettingKeys from '@/settingUI/SettingKeys';
 import UpdateType from '@/settingUI/UpdateType';
 import getState from '@/settingUI/getState';
 import updateAt from '@/settingUI/updateAt';
@@ -15,7 +15,7 @@ import updateAt from '@/settingUI/updateAt';
 export default <T extends UpdateType>(
   setter: (x: string) => (t: T) => T,
 ) => (
-  key: StateKey<T>,
+  key: SettingKeys<T>,
 ) => (
   c: AppCommander,
 ) => (

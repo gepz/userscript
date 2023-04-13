@@ -7,19 +7,19 @@ import {
   text,
   VNode,
 } from 'hyperapp';
+import {
+  ConditionalKeys,
+} from 'type-fest';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import TextKey from '@/TextKey';
-import {
-  TypeKey,
-} from '@/TypeKey';
 import getText from '@/getText';
 import action from '@/settingUI/action';
 
 export default (
   label: TextKey
-  & TypeKey<
+  & ConditionalKeys<
   typeof action,
   (c: AppCommander) => (s: SettingState) => Z.Effect<never, never, SettingState>
   >,

@@ -4,20 +4,20 @@ import {
 import * as I from '@effect/data/Identity';
 import * as RA from '@effect/data/ReadonlyArray';
 import Editable, * as Ed from '@userscript/ui/Editable';
+import {
+  ConditionalKeys,
+} from 'type-fest';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import {
-  TypeKey,
-} from '@/TypeKey';
 import UserConfig from '@/UserConfig';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import configEffect from '@/settingUI/configEffect';
 
 export default (
-  keyA: TypeKey<SettingState, Editable<number>> & keyof UserConfig,
+  keyA: ConditionalKeys<SettingState, Editable<number>> & keyof UserConfig,
 ) => (
-  keyB: TypeKey<SettingState, Editable<number>> & keyof UserConfig,
+  keyB: ConditionalKeys<SettingState, Editable<number>> & keyof UserConfig,
 ) => (
   bFn: (vA: number) => (vB: number) => number,
 ) => (
