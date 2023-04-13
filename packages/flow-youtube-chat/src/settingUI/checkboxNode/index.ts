@@ -7,13 +7,13 @@ import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import TextKey from '@/TextKey';
 import getText from '@/getText';
-import StateKey from '@/settingUI/StateKey';
+import SettingKeys from '@/settingUI/SettingKeys';
 import getState from '@/settingUI/getState';
 import updateBool from '@/settingUI/updateBool';
 
 export default (
   label: TextKey
-  & StateKey<boolean>,
+  & SettingKeys<boolean>,
 ): (c: AppCommander) => (s: SettingState) => VNode<SettingState> => (
   c,
 ) => (s) => checkboxRow(

@@ -8,11 +8,11 @@ import getChecked from '@userscript/ui/getChecked';
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
-import StateKey from '@/settingUI/StateKey';
+import SettingKeys from '@/settingUI/SettingKeys';
 import updateAt from '@/settingUI/updateAt';
 
 export default (
-  key: StateKey<boolean>,
+  key: SettingKeys<boolean>,
 ): (
     c: AppCommander
   ) => (s: SettingState, e: Event) => SettingDispatchable => flip(

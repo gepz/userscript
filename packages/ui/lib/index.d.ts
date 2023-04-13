@@ -1,3 +1,4 @@
+import type AppPropertyKeys from "./AppPropertyKeys";
 import type Editable from "./Editable";
 import type TabContainerStyle from "./TabContainerStyle";
 import checkboxRow from "./checkboxRow";
@@ -15,5 +16,5 @@ import tabContainer from "./tabContainer";
 import textAreaRow from "./textAreaRow";
 import textInput from "./textInput";
 import validColor from "./validColor";
-export { Editable, TabContainerStyle, checkboxRow, colorPicker, colorTextOutput, errorText, getChecked, getValue, option, panelBoxStyle, rangeRow, setter, settingRow, tabContainer, textAreaRow, textInput, validColor, };
+export { AppPropertyKeys, Editable, TabContainerStyle, checkboxRow, colorPicker, colorTextOutput, errorText, getChecked, getValue, option, panelBoxStyle, rangeRow, setter, settingRow, tabContainer, textAreaRow, textInput, validColor, };
 //# sourceMappingURL=index.d.ts.map

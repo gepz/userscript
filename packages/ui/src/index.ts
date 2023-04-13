@@ -1,3 +1,4 @@
+import type AppPropertyKeys from '@/AppPropertyKeys';
 import type Editable from '@/Editable';
 import type TabContainerStyle from '@/TabContainerStyle';
 import checkboxRow from '@/checkboxRow';
@@ -17,6 +18,7 @@ import textInput from '@/textInput';
 import validColor from '@/validColor';
 
 export {
+  AppPropertyKeys,
   Editable,
   TabContainerStyle,
   checkboxRow,

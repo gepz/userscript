@@ -12,13 +12,13 @@ import isEditable from '@/isEditable';
 // eslint-disable-next-line max-len
 // import editableExpressionToJsep from '@/settingUI/EditableExpression/editableExpressionToJsep';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
-import StateKey from '@/settingUI/StateKey';
+import SettingKeys from '@/settingUI/SettingKeys';
 import UpdateType from '@/settingUI/UpdateType';
 import configEffect from '@/settingUI/configEffect';
 import setComputed from '@/settingUI/setComputed';
 import setState from '@/settingUI/setState';
 
-export default <T extends UpdateType>(k: StateKey<T>) => (v: T) => pipe(
+export default <T extends UpdateType>(k: SettingKeys<T>) => (v: T) => pipe(
   k in setComputed ? (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     setComputed[k as keyof typeof setComputed] as (
