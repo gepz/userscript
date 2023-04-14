@@ -8,9 +8,15 @@ import {
   VNode,
   Action,
   text,
+  StyleProp,
 } from 'hyperapp';
 
-import TabContainerStyle from '@/TabContainerStyle';
+export interface TabContainerStyle {
+  container: StyleProp,
+  label: StyleProp,
+  labelFocus: StyleProp,
+  tab: StyleProp,
+}
 
 export default <T>(
   style: TabContainerStyle,
