@@ -2,10 +2,10 @@ import EditSetter from '@userscript/ui/EditSetter';
 
 import AppCommander from '@/AppCommander';
 import SettingKeys from '@/settingUI/SettingKeys';
-import UpdateType from '@/settingUI/UpdateType';
+import SettingValues from '@/settingUI/SettingValues';
 import updateInput from '@/settingUI/updateInput';
 
-export default <T extends UpdateType>(
+export default <T extends SettingValues>(
   key: SettingKeys<T>,
   setter: EditSetter<T>,
 ) => (c: AppCommander) => ({

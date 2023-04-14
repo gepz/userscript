@@ -31,6 +31,6 @@ export default (
     textAreaRow(
       rows,
       editAction<Editable<readonly string[]>>(label, setter)(c),
-    )(getState<Editable<readonly string[]>>(label)(s)),
+    )(getState(label)(s)),
   ],
 );

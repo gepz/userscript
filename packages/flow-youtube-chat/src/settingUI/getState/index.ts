@@ -1,17 +1,25 @@
-import {
-  ConditionalKeys,
-} from 'type-fest';
-
 import SettingState from '@/SettingState';
 import SettingKeys from '@/settingUI/SettingKeys';
+import SettingValues from '@/settingUI/SettingValues';
 import computed from '@/settingUI/computed';
 
-export default <T>(k: SettingKeys<T>): (s: SettingState) => T => (
+export default <T extends SettingKeys<SettingValues>>(k: T): (
+  s: SettingState
+) => T extends keyof SettingState ? SettingState[T]
+: T extends keyof typeof computed ? ReturnType<(typeof computed)[T]>
+: never => (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   k in computed ? computed[
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    k as ConditionalKeys<typeof computed, (s: SettingState) => T>
-  ] as unknown as (s: SettingState) => T
+    k as keyof typeof computed
+  ] as (s: SettingState) => T extends keyof SettingState ? SettingState[T]
+  : T extends keyof typeof computed ? ReturnType<(typeof computed)[T]>
+  : never
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  : (s) => s[k as ConditionalKeys<SettingState, T>] as unknown as T
+  : (s) => s[
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    k as keyof SettingState
+  ] as T extends keyof SettingState ? SettingState[T]
+  : T extends keyof typeof computed ? ReturnType<(typeof computed)[T]>
+  : never
 );

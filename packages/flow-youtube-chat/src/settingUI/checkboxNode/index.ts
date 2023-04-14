@@ -18,6 +18,6 @@ export default (
   c,
 ) => (s) => checkboxRow(
   getText(label)(s.lang),
-  getState<boolean>(label)(s),
+  getState(label)(s),
   updateBool(label)(c),
 );
