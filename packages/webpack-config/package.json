@@ -5,7 +5,7 @@
   "author": "",
   "dependencies": {
     "@types/node": "18.15.11",
-    "webpack": "^5.78.0",
+    "webpack": "^5.79.0",
     "webpack-dev-server": "^4.13.2",
     "webpack-merge": "^5.8.0"
   },

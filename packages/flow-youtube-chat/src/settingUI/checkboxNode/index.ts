@@ -1,4 +1,4 @@
-import checkboxRow from '@userscript/ui/checkboxRow';
+import checkboxRow from '@userscript/ui/node/checkboxRow';
 import {
   VNode,
 } from 'hyperapp';

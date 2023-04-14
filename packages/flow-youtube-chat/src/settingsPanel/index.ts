@@ -5,9 +5,9 @@ import {
   flip,
 } from '@effect/data/Function';
 import * as RA from '@effect/data/ReadonlyArray';
-import option from '@userscript/ui/option';
+import option from '@userscript/ui/node/option';
+import tabContainer from '@userscript/ui/node/tabContainer';
 import setString from '@userscript/ui/setter/setString';
-import tabContainer from '@userscript/ui/tabContainer';
 import {
   h,
   text,

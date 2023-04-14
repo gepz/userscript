@@ -1,8 +1,8 @@
 import EditSetter from '@userscript/ui/EditSetter';
 import Editable from '@userscript/ui/Editable';
 import errorText from '@userscript/ui/errorText';
-import settingRow from '@userscript/ui/settingRow';
-import textAreaRow from '@userscript/ui/textAreaRow';
+import settingRow from '@userscript/ui/node/settingRow';
+import textAreaRow from '@userscript/ui/node/textAreaRow';
 import {
   VNode,
 } from 'hyperapp';

@@ -1,8 +1,8 @@
 import Editable from '@userscript/ui/Editable';
 import errorText from '@userscript/ui/errorText';
-import rangeRow from '@userscript/ui/rangeRow';
+import rangeRow from '@userscript/ui/node/rangeRow';
+import settingRow from '@userscript/ui/node/settingRow';
 import setEditInt from '@userscript/ui/setter/setEditInt';
-import settingRow from '@userscript/ui/settingRow';
 import {
   VNode,
 } from 'hyperapp';

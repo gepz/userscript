@@ -1,0 +1,1 @@
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../src/StateDispatchable/index.ts"],"names":[],"mappings":"AAAA,OAAO,EACL,MAAM,EACP,MAAM,UAAU,CAAC;AAElB,KAAK,iBAAiB,CAAC,CAAC,IAAI,CAAC,CAAC,EAAE,CAAC,EAAE,GAAG,CAAC,EAAE,MAAM,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC;AAEtD,eAAe,iBAAiB,CAAC"}

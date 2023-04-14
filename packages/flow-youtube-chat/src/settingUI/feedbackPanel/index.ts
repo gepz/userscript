@@ -3,8 +3,8 @@ import {
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
+import tabContainer from '@userscript/ui/node/tabContainer';
 import panelBoxStyle from '@userscript/ui/panelBoxStyle';
-import tabContainer from '@userscript/ui/tabContainer';
 import {
   h,
   text,
