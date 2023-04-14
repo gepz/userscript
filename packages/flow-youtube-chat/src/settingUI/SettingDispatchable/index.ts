@@ -1,9 +1,7 @@
-import {
-  Effect,
-} from 'hyperapp';
+import StateDispatchable from '@userscript/ui/StateDispatchable';
 
 import SettingState from '@/SettingState';
 
-type SettingDispatchable = [s: SettingState, ...e: Effect<SettingState>[]];
+type SettingDispatchable = StateDispatchable<SettingState>;
 
 export default SettingDispatchable;
