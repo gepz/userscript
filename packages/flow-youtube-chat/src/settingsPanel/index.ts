@@ -105,5 +105,5 @@ export default (
     RA.map(constant),
     RA.map(flip),
     RA.map(apply(state)),
-  ))(getState<number>('mainTab')(state)),
+  ))(getState('mainTab')(state)),
 ]) : h('div', {}));

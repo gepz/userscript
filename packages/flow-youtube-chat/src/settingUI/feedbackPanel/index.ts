@@ -12,7 +12,7 @@ import {
 } from 'hyperapp';
 
 import AppCommander from '@/AppCommander';
-import Log, * as log from '@/Log';
+import * as log from '@/Log';
 import SettingState from '@/SettingState';
 import getText from '@/getText';
 import buttonNode from '@/settingUI/buttonNode';
@@ -26,7 +26,7 @@ export default (
 ) => (
   s: SettingState,
 ): readonly VNode<SettingState>[] => pipe(
-  getState<Log>('eventLog')(s).compressedBlocks.length + 1,
+  getState('eventLog')(s).compressedBlocks.length + 1,
   (logPageCount) => [
     pipe(
       [
@@ -70,7 +70,7 @@ export default (
         })((_, n) => updateAt('logTab')(n)(c))(pipe(
           RA.makeBy(logPageCount, (x) => `${x}`),
         ))(pipe(
-          getState<Log>('eventLog')(s),
+          getState('eventLog')(s),
           (l) => RA.makeBy(
             logPageCount,
             (i) => () => pipe(
@@ -102,7 +102,7 @@ export default (
               ])),
             ),
           ),
-        ))(getState<number>('logTab')(s)),
+        ))(getState('logTab')(s)),
       ]),
     ]),
   ],

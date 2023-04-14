@@ -1,8 +1,8 @@
-import AppPropertyKeys from '@userscript/ui/AppPropertyKeys';
+import AppPropertyValues from '@userscript/ui/AppPropertyValues';
 
 import SettingState from '@/SettingState';
 import computed from '@/settingUI/computed';
 
-type SettingKeys<T> = AppPropertyKeys<SettingState, typeof computed, T>;
+type SettingValues = AppPropertyValues<SettingState, typeof computed>;
 
-export default SettingKeys;
+export default SettingValues;
