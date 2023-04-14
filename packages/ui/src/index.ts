@@ -3,6 +3,8 @@ import type AppPropertyValues from '@/AppPropertyValues';
 import type ComputedProperties from '@/ComputedProperties';
 import type ComputedPropertySetters from '@/ComputedPropertySetters';
 import type Editable from '@/Editable';
+import type InputUpdater from '@/InputUpdater';
+import * as inputUpdater from '@/InputUpdater';
 import type StateDispatchable from '@/StateDispatchable';
 import errorText from '@/errorText';
 import getChecked from '@/getChecked';
@@ -17,6 +19,8 @@ export {
   ComputedProperties,
   ComputedPropertySetters,
   Editable,
+  InputUpdater,
+  inputUpdater,
   StateDispatchable,
   errorText,
   getChecked,
