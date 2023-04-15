@@ -4,7 +4,7 @@
   "version": "1.16.1",
   "dependencies": {
     "@effect/data": "^0.12.2",
-    "@effect/io": "^0.20.0",
+    "@effect/io": "^0.21.0",
     "@userscript/forward-to": "workspace:^1.0.0",
     "@userscript/tap": "workspace:^1.0.0",
     "@userscript/ui": "workspace:^1.0.0",
@@ -68,7 +68,7 @@
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.13.2",
     "webpack-merge": "^5.8.0",
-    "webpack-userscript": "^3.1.0"
+    "webpack-userscript": "^3.2.1"
   },
   "license": "AGPL-3.0-or-later",
   "scripts": {
