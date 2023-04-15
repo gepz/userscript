@@ -3,6 +3,8 @@ import type AppPropertyKeys from "./AppPropertyKeys";
 import type AppPropertyValues from "./AppPropertyValues";
 import type ComputedProperties from "./ComputedProperties";
 import type ComputedPropertySetters from "./ComputedPropertySetters";
+import type EditAction from "./EditAction";
+import * as editAction from "./EditAction";
 import type Editable from "./Editable";
 import type InputUpdater from "./InputUpdater";
 import * as inputUpdater from "./InputUpdater";
@@ -13,5 +15,5 @@ import getValue from "./getValue";
 import * as node from "./node";
 import panelBoxStyle from "./panelBoxStyle";
 import * as setter from "./setter";
-export { inputUpdater, errorText, getChecked, getValue, node, panelBoxStyle, setter, };
+export { editAction, inputUpdater, errorText, getChecked, getValue, node, panelBoxStyle, setter, };
 //# sourceMappingURL=index.js.map

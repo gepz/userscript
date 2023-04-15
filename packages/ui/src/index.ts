@@ -3,6 +3,8 @@ import type AppPropertyKeys from '@/AppPropertyKeys';
 import type AppPropertyValues from '@/AppPropertyValues';
 import type ComputedProperties from '@/ComputedProperties';
 import type ComputedPropertySetters from '@/ComputedPropertySetters';
+import type EditAction from '@/EditAction';
+import * as editAction from '@/EditAction';
 import type Editable from '@/Editable';
 import type InputUpdater from '@/InputUpdater';
 import * as inputUpdater from '@/InputUpdater';
@@ -20,6 +22,8 @@ export {
   AppPropertyValues,
   ComputedProperties,
   ComputedPropertySetters,
+  EditAction,
+  editAction,
   Editable,
   InputUpdater,
   inputUpdater,

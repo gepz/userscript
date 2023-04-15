@@ -5,11 +5,11 @@ importers:
   .:
     devDependencies:
       '@commitlint/cli':
-        specifier: ^17.6.0
-        version: 17.6.0
+        specifier: ^17.6.1
+        version: 17.6.1
       '@commitlint/config-conventional':
-        specifier: ^17.6.0
-        version: 17.6.0
+        specifier: ^17.6.1
+        version: 17.6.1
       husky:
         specifier: ^8.0.3
         version: 8.0.3
@@ -201,8 +201,8 @@ importers:
         specifier: ^5.8.0
         version: 5.8.0
       webpack-userscript:
-        specifier: ^3.1.0
-        version: 3.1.0(webpack@5.79.0)
+        specifier: ^3.2.1
+        version: 3.2.1(webpack@5.79.0)
 
   packages/eslint-config:
     dependencies:
@@ -237,8 +237,8 @@ importers:
         specifier: ^0.12.2
         version: 0.12.2
       '@effect/io':
-        specifier: ^0.20.0
-        version: 0.20.0
+        specifier: ^0.21.0
+        version: 0.21.0
       '@userscript/forward-to':
         specifier: workspace:^1.0.0
         version: link:../forward-to
@@ -424,8 +424,8 @@ importers:
         specifier: ^5.8.0
         version: 5.8.0
       webpack-userscript:
-        specifier: ^3.1.0
-        version: 3.1.0(webpack@5.79.0)
+        specifier: ^3.2.1
+        version: 3.2.1(webpack@5.79.0)
 
   packages/forward-to:
     dependencies:
@@ -960,8 +960,8 @@ packages:
       regenerator-runtime: 0.13.11
     dev: false
 
-  /@commitlint/cli@17.6.0:
-    resolution: {integrity: sha512-JaZeZ1p6kfkSiZlDoQjK09AuiI9zYQMiIUJzTOM8qNRHFOXOPmiTM56nI67yzeUSNTFu6M/DRqjmdjtA5q3hEg==}
+  /@commitlint/cli@17.6.1:
+    resolution: {integrity: sha512-kCnDD9LE2ySiTnj/VPaxy4/oRayRcdv4aCuVxtoum8SxIU7OADHc0nJPQfheE8bHcs3zZdWzDMWltRosuT13bg==}
     engines: {node: '>=v14'}
     hasBin: true
     dependencies:
@@ -980,8 +980,8 @@ packages:
       - '@swc/wasm'
     dev: true
 
-  /@commitlint/config-conventional@17.6.0:
-    resolution: {integrity: sha512-2Y9M7MN942bTK5h70fJGknhXA02+OtWCkKeIzTSwsdwz1V7y6bxYv24x052E9XHKtZHJfvM3iLuTOsjRvLqWtA==}
+  /@commitlint/config-conventional@17.6.1:
+    resolution: {integrity: sha512-ng/ybaSLuTCH9F+7uavSOnEQ9EFMl7lHEjfAEgRh1hwmEe8SpLKpQeMo2aT1IWvHaGMuTb+gjfbzoRf2IR23NQ==}
     engines: {node: '>=v14'}
     dependencies:
       conventional-changelog-conventionalcommits: 5.0.0
@@ -1143,8 +1143,8 @@ packages:
     resolution: {integrity: sha512-bmWRTcsSRG1FlBswT+D8SxW6r3c4B3pKJrjYfitCD03tXHnup5gLHaWqbFgIjiyYITS+UsJRRjVrNxvyGG4ZNQ==}
     dev: false
 
-  /@effect/io@0.20.0:
-    resolution: {integrity: sha512-6ECG566e0ZjvDQO5/KbZtQpplZiSTT+ERnxd7dEC1WjC5cF6uIICMBGWljgL5hBOEpV8p/UHs00anKxTlYomXg==}
+  /@effect/io@0.21.0:
+    resolution: {integrity: sha512-tLusLlTB7zxV+3PW+BqM2agw5jeEp3fyci/lwjWvENOKlY8CrZw+6R8og93Dn3gl/J3tYrGzAUpNJfE4vPN+Ng==}
     dependencies:
       '@effect/data': 0.12.2
     dev: false
@@ -6620,8 +6620,8 @@ packages:
     resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==}
     engines: {node: '>=10.13.0'}
 
-  /webpack-userscript@3.1.0(webpack@5.79.0):
-    resolution: {integrity: sha512-wXbNJg7ctA8zZKKYnuz1LAno1crMV6er8/Ep320scG+eZoHf/yLO9Cj7e/5uoF6ja3QhR9QDm/iOEPCX50W3wg==}
+  /webpack-userscript@3.2.1(webpack@5.79.0):
+    resolution: {integrity: sha512-XvxSQIBMdii6Bpi6FPcsaK+A58z6X5Z3IEWU5iOdwwsoLYIOPTghgzFz5RQH1TFieAPVqz9Iv2TA2/WLIqfcaw==}
     peerDependencies:
       webpack: '5'
     dependencies:
@@ -6633,6 +6633,7 @@ packages:
       ssri: 10.0.3
       table: 6.8.1
       tapable: 2.2.1
+      tslib: 2.5.0
       webpack: 5.79.0(webpack-cli@5.0.1)
     transitivePeerDependencies:
       - encoding
