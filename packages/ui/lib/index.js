@@ -1,3 +1,4 @@
+import type AppProperties from "./AppProperties";
 import type AppPropertyKeys from "./AppPropertyKeys";
 import type AppPropertyValues from "./AppPropertyValues";
 import type ComputedProperties from "./ComputedProperties";

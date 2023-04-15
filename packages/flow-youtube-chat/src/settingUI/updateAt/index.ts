@@ -13,15 +13,13 @@ import isEditable from '@/isEditable';
 // import editableExpressionToJsep from '@/settingUI/EditableExpression/editableExpressionToJsep';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import SettingKeys from '@/settingUI/SettingKeys';
-import computed from '@/settingUI/computed';
+import SettingValues from '@/settingUI/SettingValues';
 import configEffect from '@/settingUI/configEffect';
 import setComputed from '@/settingUI/setComputed';
 import setState from '@/settingUI/setState';
 
-export default <T extends SettingKeys<unknown>>(k: T) => (
-  v: T extends keyof SettingState ? SettingState[T]
-  : T extends keyof typeof computed ? ReturnType<(typeof computed)[T]>
-  : never,
+export default <K extends SettingKeys<unknown>>(k: K) => (
+  v: SettingValues<K>,
 ) => pipe(
   k in setComputed ? (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
