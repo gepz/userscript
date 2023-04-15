@@ -1,12 +1,11 @@
 import SettingState from '@/SettingState';
 import SettingKeys from '@/settingUI/SettingKeys';
+import SettingValues from '@/settingUI/SettingValues';
 import computed from '@/settingUI/computed';
 
-export default <T extends SettingKeys<unknown>>(k: T): (
+export default <K extends SettingKeys<unknown>>(k: K): (
   s: SettingState
-) => T extends keyof SettingState ? SettingState[T]
-: T extends keyof typeof computed ? ReturnType<(typeof computed)[T]>
-: never => (
+) => SettingValues<K> => (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   k in computed ? computed[k as never] as (s: SettingState) => never
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
