@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Unreleased:
 - Nothing
 
+## 1.16.1
+### Changed
+- Minor UI adjustments.
+### Fixed
+- Fix the ban button.
+
 ## 1.16.0
 ### Fixed
 - Fix logging import function
@@ -34,11 +40,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - The full-sized version of emoji images will now be used in flow chats to display them with higher quality.
 
 ## 1.15.17
-### Fix
-- Fix a bug that prevent some ban buttons from showing in chat field.
-
 ### Changed
 - Minor UI adjustments.
+### Fix
+- Fix a bug that prevent some ban buttons from showing in chat field.
 
 ## 1.15.16
 ### Fix
@@ -71,13 +76,12 @@ It was common for part of the settings panel UI to be unreachable outside of scr
 - **(Failed)** Fix a UI bug caused by Youtube UI update.
 
 ## 1.15.9:
+### Changed
+- Decrease the step size of flow area sliders.
 ### Fixed
 - Fix how the script retries when errored.
 - Fix how things are logged to console.
 - Fix a UI bug in the "Flow Chat" panel that occurres when the language is set in Japanese.
-
-### Changed
-- Decrease the step size of flow area sliders.
 
 ## 1.15.8:
 - Add "Flow area left/right edge" option.
