@@ -14,5 +14,5 @@ export default UserConfigGetter;
 
 export const makeGetter = (c: UserConfig): UserConfigGetter => pipe(
   c,
-  mapObject(([x]) => [x, () => c[x]]),
+  mapObject(([x]) => [x, Z.sync(() => c[x])]),
 );
