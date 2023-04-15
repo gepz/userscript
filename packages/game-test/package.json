@@ -14,7 +14,6 @@
     "fp-ts-contrib": "^0.1.29",
     "hash-it": "^6.0.0",
     "hyperapp": "^2.0.22",
-    "micro-memoize": "^4.0.14",
     "pixi.js": "^7.2.4",
     "rxjs": "^7.8.0",
     "ts-toolbelt": "^9.6.0",

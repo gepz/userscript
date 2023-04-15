@@ -511,9 +511,6 @@ importers:
       hyperapp:
         specifier: ^2.0.22
         version: 2.0.22
-      micro-memoize:
-        specifier: ^4.0.14
-        version: 4.0.14
       pixi.js:
         specifier: ^7.2.4
         version: 7.2.4(@pixi/utils@7.2.4)
@@ -659,9 +656,6 @@ importers:
       hyperapp:
         specifier: ^2.0.22
         version: 2.0.22
-      micro-memoize:
-        specifier: ^4.0.14
-        version: 4.0.14
       rxjs:
         specifier: ^7.8.0
         version: 7.8.0
