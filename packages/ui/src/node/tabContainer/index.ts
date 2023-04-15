@@ -21,7 +21,7 @@ export interface TabContainerStyle {
 export default <T>(
   style: TabContainerStyle,
 ) => (
-  ontabSelect: Action<T>,
+  ontabSelect: Action<T, number>,
 ) => (
   labels: readonly string[],
 ) => (

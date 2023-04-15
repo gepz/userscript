@@ -7,7 +7,7 @@ import {
 import * as RA from '@effect/data/ReadonlyArray';
 import option from '@userscript/ui/node/option';
 import tabContainer from '@userscript/ui/node/tabContainer';
-import setString from '@userscript/ui/setter/setString';
+import setFilteredString from '@userscript/ui/setter/setFilteredString';
 import {
   h,
   text,
@@ -61,7 +61,9 @@ export default (
   }, [
     text('🌐'),
     h('select', {
-      onchange: updateInput(setString)('lang')(c),
+      onchange: updateInput('lang')(
+        setFilteredString(['FYC_EN', 'FYC_JA']),
+      )(c),
     }, pipe(
       languages,
       RA.zip(languageLabels),

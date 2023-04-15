@@ -33,7 +33,7 @@ export default (
       min,
       max,
       step,
-      editAction<Editable<number>>(label, setEditInt)(c),
+      editAction(label, setEditInt)(c),
     )(getState(label)(s)),
   ],
 );

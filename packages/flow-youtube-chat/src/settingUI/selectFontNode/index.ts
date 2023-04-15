@@ -30,7 +30,7 @@ export default (
   (font) => settingRow(getText('font')(s.lang), '', [
     h('select', {
       style: textRowStyle,
-      onchange: updateInput(setEditString(false))('font')(c),
+      onchange: updateInput('font')(setEditString(false))(c),
     }, pipe(
       fonts(font),
       RA.findFirstIndex((x) => x[0] === font),

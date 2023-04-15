@@ -30,7 +30,7 @@ export default (
   [
     textAreaRow(
       rows,
-      editAction<Editable<readonly string[]>>(label, setter)(c),
+      editAction(label, setter)(c),
     )(getState(label)(s)),
   ],
 );
