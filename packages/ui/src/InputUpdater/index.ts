@@ -16,12 +16,9 @@ export default interface InputUpdater<
   State,
   C extends ComputedProperties<State>,
   AppCommander,
-  VT extends AppPropertyValues<State, C>,
 > {
-  <T extends VT>(
-    setter: Setter<string, T>
-  ): (
-    key: AppPropertyKeys<State, C, T>,
+  <K extends AppPropertyKeys<State, C, unknown>>(key: K): (
+    setter: Setter<string, AppPropertyValues<State, C, K>>
   ) => (
     c: AppCommander,
   ) => (
@@ -34,15 +31,21 @@ export const make = <
   State,
   C extends ComputedProperties<State>,
   AppCommander,
-  VT extends AppPropertyValues<State, C>,
 >(
-  getState: <T extends VT>(k: AppPropertyKeys<State, C, T>) => (s: State) => T,
-  updateAt: <T extends VT>(k: AppPropertyKeys<State, C, T>) => (v: T)
-  => (c: AppCommander) => (s: State) => StateDispatchable<State>,
-): InputUpdater<State, C, AppCommander, VT> => <T extends VT>(
-  setter: Setter<string, T>,
+  getState: <K extends AppPropertyKeys<State, C, unknown>>(k: K) => (
+    s: State
+  ) => AppPropertyValues<State, C, K>,
+  updateAt: <K extends AppPropertyKeys<State, C, unknown>>(k: K) => (
+    v: AppPropertyValues<State, C, K>,
+  ) => (c: AppCommander) => (s: State) => StateDispatchable<State>,
+): InputUpdater<
+State,
+C,
+AppCommander
+> => <K extends AppPropertyKeys<State, C, unknown>>(
+  key: K,
 ) => (
-  key: AppPropertyKeys<State, C, T>,
+  setter: Setter<string, AppPropertyValues<State, C, K>>,
 ) => (c) => (s, e) => pipe(
   getValue(e),
   setter,

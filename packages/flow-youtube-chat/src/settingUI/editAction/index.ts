@@ -5,10 +5,10 @@ import SettingKeys from '@/settingUI/SettingKeys';
 import SettingValues from '@/settingUI/SettingValues';
 import updateInput from '@/settingUI/updateInput';
 
-export default <T extends SettingValues>(
-  key: SettingKeys<T>,
-  setter: EditSetter<T>,
+export default <K extends SettingKeys<unknown>>(
+  key: K,
+  setter: EditSetter<SettingValues<K>>,
 ) => (c: AppCommander) => ({
-  oninput: updateInput(setter(true))(key)(c),
-  onchange: updateInput(setter(false))(key)(c),
+  oninput: updateInput(key)(setter(true))(c),
+  onchange: updateInput(key)(setter(false))(c),
 });
