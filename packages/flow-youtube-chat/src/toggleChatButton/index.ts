@@ -37,7 +37,9 @@ export default (setConfig: UserConfigSetter): RootComponent<State> => pipe(
         overflow: 'visible',
         padding: '0 0 0em',
         position: 'relative',
-        width: '3em',
+        width: '48px',
+        display: 'flex',
+        alignItems: 'center',
       },
       type: 'button',
       'aria-label': label,
@@ -55,7 +57,7 @@ export default (setConfig: UserConfigSetter): RootComponent<State> => pipe(
     }, [
       h('svg', {
         style: {
-          width: '100%',
+          width: '36px',
         },
         viewBox: '0 0 36 36',
       }, [
