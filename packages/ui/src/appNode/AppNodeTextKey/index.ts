@@ -1,4 +1,5 @@
 type AppNodeTextKey = 'inputNonNumberic'
-| 'invalidSetting';
+| 'invalidSetting'
+| 'invalidColor';
 
 export default AppNodeTextKey;

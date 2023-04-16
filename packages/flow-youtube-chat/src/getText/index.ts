@@ -1,4 +1,4 @@
-import TextGetter from '@userscript/ui/TextGetter';
+import AppTextGetter from '@userscript/ui/appNode/AppTextGetter';
 
 import TextKey from '@/TextKey';
 import defaultText from '@/defaultText';
@@ -13,4 +13,4 @@ export default ((key: TextKey) => (
 ): string => defaultText[key][
   state.lang === 'FYC_EN' ? 0
   : 1
-]) satisfies TextGetter<TextKey, State>;
+]) satisfies AppTextGetter<TextKey, State>;

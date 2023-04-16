@@ -1,4 +1,6 @@
-type TextKey = 'setting'
+import AppNodeTextKey from '@userscript/ui/appNode/AppNodeTextKey';
+
+type TextKey = AppNodeTextKey | 'setting'
 | 'font'
 | 'color'
 | 'ownerColor'
@@ -44,9 +46,6 @@ type TextKey = 'setting'
 | 'flowX1'
 | 'flowX2'
 | 'shadowColor'
-| 'invalidColor'
-| 'inputNonNumberic'
-| 'invalidSetting'
 | 'logEvents'
 | 'importLog';
 

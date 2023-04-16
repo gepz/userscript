@@ -2,7 +2,6 @@ import { constant, pipe, } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import { h, } from 'hyperapp';
 import * as Ed from "../../Editable";
-import RangeConfig from "../RangeConfig";
 export default (config, action) => (value) => h('div', {}, [
     h('input', {
         style: {
