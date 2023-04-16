@@ -65,5 +65,5 @@ export default (
       top: '-2px',
       marginLeft: '8px,',
     },
-  }, text(getText('setting')(state.lang))),
+  }, text(getText('setting')(state))),
 ]);

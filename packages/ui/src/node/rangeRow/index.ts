@@ -10,11 +10,10 @@ import {
 } from 'hyperapp';
 
 import Editable, * as Ed from '@/Editable';
+import RangeConfig from '@/node/RangeConfig';
 
 export default <T>(
-  min: number,
-  max: number,
-  step: number,
+  config: RangeConfig,
   action: Partial<Record<
   'oninput'
   | 'onchange'
@@ -27,9 +26,7 @@ export default <T>(
       verticalAlign: 'middle',
     },
     type: 'range',
-    min,
-    max,
-    step,
+    ...config,
     value: Ed.value(value).toString(),
     oninput: action.onchange,
   }),

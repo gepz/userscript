@@ -47,9 +47,9 @@ export default (
         // eslint-disable-next-line max-len
         href: 'https://greasyfork.org/en/scripts/411442-flow-youtube-chat/feedback',
         target: '_blank',
-      }, text(getText('giveFeedback')(s.lang))),
+      }, text(getText('giveFeedback')(s))),
       h('div', {}, [
-        h('span', {}, text(getText('eventLog')(s.lang))),
+        h('span', {}, text(getText('eventLog')(s))),
         buttonNode('copy')(c)(s),
         tabContainer<SettingState>({
           container: {},

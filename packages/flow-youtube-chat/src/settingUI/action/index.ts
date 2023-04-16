@@ -22,7 +22,7 @@ export default ({
   importLog: () => (s) => pipe(
     Z.promise(() => Swal.fire<string>({
       input: 'textarea',
-      inputLabel: getText('importLog')(s.lang),
+      inputLabel: getText('importLog')(s),
     })),
     Z.map((x) => (x.isConfirmed ? {
       ...s,

@@ -17,6 +17,7 @@ import TextKey from '@/TextKey';
 import getText from '@/getText';
 import SettingKeys from '@/settingUI/SettingKeys';
 import editAction from '@/settingUI/editAction';
+import getState from '@/settingUI/getState';
 
 export default (
   label: TextKey
@@ -26,13 +27,13 @@ export default (
 ) => (
   s: SettingState,
 ): VNode<SettingState> => settingRow(
-  getText(label)(s.lang),
-  errorText(getText('invalidColor')(s.lang))(s[label]),
+  getText(label)(s),
+  errorText(getText('invalidColor')(s))(getState(label)(s)),
   pipe(
     editAction(label, setEditColor)(c),
     (x) => [
-      colorPicker(x)(Ed.value(s[label])),
-      textInput(x)(s[label]),
+      colorPicker(x)(Ed.value(getState(label)(s))),
+      textInput(x)(getState(label)(s)),
     ],
   ),
 );

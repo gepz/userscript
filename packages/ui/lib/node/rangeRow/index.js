@@ -2,16 +2,15 @@ import { constant, pipe, } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import { h, } from 'hyperapp';
 import * as Ed from "../../Editable";
-export default (min, max, step, action) => (value) => h('div', {}, [
+import RangeConfig from "../RangeConfig";
+export default (config, action) => (value) => h('div', {}, [
     h('input', {
         style: {
             width: '150px',
             verticalAlign: 'middle',
         },
         type: 'range',
-        min,
-        max,
-        step,
+        ...config,
         value: Ed.value(value).toString(),
         oninput: action.onchange,
     }),
