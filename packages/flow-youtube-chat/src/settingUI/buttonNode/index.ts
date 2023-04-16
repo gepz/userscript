@@ -34,4 +34,4 @@ export default (
       Z.flatMap((newS) => Z.sync(() => d(newS))),
     ))),
   ],
-}, text(getText(label)(state.lang)));
+}, text(getText(label)(state)));

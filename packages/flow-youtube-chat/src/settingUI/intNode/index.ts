@@ -26,13 +26,15 @@ export default (
 ) => (
   s: SettingState,
 ): VNode<SettingState> => settingRow(
-  getText(label)(s.lang),
-  errorText(getText('inputNonNumberic')(s.lang))(s[label]),
+  getText(label)(s),
+  errorText(getText('inputNonNumberic')(s))(getState(label)(s)),
   [
     rangeRow(
-      min,
-      max,
-      step,
+      {
+        min,
+        max,
+        step,
+      },
       editAction(label, setEditInt)(c),
     )(getState(label)(s)),
   ],

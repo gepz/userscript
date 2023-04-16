@@ -25,8 +25,8 @@ export default (
 ) => (
   s: SettingState,
 ): VNode<SettingState> => settingRow(
-  getText(label)(s.lang),
-  errorText(getText('invalidSetting')(s.lang))(s[label]),
+  getText(label)(s),
+  errorText(getText('invalidSetting')(s))(getState(label)(s)),
   [
     textAreaRow(
       rows,

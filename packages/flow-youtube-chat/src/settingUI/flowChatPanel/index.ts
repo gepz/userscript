@@ -68,7 +68,7 @@ const flowChatPanel: (
         checkboxNode('displayModName'),
         checkboxNode('displaySuperChatAuthor'),
         checkboxNode('textOnly'),
-        () => (s: SettingState) => text(getText('flowNewChatIf')(s.lang)),
+        () => (s: SettingState) => text(getText('flowNewChatIf')(s)),
         checkboxNode('noOverlap'),
         // ...pipe(
         //   state.displayMatrix,

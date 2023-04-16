@@ -17,7 +17,7 @@ export default (
 ): (c: AppCommander) => (s: SettingState) => VNode<SettingState> => (
   c,
 ) => (s) => checkboxRow(
-  getText(label)(s.lang),
+  getText(label)(s),
   getState(label)(s),
   updateBool(label)(c),
 );

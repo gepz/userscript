@@ -82,7 +82,7 @@ export default flow(
         top: '-2px',
         marginLeft: '8px,',
       },
-    }, text(getText('setting')(state.lang))),
+    }, text(getText('setting')(state))),
   ]),
   (button): RootComponent<SettingState> => makeComponent(
     (tag) => (s: SettingState) => h(tag, {

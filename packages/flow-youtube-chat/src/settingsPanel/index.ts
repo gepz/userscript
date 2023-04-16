@@ -95,7 +95,7 @@ export default (
       'feedback',
     ],
     RA.map(getText),
-    RA.map(apply(state.lang)),
+    RA.map(apply(state)),
   ))(pipe(
     [
       flowChatPanel,

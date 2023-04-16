@@ -27,7 +27,7 @@ export default (
   s,
 ) => pipe(
   Ed.value(s.font),
-  (font) => settingRow(getText('font')(s.lang), '', [
+  (font) => settingRow(getText('font')(s), '', [
     h('select', {
       style: textRowStyle,
       onchange: updateInput('font')(setEditString(false))(c),
