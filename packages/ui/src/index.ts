@@ -10,6 +10,7 @@ import type InputUpdater from '@/InputUpdater';
 import * as inputUpdater from '@/InputUpdater';
 import type StateDispatchable from '@/StateDispatchable';
 import type TextGetter from '@/TextGetter';
+import * as appNode from '@/appNode';
 import errorText from '@/errorText';
 import getChecked from '@/getChecked';
 import getValue from '@/getValue';
@@ -31,6 +32,7 @@ export {
   inputUpdater,
   StateDispatchable,
   TextGetter,
+  appNode,
   errorText,
   getChecked,
   getValue,
