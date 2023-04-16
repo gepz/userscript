@@ -17,23 +17,11 @@ export default (
 ): readonly VNode<SettingState>[] => ([
   h('div', {
     style: panelBoxStyle(212),
-  }, textAreaNode(
-    'bannedWords',
-    18,
-    setEditStrings,
-  )(c)(s)),
+  }, textAreaNode(setEditStrings)('bannedWords', 18)(c)(s)),
   h('div', {
     style: panelBoxStyle(212),
-  }, textAreaNode(
-    'bannedWordRegexes',
-    18,
-    setEditRegexes,
-  )(c)(s)),
+  }, textAreaNode(setEditRegexes)('bannedWordRegexes', 18)(c)(s)),
   h('div', {
     style: panelBoxStyle(212),
-  }, textAreaNode(
-    'bannedUsers',
-    18,
-    setEditStrings,
-  )(c)(s)),
+  }, textAreaNode(setEditStrings)('bannedUsers', 18)(c)(s)),
 ]);

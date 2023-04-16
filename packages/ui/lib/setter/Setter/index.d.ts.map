@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/setter/Setter/index.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO,WAAW,MAAM,CAAC,CAAC,EAAE,CAAC;IAClC,CAAC,KAAK,EAAE,CAAC,GAAG,CAAC,KAAK,EAAE,CAAC,KAAK,CAAC,CAAA;CAC5B"}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/setter/Setter/index.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO,WAAW,MAAM,CAAC,CAAC,EAAE,CAAC;IAClC,CAAC,KAAK,EAAE,CAAC,GAAG,CAAC,CAAC,SAAS,CAAC,EAAE,KAAK,EAAE,CAAC,KAAK,CAAC,CAAA;CACzC"}

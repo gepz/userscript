@@ -1,4 +1,4 @@
 export default interface Setter<V, S> {
-    (value: V): (state: S) => S;
+    (value: V): <T extends S>(state: T) => S;
 }
 //# sourceMappingURL=index.d.ts.map
