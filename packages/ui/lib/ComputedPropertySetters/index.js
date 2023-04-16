@@ -1,3 +1,2 @@
-import ComputedProperties from "../ComputedProperties";
-import StateDispatchable from "../StateDispatchable";
+export {};
 //# sourceMappingURL=index.js.map

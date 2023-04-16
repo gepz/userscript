@@ -3,7 +3,6 @@ import * as O from '@effect/data/Option';
 import * as Tu from '@effect/data/Tuple';
 import validateColor from 'validate-color';
 import * as Ed from "../../Editable";
-import EditSetter from "../EditSetter";
 const setEditColor = (editing) => (value) => (editing ? (validateColor(value)
     ? constant(Ed.fromValueText(value)(value))
     : Ed.setText(value))

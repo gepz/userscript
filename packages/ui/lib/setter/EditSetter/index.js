@@ -1,2 +1,2 @@
-import Setter from "../Setter";
+export {};
 //# sourceMappingURL=index.js.map

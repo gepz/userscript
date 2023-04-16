@@ -7,8 +7,7 @@ import AppPropertyValues from '@/AppPropertyValues';
 import ComputedProperties from '@/ComputedProperties';
 import EditAction from '@/EditAction';
 import Editable from '@/Editable';
-import TextGetter from '@/TextGetter';
-import AppNodeTextKey from '@/appNode/AppNodeTextKey';
+import AppTextGetter from '@/appNode/AppTextGetter';
 import errorText from '@/errorText';
 import {
   textAreaRow,
@@ -23,15 +22,10 @@ export default <
   Key extends AppPropertyKeys<State, C, Editable<readonly string[]>>,
 >(
   editAction: EditAction<State, C, AppCommander>,
-  getText: TextGetter<
-  Key | AppNodeTextKey,
-  State
-  >,
-  getState: <K extends Key>(
+  getText: AppTextGetter<Key, State>,
+  getState: <K extends AppPropertyKeys<State, C, Editable<readonly string[]>>>(
     k: K
-  ) => (
-    s: State
-  ) => Editable<readonly string[]>,
+  ) => (s: State) => Editable<readonly string[]>,
 ) => (
   setter: EditSetter<
   Editable<readonly string[]>

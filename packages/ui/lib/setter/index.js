@@ -1,5 +1,3 @@
-import type EditSetter from "./EditSetter";
-import type Setter from "./Setter";
 import setEditColor from "./setEditColor";
 import setEditInt from "./setEditInt";
 import setEditNumber from "./setEditNumber";

@@ -7,8 +7,7 @@ import AppPropertyValues from '@/AppPropertyValues';
 import ComputedProperties from '@/ComputedProperties';
 import EditAction from '@/EditAction';
 import Editable from '@/Editable';
-import TextGetter from '@/TextGetter';
-import AppNodeTextKey from '@/appNode/AppNodeTextKey';
+import AppTextGetter from '@/appNode/AppTextGetter';
 import errorText from '@/errorText';
 import rangeRow from '@/node/rangeRow';
 import settingRow from '@/node/settingRow';
@@ -21,18 +20,12 @@ export default <
   Key extends AppPropertyKeys<State, C, Editable<number>>,
 >(
   editAction: EditAction<State, C, AppCommander>,
-  getText: TextGetter<
-  Key | AppNodeTextKey,
-  State
-  >,
-  getState: <K extends Key>(k: K) => (
-    s: State
-  ) => Editable<number>,
+  getText: AppTextGetter<Key, State>,
+  getState: <K extends AppPropertyKeys<State, C, Editable<number>>>(
+    k: K
+  ) => (s: State) => Editable<number>,
 ) => (
-  setter: EditSetter<
-  Editable<number>
-  & AppPropertyValues<State, C, Key>
-  >,
+  setter: EditSetter<Editable<number> & AppPropertyValues<State, C, Key>>,
 ) => (
   label: Key,
   min: number,
