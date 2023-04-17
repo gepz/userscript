@@ -5,12 +5,10 @@ import {
   StyleProp,
   VNode,
 } from 'hyperapp';
-import {
-  ConditionalKeys,
-} from 'type-fest';
 
 import EditAction from '@/EditAction';
 import Editable, * as Ed from '@/Editable';
+import ExactTypeKey from '@/ExactTypeKey';
 import AppTextGetter from '@/appNode/AppTextGetter';
 import errorText from '@/errorText';
 import {
@@ -19,22 +17,23 @@ import {
   textInput,
 } from '@/node';
 import settingRow from '@/node/settingRow';
+import {
+  setEditColor,
+} from '@/setter';
 import EditSetter from '@/setter/EditSetter';
 
 export default <
   State,
   Props,
   AppCommander,
-  Key extends ConditionalKeys<Props, Editable<string>>,
+  Key extends ExactTypeKey<Props, Editable<string>>,
 >(
   editAction: EditAction<State, Props, AppCommander>,
   getText: AppTextGetter<Key, State>,
-  getState: <K extends ConditionalKeys<Props, Editable<string>>>(
+  getState: <K extends ExactTypeKey<Props, Editable<string>>>(
     k: K
   ) => (s: State) => Editable<string>,
   getExampleTextStyle: (s: State) => StyleProp,
-) => (
-  setter: EditSetter<Editable<string> & Props[Key]>,
 ) => (
   label: Key,
 ) => (
@@ -46,7 +45,8 @@ export default <
   errorText(getText('invalidColor')(s))(getState(label)(s)),
   pipe(
     {
-      a: editAction(label, setter)(c),
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      a: editAction(label, setEditColor as EditSetter<Props[Key]>)(c),
       v: Ed.value(getState(label)(s)),
     },
     ({

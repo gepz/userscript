@@ -3,10 +3,8 @@ import {
   flip,
   pipe,
 } from '@effect/data/Function';
-import {
-  ConditionalKeys,
-} from 'type-fest';
 
+import ExactTypeKey from '@/ExactTypeKey';
 import StateDispatchable from '@/StateDispatchable';
 import getChecked from '@/getChecked';
 
@@ -15,7 +13,7 @@ export default interface BoolUpdater<
   Props,
   AppCommander,
 > {
-  <K extends ConditionalKeys<Props, boolean>>(key: K): (
+  (key: ExactTypeKey<Props, boolean>): (
     c: AppCommander,
   ) => (
     s: State,
@@ -35,11 +33,11 @@ export const make = <
 State,
 Props,
 AppCommander
-> => <K extends ConditionalKeys<Props, boolean>>(
-  key: K,
+> => (
+  key: ExactTypeKey<Props, boolean>,
 ) => flip((s, e) => pipe(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  getChecked(e) as Props[K],
+  getChecked(e) as Props[ExactTypeKey<Props, boolean>],
   updateAt(key),
   flip,
   apply(s),

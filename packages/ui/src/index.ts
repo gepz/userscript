@@ -8,6 +8,7 @@ import type ComputedPropertySetters from '@/ComputedPropertySetters';
 import type EditAction from '@/EditAction';
 import * as editAction from '@/EditAction';
 import type Editable from '@/Editable';
+import * as ExactTypeKey from '@/ExactTypeKey';
 import type InputUpdater from '@/InputUpdater';
 import * as inputUpdater from '@/InputUpdater';
 import type StateDispatchable from '@/StateDispatchable';
@@ -32,6 +33,7 @@ export {
   EditAction,
   editAction,
   Editable,
+  ExactTypeKey,
   InputUpdater,
   inputUpdater,
   StateDispatchable,
