@@ -15,13 +15,13 @@ import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import TextKey from '@/TextKey';
 import getText from '@/getText';
-import SettingKeys from '@/settingUI/SettingKeys';
+import SettingKey from '@/settingUI/SettingKey';
 import editAction from '@/settingUI/editAction';
 import getState from '@/settingUI/getState';
 
 export default (
   label: TextKey
-  & SettingKeys<Editable<string>>,
+  & SettingKey<Editable<string>>,
 ) => (
   c: AppCommander,
 ) => (

@@ -5,10 +5,10 @@ import {
   StyleProp,
   VNode,
 } from 'hyperapp';
+import {
+  ConditionalKeys,
+} from 'type-fest';
 
-import AppPropertyKeys from '@/AppPropertyKeys';
-import AppPropertyValues from '@/AppPropertyValues';
-import ComputedProperties from '@/ComputedProperties';
 import EditAction from '@/EditAction';
 import Editable, * as Ed from '@/Editable';
 import AppTextGetter from '@/appNode/AppTextGetter';
@@ -23,18 +23,18 @@ import EditSetter from '@/setter/EditSetter';
 
 export default <
   State,
-  C extends ComputedProperties<State>,
+  Props,
   AppCommander,
-  Key extends AppPropertyKeys<State, C, Editable<string>>,
+  Key extends ConditionalKeys<Props, Editable<string>>,
 >(
-  editAction: EditAction<State, C, AppCommander>,
+  editAction: EditAction<State, Props, AppCommander>,
   getText: AppTextGetter<Key, State>,
-  getState: <K extends AppPropertyKeys<State, C, Editable<string>>>(
+  getState: <K extends ConditionalKeys<Props, Editable<string>>>(
     k: K
   ) => (s: State) => Editable<string>,
   getExampleTextStyle: (s: State) => StyleProp,
 ) => (
-  setter: EditSetter<Editable<string> & AppPropertyValues<State, C, Key>>,
+  setter: EditSetter<Editable<string> & Props[Key]>,
 ) => (
   label: Key,
 ) => (

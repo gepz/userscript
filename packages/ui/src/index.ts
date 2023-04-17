@@ -1,6 +1,6 @@
 import type AppProperties from '@/AppProperties';
-import type AppPropertyKeys from '@/AppPropertyKeys';
-import type AppPropertyValues from '@/AppPropertyValues';
+import type AppPropertiesKey from '@/AppPropertiesKey';
+import type AppPropertiesValue from '@/AppPropertiesValue';
 import type BoolUpdater from '@/BoolUpdater';
 import * as boolUpdater from '@/BoolUpdater';
 import type ComputedProperties from '@/ComputedProperties';
@@ -23,8 +23,8 @@ import * as setter from '@/setter';
 
 export {
   AppProperties,
-  AppPropertyKeys,
-  AppPropertyValues,
+  AppPropertiesKey,
+  AppPropertiesValue,
   BoolUpdater,
   boolUpdater,
   ComputedProperties,

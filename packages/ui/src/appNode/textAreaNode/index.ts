@@ -1,10 +1,10 @@
 import {
   VNode,
 } from 'hyperapp';
+import {
+  ConditionalKeys,
+} from 'type-fest';
 
-import AppPropertyKeys from '@/AppPropertyKeys';
-import AppPropertyValues from '@/AppPropertyValues';
-import ComputedProperties from '@/ComputedProperties';
 import EditAction from '@/EditAction';
 import Editable from '@/Editable';
 import AppTextGetter from '@/appNode/AppTextGetter';
@@ -17,20 +17,17 @@ import EditSetter from '@/setter/EditSetter';
 
 export default <
   State,
-  C extends ComputedProperties<State>,
+  Props,
   AppCommander,
-  Key extends AppPropertyKeys<State, C, Editable<readonly string[]>>,
+  Key extends ConditionalKeys<Props, Editable<readonly string[]>>,
 >(
-  editAction: EditAction<State, C, AppCommander>,
+  editAction: EditAction<State, Props, AppCommander>,
   getText: AppTextGetter<Key, State>,
-  getState: <K extends AppPropertyKeys<State, C, Editable<readonly string[]>>>(
+  getState: <K extends ConditionalKeys<Props, Editable<readonly string[]>>>(
     k: K
   ) => (s: State) => Editable<readonly string[]>,
 ) => (
-  setter: EditSetter<
-  Editable<readonly string[]>
-  & AppPropertyValues<State, C, Key>
-  >,
+  setter: EditSetter<Editable<readonly string[]> & Props[Key]>,
 ) => (
   label: Key,
   rows: number,
