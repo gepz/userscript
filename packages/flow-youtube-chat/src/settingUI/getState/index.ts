@@ -1,11 +1,12 @@
 import SettingState from '@/SettingState';
-import SettingKeys from '@/settingUI/SettingKeys';
-import SettingValues from '@/settingUI/SettingValues';
+import SettingKey from '@/settingUI/SettingKey';
+import SettingProps from '@/settingUI/SettingProps';
+import SettingValue from '@/settingUI/SettingValue';
 import computed from '@/settingUI/computed';
 
-export default <K extends SettingKeys<unknown>>(k: K): (
+export default <K extends SettingKey<unknown>>(k: K): (
   s: SettingState
-) => SettingValues<K> => (
+) => SettingValue<K> & SettingProps[K] => (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   k in computed ? computed[k as never] as (s: SettingState) => never
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

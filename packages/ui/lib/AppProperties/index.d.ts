@@ -1,8 +1,8 @@
-import AppPropertyKeys from "../AppPropertyKeys";
-import AppPropertyValues from "../AppPropertyValues";
+import AppPropertiesKey from "../AppPropertiesKey";
+import AppPropertiesValue from "../AppPropertiesValue";
 import ComputedProperties from "../ComputedProperties";
 type AppProperties<State, C extends ComputedProperties<State>> = {
-    [K in AppPropertyKeys<State, C, unknown>]: AppPropertyValues<State, C, K>;
-};
+    [K in AppPropertiesKey<State, C, unknown>]: AppPropertiesValue<State, C, K>;
+} & State;
 export default AppProperties;
 //# sourceMappingURL=index.d.ts.map

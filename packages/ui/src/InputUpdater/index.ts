@@ -3,9 +3,6 @@ import {
   pipe,
 } from '@effect/data/Function';
 
-import AppPropertyKeys from '@/AppPropertyKeys';
-import AppPropertyValues from '@/AppPropertyValues';
-import ComputedProperties from '@/ComputedProperties';
 import StateDispatchable from '@/StateDispatchable';
 import getValue from '@/getValue';
 import {
@@ -14,11 +11,11 @@ import {
 
 export default interface InputUpdater<
   State,
-  C extends ComputedProperties<State>,
+  Props,
   AppCommander,
 > {
-  <K extends AppPropertyKeys<State, C, unknown>>(key: K): (
-    setter: Setter<string, AppPropertyValues<State, C, K>>
+  <K extends keyof Props>(key: K): (
+    setter: Setter<string, Props[K]>
   ) => (
     c: AppCommander,
   ) => (
@@ -29,23 +26,23 @@ export default interface InputUpdater<
 
 export const make = <
   State,
-  C extends ComputedProperties<State>,
+  Props,
   AppCommander,
 >(
-  getState: <K extends AppPropertyKeys<State, C, unknown>>(k: K) => (
+  getState: <K extends keyof Props>(k: K) => (
     s: State
-  ) => AppPropertyValues<State, C, K>,
-  updateAt: <K extends AppPropertyKeys<State, C, unknown>>(k: K) => (
-    v: AppPropertyValues<State, C, K>,
+  ) => Props[K],
+  updateAt: <K extends keyof Props>(k: K) => (
+    v: Props[K],
   ) => (c: AppCommander) => (s: State) => StateDispatchable<State>,
 ): InputUpdater<
 State,
-C,
+Props,
 AppCommander
-> => <K extends AppPropertyKeys<State, C, unknown>>(
+> => <K extends keyof Props>(
   key: K,
 ) => (
-  setter: Setter<string, AppPropertyValues<State, C, K>>,
+  setter: Setter<string, Props[K]>,
 ) => (c) => (s, e) => pipe(
   getValue(e),
   setter,

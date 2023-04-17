@@ -12,14 +12,15 @@ import isEditable from '@/isEditable';
 // eslint-disable-next-line max-len
 // import editableExpressionToJsep from '@/settingUI/EditableExpression/editableExpressionToJsep';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
-import SettingKeys from '@/settingUI/SettingKeys';
-import SettingValues from '@/settingUI/SettingValues';
+import SettingKey from '@/settingUI/SettingKey';
+import SettingProps from '@/settingUI/SettingProps';
+import SettingValue from '@/settingUI/SettingValue';
 import configEffect from '@/settingUI/configEffect';
 import setComputed from '@/settingUI/setComputed';
 import setState from '@/settingUI/setState';
 
-export default <K extends SettingKeys<unknown>>(k: K) => (
-  v: SettingValues<K>,
+export default <K extends SettingKey<unknown>>(k: K) => (
+  v: SettingValue<K> | SettingProps[K],
 ) => pipe(
   k in setComputed ? (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

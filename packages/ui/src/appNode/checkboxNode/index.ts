@@ -1,10 +1,11 @@
 import {
   VNode,
 } from 'hyperapp';
+import {
+  ConditionalKeys,
+} from 'type-fest';
 
-import AppPropertyKeys from '@/AppPropertyKeys';
 import BoolUpdater from '@/BoolUpdater';
-import ComputedProperties from '@/ComputedProperties';
 import AppTextGetter from '@/appNode/AppTextGetter';
 import {
   checkboxRow,
@@ -12,15 +13,15 @@ import {
 
 export default <
   State,
-  C extends ComputedProperties<State>,
+  Props,
   AppCommander,
-  Key extends AppPropertyKeys<State, C, boolean>,
+  Key extends ConditionalKeys<Props, boolean>,
 >(
-  updateBool: BoolUpdater<State, C, AppCommander>,
   getText: AppTextGetter<Key, State>,
-  getState: <K extends AppPropertyKeys<State, C, boolean>>(
+  getState: <K extends ConditionalKeys<Props, boolean>>(
     k: K
   ) => (s: State) => boolean,
+  updateBool: BoolUpdater<State, Props, AppCommander>,
 ) => (
   label: Key,
 ) => (

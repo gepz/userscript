@@ -3,19 +3,19 @@ import {
   flip,
   pipe,
 } from '@effect/data/Function';
+import {
+  ConditionalKeys,
+} from 'type-fest';
 
-import AppPropertyKeys from '@/AppPropertyKeys';
-import AppPropertyValues from '@/AppPropertyValues';
-import ComputedProperties from '@/ComputedProperties';
 import StateDispatchable from '@/StateDispatchable';
 import getChecked from '@/getChecked';
 
 export default interface BoolUpdater<
   State,
-  C extends ComputedProperties<State>,
+  Props,
   AppCommander,
 > {
-  <K extends AppPropertyKeys<State, C, boolean>>(key: K): (
+  <K extends ConditionalKeys<Props, boolean>>(key: K): (
     c: AppCommander,
   ) => (
     s: State,
@@ -25,21 +25,21 @@ export default interface BoolUpdater<
 
 export const make = <
   State,
-  C extends ComputedProperties<State>,
+  Props,
   AppCommander,
 >(
-  updateAt: <K extends AppPropertyKeys<State, C, unknown>>(k: K) => (
-    v: AppPropertyValues<State, C, K>,
+  updateAt: <K extends keyof Props>(k: K) => (
+    v: Props[K],
   ) => (c: AppCommander) => (s: State) => StateDispatchable<State>,
 ): BoolUpdater<
 State,
-C,
+Props,
 AppCommander
-> => <K extends AppPropertyKeys<State, C, boolean>>(
+> => <K extends ConditionalKeys<Props, boolean>>(
   key: K,
 ) => flip((s, e) => pipe(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  getChecked(e) as AppPropertyValues<State, C, K>,
+  getChecked(e) as Props[K],
   updateAt(key),
   flip,
   apply(s),

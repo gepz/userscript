@@ -4,14 +4,14 @@ import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import TextKey from '@/TextKey';
 import getText from '@/getText';
-import SettingKeys from '@/settingUI/SettingKeys';
-import computed from '@/settingUI/computed';
+import SettingKey from '@/settingUI/SettingKey';
+import SettingProps from '@/settingUI/SettingProps';
 import getState from '@/settingUI/getState';
 import updateBool from '@/settingUI/updateBool';
 
 export default checkboxNode<
 SettingState,
-typeof computed,
+SettingProps,
 AppCommander,
-SettingKeys<boolean> & TextKey
->(updateBool, getText, getState);
+SettingKey<boolean> & TextKey
+>(getText, getState, updateBool);
