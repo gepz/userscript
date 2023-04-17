@@ -1,6 +1,4 @@
 import panelBoxStyle from '@userscript/ui/panelBoxStyle';
-import setEditRegexes from '@userscript/ui/setter/setEditRegexes';
-import setEditStrings from '@userscript/ui/setter/setEditStrings';
 import {
   h,
   VNode,
@@ -8,7 +6,8 @@ import {
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import textAreaNode from '@/settingUI/textAreaNode';
+import plainTextAreaNode from '@/settingUI/plainTextAreaNode';
+import regexTextAreaNode from '@/settingUI/regexTextAreaNode';
 
 export default (
   c: AppCommander,
@@ -17,11 +16,11 @@ export default (
 ): readonly VNode<SettingState>[] => ([
   h('div', {
     style: panelBoxStyle(212),
-  }, textAreaNode(setEditStrings)('bannedWords', 18)(c)(s)),
+  }, plainTextAreaNode('bannedWords', 18)(c)(s)),
   h('div', {
     style: panelBoxStyle(212),
-  }, textAreaNode(setEditRegexes)('bannedWordRegexes', 18)(c)(s)),
+  }, regexTextAreaNode('bannedWordRegexes', 18)(c)(s)),
   h('div', {
     style: panelBoxStyle(212),
-  }, textAreaNode(setEditStrings)('bannedUsers', 18)(c)(s)),
+  }, plainTextAreaNode('bannedUsers', 18)(c)(s)),
 ]);

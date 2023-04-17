@@ -1,7 +1,4 @@
 import textColorNode from '@userscript/ui/appNode/textColorNode';
-import {
-  setEditColor,
-} from '@userscript/ui/setter';
 
 import getText from '@/getText';
 import editAction from '@/settingUI/editAction';
@@ -13,4 +10,4 @@ export default textColorNode(
   getText,
   getState,
   getExampleTextStyle,
-)(setEditColor);
+);

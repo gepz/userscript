@@ -1,5 +1,7 @@
-import setEditInt from '@userscript/ui/setter/setEditInt';
+import intNode from '@userscript/ui/appNode/intNode';
 
-import numericNode from '@/settingUI/numericNode';
+import getText from '@/getText';
+import editAction from '@/settingUI/editAction';
+import getState from '@/settingUI/getState';
 
-export default numericNode(setEditInt);
+export default intNode(editAction, getText, getState);

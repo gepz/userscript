@@ -14,23 +14,22 @@ import isEditable from '@/isEditable';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import SettingKey from '@/settingUI/SettingKey';
 import SettingProps from '@/settingUI/SettingProps';
-import SettingValue from '@/settingUI/SettingValue';
 import configEffect from '@/settingUI/configEffect';
 import setComputed from '@/settingUI/setComputed';
 import setState from '@/settingUI/setState';
 
 export default <K extends SettingKey<unknown>>(k: K) => (
-  v: SettingValue<K> | SettingProps[K],
+  v: SettingProps[K],
 ) => pipe(
   k in setComputed ? (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    setComputed[k as keyof typeof setComputed] as (
+    setComputed[k as never] as (
       v: unknown
     ) => (c: AppCommander) => (s: SettingState) => SettingDispatchable
   )(v)
   : k in setState ? (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    setState[k as keyof typeof setState] as (
+    setState[k as never] as (
       v: unknown
     ) => (c: AppCommander) => (s: SettingState) => SettingDispatchable
   )(v) : (c: AppCommander) => (s: SettingState): SettingDispatchable => [

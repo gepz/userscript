@@ -1,12 +1,10 @@
 import {
   VNode,
 } from 'hyperapp';
-import {
-  ConditionalKeys,
-} from 'type-fest';
 
 import EditAction from '@/EditAction';
 import Editable from '@/Editable';
+import ExactTypeKey from '@/ExactTypeKey';
 import AppTextGetter from '@/appNode/AppTextGetter';
 import errorText from '@/errorText';
 import {
@@ -15,19 +13,19 @@ import {
 import settingRow from '@/node/settingRow';
 import EditSetter from '@/setter/EditSetter';
 
-export default <
+export default (
+  setter: EditSetter<Editable<readonly string[]>>,
+) => <
   State,
   Props,
   AppCommander,
-  Key extends ConditionalKeys<Props, Editable<readonly string[]>>,
+  Key extends ExactTypeKey<Props, Editable<readonly string[]>>,
 >(
   editAction: EditAction<State, Props, AppCommander>,
   getText: AppTextGetter<Key, State>,
-  getState: <K extends ConditionalKeys<Props, Editable<readonly string[]>>>(
+  getState: <K extends ExactTypeKey<Props, Editable<readonly string[]>>>(
     k: K
   ) => (s: State) => Editable<readonly string[]>,
-) => (
-  setter: EditSetter<Editable<readonly string[]> & Props[Key]>,
 ) => (
   label: Key,
   rows: number,
@@ -41,7 +39,8 @@ export default <
   [
     textAreaRow(
       rows,
-      editAction(label, setter)(c),
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      editAction(label, setter as EditSetter<Props[Key]>)(c),
     )(getState(label)(s)),
   ],
 );

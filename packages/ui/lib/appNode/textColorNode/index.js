@@ -3,8 +3,10 @@ import * as Ed from "../../Editable";
 import errorText from "../../errorText";
 import { colorPicker, colorTextOutput, textInput, } from "../../node";
 import settingRow from "../../node/settingRow";
-export default (editAction, getText, getState, getExampleTextStyle) => (setter) => (label) => (c) => (s) => settingRow(getText(label)(s), errorText(getText('invalidColor')(s))(getState(label)(s)), pipe({
-    a: editAction(label, setter)(c),
+import { setEditColor, } from "../../setter";
+export default (editAction, getText, getState, getExampleTextStyle) => (label) => (c) => (s) => settingRow(getText(label)(s), errorText(getText('invalidColor')(s))(getState(label)(s)), pipe({
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    a: editAction(label, setEditColor)(c),
     v: Ed.value(getState(label)(s)),
 }, ({ a, v, }) => [
     colorPicker(a)(v),
