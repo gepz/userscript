@@ -17,5 +17,5 @@ export default (
 ): Z.Effect<never, never, void> => pipe(
   apps,
   RA.map((x) => Z.sync(() => x(dispatchable))),
-  (x) => Z.all(x),
+  Z.all,
 );

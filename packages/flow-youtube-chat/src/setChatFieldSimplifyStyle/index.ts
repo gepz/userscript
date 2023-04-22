@@ -25,5 +25,5 @@ export default (
     // eslint-disable-next-line no-param-reassign
     chat.style.borderBottom = '1px solid var(--yt-spec-text-secondary)';
   })),
-  (x) => Z.all(x),
+  Z.all,
 ));

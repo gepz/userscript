@@ -128,7 +128,7 @@ export default (
         Z.zipRight(setChatPlayState(chat)(mainState)),
       ),
     ],
-    (x) => Z.all(x),
+    Z.all,
   )),
   Z.isSuccess,
 );

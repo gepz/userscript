@@ -28,6 +28,6 @@ export default (
       renderChat(x)(mainState),
       setChatAnimation(x)(mainState),
     ])),
-    Z.flatMap((x) => Z.all(x)),
+    Z.flatMap(Z.all),
   )),
 );
