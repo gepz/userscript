@@ -74,5 +74,5 @@ export default (
       ),
     ]))),
   )),
-  (x) => Z.all(x),
+  Z.all,
 );

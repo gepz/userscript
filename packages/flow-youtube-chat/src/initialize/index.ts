@@ -119,7 +119,7 @@ export default ({
   ): Z.Effect<never, never, void> => provideLog(pipe(
     settingUpdateApps.getValue(),
     RA.map((x) => Z.sync(() => x(dispatchable))),
-    (x) => Z.all(x),
+    Z.all,
   ))),
   Z.bind('config', (ctx) => makeConfig(ctx.gmConfig)),
   Z.let('getConfig', (ctx) => makeGetter(ctx.config)),
@@ -218,7 +218,7 @@ export default ({
         `GMConfig: ${JSON.stringify(ctx.config, undefined, '\t')}`,
       ],
       RA.map(Z.logDebug),
-      (x) => Z.all(x),
+      Z.all,
     )),
     Z.zipLeft(pipe(
       Z.logDebug('10s...'),
@@ -347,7 +347,7 @@ export default ({
                 Z.zipRight(Z.succeed(true)),
               )),
             )),
-            (x) => Z.all(x),
+            Z.all,
             Z.map(RA.some(identity)),
           )))),
           filter(identity),
@@ -438,7 +438,7 @@ export default ({
               });
             }),
           )),
-          (x) => Z.all(x),
+          Z.all,
         )),
       ))),
       switchMap(() => merge(
@@ -489,7 +489,7 @@ export default ({
                   ctx.mainState.flowChats,
                   RA.map(setChatPlayState),
                   RA.map(apply(ctx.mainState)),
-                  (x) => Z.all(x),
+                  Z.all,
                 )),
               )),
               tapEffect(provideLog),
