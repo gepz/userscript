@@ -21,5 +21,5 @@ Z.runPromise(pipe(
   ),
   Z.let('provideLog', (x) => provideLog(x.settingUpdateApps)),
   Z.flatMap(initialize),
-  Z.withParallelismUnbounded,
+  Z.withParallelism('unbounded'),
 ));

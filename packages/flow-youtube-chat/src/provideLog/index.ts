@@ -34,6 +34,6 @@ export default (
     Z.tapErrorCause((x) => Z.logError(Cause.pretty(x))),
     Z.provideSomeLayer(logLayer),
   )),
-  Z.logAnnotate(LogAnnotationKeys.name, 'FYC'),
+  Z.annotateLogs(LogAnnotationKeys.name, 'FYC'),
   withMinimumLogLevel(LogLevel.Debug),
 );
