@@ -3,17 +3,11 @@ import {
 } from '@effect/data/Duration';
 import {
   pipe,
-  apply,
   flow,
-  identity,
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Str from '@effect/data/String';
-import {
-  strict,
-} from '@effect/data/typeclass/Equivalence';
-import * as Cause from '@effect/io/Cause';
 import * as Z from '@effect/io/Effect';
 import * as LogLevel from '@effect/io/Logger/Level';
 import * as Schedule from '@effect/io/Schedule';
@@ -21,38 +15,14 @@ import forwardTo from '@userscript/forward-to';
 import {
   BroadcastChannel,
 } from 'broadcast-channel';
-import {
-  diff,
-} from 'deep-diff';
 import deepEq from 'fast-deep-equal';
 import {
   Dispatch,
   Dispatchable,
 } from 'hyperapp';
 import {
-  asyncScheduler,
-  EMPTY,
-  fromEvent,
-  interval,
-  merge,
   Subject,
-  filter,
-  first,
-  map,
-  delay,
-  switchMap,
-  startWith,
-  observeOn,
-  retry,
-  throttleTime,
-  distinctUntilChanged,
-  skip,
-  bufferCount,
-  of,
   BehaviorSubject,
-  Observable,
-  concatMap,
-  from,
   share,
 } from 'rxjs';
 
@@ -61,7 +31,6 @@ import ConfigObservable from '@/ConfigObservable';
 import {
   makeSubject,
 } from '@/ConfigSubject';
-import LivePage from '@/LivePage';
 import {
   makePageState,
 } from '@/LivePageState';
@@ -73,21 +42,15 @@ import UserConfig, {
 import {
   makeGetter,
 } from '@/UserConfigGetter';
-import configStream from '@/configStream';
+import allStream from '@/allStream';
 import defaultFilter from '@/defaultFilter';
 import defaultGMConfig from '@/defaultGMConfig';
-import listeningBroadcastConfigKeys from '@/listeningBroadcastConfigKeys';
 import livePageYt from '@/livePageYt';
 import logWithMeta from '@/logWithMeta';
-import mainCss from '@/mainCss';
 import makeChatScreen from '@/makeChatScreen';
 import mapObject from '@/mapObject';
-import observePair from '@/observePair';
-import onChatFieldMutate from '@/onChatFieldMutate';
-import onPlayerResize from '@/onPlayerResize';
 import removeOldChats from '@/removeOldChats';
 import scriptIdentifier from '@/scriptIdentifier';
-import setChatPlayState from '@/setChatPlayState';
 import setSettingFromConfig from '@/setSettingFromConfig';
 import setterFromKeysMap from '@/setterFromKeysMap';
 import settingStateInit from '@/settingStateInit';
@@ -97,8 +60,6 @@ import simpleWrap from '@/simpleWrap';
 import tapEffect from '@/tapEffect';
 import toggleChatButton from '@/toggleChatButton';
 import toggleSettingsPanelComponent from '@/toggleSettingsPanelComponent';
-import updateSettingsRect from '@/updateSettingsRect';
-import videoToggleStream from '@/videoToggleStream';
 
 export default ({
   settingUpdateApps,
@@ -269,305 +230,7 @@ export default ({
   Z.letDiscard('livePage', livePageYt),
   Z.let('live', (ctx) => makePageState(ctx.livePage)),
   Z.bindDiscard('chatScreen', makeChatScreen),
-  Z.bind('all$', (ctx) => pipe(
-    {
-      eq: O.getEquivalence(strict()),
-      initDelay: 100,
-      urlDelay: 1700,
-      changeDetectInterval: 700,
-      bodyResizeDetectInterval: 300,
-      errorRetryInterval: 5000,
-      // eslint-disable-next-line max-len
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      liveElementKeys: Object.keys(ctx.livePage) as (keyof LivePage)[],
-      tapUpdateSettingsRect: <T>(
-        ob: Observable<T>,
-      ) => switchMap((value: T) => pipe(
-        ctx.settingsRectSubject,
-        first(),
-        map(updateSettingsRect(ctx.wrappedToggleSettings.node)(
-          (rect) => Z.sync(() => ctx.settingsRectSubject.next(rect)),
-        )),
-        tapEffect(provideLog),
-        map(() => value),
-      ))(ob),
-      config$: configStream(
-        provideLog,
-        ctx.mainState,
-        ctx.co,
-        ctx.chatScreen,
-        ctx.live,
-      ),
-    },
-    Z.succeed,
-    Z.bindDiscard('css', mainCss),
-    Z.bindDiscard('documentMutationPair', observePair(MutationObserver)),
-    Z.bindDiscard('chatMutationPair', observePair(MutationObserver)),
-    Z.bindDiscard('playerResizePair', observePair(ResizeObserver)),
-    Z.bindDiscard('bodyResizePair', observePair(ResizeObserver)),
-    Z.map((c) => pipe(
-      ctx.reinitSubject,
-      observeOn(asyncScheduler),
-      delay(c.initDelay),
-      tapEffect(() => provideLog(Z.logInfo('Init'))),
-      switchMap(() => pipe(
-        interval(c.changeDetectInterval),
-        c.tapUpdateSettingsRect,
-        concatMap((index) => pipe(
-          from(Z.runPromise(provideLog(pipe(
-            c.liveElementKeys,
-            RA.map((key) => pipe(
-              ctx.live[key],
-              (x): Z.Effect<
-              never,
-              Cause.NoSuchElementException,
-              Element
-              > => x.read,
-              Z.matchEffect(
-                () => Z.succeed(O.none()),
-                flow(
-                  O.some,
-                  Z.succeed,
-                ),
-              ),
-              Z.map(O.liftPredicate(
-                (newEle) => !c.eq(ctx.live[key].ele, newEle),
-              )),
-              Z.map(O.map(flow(
-                Z.succeed,
-                Z.tap((x) => Z.sync(() => {
-                  ctx.live[key].ele = x;
-                })),
-                Z.map(O.isSome),
-                Z.map((x) => `${key} ${x ? 'found' : 'lost'}`),
-                Z.flatMap(Z.logDebug),
-              ))),
-              Z.flatMap(O.match(
-                () => Z.succeed(false),
-                Z.zipRight(Z.succeed(true)),
-              )),
-            )),
-            Z.all,
-            Z.map(RA.some(identity)),
-          )))),
-          filter(identity),
-          map(() => index),
-        )),
-        startWith(0),
-      )),
-      tapEffect(() => provideLog(pipe(
-        Z.logDebug('Loading...'),
-        Z.zipRight(removeOldChats(ctx.mainState)(0)),
-        Z.zipRight(
-          Z.sync(() => {
-            c.documentMutationPair.observer.disconnect();
-            c.documentMutationPair.observer.observe(document, {
-              childList: true,
-              subtree: true,
-            });
-
-            c.chatMutationPair.observer.disconnect();
-            c.playerResizePair.observer.disconnect();
-            c.bodyResizePair.observer.disconnect();
-            document.head.append(c.css);
-          }),
-        ),
-        Z.zipRight(pipe(
-          [
-            pipe(
-              ctx.live.chatField.ele,
-              O.map((x) => Z.sync(
-                () => c.chatMutationPair.observer.observe(x, {
-                  childList: true,
-                }),
-              )),
-            ),
-            pipe(
-              ctx.live.chatTicker.ele,
-              O.map((x) => Z.sync(
-                () => c.chatMutationPair.observer.observe(x, {
-                  childList: true,
-                }),
-              )),
-            ),
-            pipe(
-              ctx.live.player.ele,
-              O.map(flow(
-                Z.succeed,
-                Z.tap((x) => Z.sync(
-                  () => c.playerResizePair.observer.observe(x),
-                )),
-                Z.flatMap((x) => Z.sync(() => x.prepend(ctx.chatScreen))),
-              )),
-            ),
-            pipe(
-              ctx.live.toggleChatBtnParent.ele,
-              O.map((x) => Z.sync(
-                () => x.prepend(ctx.wrappedToggleChat.node),
-              )),
-            ),
-            pipe(
-              ctx.live.settingsToggleNextElement.ele,
-              O.map((x) => Z.sync(
-                () => x.before(ctx.wrappedToggleSettings.node),
-              )),
-            ),
-            pipe(
-              ctx.live.settingsContainer.ele,
-              O.map((x) => Z.sync(
-                () => x.append(ctx.wrappedSettings.node),
-              )),
-            ),
-            pipe(
-              document.body,
-              O.fromNullable,
-              O.map((x) => Z.sync(
-                () => c.bodyResizePair.observer.observe(x),
-              )),
-            ),
-          ],
-          RA.compact,
-          RA.append(pipe(
-            ctx.live.video.ele,
-            O.filter((x) => !x.paused),
-            O.orElse(() => ctx.live.offlineSlate.ele),
-            O.isSome,
-            (x) => Z.sync(() => {
-              Object.assign(ctx.mainState, {
-                chatPlaying: x,
-              });
-            }),
-          )),
-          Z.all,
-        )),
-      ))),
-      switchMap(() => merge(
-        pipe(
-          fromEvent(
-            ctx.channel,
-            'message',
-          ),
-          map(([key, val]) => pipe(
-            listeningBroadcastConfigKeys.includes(key),
-            // eslint-disable-next-line max-len
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            (x) => (x ? ctx.setChangedConfig[key](val as never)
-            : Z.sync(() => {})),
-          )),
-          tapEffect(provideLog),
-        ),
-        ...pipe(
-          ctx.configKeys,
-          RA.map((key) => pipe(
-            // eslint-disable-next-line max-len
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            (ctx.co[key] as Subject<unknown>),
-            startWith(ctx.config[key]),
-            bufferCount(2, 1),
-            map(([x, y]) => diff(x, y)),
-            map((x) => Z.logDebug(
-              `Config ${key}: ${JSON.stringify(x, undefined, 2)}`,
-            )),
-            tapEffect(provideLog),
-          )),
-        ),
-        c.config$,
-        pipe(
-          ctx.live.video.ele,
-          O.match(
-            () => EMPTY,
-            flow(
-              videoToggleStream,
-              map((playing) => playing
-                  || O.isSome(ctx.live.offlineSlate.ele)),
-              map((chatPlaying) => pipe(
-                Z.sync(() => {
-                  // eslint-disable-next-line no-param-reassign
-                  ctx.mainState.chatPlaying = chatPlaying;
-                }),
-                Z.zipRight(pipe(
-                  ctx.mainState.flowChats,
-                  RA.map(setChatPlayState),
-                  RA.map(apply(ctx.mainState)),
-                  Z.all,
-                )),
-              )),
-              tapEffect(provideLog),
-            ),
-          ),
-        ),
-        pipe(
-          c.chatMutationPair.subject,
-          map(onChatFieldMutate(
-            ctx.chatScreen,
-            ctx.mainState,
-            ctx.getConfig,
-            ctx.setConfig,
-          )),
-          tapEffect(provideLog),
-        ),
-        pipe(
-          c.documentMutationPair.subject,
-          map(() => window.location.href),
-          distinctUntilChanged(),
-          skip(1),
-          c.tapUpdateSettingsRect,
-          map((x) => Z.all([
-            Z.logDebug(`URL Changed: ${x}`),
-            removeOldChats(ctx.mainState)(0),
-            Z.logDebug(`Wait for ${c.urlDelay}ms...`),
-          ])),
-          tapEffect(provideLog),
-          delay(c.urlDelay),
-          tapEffect(() => ctx.reinitialize),
-        ),
-        pipe(
-          c.playerResizePair.subject,
-          throttleTime(500, undefined, {
-            leading: true,
-            trailing: true,
-          }),
-          startWith([]),
-          map(flow(
-            () => ctx.live.player.ele,
-            O.map((x) => x.getBoundingClientRect()),
-            O.match(() => Z.unit(), (x) => onPlayerResize(x, ctx.mainState)),
-          )),
-          tapEffect(provideLog),
-
-        ),
-        pipe(
-          c.bodyResizePair.subject,
-          throttleTime(c.bodyResizeDetectInterval, undefined, {
-            leading: true,
-            trailing: true,
-          }),
-          startWith([]),
-          c.tapUpdateSettingsRect,
-        ),
-        pipe(
-          ctx.settingsRectSubject,
-          tapEffect((panelRect) => ctx.updateSettingState((s) => ({
-            ...s,
-            panelRect,
-          }))),
-        ),
-      )),
-      retry({
-        delay: (e) => pipe(
-          e,
-          of,
-          tapEffect(() => provideLog(
-            // eslint-disable-next-line max-len
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            logWithMeta(LogLevel.Error)(`Errored: ${e}`)(e),
-          )),
-          delay(c.errorRetryInterval),
-          tapEffect(() => ctx.reinitialize),
-        ),
-      }),
-    )),
-  )),
+  Z.bind('all$', (ctx) => allStream(ctx, provideLog)),
   Z.tap((ctx) => Z.sync(() => ctx.all$.subscribe({
     error: (x) => Z.runPromise(
       // eslint-disable-next-line max-len
