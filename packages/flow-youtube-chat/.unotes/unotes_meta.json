@@ -1,0 +1,37 @@
+{
+  "name": "",
+  "isOrdered": true,
+  "folders": {
+    "backup": {
+      "name": "backup",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "config": {
+      "name": "config",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "dist": {
+      "name": "dist",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "src": {
+      "name": "src",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    }
+  },
+  "files": {
+    "CHANGELOG_JP": 0,
+    "CHANGELOG_EN": 1,
+    "filter_logic": 2,
+    "plan": 3,
+    "README": 4
+  }
+}
