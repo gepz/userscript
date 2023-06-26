@@ -52,6 +52,7 @@ import LivePage from '@/LivePage';
 import LivePageState from '@/LivePageState';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
+import ToggleChatButtonState from '@/ToggleChatButtonState';
 import UserConfig from '@/UserConfig';
 import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter/index';
@@ -76,21 +77,18 @@ type Ctx = {
   configKeys: (keyof UserConfig)[],
   config: UserConfig,
   getConfig: UserConfigGetter,
-  mainState: MainState,
-  setChangedConfig: UserConfigSetter,
-  channel: BroadcastChannel<[keyof UserConfig, UserConfig[keyof UserConfig]]>,
   setConfig: UserConfigSetter,
+  setChangedConfig: UserConfigSetter,
+  co: ConfigObservable,
+  mainState: MainState,
+  channel: BroadcastChannel<[keyof UserConfig, UserConfig[keyof UserConfig]]>,
   reinitSubject: Subject<void>,
   reinitialize: Z.Effect<never, never, void>,
-  wrappedToggleChat: WrappedApp<{
-    lang: 'FYC_EN' | 'FYC_JA';
-    displayChats: boolean;
-  }>,
+  wrappedToggleChat: WrappedApp<ToggleChatButtonState>,
   wrappedSettings: WrappedApp<SettingState>,
   wrappedToggleSettings: WrappedApp<SettingState>,
   settingsRectSubject: BehaviorSubject<DOMRectReadOnly>,
-  co: ConfigObservable,
-  livePage: LivePage,
+  liveElementKeys: (keyof LivePage)[],
   live: LivePageState,
   chatScreen: HTMLDivElement,
 };
@@ -101,18 +99,18 @@ export default (
     configKeys,
     config,
     getConfig,
-    mainState,
-    setChangedConfig,
-    channel,
     setConfig,
+    setChangedConfig,
+    co,
+    mainState,
+    channel,
     reinitSubject,
     reinitialize,
     wrappedToggleChat,
     wrappedSettings,
     wrappedToggleSettings,
     settingsRectSubject,
-    co,
-    livePage,
+    liveElementKeys,
     live,
     chatScreen,
   }: Ctx,
@@ -125,9 +123,6 @@ export default (
     changeDetectInterval: 700,
     bodyResizeDetectInterval: 300,
     errorRetryInterval: 5000,
-    // eslint-disable-next-line max-len
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    liveElementKeys: Object.keys(livePage) as (keyof LivePage)[],
     tapUpdateSettingsRect: <T>(
       ob: Observable<T>,
     ) => switchMap((value: T) => pipe(
@@ -139,7 +134,14 @@ export default (
       tapEffect(provideLog),
       map(() => value),
     ))(ob),
-    config$: configStream(provideLog, mainState, co, chatScreen, live),
+    co,
+    config$: configStream(
+      provideLog,
+      mainState,
+      co,
+      chatScreen,
+      live,
+    ),
   },
   Z.succeed,
   Z.bindDiscard('css', mainCss),
@@ -157,34 +159,21 @@ export default (
       c.tapUpdateSettingsRect,
       concatMap((index) => pipe(
         from(Z.runPromise(provideLog(pipe(
-          c.liveElementKeys,
+          liveElementKeys,
           RA.map((key) => pipe(
-            live[key],
-            (x): Z.Effect<
-            never, Cause.NoSuchElementException, Element
-            > => x.read,
-            Z.matchEffect(
-              () => Z.succeed(O.none()),
-              flow(
-                O.some,
-                Z.succeed,
-              ),
-            ),
-            Z.map(O.liftPredicate((newEle) => !c.eq(live[key].ele, newEle))),
-            Z.map(O.map(flow(
-              Z.succeed,
-              Z.tap((x) => Z.sync(() => {
-                // eslint-disable-next-line no-param-reassign
-                live[key].ele = x;
-              })),
-              Z.map(O.isSome),
-              Z.map((x) => `${key} ${x ? 'found' : 'lost'}`),
-              Z.flatMap(Z.logDebug),
-            ))),
-            Z.flatMap(O.match(
-              () => Z.succeed(false),
-              Z.zipRight(Z.succeed(true)),
+            live[key].read,
+            Z.option,
+            Z.flatMap(O.liftPredicate(
+              (newEle) => !c.eq(live[key].ele, newEle),
             )),
+            Z.tap((x) => Z.sync(() => {
+              // eslint-disable-next-line no-param-reassign
+              live[key].ele = x;
+            })),
+            Z.map(O.isSome),
+            Z.map((x) => `${key} ${x ? 'found' : 'lost'}`),
+            Z.flatMap(Z.logDebug),
+            Z.isSuccess,
           )),
           Z.all,
           Z.map(RA.some(identity)),
@@ -215,19 +204,15 @@ export default (
         [
           pipe(
             live.chatField.ele,
-            O.map((x) => Z.sync(
-              () => c.chatMutationPair.observer.observe(x, {
-                childList: true,
-              }),
-            )),
+            O.map((x) => Z.sync(() => c.chatMutationPair.observer.observe(x, {
+              childList: true,
+            }))),
           ),
           pipe(
             live.chatTicker.ele,
-            O.map((x) => Z.sync(
-              () => c.chatMutationPair.observer.observe(x, {
-                childList: true,
-              }),
-            )),
+            O.map((x) => Z.sync(() => c.chatMutationPair.observer.observe(x, {
+              childList: true,
+            }))),
           ),
           pipe(
             live.player.ele,
@@ -274,10 +259,7 @@ export default (
     ))),
     switchMap(() => merge(
       pipe(
-        fromEvent(
-          channel,
-          'message',
-        ),
+        fromEvent(channel, 'message'),
         map(([key, val]) => pipe(
           listeningBroadcastConfigKeys.includes(key),
           // eslint-disable-next-line max-len
