@@ -9,18 +9,15 @@ import {
 import RootComponent, {
   makeComponent,
 } from '@/RootComponent';
+import ToggleChatButtonState from '@/ToggleChatButtonState';
 import UserConfigSetter from '@/UserConfigSetter';
 import getText from '@/getText';
-import languages from '@/languages';
 
-type State = {
-  displayChats: boolean,
-  lang: typeof languages[number],
-};
-
-export default (setConfig: UserConfigSetter): RootComponent<State> => pipe(
+export default (
+  setConfig: UserConfigSetter,
+): RootComponent<ToggleChatButtonState> => pipe(
   'button',
-  makeComponent((tag) => (state: State) => pipe(
+  makeComponent((tag) => (state: ToggleChatButtonState) => pipe(
     getText(
       state.displayChats ? 'hideChats' : 'showChats',
     )(state),
@@ -44,7 +41,7 @@ export default (setConfig: UserConfigSetter): RootComponent<State> => pipe(
       type: 'button',
       'aria-label': label,
       title: label,
-      onclick: (s: State) => pipe(
+      onclick: (s: ToggleChatButtonState) => pipe(
         !s.displayChats,
         (displayChats) => [
           {

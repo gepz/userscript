@@ -18,9 +18,7 @@ const chatApp: Z.Effect<never, Cause.NoSuchElementException, Element> = pipe(
     )),
     O.flatMapNullable((x) => x.contentDocument),
     O.orElse(() => O.some(document)),
-    O.flatMapNullable((x) => x.querySelector(
-      'yt-live-chat-app',
-    )),
+    O.flatMapNullable((x) => x.querySelector('yt-live-chat-app')),
   )),
 );
 
@@ -84,9 +82,7 @@ export default ({
     )),
   ),
   offlineSlate: pipe(
-    Z.sync(() => document.querySelector(
-      '.ytp-offline-slate',
-    )),
+    Z.sync(() => document.querySelector('.ytp-offline-slate')),
     Z.flatMap(O.fromNullable),
   ),
 }) satisfies LivePage;

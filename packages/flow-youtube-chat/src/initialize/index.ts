@@ -31,11 +31,13 @@ import ConfigObservable from '@/ConfigObservable';
 import {
   makeSubject,
 } from '@/ConfigSubject';
+import LivePage from '@/LivePage';
 import {
   makePageState,
 } from '@/LivePageState';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
+import ToggleChatButtonState from '@/ToggleChatButtonState';
 import UserConfig, {
   makeConfig,
 } from '@/UserConfig';
@@ -136,7 +138,7 @@ export default ({
       requestAnimationFrame(() => forwardTo(ctx.reinitSubject)());
     }))),
     Z.tap((ctx) => ctx.setConfigPlain.filterExp(defaultFilter(ctx.config))),
-    Z.let('toggleChatButtonInit', (ctx) => ({
+    Z.let('toggleChatButtonInit', (ctx): ToggleChatButtonState => ({
       lang: ctx.config.lang,
       displayChats: ctx.config.displayChats,
     })),
@@ -188,6 +190,9 @@ export default ({
       Z.forkDaemon,
     )),
   ),
+  Z.letDiscard('livePage', livePageYt),
+  Z.let('live', (ctx) => makePageState(ctx.livePage)),
+  Z.bindDiscard('chatScreen', makeChatScreen),
   Z.let('co', (ctx): ConfigObservable => pipe(
     ctx.configSubject,
     mapObject(([k, value]) => [
@@ -203,7 +208,7 @@ export default ({
           Z.succeed,
           Z.tap(() => ctx.updateSettingState(
             // eslint-disable-next-line max-len
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, max-len
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             setSettingFromConfig(k)(v as UserConfig[keyof UserConfig]),
           )),
           Z.zipLeft(pipe(
@@ -213,9 +218,8 @@ export default ({
               'bannedWordRegexes',
             ] as const,
             RA.contains(Str.Equivalence)(k),
-            (x) => (x ? ctx.setConfig.filterExp(
-              defaultFilter(ctx.config),
-            ) : Z.unit()),
+            (x) => (x ? ctx.setConfig.filterExp(defaultFilter(ctx.config))
+            : Z.unit()),
           )),
           Z.flatMap((x) => (k in ctx.toggleChatButtonInit
             ? Z.sync(() => ctx.wrappedToggleChat.dispatch(x))
@@ -227,9 +231,10 @@ export default ({
       ),
     ]),
   )),
-  Z.letDiscard('livePage', livePageYt),
-  Z.let('live', (ctx) => makePageState(ctx.livePage)),
-  Z.bindDiscard('chatScreen', makeChatScreen),
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  Z.let('liveElementKeys', (ctx) => Object.keys(
+    ctx.livePage,
+  ) as (keyof LivePage)[]),
   Z.bind('all$', (ctx) => allStream(ctx, provideLog)),
   Z.tap((ctx) => Z.sync(() => ctx.all$.subscribe({
     error: (x) => Z.runPromise(
