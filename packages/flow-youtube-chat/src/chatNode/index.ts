@@ -4,7 +4,15 @@ import {
 import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Str from '@effect/data/String';
-import m from 'mithril';
+import {
+  html,
+  HTMLTemplateResult,
+} from 'lit-html';
+// eslint-disable-next-line import-newlines/enforce
+import {
+  styleMap,
+  // eslint-disable-next-line import/extensions
+} from 'lit-html/directives/style-map.js';
 
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
@@ -20,7 +28,7 @@ const parseMessage = (
   message: Element,
   config: UserConfig,
 ): {
-  vnodes: m.Vnode[],
+  vnodes: HTMLTemplateResult[],
   length: number,
 } => {
   const eleWin = message.ownerDocument.defaultView ?? window;
@@ -29,7 +37,7 @@ const parseMessage = (
   } = config;
 
   const initResult: {
-    vnodes: m.Vnode[],
+    vnodes: HTMLTemplateResult[],
     length: number,
   } = {
     vnodes: [],
@@ -48,15 +56,13 @@ const parseMessage = (
     : (!config.textOnly && node instanceof eleWin.HTMLImageElement) ? {
       vnodes: [
         ...vnodes,
-        m('img', {
-          style: {
-            height: '1em',
-            width: '1em',
-            verticalAlign: 'text-top',
-          },
-          src: node.src.replace(/=w\d+-h\d+-c-k-nd$/, ''),
-          alt: node.alt,
-        }),
+        html`<img style=${styleMap({
+          height: '1em',
+          width: '1em',
+          verticalAlign: 'text-top',
+        } satisfies Partial<CSSStyleDeclaration>)} src=${
+          node.src.replace(/=w\d+-h\d+-c-k-nd$/, '')
+        } alt=${node.alt}>`,
       ],
       length: length + 1,
     }
@@ -66,18 +72,16 @@ const parseMessage = (
       (x) => (node instanceof eleWin.HTMLAnchorElement ? {
         vnodes: [
           ...vnodes,
-          m('span', {
-            style: {
-              fontSize: '0.84em',
-              textDecoration: 'underline',
-              ...textStyle,
-            } satisfies Partial<CSSStyleDeclaration>,
-          }, x),
+          html`<span style=${styleMap({
+            fontSize: '0.84em',
+            textDecoration: 'underline',
+            ...textStyle,
+          } satisfies Partial<CSSStyleDeclaration>)}>${x}</span>`,
         ],
         length: length + x.length,
       }
       : {
-        vnodes: [...vnodes, m.fragment({}, x)],
+        vnodes: [...vnodes, html`${x}`],
         length: length + x.length,
       }),
     ))),
@@ -87,7 +91,7 @@ const parseMessage = (
 export default (
   chat: FlowChat,
   mainState: MainState,
-): m.Vnode => pipe(
+): HTMLTemplateResult => pipe(
   mainState.config,
   (config) => ({
     data: chat.getData(config),
@@ -96,33 +100,29 @@ export default (
   ({
     data,
     config,
-  }) => m('span', {
-    style: {
-      fontSize: `${getChatFontSize(mainState)}px`,
-      visibility: config.displayChats ? 'visible' : 'hidden',
-      color: data.authorType === 'owner' ? config.ownerColor
-      : data.authorType === 'moderator' ? config.moderatorColor
-      : data.authorType === 'member' ? config.memberColor
-      : config.color,
-      fontWeight: config.fontWeight.toString(),
-      fontFamily: config.font,
-      opacity: config.chatOpacity.toString(),
-      textShadow: textShadow(config.shadowColor)(
-        config.shadowFontWeight,
-      ),
-    },
-  }, pipe(
+  }) => html`<span style=${styleMap({
+    fontSize: `${getChatFontSize(mainState)}px`,
+    visibility: config.displayChats ? 'visible' : 'hidden',
+    color: data.authorType === 'owner' ? config.ownerColor
+    : data.authorType === 'moderator' ? config.moderatorColor
+    : data.authorType === 'member' ? config.memberColor
+    : config.color,
+    fontWeight: config.fontWeight.toString(),
+    fontFamily: config.font,
+    opacity: config.chatOpacity.toString(),
+    textShadow: textShadow(config.shadowColor)(
+      config.shadowFontWeight,
+    ),
+  } satisfies Partial<CSSStyleDeclaration>)}>${pipe(
     [
       pipe(
         data.authorName,
         O.filter((x) => x.visible),
-        O.map((x) => m('span', {
-          style: {
-            color: O.getOrUndefined(data.textColor),
-            fontSize: '0.84em',
-            ...textStyle,
-          } satisfies Partial<CSSStyleDeclaration>,
-        }, `${x.content}: `)),
+        O.map((x) => html`<span style=${styleMap({
+          color: O.getOrUndefined(data.textColor),
+          fontSize: '0.84em',
+          ...textStyle,
+        } satisfies Partial<CSSStyleDeclaration>)}>${x.content}</span>`),
       ),
       pipe(
         data.messageElement,
@@ -130,27 +130,23 @@ export default (
           x,
           config,
         )),
-        O.map((x) => m('span', {
-          style: {
-            color: O.getOrUndefined(data.textColor),
-            ...textStyle,
-          } satisfies Partial<CSSStyleDeclaration>,
-        }, x.vnodes)),
+        O.map((x) => html`<span style=${styleMap({
+          color: O.getOrUndefined(data.textColor),
+          ...textStyle,
+        } satisfies Partial<CSSStyleDeclaration>)}>${x.vnodes}</span>`),
       ),
       pipe(
         data.paymentInfo,
         O.filter((x) => x.visible),
-        O.map((x) => m('span', {
-          style: {
-            color: O.getOrUndefined(data.paidColor),
-            fontSize: '0.84em',
-            ...textStyle,
-          } satisfies Partial<CSSStyleDeclaration>,
-        }, m('strong', {
-          style: textStyle,
-        }, x.content))),
+        O.map((x) => html`<span style=${styleMap({
+          color: O.getOrUndefined(data.paidColor),
+          fontSize: '0.84em',
+          ...textStyle,
+        } satisfies Partial<CSSStyleDeclaration>)}><strong style=${
+          styleMap(textStyle)
+        }></strong>${x.content}</span>`),
       ),
     ],
     RA.compact,
-  )),
+  )}</span>`,
 );
