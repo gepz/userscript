@@ -57,7 +57,6 @@ import setSettingFromConfig from '@/setSettingFromConfig';
 import setterFromKeysMap from '@/setterFromKeysMap';
 import settingStateInit from '@/settingStateInit';
 import settingsComponent from '@/settingsComponent';
-import settingsPanelSize from '@/settingsPanelSize';
 import simpleWrap from '@/simpleWrap';
 import tapEffect from '@/tapEffect';
 import toggleChatButton from '@/toggleChatButton';
@@ -166,14 +165,6 @@ export default ({
       ctx.wrappedSettings.dispatch,
       ctx.wrappedToggleSettings.dispatch,
     ]))),
-    Z.letDiscard('settingsRectSubject', new BehaviorSubject(
-      new DOMRectReadOnly(
-        0,
-        0,
-        settingsPanelSize.width,
-        settingsPanelSize.height,
-      ),
-    )),
     Z.tap((ctx) => pipe(
       [
         `Version: ${packageJson.version}`,
@@ -190,8 +181,7 @@ export default ({
       Z.forkDaemon,
     )),
   ),
-  Z.letDiscard('livePage', livePageYt),
-  Z.let('live', (ctx) => makePageState(ctx.livePage)),
+  Z.letDiscard('live', makePageState(livePageYt)),
   Z.bindDiscard('chatScreen', makeChatScreen),
   Z.let('co', (ctx): ConfigObservable => pipe(
     ctx.configSubject,
@@ -233,7 +223,7 @@ export default ({
   )),
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   Z.let('liveElementKeys', (ctx) => Object.keys(
-    ctx.livePage,
+    ctx.live,
   ) as (keyof LivePage)[]),
   Z.bind('all$', (ctx) => allStream(ctx, provideLog)),
   Z.tap((ctx) => Z.sync(() => ctx.all$.subscribe({

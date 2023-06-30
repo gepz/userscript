@@ -9,7 +9,6 @@ import * as RA from '@effect/data/ReadonlyArray';
 import {
   strict,
 } from '@effect/data/typeclass/Equivalence';
-import * as Cause from '@effect/io/Cause';
 import * as Z from '@effect/io/Effect';
 import * as LogLevel from '@effect/io/Logger/Level';
 import {
@@ -66,6 +65,7 @@ import onChatFieldMutate from '@/onChatFieldMutate';
 import onPlayerResize from '@/onPlayerResize';
 import removeOldChats from '@/removeOldChats';
 import setChatPlayState from '@/setChatPlayState';
+import settingsPanelSize from '@/settingsPanelSize';
 import tapEffect from '@/tapEffect';
 import updateSettingsRect from '@/updateSettingsRect';
 import videoToggleStream from '@/videoToggleStream';
@@ -87,7 +87,6 @@ type Ctx = {
   wrappedToggleChat: WrappedApp<ToggleChatButtonState>,
   wrappedSettings: WrappedApp<SettingState>,
   wrappedToggleSettings: WrappedApp<SettingState>,
-  settingsRectSubject: BehaviorSubject<DOMRectReadOnly>,
   liveElementKeys: (keyof LivePage)[],
   live: LivePageState,
   chatScreen: HTMLDivElement,
@@ -109,7 +108,6 @@ export default (
     wrappedToggleChat,
     wrappedSettings,
     wrappedToggleSettings,
-    settingsRectSubject,
     liveElementKeys,
     live,
     chatScreen,
@@ -123,17 +121,30 @@ export default (
     changeDetectInterval: 700,
     bodyResizeDetectInterval: 300,
     errorRetryInterval: 5000,
-    tapUpdateSettingsRect: <T>(
-      ob: Observable<T>,
-    ) => switchMap((value: T) => pipe(
-      settingsRectSubject,
-      first(),
-      map(updateSettingsRect(wrappedToggleSettings.node)(
-        (rect) => Z.sync(() => settingsRectSubject.next(rect)),
-      )),
-      tapEffect(provideLog),
-      map(() => value),
-    ))(ob),
+    ...pipe(
+      new BehaviorSubject(
+        new DOMRectReadOnly(
+          0,
+          0,
+          settingsPanelSize.width,
+          settingsPanelSize.height,
+        ),
+      ),
+      (settingsRectSubject) => ({
+        settingsRectSubject,
+        tapUpdateSettingsRect: <T>(
+          ob: Observable<T>,
+        ) => switchMap((value: T) => pipe(
+          settingsRectSubject,
+          first(),
+          map(updateSettingsRect(wrappedToggleSettings.node)(
+            (rect) => Z.sync(() => settingsRectSubject.next(rect)),
+          )),
+          tapEffect(provideLog),
+          map(() => value),
+        ))(ob),
+      }),
+    ),
     co,
     config$: configStream(
       provideLog,
@@ -358,7 +369,7 @@ export default (
         c.tapUpdateSettingsRect,
       ),
       pipe(
-        settingsRectSubject,
+        c.settingsRectSubject,
         tapEffect((panelRect) => updateSettingState((s) => ({
           ...s,
           panelRect,
