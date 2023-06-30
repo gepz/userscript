@@ -38,8 +38,6 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
           x.nameVer}/dist/${x.name}${x.end}`,
         (x = cdnSegment('rxjs')) => `${x.begin}unpkg.com/${
           x.nameVer}/dist/bundles/${x.name}.umd${x.end}`,
-        (x = cdnSegment('mithril')) => `${x.begin}unpkg.com/${
-          x.nameVer}/${x.name}${x.end}`,
         (x = cdnSegment('deep-diff')) => `${x.begin}cdn.jsdelivr.net/npm/${
           x.nameVer}/index${x.end}`,
         (x = cdnSegment('astring')) => `${x.begin}cdn.jsdelivr.net/npm/${

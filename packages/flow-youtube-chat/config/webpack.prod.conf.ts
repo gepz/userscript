@@ -19,7 +19,6 @@ export default merge(
         sweetalert2: 'Swal',
         rxjs: 'rxjs',
         loglevel: 'log',
-        mithril: 'm',
         'deep-diff': 'DeepDiff',
         astring: 'astring',
         jsep: 'jsep',
