@@ -1,9 +1,8 @@
+// import * as O from '@effect/data/Option';
+// import * as expEval from 'expression-eval';
 import {
   pipe,
 } from '@effect/data/Function';
-// import * as O from '@effect/data/Option';
-// import * as expEval from 'expression-eval';
-
 import * as Ed from '@userscript/ui/Editable';
 
 import * as log from '@/Log';

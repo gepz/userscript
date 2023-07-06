@@ -2,7 +2,6 @@ import {
   pipe,
   flow,
 } from '@effect/data/Function';
-import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Z from '@effect/io/Effect';
 
