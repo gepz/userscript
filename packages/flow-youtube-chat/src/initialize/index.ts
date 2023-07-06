@@ -37,7 +37,6 @@ import {
 } from '@/LivePageState';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
-import ToggleChatButtonState from '@/ToggleChatButtonState';
 import UserConfig, {
   makeConfig,
 } from '@/UserConfig';
@@ -137,13 +136,10 @@ export default ({
       requestAnimationFrame(() => forwardTo(ctx.reinitSubject)());
     }))),
     Z.tap((ctx) => ctx.setConfigPlain.filterExp(defaultFilter(ctx.config))),
-    Z.let('toggleChatButtonInit', (ctx): ToggleChatButtonState => ({
-      lang: ctx.config.lang,
-      displayChats: ctx.config.displayChats,
-    })),
+    Z.let('stateInit', (ctx) => settingStateInit(ctx.config)),
     Z.bind('wrappedToggleChat', (ctx) => simpleWrap(
       toggleChatButton(ctx.setConfig),
-      ctx.toggleChatButtonInit,
+      ctx.stateInit,
     )),
     Z.bind('wrappedSettings', (ctx) => simpleWrap(
       settingsComponent({
@@ -153,17 +149,18 @@ export default ({
         },
         provideLog,
       }),
-      settingStateInit(ctx.config),
+      ctx.stateInit,
     )),
     Z.bind('wrappedToggleSettings', (ctx) => simpleWrap(
       toggleSettingsPanelComponent(ctx.updateSettingState),
-      settingStateInit(ctx.config),
+      ctx.stateInit,
     )),
   ),
   flow(
     Z.tap((ctx) => Z.sync(() => settingUpdateApps.next([
       ctx.wrappedSettings.dispatch,
       ctx.wrappedToggleSettings.dispatch,
+      ctx.wrappedToggleChat.dispatch,
     ]))),
     Z.tap((ctx) => pipe(
       [
@@ -211,9 +208,6 @@ export default ({
             (x) => (x ? ctx.setConfig.filterExp(defaultFilter(ctx.config))
             : Z.unit()),
           )),
-          Z.flatMap((x) => (k in ctx.toggleChatButtonInit
-            ? Z.sync(() => ctx.wrappedToggleChat.dispatch(x))
-            : Z.unit())),
           (x) => () => Z.runPromise(provideLog(x)),
           (x) => Z.sync(() => requestAnimationFrame(x)),
         ))),

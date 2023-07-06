@@ -51,7 +51,6 @@ import LivePage from '@/LivePage';
 import LivePageState from '@/LivePageState';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
-import ToggleChatButtonState from '@/ToggleChatButtonState';
 import UserConfig from '@/UserConfig';
 import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter/index';
@@ -84,7 +83,7 @@ type Ctx = {
   channel: BroadcastChannel<[keyof UserConfig, UserConfig[keyof UserConfig]]>,
   reinitSubject: Subject<void>,
   reinitialize: Z.Effect<never, never, void>,
-  wrappedToggleChat: WrappedApp<ToggleChatButtonState>,
+  wrappedToggleChat: WrappedApp<SettingState>,
   wrappedSettings: WrappedApp<SettingState>,
   wrappedToggleSettings: WrappedApp<SettingState>,
   liveElementKeys: (keyof LivePage)[],
