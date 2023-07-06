@@ -21,7 +21,7 @@ import SettingState from '@/SettingState';
 import getText from '@/getText';
 
 const togglePanel = (
-  syncState: (x: Dispatchable<SettingState>) => Z.Effect<never, never, void>,
+  updateState: (x: Dispatchable<SettingState>) => Z.Effect<never, never, void>,
 ) => (x: SettingState, e: MouseEvent): [
   s: SettingState,
   ...e: Effect<SettingState>[],
@@ -34,7 +34,7 @@ const togglePanel = (
     newState,
     x.showPanel ? () => z.instanceof(HTMLElement).parse(e.currentTarget).blur()
     : () => {},
-    () => Z.runPromise(syncState((oldState) => ({
+    () => Z.runPromise(updateState((oldState) => ({
       ...oldState,
       ...newState,
     }))),
