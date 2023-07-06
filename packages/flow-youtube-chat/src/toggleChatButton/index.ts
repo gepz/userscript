@@ -9,9 +9,9 @@ import {
 import RootComponent, {
   makeComponent,
 } from '@/RootComponent';
+import SettingState from '@/SettingState';
 import UserConfigSetter from '@/UserConfigSetter';
 import getText from '@/getText';
-import SettingState from '@/SettingState';
 
 export default (
   setConfig: UserConfigSetter,
