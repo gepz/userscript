@@ -38,7 +38,7 @@ export default (
   Z.tap((x) => Z.sync(() => {
     // eslint-disable-next-line no-param-reassign
     chat.element.style.transform = `translate(${
-      mainState.playerRect.width
+      mainState.playerRect.value.width
          * (mainState.config.flowX2 - mainState.config.flowX1)
     }px, -${x.fontSize * 2}px)`;
   })),
@@ -89,7 +89,7 @@ export default (
       pipe(
         [
           [
-            mainState.playerRect.width
+            mainState.playerRect.value.width
              * (mainState.config.flowX2 - mainState.config.flowX1),
             ctx.laneY,
           ],

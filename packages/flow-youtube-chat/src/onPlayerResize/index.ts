@@ -19,10 +19,8 @@ export default (
     `Resize [${x.width.toFixed(1)}, ${x.height.toFixed(1)}]`,
   )),
   Z.flatMap(flow(
-    (x) => Z.sync(() => Object.assign(mainState, {
-      playerRect: x,
-    })),
-    Z.map(() => mainState.flowChats),
+    (x) => Z.sync(() => mainState.playerRect.next(x)),
+    Z.map(() => mainState.flowChats.value),
     Z.map(RA.flatMap((x) => [
       renderChat(x)(mainState),
       setChatAnimation(x)(mainState),

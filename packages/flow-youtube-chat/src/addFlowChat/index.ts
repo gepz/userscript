@@ -41,13 +41,13 @@ export default (
   (x) => x(mainState.config),
 ) ? Z.unit()
 : pipe(
-  mainState.flowChats,
+  mainState.flowChats.value,
   RA.findFirstIndex((chat) => chat.animationEnded
-     || mainState.flowChats.length >= mainState.config.maxChatCount),
+     || mainState.flowChats.value.length >= mainState.config.maxChatCount),
   (offScreenIndex) => pipe(
     offScreenIndex,
     O.map((index) => pipe(
-      mainState.flowChats,
+      mainState.flowChats.value,
       RA.unsafeGet(index),
       (x) => x.element,
     )),
@@ -60,13 +60,15 @@ export default (
           Z.sync(() => chatScrn.append(element)),
           Z.zipLeft(Z.logDebug('Flow chat added')),
         ),
-        (i) => pipe(
-          Z.sync(() => mainState.flowChats.splice(
-            i,
-            1,
-          )?.[0]?.animation ?? O.none()),
-          Z.some,
+        (index) => pipe(
+          mainState.flowChats.value,
+          RA.unsafeGet(index),
+          (x) => x.animation,
           Z.flatMap((oldAnimation) => Z.sync(() => oldAnimation.cancel())),
+          Z.zipRight(Z.sync(() => mainState.flowChats.next(pipe(
+            mainState.flowChats.value,
+            RA.remove(index),
+          )))),
           Z.ignore,
         ),
       ),
@@ -92,7 +94,10 @@ export default (
     Z.succeed,
     Z.tap(renderChat(flowChat)),
     Z.flatMap(setChatAnimation(flowChat)),
-    Z.flatMap((x) => (x ? Z.sync(() => mainState.flowChats.push(flowChat))
+    Z.flatMap((x) => (x ? Z.sync(() => mainState.flowChats.next(pipe(
+      mainState.flowChats.value,
+      RA.append(flowChat),
+    )))
     : pipe(
       Z.sync(() => flowChat.element.remove()),
       Z.zipLeft(Z.logDebug('Flow chat removed')),

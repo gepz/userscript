@@ -1,28 +1,38 @@
+import * as B from '@effect/data/Boolean';
 import {
   pipe,
 } from '@effect/data/Function';
+import * as RA from '@effect/data/ReadonlyArray';
+import {
+  contramap,
+} from '@effect/data/typeclass/Order';
 import * as Z from '@effect/io/Effect';
+import {
+  BehaviorSubject,
+} from 'rxjs';
 
-import MainState from '@/MainState';
+import FlowChat from '@/FlowChat';
 
 export default (
-  mainState: MainState,
+  flowChats: BehaviorSubject<readonly FlowChat[]>,
 ) => (
   maxChatCount: number,
 ): Z.Effect<never, never, void> => pipe(
-  Z.sync(() => mainState.flowChats.sort(
-    (a, b) => (a.animationEnded === b.animationEnded ? 0
-    : a.animationEnded ? -1
-    : 1),
+  Z.sync(() => flowChats.value),
+  Z.map(RA.sort(contramap((x: FlowChat) => !x.animationEnded)(B.Order))),
+  (x) => x,
+  Z.map(RA.splitAt(maxChatCount)),
+  (x) => x,
+  Z.flatMap(([newChats, oldChats]) => pipe(
+    oldChats,
+    Z.forEach((x) => pipe(
+      Z.logDebug('RemoveChat'),
+      Z.zipRight(Z.sync(() => {
+        x.element.remove();
+      })),
+    )),
+    Z.map(() => newChats),
   )),
-  Z.zipRight(Z.sync(() => mainState.flowChats.splice(
-    0,
-    Math.max(0, mainState.flowChats.length - maxChatCount),
-  ))),
-  Z.flatMap(Z.forEach((x) => pipe(
-    Z.logDebug('RemoveChat'),
-    Z.zipRight(Z.sync(() => {
-      x.element.remove();
-    })),
-  ))),
+  (x) => x,
+  Z.flatMap((x) => Z.sync(() => flowChats.next(x))),
 );
