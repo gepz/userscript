@@ -15,7 +15,7 @@ export default (
   O.liftPredicate((x) => !x.animationEnded),
   Z.map((x: FlowChat) => x.animation),
   Z.flatMap(identity),
-  Z.tap((x) => Z.sync(mainState.chatPlaying ? () => x.play()
+  Z.tap((x) => Z.sync(mainState.chatPlaying.value ? () => x.play()
   : () => x.pause())),
   Z.flatMap((x) => Z.sync(() => {
     // eslint-disable-next-line no-param-reassign

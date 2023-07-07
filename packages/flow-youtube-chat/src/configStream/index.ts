@@ -106,7 +106,7 @@ export default (
         merge(
           pipe(
             co.maxChatCount,
-            map(removeOldChats(mainState)),
+            map(removeOldChats(mainState.flowChats)),
             tapEffect(provideLog),
           ),
           co.noOverlap,
@@ -128,7 +128,7 @@ export default (
       ...x,
     }) satisfies ChatUpdateConfig),
     tapEffect((c) => provideLog(pipe(
-      mainState.flowChats,
+      mainState.flowChats.value,
       RA.filter((x) => !x.animationEnded),
       RA.map((chat) => pipe(
         [

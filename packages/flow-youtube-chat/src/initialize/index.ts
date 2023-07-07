@@ -31,6 +31,7 @@ import ConfigObservable from '@/ConfigObservable';
 import {
   makeSubject,
 } from '@/ConfigSubject';
+import FlowChat from '@/FlowChat';
 import LivePage from '@/LivePage';
 import {
   makePageState,
@@ -78,7 +79,7 @@ export default ({
   Z.letDiscard('updateSettingState', (
     dispatchable: Dispatchable<SettingState>,
   ): Z.Effect<never, never, void> => provideLog(pipe(
-    settingUpdateApps.getValue(),
+    settingUpdateApps.value,
     RA.map((x) => Z.sync(() => x(dispatchable))),
     Z.all,
   ))),
@@ -86,10 +87,10 @@ export default ({
   Z.let('getConfig', (ctx) => makeGetter(ctx.config)),
   flow(
     Z.let('mainState', (x): MainState => ({
-      chatPlaying: true,
-      playerRect: new DOMRectReadOnly(0, 0, 600, 400),
+      chatPlaying: new BehaviorSubject(true),
+      playerRect: new BehaviorSubject(new DOMRectReadOnly(0, 0, 600, 400)),
       config: x.config,
-      flowChats: [],
+      flowChats: new BehaviorSubject<readonly FlowChat[]>([]),
     })),
     Z.let('configSubject', (ctx) => makeSubject(ctx.configKeys)),
     Z.let('setterFromKeysMap', (ctx) => setterFromKeysMap(ctx.configKeys)),
@@ -145,7 +146,7 @@ export default ({
       settingsComponent({
         setConfig: ctx.setConfig,
         act: {
-          clearFlowChats: removeOldChats(ctx.mainState)(0),
+          clearFlowChats: removeOldChats(ctx.mainState.flowChats)(0),
         },
         provideLog,
       }),

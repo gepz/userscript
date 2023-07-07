@@ -16,23 +16,27 @@ import getFlowChatRect from '@/getFlowChatRect';
 export default (
   flowChat: FlowChat,
   progress: number,
-) => (
-  mainState: MainState,
-): {
+) => ({
+  config,
+  flowChats: {
+    value: flowChats,
+  },
+  playerRect: {
+    value: playerRect,
+  },
+} : MainState): {
   lane: number,
   interval: number,
 } => {
-  const flowWidth = mainState.playerRect.width * (
-    mainState.config.flowX2 - mainState.config.flowX1
+  const flowWidth = playerRect.width * (
+    config.flowX2 - config.flowX1
   );
 
-  const chatRect = getFlowChatRect(flowChat, mainState);
-  const chatWidth = chatRect.width;
-  const chatHeight = chatRect.height;
-  const chatX = chatRect.x;
   const {
-    flowChats,
-  } = mainState;
+    width: chatWidth,
+    height: chatHeight,
+    x: chatX,
+  } = getFlowChatRect(flowChat, config, playerRect);
 
   const chatIndex = flowChats.indexOf(flowChat);
   const movingChats = pipe(
@@ -43,11 +47,13 @@ export default (
   );
 
   const tooCloseTo = memoize((x: FlowChat) => {
-    const otherRect = getFlowChatRect(x, mainState);
-    const otherWidth = otherRect.width;
-    const otherX = otherRect.x;
+    const {
+      width: otherWidth,
+      x: otherX,
+    } = getFlowChatRect(x, config, playerRect);
+
     const gap = ((chatHeight * otherWidth * chatWidth) ** 0.333)
-      * mainState.config.minSpacing;
+      * config.minSpacing;
 
     return ((flowWidth - otherX) / (flowWidth + otherWidth)) - progress
      < (chatWidth + gap) / (flowWidth + chatWidth)
@@ -65,7 +71,7 @@ export default (
     })),
     RA.append({
       tooClose: (): boolean => true,
-      lane: mainState.config.laneCount,
+      lane: config.laneCount,
     }),
   );
 
@@ -74,7 +80,7 @@ export default (
     occupyInfo.slice(index),
     RA.findFirst((x) => x.tooClose()),
     O.map((x) => x.lane),
-    O.getOrElse(() => mainState.config.laneCount),
+    O.getOrElse(() => config.laneCount),
   );
 
   const topFreeLane = pipe(
@@ -109,7 +115,7 @@ export default (
       const nextLane = info.lane;
       const interLane = Math.min(
         Math.max((lastLane + nextLane) / 2, 0),
-        mainState.config.laneCount - 1,
+        config.laneCount - 1,
       );
 
       const newInterval = Math.min(

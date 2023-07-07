@@ -4,6 +4,7 @@ import {
   flow,
   identity,
 } from '@effect/data/Function';
+import * as I from '@effect/data/Identity';
 import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
 import {
@@ -121,28 +122,27 @@ export default (
     bodyResizeDetectInterval: 300,
     errorRetryInterval: 5000,
     ...pipe(
-      new BehaviorSubject(
-        new DOMRectReadOnly(
-          0,
-          0,
-          settingsPanelSize.width,
-          settingsPanelSize.height,
+      {
+        settingsRectSubject: new BehaviorSubject(
+          new DOMRectReadOnly(
+            0,
+            0,
+            settingsPanelSize.width,
+            settingsPanelSize.height,
+          ),
         ),
-      ),
-      (settingsRectSubject) => ({
+      },
+      I.let('tapUpdateSettingsRect', ({
         settingsRectSubject,
-        tapUpdateSettingsRect: <T>(
-          ob: Observable<T>,
-        ) => switchMap((value: T) => pipe(
-          settingsRectSubject,
-          first(),
-          map(updateSettingsRect(wrappedToggleSettings.node)(
-            (rect) => Z.sync(() => settingsRectSubject.next(rect)),
-          )),
-          tapEffect(provideLog),
-          map(() => value),
-        ))(ob),
-      }),
+      }) => <T>(ob: Observable<T>) => switchMap((value: T) => pipe(
+        settingsRectSubject,
+        first(),
+        map(updateSettingsRect(wrappedToggleSettings.node)(
+          (rect) => Z.sync(() => settingsRectSubject.next(rect)),
+        )),
+        tapEffect(provideLog),
+        map(() => value),
+      ))(ob)),
     ),
     co,
     config$: configStream(
@@ -195,7 +195,7 @@ export default (
     )),
     tapEffect(() => provideLog(pipe(
       Z.logDebug('Loading...'),
-      Z.zipRight(removeOldChats(mainState)(0)),
+      Z.zipRight(removeOldChats(mainState.flowChats)(0)),
       Z.zipRight(
         Z.sync(() => {
           c.documentMutationPair.observer.disconnect();
@@ -258,11 +258,7 @@ export default (
           O.filter((x) => !x.paused),
           O.orElse(() => live.offlineSlate.ele),
           O.isSome,
-          (x) => Z.sync(() => {
-            Object.assign(mainState, {
-              chatPlaying: x,
-            });
-          }),
+          (x) => Z.sync(() => mainState.chatPlaying.next(x)),
         )),
         Z.all,
       )),
@@ -303,12 +299,9 @@ export default (
             videoToggleStream,
             map((playing) => playing || O.isSome(live.offlineSlate.ele)),
             map((chatPlaying) => pipe(
-              Z.sync(() => {
-                // eslint-disable-next-line no-param-reassign
-                mainState.chatPlaying = chatPlaying;
-              }),
+              Z.sync(() => mainState.chatPlaying.next(chatPlaying)),
               Z.zipRight(pipe(
-                mainState.flowChats,
+                mainState.flowChats.value,
                 RA.map(setChatPlayState),
                 RA.map(apply(mainState)),
                 Z.all,
@@ -336,7 +329,7 @@ export default (
         c.tapUpdateSettingsRect,
         map((x) => Z.all([
           Z.logDebug(`URL Changed: ${x}`),
-          removeOldChats(mainState)(0),
+          removeOldChats(mainState.flowChats)(0),
           Z.logDebug(`Wait for ${c.urlDelay}ms...`),
         ])),
         tapEffect(provideLog),
