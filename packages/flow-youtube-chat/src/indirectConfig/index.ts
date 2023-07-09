@@ -1,7 +1,6 @@
 import {
   pipe,
 } from '@effect/data/Function';
-import * as I from '@effect/data/Identity';
 import * as Z from '@effect/io/Effect';
 
 import GMConfigItem from '@/GMConfigItem';
@@ -17,9 +16,12 @@ export default <T1 extends GM.Value, T2>(
     defaultValue,
     toGm,
   },
-  I.letDiscard('getValue', pipe(
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    Z.promise(() => GM.getValue(key) as Promise<T1>),
-    Z.map((x) => (x !== undefined ? toConfig(x) : defaultValue)),
-  )),
+  (ctx) => ({
+    ...ctx,
+    getValue: pipe(
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      Z.promise(() => GM.getValue(key) as Promise<T1>),
+      Z.map((x) => (x !== undefined ? toConfig(x) : defaultValue)),
+    ),
+  }),
 );

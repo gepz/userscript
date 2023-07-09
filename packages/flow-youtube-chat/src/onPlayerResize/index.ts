@@ -1,6 +1,5 @@
 import {
   pipe,
-  flow,
 } from '@effect/data/Function';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Z from '@effect/io/Effect';
@@ -13,18 +12,17 @@ export default (
   rect: DOMRectReadOnly,
   mainState: MainState,
 ): Z.Effect<never, never, void> => pipe(
-  rect,
-  Z.succeed,
-  Z.tap((x) => Z.logDebug(
-    `Resize [${x.width.toFixed(1)}, ${x.height.toFixed(1)}]`,
-  )),
-  Z.flatMap(flow(
-    (x) => Z.sync(() => mainState.playerRect.next(x)),
+  Z.succeed(rect),
+  Z.tap((x) => Z.log({
+    level: 'Debug',
+  })(`Resize [${x.width.toFixed(1)}, ${x.height.toFixed(1)}]`)),
+  Z.flatMap((r) => pipe(
+    Z.sync(() => mainState.playerRect.next(r)),
     Z.map(() => mainState.flowChats.value),
     Z.map(RA.flatMap((x) => [
       renderChat(x)(mainState),
       setChatAnimation(x)(mainState),
     ])),
-    Z.flatMap(Z.all),
+    Z.flatMap((x) => Z.all(x)),
   )),
 );

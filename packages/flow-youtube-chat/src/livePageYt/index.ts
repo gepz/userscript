@@ -1,6 +1,5 @@
 import {
   pipe,
-  flow,
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import * as Cause from '@effect/io/Cause';
@@ -10,10 +9,10 @@ import LivePage from '@/LivePage';
 
 const chatApp: Z.Effect<never, Cause.NoSuchElementException, Element> = pipe(
   Z.sync(() => document.querySelector<HTMLIFrameElement>('#chatframe')),
-  Z.flatMap(flow(
-    O.fromNullable,
-    O.filter(flow(
-      (x: HTMLIFrameElement) => x.contentDocument?.readyState,
+  Z.flatMap((nullableFrame) => pipe(
+    O.fromNullable(nullableFrame),
+    O.filter((frame) => pipe(
+      frame.contentDocument?.readyState,
       (x) => x === 'loading' || x === 'complete',
     )),
     O.flatMapNullable((x) => x.contentDocument),
@@ -29,8 +28,8 @@ export default ({
   ),
   settingsToggleNextElement: pipe(
     Z.sync(() => document.querySelector<HTMLElement>('#menu-container')),
-    Z.flatMap(flow(
-      O.fromNullable,
+    Z.flatMap((container) => pipe(
+      O.fromNullable(container),
       O.filter((x) => x.offsetParent !== null),
       O.flatMapNullable((x) => x.querySelector(
         '.dropdown-trigger.ytd-menu-renderer',
@@ -56,26 +55,22 @@ export default ({
   ),
   chatField: pipe(
     chatApp,
-    Z.flatMap(flow(
-      (x) => x.querySelector<HTMLElement>(
-        '#items.yt-live-chat-item-list-renderer',
-      ),
+    Z.flatMap((app) => pipe(
+      app.querySelector<HTMLElement>('#items.yt-live-chat-item-list-renderer'),
       O.fromNullable,
     )),
   ),
   chatTicker: pipe(
     chatApp,
-    Z.flatMap(flow(
-      (x) => x.querySelector<HTMLElement>(
-        '#items.yt-live-chat-ticker-renderer',
-      ),
+    Z.flatMap((app) => pipe(
+      app.querySelector<HTMLElement>('#items.yt-live-chat-ticker-renderer'),
       O.fromNullable,
     )),
   ),
   chatScroller: pipe(
     chatApp,
-    Z.flatMap(flow(
-      (x) => x.querySelector<HTMLElement>(
+    Z.flatMap((app) => pipe(
+      app.querySelector<HTMLElement>(
         '#item-scroller.yt-live-chat-item-list-renderer',
       ),
       O.fromNullable,

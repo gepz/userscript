@@ -37,7 +37,7 @@ export default (
       ),
     ],
     RA.compact,
-    Z.all,
+    (x) => Z.all(x),
   )),
   Z.ignore,
 );

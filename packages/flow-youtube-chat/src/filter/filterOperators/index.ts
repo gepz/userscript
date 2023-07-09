@@ -1,6 +1,6 @@
 import {
-  flow,
   flip,
+  pipe,
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
@@ -8,7 +8,10 @@ import * as Str from '@effect/data/String';
 import {
   booleanEvery,
   booleanSome,
-} from '@effect/data/typeclass/Monoid';
+} from '@effect/typeclass/Monoid';
+import {
+  Tail,
+} from 'ts-toolbelt/out/List/Tail';
 // import * as P from '@effect/data/Predicate';
 
 import DisplayText from '@/DisplayText';
@@ -27,8 +30,10 @@ const matchedByText = (text: DisplayText) => (
 
 const filterOperators = {
   flip,
-  flow: (fns: Parameters<typeof flow>): (
-  ...a: readonly unknown[]) => unknown => flow(...fns),
+  flow: (fns: Tail<Parameters<typeof pipe>>) => (x: unknown) => pipe(
+    x,
+    ...fns,
+  ),
   and: booleanEvery.combineAll,
   or: booleanSome.combineAll,
   RA: {

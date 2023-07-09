@@ -3,10 +3,10 @@ import {
 } from '@effect/data/Function';
 import * as N from '@effect/data/Number';
 import * as O from '@effect/data/Option';
-import * as RA from '@effect/data/ReadonlyArray';
 import {
   contramap,
-} from '@effect/data/typeclass/Order';
+} from '@effect/data/Order';
+import * as RA from '@effect/data/ReadonlyArray';
 import memoize from 'micro-memoize';
 
 import FlowChat from '@/FlowChat';

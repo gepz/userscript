@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "moduleResolution": "nodenext",
+    "moduleResolution": "Node16",
     "noImplicitAny": true,
     "resolveJsonModule": true,
-    "module": "es6",
+    "module": "Node16",
     "target": "es2020",
     "jsx": "react",
     "allowJs": true,
@@ -25,7 +25,7 @@
     "sourceMap": true,
     "declarationMap": true,
     "plugins": [
-      { "transform": "typescript-transform-paths", "after": true },
+      { "transform": "typescript-transform-paths" },
       { "transform": "typescript-transform-paths", "afterDeclarations": true }
     ]
   },

@@ -28,31 +28,33 @@ const getConsoleLog = (
 // eslint-disable-next-line no-console
 : console.log).bind(console);
 
-export default Logger.make<string, void>((
-  fiberId,
+export default Logger.make<string, void>(({
   logLevel,
   message,
-  cause,
   context,
-  span,
   annotations,
   // eslint-disable-next-line max-params, no-console
-) => Z.runPromise(pipe(
+}) => Z.runPromise(pipe(
   () => `${pipe(
     annotations,
     HM.get(LogAnnotationKeys.name),
-    O.match(() => '', (x) => `[${x}] `),
+    O.match({
+      onNone: () => '',
+      onSome: (x) => `[${x}] `,
+    }),
   )}${message}`,
   (getStr) => pipe(
     FiberRefs.getOrDefault(context, logMeta),
-    O.match(
-      () => (LogLevel.greaterThanEqual(LogLevel.Warning)(logLevel) ? Z.sync(
-        () => getConsoleLog(logLevel)(getStr()),
-      ) : Z.unit()),
-      (meta) => Z.sync(() => getConsoleLog(logLevel)(
+    (x) => x,
+    O.match({
+      onNone: () => (
+        LogLevel.greaterThanEqual(LogLevel.Warning)(logLevel) ? Z.sync(
+          () => getConsoleLog(logLevel)(getStr()),
+        ) : Z.unit),
+      onSome: (meta) => Z.sync(() => getConsoleLog(logLevel)(
         `${getStr()}: `,
         meta,
       )),
-    ),
+    }),
   ),
 )));

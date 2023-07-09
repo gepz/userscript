@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 * Nothing
 
+## 1.16.2
+
 ## 1.16.1
 
 ### Changed

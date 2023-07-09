@@ -12,7 +12,7 @@ const setFilteredString = <S extends string>(
 ): Setter<string, S> => (value) => (state) => pipe(
   value,
   O.liftPredicate(
-    (x): x is S => RA.contains(Str.Equivalence)(allowedStrings, x),
+    (x): x is S => RA.containsWith(Str.Equivalence)(allowedStrings, x),
   ),
   O.getOrElse(() => state),
 );

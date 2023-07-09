@@ -9,7 +9,7 @@ export default (
   chat: HTMLElement,
 ): Z.Effect<never, never, void> => (chat.querySelector(
   '.style-scope.yt-live-chat-paid-message-renderer',
-) ? Z.unit()
+) ? Z.unit
 : pipe(
   [
     '#author-photo',
@@ -25,5 +25,5 @@ export default (
     // eslint-disable-next-line no-param-reassign
     chat.style.borderBottom = '1px solid var(--yt-spec-text-secondary)';
   })),
-  Z.all,
+  (x) => Z.all(x),
 ));

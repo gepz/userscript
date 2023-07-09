@@ -51,6 +51,9 @@ export default <T>(
   }, pipe(
     tabs,
     RA.get(mainTab),
-    O.match(() => undefined, (x) => x()),
+    O.match({
+      onNone: () => undefined,
+      onSome: (x) => x(),
+    }),
   )),
 ]);

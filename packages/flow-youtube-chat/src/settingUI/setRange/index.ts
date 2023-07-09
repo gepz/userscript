@@ -1,7 +1,6 @@
 import {
   pipe,
 } from '@effect/data/Function';
-import * as I from '@effect/data/Identity';
 import * as RA from '@effect/data/ReadonlyArray';
 import Editable, * as Ed from '@userscript/ui/Editable';
 import {
@@ -27,12 +26,11 @@ export default (
 ) => (
   s: SettingState,
 ): SettingDispatchable => pipe(
-  {
-    a: Ed.value(vA),
-  },
-  I.let('b', ({
+  Ed.value(vA),
+  (a) => ({
     a,
-  }) => bFn(a)(Ed.value(s[keyB]))),
+    b: bFn(a)(Ed.value(s[keyB])),
+  }),
   ({
     a,
     b,

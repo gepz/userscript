@@ -1,8 +1,6 @@
 import {
-  flow,
   pipe,
 } from '@effect/data/Function';
-import * as I from '@effect/data/Identity';
 import * as P from '@effect/data/Predicate';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Str from '@effect/data/String';
@@ -23,8 +21,8 @@ const stringsArgs: [
   (x: readonly string[]) => string,
 ] = [
   [],
-  flow(
-    Str.split(/\r\n|\n/),
+  (x) => pipe(
+    Str.split(/\r\n|\n/)(x),
     RA.filter(P.not(Str.isEmpty)),
   ),
   RA.join('\n'),
@@ -88,9 +86,9 @@ const defaultGMConfig: GMConfig = pipe(
     shadowColor: sc<string>('shadowColor', '#000000'),
     logEvents: sc<boolean>('logEvents', true),
   },
-  I.bind(
-    'filterExp',
-    (x) => ic<string, expEval.parse.Expression>(
+  (x) => ({
+    ...x,
+    filterExp: ic<string, expEval.parse.Expression>(
       'filterExp',
       expEval.parse(`
   or([
@@ -102,8 +100,8 @@ const defaultGMConfig: GMConfig = pipe(
   ])),
   RA.some(
     flip(flow([matchedByText, RA.some]))(${
-  JSON.stringify(x.bannedWordRegexes.defaultValue)
-})
+    JSON.stringify(x.bannedWordRegexes.defaultValue)
+    })
   )(RA.compact([
     messageText,
     paymentInfo
@@ -116,7 +114,7 @@ const defaultGMConfig: GMConfig = pipe(
       expEval.parse,
       generate,
     ),
-  ),
+  }),
 );
 
 export default defaultGMConfig;
