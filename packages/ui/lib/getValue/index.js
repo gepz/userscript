@@ -1,4 +1,6 @@
-export default (e) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = (e) => {
     // eslint-disable-next-line max-len
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/consistent-type-assertions, @typescript-eslint/dot-notation
     const target = e.currentTarget ?? e['__target'];

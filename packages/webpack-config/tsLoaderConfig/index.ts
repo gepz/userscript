@@ -16,7 +16,6 @@ export default (configFile: string): Configuration => ({
               sourceMap: false,
               declarationMap: false,
             },
-            transpileOnly: true,
           },
         },
         exclude: /node_modules/,

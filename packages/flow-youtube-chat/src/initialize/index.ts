@@ -3,7 +3,6 @@ import {
 } from '@effect/data/Duration';
 import {
   pipe,
-  flow,
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
@@ -76,16 +75,16 @@ export default ({
     configKeys: Object.keys(x) as (keyof UserConfig)[],
   }),
   Z.succeed,
-  Z.letDiscard('updateSettingState', (
+  Z.let('updateSettingState', () => (
     dispatchable: Dispatchable<SettingState>,
   ): Z.Effect<never, never, void> => provideLog(pipe(
     settingUpdateApps.value,
     RA.map((x) => Z.sync(() => x(dispatchable))),
-    Z.all,
+    (x) => Z.all(x),
   ))),
   Z.bind('config', (ctx) => makeConfig(ctx.gmConfig)),
-  Z.let('getConfig', (ctx) => makeGetter(ctx.config)),
-  flow(
+  (context) => context.pipe(
+    Z.let('getConfig', (ctx) => makeGetter(ctx.config)),
     Z.let('mainState', (x): MainState => ({
       chatPlaying: new BehaviorSubject(true),
       playerRect: new BehaviorSubject(new DOMRectReadOnly(0, 0, 600, 400)),
@@ -116,11 +115,9 @@ export default ({
         Z.ignore,
       ),
     )),
-    Z.letDiscard('channel', new BroadcastChannel<
+    Z.let('channel', () => new BroadcastChannel<
     [keyof UserConfig, UserConfig[keyof UserConfig]]
     >(scriptIdentifier)),
-  ),
-  flow(
     Z.let('setConfig', (ctx) => ctx.setterFromKeysMap(
       (key) => (val) => pipe(
         ctx.changedConfigMap(key)(val),
@@ -132,7 +129,7 @@ export default ({
         Z.ignore,
       ),
     )),
-    Z.bindDiscard('reinitSubject', Z.sync(() => new Subject<void>())),
+    Z.bind('reinitSubject', () => Z.sync(() => new Subject<void>())),
     Z.let('reinitialize', (ctx) => provideLog(Z.sync(() => {
       requestAnimationFrame(() => forwardTo(ctx.reinitSubject)());
     }))),
@@ -157,7 +154,7 @@ export default ({
       ctx.stateInit,
     )),
   ),
-  flow(
+  (context) => context.pipe(
     Z.tap((ctx) => Z.sync(() => settingUpdateApps.next([
       ctx.wrappedSettings.dispatch,
       ctx.wrappedToggleSettings.dispatch,
@@ -169,18 +166,22 @@ export default ({
         `User Agent: ${window.navigator.userAgent}`,
         `GMConfig: ${JSON.stringify(ctx.config, undefined, '\t')}`,
       ],
-      RA.map(Z.logDebug),
-      Z.all,
+      RA.map(Z.log({
+        level: 'Debug',
+      })),
+      (x) => Z.all(x),
     )),
     Z.zipLeft(pipe(
-      Z.logDebug('10s...'),
+      Z.log({
+        level: 'Debug',
+      })('10s...'),
       Z.repeat(Schedule.fixed(seconds(10))),
       Z.delay(seconds(10)),
       Z.forkDaemon,
     )),
   ),
-  Z.letDiscard('live', makePageState(livePageYt)),
-  Z.bindDiscard('chatScreen', makeChatScreen),
+  Z.let('live', () => makePageState(livePageYt)),
+  Z.bind('chatScreen', () => makeChatScreen),
   Z.let('co', (ctx): ConfigObservable => pipe(
     ctx.configSubject,
     mapObject(([k, value]) => [
@@ -205,9 +206,9 @@ export default ({
               'bannedUsers',
               'bannedWordRegexes',
             ] as const,
-            RA.contains(Str.Equivalence)(k),
+            RA.containsWith(Str.Equivalence)(k),
             (x) => (x ? ctx.setConfig.filterExp(defaultFilter(ctx.config))
-            : Z.unit()),
+            : Z.unit),
           )),
           (x) => () => Z.runPromise(provideLog(x)),
           (x) => Z.sync(() => requestAnimationFrame(x)),
@@ -227,7 +228,9 @@ export default ({
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       logWithMeta(LogLevel.Error)(`Stream Errored: ${x}`)(x),
     ),
-    complete: () => Z.runPromise(Z.logWarning('Stream complete')),
+    complete: () => Z.runPromise(Z.log({
+      level: 'Warning',
+    })('Stream complete')),
   }))),
   Z.tap((ctx) => ctx.reinitialize),
 ));

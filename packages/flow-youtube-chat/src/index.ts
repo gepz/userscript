@@ -14,12 +14,11 @@ import initialize from '@/initialize';
 import provideLog from '@/provideLog';
 
 Z.runPromise(pipe(
-  Z.Do(),
-  Z.letDiscard(
+  Z.Do,
+  Z.let(
     'settingUpdateApps',
-    new BehaviorSubject<Dispatch<SettingState>[]>([]),
+    () => new BehaviorSubject<Dispatch<SettingState>[]>([]),
   ),
   Z.let('provideLog', (x) => provideLog(x.settingUpdateApps)),
   Z.flatMap(initialize),
-  Z.withParallelism('unbounded'),
 ));

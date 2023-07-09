@@ -1,15 +1,13 @@
 import {
+  strict,
+} from '@effect/data/Equivalence';
+import {
   pipe,
   apply,
-  flow,
   identity,
 } from '@effect/data/Function';
-import * as I from '@effect/data/Identity';
 import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
-import {
-  strict,
-} from '@effect/data/typeclass/Equivalence';
 import * as Z from '@effect/io/Effect';
 import * as LogLevel from '@effect/io/Logger/Level';
 import {
@@ -122,27 +120,26 @@ export default (
     bodyResizeDetectInterval: 300,
     errorRetryInterval: 5000,
     ...pipe(
-      {
-        settingsRectSubject: new BehaviorSubject(
-          new DOMRectReadOnly(
-            0,
-            0,
-            settingsPanelSize.width,
-            settingsPanelSize.height,
+      new BehaviorSubject(new DOMRectReadOnly(
+        0,
+        0,
+        settingsPanelSize.width,
+        settingsPanelSize.height,
+      )),
+      (settingsRectSubject) => ({
+        settingsRectSubject,
+        tapUpdateSettingsRect: <T>(ob: Observable<T>) => switchMap(
+          (value: T) => pipe(
+            settingsRectSubject,
+            first(),
+            map(updateSettingsRect(wrappedToggleSettings.node)(
+              (rect) => Z.sync(() => settingsRectSubject.next(rect)),
+            )),
+            tapEffect(provideLog),
+            map(() => value),
           ),
-        ),
-      },
-      I.let('tapUpdateSettingsRect', ({
-        settingsRectSubject,
-      }) => <T>(ob: Observable<T>) => switchMap((value: T) => pipe(
-        settingsRectSubject,
-        first(),
-        map(updateSettingsRect(wrappedToggleSettings.node)(
-          (rect) => Z.sync(() => settingsRectSubject.next(rect)),
-        )),
-        tapEffect(provideLog),
-        map(() => value),
-      ))(ob)),
+        )(ob),
+      }),
     ),
     co,
     config$: configStream(
@@ -154,16 +151,18 @@ export default (
     ),
   },
   Z.succeed,
-  Z.bindDiscard('css', mainCss),
-  Z.bindDiscard('documentMutationPair', observePair(MutationObserver)),
-  Z.bindDiscard('chatMutationPair', observePair(MutationObserver)),
-  Z.bindDiscard('playerResizePair', observePair(ResizeObserver)),
-  Z.bindDiscard('bodyResizePair', observePair(ResizeObserver)),
+  Z.bind('css', () => mainCss),
+  Z.bind('documentMutationPair', () => observePair(MutationObserver)),
+  Z.bind('chatMutationPair', () => observePair(MutationObserver)),
+  Z.bind('playerResizePair', () => observePair(ResizeObserver)),
+  Z.bind('bodyResizePair', () => observePair(ResizeObserver)),
   Z.map((c) => pipe(
     reinitSubject,
     observeOn(asyncScheduler),
     delay(c.initDelay),
-    tapEffect(() => provideLog(Z.logInfo('Init'))),
+    tapEffect(() => provideLog(Z.log({
+      level: 'Info',
+    })('Init'))),
     switchMap(() => pipe(
       interval(c.changeDetectInterval),
       c.tapUpdateSettingsRect,
@@ -182,10 +181,12 @@ export default (
             })),
             Z.map(O.isSome),
             Z.map((x) => `${key} ${x ? 'found' : 'lost'}`),
-            Z.flatMap(Z.logDebug),
+            Z.flatMap(Z.log({
+              level: 'Debug',
+            })),
             Z.isSuccess,
           )),
-          Z.all,
+          (x) => Z.all(x),
           Z.map(RA.some(identity)),
         )))),
         filter(identity),
@@ -194,7 +195,9 @@ export default (
       startWith(0),
     )),
     tapEffect(() => provideLog(pipe(
-      Z.logDebug('Loading...'),
+      Z.log({
+        level: 'Debug',
+      })('Loading...'),
       Z.zipRight(removeOldChats(mainState.flowChats)(0)),
       Z.zipRight(
         Z.sync(() => {
@@ -226,7 +229,8 @@ export default (
           ),
           pipe(
             live.player.ele,
-            O.map(flow(
+            O.map((element) => pipe(
+              element,
               Z.succeed,
               Z.tap((x) => Z.sync(
                 () => c.playerResizePair.observer.observe(x),
@@ -260,7 +264,7 @@ export default (
           O.isSome,
           (x) => Z.sync(() => mainState.chatPlaying.next(x)),
         )),
-        Z.all,
+        (x) => Z.all(x),
       )),
     ))),
     switchMap(() => merge(
@@ -284,7 +288,9 @@ export default (
           startWith(config[key]),
           bufferCount(2, 1),
           map(([x, y]) => diff(x, y)),
-          map((x) => Z.logDebug(
+          map((x) => Z.log({
+            level: 'Debug',
+          })(
             `Config ${key}: ${JSON.stringify(x, undefined, 2)}`,
           )),
           tapEffect(provideLog),
@@ -293,9 +299,10 @@ export default (
       c.config$,
       pipe(
         live.video.ele,
-        O.match(
-          () => EMPTY,
-          flow(
+        O.match({
+          onNone: () => EMPTY,
+          onSome: (element) => pipe(
+            element,
             videoToggleStream,
             map((playing) => playing || O.isSome(live.offlineSlate.ele)),
             map((chatPlaying) => pipe(
@@ -304,12 +311,12 @@ export default (
                 mainState.flowChats.value,
                 RA.map(setChatPlayState),
                 RA.map(apply(mainState)),
-                Z.all,
+                (x) => Z.all(x),
               )),
             )),
             tapEffect(provideLog),
           ),
-        ),
+        }),
       ),
       pipe(
         c.chatMutationPair.subject,
@@ -328,9 +335,13 @@ export default (
         skip(1),
         c.tapUpdateSettingsRect,
         map((x) => Z.all([
-          Z.logDebug(`URL Changed: ${x}`),
+          Z.log({
+            level: 'Debug',
+          })(`URL Changed: ${x}`),
           removeOldChats(mainState.flowChats)(0),
-          Z.logDebug(`Wait for ${c.urlDelay}ms...`),
+          Z.log({
+            level: 'Debug',
+          })(`Wait for ${c.urlDelay}ms...`),
         ])),
         tapEffect(provideLog),
         delay(c.urlDelay),
@@ -343,10 +354,14 @@ export default (
           trailing: true,
         }),
         startWith([]),
-        map(flow(
+        map((stream) => pipe(
+          stream,
           () => live.player.ele,
           O.map((x) => x.getBoundingClientRect()),
-          O.match(() => Z.unit(), (x) => onPlayerResize(x, mainState)),
+          O.match({
+            onNone: () => Z.unit,
+            onSome: (x) => onPlayerResize(x, mainState),
+          }),
         )),
         tapEffect(provideLog),
 

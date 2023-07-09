@@ -22,7 +22,7 @@ export const makeConfig = (
     c.getValue,
     Z.map((x: UserConfig[keyof GMConfig]) => [k, x] as const),
   )),
-  Z.all,
+  (x) => Z.all(x),
   Z.map<
   readonly (readonly [keyof UserConfig, UserConfig[keyof UserConfig]])[],
   UserConfig

@@ -2,10 +2,10 @@ import * as B from '@effect/data/Boolean';
 import {
   pipe,
 } from '@effect/data/Function';
-import * as RA from '@effect/data/ReadonlyArray';
 import {
   contramap,
-} from '@effect/data/typeclass/Order';
+} from '@effect/data/Order';
+import * as RA from '@effect/data/ReadonlyArray';
 import * as Z from '@effect/io/Effect';
 import {
   BehaviorSubject,
@@ -26,7 +26,9 @@ export default (
   Z.flatMap(([newChats, oldChats]) => pipe(
     oldChats,
     Z.forEach((x) => pipe(
-      Z.logDebug('RemoveChat'),
+      Z.log({
+        level: 'Debug',
+      })('RemoveChat'),
       Z.zipRight(Z.sync(() => {
         x.element.remove();
       })),

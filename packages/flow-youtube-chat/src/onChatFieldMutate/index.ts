@@ -1,9 +1,7 @@
 import {
   pipe,
-  flow,
   identity,
 } from '@effect/data/Function';
-import * as I from '@effect/data/Identity';
 import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Z from '@effect/io/Effect';
@@ -23,7 +21,8 @@ export default (
   mainState: MainState,
   getConfig: UserConfigGetter,
   setConfig: UserConfigSetter,
-): (r: MutationRecord[]) => Z.Effect<never, never, unknown> => flow(
+) => (records: MutationRecord[]): Z.Effect<never, never, unknown> => pipe(
+  records,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   RA.flatMap((e) => (Array.from(e.addedNodes) as HTMLElement[])),
   RA.filter((x) => x.children.length > 0),
@@ -33,9 +32,11 @@ export default (
       getData: parseChat(chat),
       config: mainState.config,
     },
-    I.let('data', (x) => x.getData(x.config)),
     Z.succeed,
-    Z.zipLeft(Z.logDebug('Chat detected')),
+    Z.let('data', (x) => x.getData(x.config)),
+    Z.zipLeft(Z.log({
+      level: 'Debug',
+    })('Chat detected')),
     Z.bind('banned', (x) => pipe(
       checkBannedWords(x.data, x.config),
     )),
@@ -60,7 +61,9 @@ export default (
         Z.flatMap((x: string) => appendChatMessage(
           banButton(x)(getConfig)(setConfig)(chat),
         )(chat)),
-        Z.zipLeft(Z.logDebug('Ban button added')),
+        Z.zipLeft(Z.log({
+          level: 'Debug',
+        })('Ban button added')),
         Z.ignore,
       ),
       pipe(
@@ -69,10 +72,12 @@ export default (
         Z.flatMap<boolean, never, never, void>(
           () => setChatFieldSimplifyStyle(chat),
         ),
-        Z.zipLeft(Z.logDebug('Chat simplified')),
+        Z.zipLeft(Z.log({
+          level: 'Debug',
+        })('Chat simplified')),
         Z.ignore,
       ),
     ]))),
   )),
-  Z.all,
+  (x) => Z.all(x),
 );

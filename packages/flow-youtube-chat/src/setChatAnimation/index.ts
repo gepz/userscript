@@ -100,10 +100,14 @@ export default (
         ] as const,
         RA.map(pipe(
           (x: number) => `${x}px`,
-          (x) => tuple.bimap(x, x),
+          (x) => tuple.mapBoth({
+            onFirst: x,
+            onSecond: x,
+          }),
         )),
-        RA.map((([x, y]) => `translate(${x}, ${y})`)),
-        RA.bindTo('transform'),
+        RA.map((([x, y]) => ({
+          transform: `translate(${x}, ${y})`,
+        }))),
         (x) => Z.sync(() => chat.element.animate(x, {
           duration: flowDuration,
           easing: mainState.config.timingFunction,
@@ -128,7 +132,7 @@ export default (
         Z.zipRight(setChatPlayState(chat)(mainState)),
       ),
     ],
-    Z.all,
+    (x) => Z.all(x),
   )),
   Z.isSuccess,
 );

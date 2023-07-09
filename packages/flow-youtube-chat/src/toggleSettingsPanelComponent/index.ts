@@ -1,5 +1,4 @@
 import {
-  flow,
   pipe,
 } from '@effect/data/Function';
 import * as Z from '@effect/io/Effect';
@@ -41,8 +40,10 @@ const togglePanel = (
   ],
 );
 
-export default flow(
-  togglePanel,
+export default (
+  updateState: (x: Dispatchable<SettingState>) => Z.Effect<never, never, void>,
+) => pipe(
+  togglePanel(updateState),
   (toggle) => (
     state: SettingState,
   ): VNode<SettingState> => h('button', {

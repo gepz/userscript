@@ -1,5 +1,5 @@
 import {
-  flow,
+  pipe,
   constant,
 } from '@effect/data/Function';
 import * as P from '@effect/data/Predicate';
@@ -8,8 +8,8 @@ import * as Str from '@effect/data/String';
 
 import Setter from '@/setter/Setter';
 
-const setStrings: Setter<string, readonly string[]> = flow(
-  Str.split(/\r\n|\n/),
+const setStrings: Setter<string, readonly string[]> = (x) => pipe(
+  Str.split(x, /\r\n|\n/),
   RA.filter(P.not(Str.isEmpty)),
   constant,
 );

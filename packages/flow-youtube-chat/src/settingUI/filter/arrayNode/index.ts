@@ -89,7 +89,10 @@ export default (
   O.map((ctx) => pipe(
     ctx.types,
     O.liftPredicate(RA.every((x): x is Type => x.tag !== 'error')),
-    O.match(() => errorType.error, tupleType.of),
+    O.match({
+      onNone: () => errorType.error,
+      onSome: tupleType.of,
+    }),
     (type) => ({
       type,
       nodes: ctx.nodes,

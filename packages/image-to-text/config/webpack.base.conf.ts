@@ -15,5 +15,8 @@ export default merge(
       new ForkTsCheckerWebpackPlugin(),
       new HtmlWebpackPlugin(),
     ],
+    stats: {
+      errorDetails: true,
+    },
   },
 );

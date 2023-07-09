@@ -1,6 +1,5 @@
 import * as Brand from '@effect/data/Brand';
 import {
-  flow,
   pipe,
 } from '@effect/data/Function';
 import * as RA from '@effect/data/ReadonlyArray';
@@ -60,26 +59,29 @@ export const importLog = (s: string): Log => makeLog(pipe(
   s[0] === '<' ? s.slice(5, -6) : s,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   (x) => JSON.parse(x) as LogExport,
-  (x) => ({
-    nextId: x.nextId,
+  (log) => ({
+    nextId: log.nextId,
     ...pipe(
-      x.blocks,
+      log.blocks,
       RA.mapNonEmpty(decompressFromEncodedURIComponent),
-      RA.matchRight(() => ({
-        compressedBlocks: [],
-        lastBlock: [],
-      }), (init, last) => ({
-        compressedBlocks: RA.map(
-          init,
-          flow(
-            compressToUTF16,
-            makeCompressedLogBlock,
+      RA.matchRight({
+        onEmpty: () => ({
+          compressedBlocks: [],
+          lastBlock: [],
+        }),
+        onNonEmpty: (init, last) => ({
+          compressedBlocks: RA.map(
+            init,
+            (x) => pipe(
+              compressToUTF16(x),
+              makeCompressedLogBlock,
+            ),
           ),
-        ),
-        // eslint-disable-next-line max-len
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        lastBlock: JSON.parse(last) as LogBlock,
-      })),
+          // eslint-disable-next-line max-len
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          lastBlock: JSON.parse(last) as LogBlock,
+        }),
+      }),
     ),
   }),
 ));

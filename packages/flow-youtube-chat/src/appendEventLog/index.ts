@@ -1,5 +1,5 @@
 import {
-  flow,
+  pipe,
 } from '@effect/data/Function';
 import * as logLevel from '@effect/io/Logger/Level';
 
@@ -10,9 +10,9 @@ import preserveEventLogBlockCount from '@/preserveEventLogBlockCount';
 export default (
   text: string,
   level: logLevel.LogLevel['label'],
-): (l: Log) => Log => flow(
-  (x) => (x.compressedBlocks.length === maxEventLogBlockCount ? log.removeBlock(
+) => (x: Log): Log => pipe(
+  x.compressedBlocks.length === maxEventLogBlockCount ? log.removeBlock(
     Math.floor(preserveEventLogBlockCount),
-  )(x) : x),
+  )(x) : x,
   log.append(text, level),
 );

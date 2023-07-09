@@ -1,6 +1,5 @@
 import {
   pipe,
-  flow,
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
@@ -53,8 +52,9 @@ export default (
 ): Z.Effect<never, never, HTMLElement> => pipe(
   getConfig.bannedUsers,
   Z.filterOrFail((x) => !x.includes(id), O.none),
-  Z.map(flow(
-    RA.uniq(Str.Equivalence),
+  Z.map((x) => pipe(
+    x,
+    RA.dedupeWith(Str.Equivalence),
     RA.append(id),
   )),
   Z.flatMap((x) => pipe(

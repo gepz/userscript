@@ -1,5 +1,7 @@
-import { h, } from 'hyperapp';
-export default (action) => (color) => h('input', {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const hyperapp_1 = require("hyperapp");
+exports.default = (action) => (color) => (0, hyperapp_1.h)('input', {
     style: {
         width: '36px',
         verticalAlign: 'middle',
