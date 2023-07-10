@@ -21,4 +21,5 @@ Z.runPromise(pipe(
   ),
   Z.let('provideLog', (x) => provideLog(x.settingUpdateApps)),
   Z.flatMap(initialize),
+  Z.withInheritedConcurrency('unbounded'),
 ));
