@@ -18,13 +18,12 @@ export const makeConfig = (
 ): Z.Effect<never, never, UserConfig> => pipe(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   Object.entries(config) as [(keyof GMConfig), GMConfig[keyof GMConfig]][],
-  RA.map(([k, c]) => pipe(
-    c.getValue,
+  RA.map(([k, c]) => c.getValue.pipe(
     Z.map((x: UserConfig[keyof GMConfig]) => [k, x] as const),
   )),
-  (x) => Z.all(x),
+  Z.all,
   Z.map<
-  readonly (readonly [keyof UserConfig, UserConfig[keyof UserConfig]])[],
+  readonly(readonly [keyof UserConfig, UserConfig[keyof UserConfig]])[],
   UserConfig
   >(Object.fromEntries),
 );

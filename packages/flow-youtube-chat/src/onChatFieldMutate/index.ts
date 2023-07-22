@@ -34,9 +34,7 @@ export default (
     },
     Z.succeed,
     Z.let('data', (x) => x.getData(x.config)),
-    Z.zipLeft(Z.log({
-      level: 'Debug',
-    })('Chat detected')),
+    Z.zipLeft(Z.logDebug('Chat detected')),
     Z.bind('banned', (x) => pipe(
       checkBannedWords(x.data, x.config),
     )),
@@ -61,9 +59,7 @@ export default (
         Z.flatMap((x: string) => appendChatMessage(
           banButton(x)(getConfig)(setConfig)(chat),
         )(chat)),
-        Z.zipLeft(Z.log({
-          level: 'Debug',
-        })('Ban button added')),
+        Z.zipLeft(Z.logDebug('Ban button added')),
         Z.ignore,
       ),
       pipe(
@@ -72,12 +68,10 @@ export default (
         Z.flatMap<boolean, never, never, void>(
           () => setChatFieldSimplifyStyle(chat),
         ),
-        Z.zipLeft(Z.log({
-          level: 'Debug',
-        })('Chat simplified')),
+        Z.zipLeft(Z.logDebug('Chat simplified')),
         Z.ignore,
       ),
     ]))),
   )),
-  (x) => Z.all(x),
+  Z.all,
 );

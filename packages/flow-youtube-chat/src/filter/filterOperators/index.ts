@@ -6,9 +6,9 @@ import * as O from '@effect/data/Option';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Str from '@effect/data/String';
 import {
-  booleanEvery,
-  booleanSome,
-} from '@effect/typeclass/Monoid';
+  MonoidEvery,
+  MonoidSome,
+} from '@effect/typeclass/data/Boolean';
 import {
   Tail,
 } from 'ts-toolbelt/out/List/Tail';
@@ -30,12 +30,9 @@ const matchedByText = (text: DisplayText) => (
 
 const filterOperators = {
   flip,
-  flow: (fns: Tail<Parameters<typeof pipe>>) => (x: unknown) => pipe(
-    x,
-    ...fns,
-  ),
-  and: booleanEvery.combineAll,
-  or: booleanSome.combineAll,
+  flow: (fns: Tail<Parameters<typeof pipe>>) => (x: unknown) => pipe(x, ...fns),
+  and: MonoidEvery.combineAll,
+  or: MonoidSome.combineAll,
   RA: {
     some: RA.some,
     compact: RA.compact,

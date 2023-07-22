@@ -31,9 +31,7 @@ export default (
   )),
   Z.flatMap((logLayer) => pipe(
     effect,
-    Z.tapErrorCause((x) => Z.log({
-      level: 'Error',
-    })(Cause.pretty(x))),
+    Z.tapErrorCause((x) => Z.logError(Cause.pretty(x))),
     Z.provideSomeLayer(logLayer),
   )),
   Z.annotateLogs(LogAnnotationKeys.name, 'FYC'),

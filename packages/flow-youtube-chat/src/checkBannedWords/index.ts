@@ -35,8 +35,6 @@ export default (
   ]),
   O.map(RA.map(O.getOrElse(() => ''))),
   O.map(JSON.stringify),
-  Z.flatMap((x: string) => Z.log({
-    level: 'Debug',
-  })(`Filtered: ${x}`)),
+  Z.flatMap((x: string) => Z.logDebug(`Filtered: ${x}`)),
   Z.isSuccess,
 );

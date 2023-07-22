@@ -7,6 +7,7 @@ import {
   identity,
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
+import * as D from '@effect/data/Duration';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Z from '@effect/io/Effect';
 import * as LogLevel from '@effect/io/Logger/Level';
@@ -114,11 +115,11 @@ export default (
 ): Z.Effect<never, never, Observable<unknown>> => pipe(
   {
     eq: O.getEquivalence(strict()),
-    initDelay: 100,
-    urlDelay: 1700,
-    changeDetectInterval: 700,
-    bodyResizeDetectInterval: 300,
-    errorRetryInterval: 5000,
+    initDelay: D.millis(100),
+    urlDelay: D.millis(1700),
+    changeDetectInterval: D.millis(700),
+    bodyResizeDetectInterval: D.millis(300),
+    errorRetryInterval: D.millis(5000),
     ...pipe(
       new BehaviorSubject(new DOMRectReadOnly(
         0,
@@ -159,18 +160,15 @@ export default (
   Z.map((c) => pipe(
     reinitSubject,
     observeOn(asyncScheduler),
-    delay(c.initDelay),
-    tapEffect(() => provideLog(Z.log({
-      level: 'Info',
-    })('Init'))),
+    delay(D.toMillis(c.initDelay)),
+    tapEffect(() => provideLog(Z.logInfo('Init'))),
     switchMap(() => pipe(
-      interval(c.changeDetectInterval),
+      interval(D.toMillis(c.changeDetectInterval)),
       c.tapUpdateSettingsRect,
       concatMap((index) => pipe(
         from(Z.runPromise(provideLog(pipe(
           liveElementKeys,
-          RA.map((key) => pipe(
-            live[key].read,
+          RA.map((key) =>  live[key].read.pipe(
             Z.option,
             Z.flatMap(O.liftPredicate(
               (newEle) => !c.eq(live[key].ele, newEle),
@@ -181,13 +179,11 @@ export default (
             })),
             Z.map(O.isSome),
             Z.map((x) => `${key} ${x ? 'found' : 'lost'}`),
-            Z.flatMap(Z.log({
-              level: 'Debug',
-            })),
+            Z.flatMap((x) => Z.logDebug(x)),
             Z.isSuccess,
           )),
-          (x) => Z.all(x),
-          Z.map(RA.some(identity)),
+          Z.all,
+          Z.map(RA.some<boolean>(identity)),
         )))),
         filter(identity),
         map(() => index),
@@ -195,9 +191,7 @@ export default (
       startWith(0),
     )),
     tapEffect(() => provideLog(pipe(
-      Z.log({
-        level: 'Debug',
-      })('Loading...'),
+      Z.logDebug('Loading...'),
       Z.zipRight(removeOldChats(mainState.flowChats)(0)),
       Z.zipRight(
         Z.sync(() => {
@@ -215,39 +209,32 @@ export default (
       ),
       Z.zipRight(pipe(
         [
-          pipe(
-            live.chatField.ele,
+          live.chatField.ele.pipe(
             O.map((x) => Z.sync(() => c.chatMutationPair.observer.observe(x, {
               childList: true,
             }))),
           ),
-          pipe(
-            live.chatTicker.ele,
+          live.chatTicker.ele.pipe(
             O.map((x) => Z.sync(() => c.chatMutationPair.observer.observe(x, {
               childList: true,
             }))),
           ),
-          pipe(
-            live.player.ele,
+          live.player.ele.pipe(
             O.map((element) => pipe(
-              element,
-              Z.succeed,
+              Z.succeed(element),
               Z.tap((x) => Z.sync(
                 () => c.playerResizePair.observer.observe(x),
               )),
               Z.flatMap((x) => Z.sync(() => x.prepend(chatScreen))),
             )),
           ),
-          pipe(
-            live.toggleChatBtnParent.ele,
+          live.toggleChatBtnParent.ele.pipe(
             O.map((x) => Z.sync(() => x.prepend(wrappedToggleChat.node))),
           ),
-          pipe(
-            live.settingsToggleNextElement.ele,
+          live.settingsToggleNextElement.ele.pipe(
             O.map((x) => Z.sync(() => x.before(wrappedToggleSettings.node))),
           ),
-          pipe(
-            live.settingsContainer.ele,
+          live.settingsContainer.ele.pipe(
             O.map((x) => Z.sync(() => x.append(wrappedSettings.node))),
           ),
           pipe(
@@ -257,14 +244,13 @@ export default (
           ),
         ],
         RA.compact,
-        RA.append(pipe(
-          live.video.ele,
+        RA.append(live.video.ele.pipe(
           O.filter((x) => !x.paused),
           O.orElse(() => live.offlineSlate.ele),
           O.isSome,
           (x) => Z.sync(() => mainState.chatPlaying.next(x)),
         )),
-        (x) => Z.all(x),
+        Z.all,
       )),
     ))),
     switchMap(() => merge(
@@ -288,22 +274,18 @@ export default (
           startWith(config[key]),
           bufferCount(2, 1),
           map(([x, y]) => diff(x, y)),
-          map((x) => Z.log({
-            level: 'Debug',
-          })(
+          map((x) => Z.logDebug(
             `Config ${key}: ${JSON.stringify(x, undefined, 2)}`,
-          )),
+           )),
           tapEffect(provideLog),
         )),
       ),
       c.config$,
-      pipe(
-        live.video.ele,
+      live.video.ele.pipe(
         O.match({
           onNone: () => EMPTY,
           onSome: (element) => pipe(
-            element,
-            videoToggleStream,
+            videoToggleStream(element),
             map((playing) => playing || O.isSome(live.offlineSlate.ele)),
             map((chatPlaying) => pipe(
               Z.sync(() => mainState.chatPlaying.next(chatPlaying)),
@@ -311,7 +293,7 @@ export default (
                 mainState.flowChats.value,
                 RA.map(setChatPlayState),
                 RA.map(apply(mainState)),
-                (x) => Z.all(x),
+                Z.all,
               )),
             )),
             tapEffect(provideLog),
@@ -335,16 +317,12 @@ export default (
         skip(1),
         c.tapUpdateSettingsRect,
         map((x) => Z.all([
-          Z.log({
-            level: 'Debug',
-          })(`URL Changed: ${x}`),
+          Z.logDebug(`URL Changed: ${x}`),
           removeOldChats(mainState.flowChats)(0),
-          Z.log({
-            level: 'Debug',
-          })(`Wait for ${c.urlDelay}ms...`),
+          Z.logDebug(`Wait for ${c.urlDelay}ms...`),
         ])),
         tapEffect(provideLog),
-        delay(c.urlDelay),
+        delay(D.toMillis(c.urlDelay)),
         tapEffect(() => reinitialize),
       ),
       pipe(
@@ -354,9 +332,7 @@ export default (
           trailing: true,
         }),
         startWith([]),
-        map((stream) => pipe(
-          stream,
-          () => live.player.ele,
+        map(() => live.player.ele.pipe(
           O.map((x) => x.getBoundingClientRect()),
           O.match({
             onNone: () => Z.unit,
@@ -368,7 +344,7 @@ export default (
       ),
       pipe(
         c.bodyResizePair.subject,
-        throttleTime(c.bodyResizeDetectInterval, undefined, {
+        throttleTime(D.toMillis(c.bodyResizeDetectInterval), undefined, {
           leading: true,
           trailing: true,
         }),
@@ -385,14 +361,13 @@ export default (
     )),
     retry({
       delay: (e) => pipe(
-        e,
-        of,
+        of(e),
         tapEffect(() => provideLog(
           // eslint-disable-next-line max-len
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           logWithMeta(LogLevel.Error)(`Errored: ${e}`)(e),
         )),
-        delay(c.errorRetryInterval),
+        delay(D.toMillis(c.errorRetryInterval)),
         tapEffect(() => reinitialize),
       ),
     }),

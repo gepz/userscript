@@ -13,9 +13,9 @@ export default (
   mainState: MainState,
 ): Z.Effect<never, never, void> => pipe(
   Z.succeed(rect),
-  Z.tap((x) => Z.log({
-    level: 'Debug',
-  })(`Resize [${x.width.toFixed(1)}, ${x.height.toFixed(1)}]`)),
+  Z.tap((x) => Z.logDebug(
+    `Resize [${x.width.toFixed(1)}, ${x.height.toFixed(1)}]`,
+  )),
   Z.flatMap((r) => pipe(
     Z.sync(() => mainState.playerRect.next(r)),
     Z.map(() => mainState.flowChats.value),
@@ -23,6 +23,6 @@ export default (
       renderChat(x)(mainState),
       setChatAnimation(x)(mainState),
     ])),
-    Z.flatMap((x) => Z.all(x)),
+    Z.flatMap(Z.all),
   )),
 );

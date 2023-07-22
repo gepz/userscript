@@ -3,7 +3,7 @@ import {
   pipe,
 } from '@effect/data/Function';
 import {
-  contramap,
+  mapInput,
 } from '@effect/data/Order';
 import * as RA from '@effect/data/ReadonlyArray';
 import * as Z from '@effect/io/Effect';
@@ -19,16 +19,14 @@ export default (
   maxChatCount: number,
 ): Z.Effect<never, never, void> => pipe(
   Z.sync(() => flowChats.value),
-  Z.map(RA.sort(contramap((x: FlowChat) => !x.animationEnded)(B.Order))),
+  Z.map(RA.sort(mapInput((x: FlowChat) => !x.animationEnded)(B.Order))),
   (x) => x,
   Z.map(RA.splitAt(maxChatCount)),
   (x) => x,
   Z.flatMap(([newChats, oldChats]) => pipe(
     oldChats,
     Z.forEach((x) => pipe(
-      Z.log({
-        level: 'Debug',
-      })('RemoveChat'),
+      Z.logDebug('RemoveChat'),
       Z.zipRight(Z.sync(() => {
         x.element.remove();
       })),
