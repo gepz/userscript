@@ -80,7 +80,7 @@ export default ({
   ): Z.Effect<never, never, void> => provideLog(pipe(
     settingUpdateApps.value,
     RA.map((x) => Z.sync(() => x(dispatchable))),
-    (x) => Z.all(x),
+    Z.all,
   ))),
   Z.bind('config', (ctx) => makeConfig(ctx.gmConfig)),
   (context) => context.pipe(
@@ -166,15 +166,11 @@ export default ({
         `User Agent: ${window.navigator.userAgent}`,
         `GMConfig: ${JSON.stringify(ctx.config, undefined, '\t')}`,
       ],
-      RA.map(Z.log({
-        level: 'Debug',
-      })),
-      (x) => Z.all(x),
+      RA.map((x) => Z.logDebug(x)),
+      Z.all,
     )),
     Z.zipLeft(pipe(
-      Z.log({
-        level: 'Debug',
-      })('10s...'),
+      Z.logDebug('10s...'),
       Z.repeat(Schedule.fixed(seconds(10))),
       Z.delay(seconds(10)),
       Z.forkDaemon,
@@ -228,9 +224,7 @@ export default ({
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       logWithMeta(LogLevel.Error)(`Stream Errored: ${x}`)(x),
     ),
-    complete: () => Z.runPromise(Z.log({
-      level: 'Warning',
-    })('Stream complete')),
+    complete: () => Z.runPromise(Z.logWarning('Stream complete')),
   }))),
   Z.tap((ctx) => ctx.reinitialize),
 ));

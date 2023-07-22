@@ -22,7 +22,7 @@ const stringsArgs: [
 ] = [
   [],
   (x) => pipe(
-    Str.split(/\r\n|\n/)(x),
+    Str.split(x, /\r\n|\n/),
     RA.filter(P.not(Str.isEmpty)),
   ),
   RA.join('\n'),

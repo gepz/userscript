@@ -53,8 +53,7 @@ export default (
   getConfig.bannedUsers,
   Z.filterOrFail((x) => !x.includes(id), O.none),
   Z.map((x) => pipe(
-    x,
-    RA.dedupeWith(Str.Equivalence),
+    RA.dedupeWith(x, Str.Equivalence),
     RA.append(id),
   )),
   Z.flatMap((x) => pipe(

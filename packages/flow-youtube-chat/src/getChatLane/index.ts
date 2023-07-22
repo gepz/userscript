@@ -4,7 +4,7 @@ import {
 import * as N from '@effect/data/Number';
 import * as O from '@effect/data/Option';
 import {
-  contramap,
+  mapInput,
 } from '@effect/data/Order';
 import * as RA from '@effect/data/ReadonlyArray';
 import memoize from 'micro-memoize';
@@ -43,7 +43,7 @@ export default (
     flowChats,
     RA.take(chatIndex >= 0 ? chatIndex : flowChats.length),
     RA.filter((chat) => !chat.animationEnded && chat.width > 0),
-    RA.sort(contramap((x: FlowChat) => x.lane)(N.Order)),
+    RA.sort(mapInput((x: FlowChat) => x.lane)(N.Order)),
   );
 
   const tooCloseTo = memoize((x: FlowChat) => {
