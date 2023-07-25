@@ -35,9 +35,7 @@ export default (
     Z.succeed,
     Z.let('data', (x) => x.getData(x.config)),
     Z.zipLeft(Z.logDebug('Chat detected')),
-    Z.bind('banned', (x) => pipe(
-      checkBannedWords(x.data, x.config),
-    )),
+    Z.bind('banned', (x) => checkBannedWords(x.data, x.config)),
     Z.flatMap((ctx) => (ctx.banned ? Z.sync(() => {
       // eslint-disable-next-line no-param-reassign
       chat.style.display = 'none';
@@ -52,8 +50,7 @@ export default (
         )),
         Z.ignore,
       ),
-      pipe(
-        ctx.data.authorID,
+      ctx.data.authorID.pipe(
         O.filter(() => ctx.config.createBanButton),
         O.filter(() => !chat.children.namedItem('card')),
         Z.flatMap((x: string) => appendChatMessage(
@@ -65,9 +62,7 @@ export default (
       pipe(
         ctx.config.simplifyChatField,
         O.liftPredicate(identity<boolean>),
-        Z.flatMap<boolean, never, never, void>(
-          () => setChatFieldSimplifyStyle(chat),
-        ),
+        Z.flatMap(() => setChatFieldSimplifyStyle(chat)),
         Z.zipLeft(Z.logDebug('Chat simplified')),
         Z.ignore,
       ),
