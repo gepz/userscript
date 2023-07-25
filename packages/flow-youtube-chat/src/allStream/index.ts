@@ -74,7 +74,6 @@ type Ctx = {
     dispatchable: Dispatchable<SettingState>,
   ) => Z.Effect<never, never, void>,
   configKeys: (keyof UserConfig)[],
-  config: UserConfig,
   getConfig: UserConfigGetter,
   setConfig: UserConfigSetter,
   setChangedConfig: UserConfigSetter,
@@ -95,7 +94,6 @@ export default (
   {
     updateSettingState,
     configKeys,
-    config,
     getConfig,
     setConfig,
     setChangedConfig,
@@ -113,50 +111,51 @@ export default (
   }: Ctx,
   provideLog: <T>(x: Z.Effect<never, never, T>) => Z.Effect<never, never, T>,
 ): Z.Effect<never, never, Observable<unknown>> => pipe(
-  {
-    eq: O.getEquivalence(strict()),
-    initDelay: D.millis(100),
-    urlDelay: D.millis(1700),
-    changeDetectInterval: D.millis(700),
-    bodyResizeDetectInterval: D.millis(300),
-    errorRetryInterval: D.millis(5000),
-    ...pipe(
-      new BehaviorSubject(new DOMRectReadOnly(
-        0,
-        0,
-        settingsPanelSize.width,
-        settingsPanelSize.height,
-      )),
-      (settingsRectSubject) => ({
-        settingsRectSubject,
-        tapUpdateSettingsRect: <T>(ob: Observable<T>) => switchMap(
-          (value: T) => pipe(
-            settingsRectSubject,
-            first(),
-            map(updateSettingsRect(wrappedToggleSettings.node)(
-              (rect) => Z.sync(() => settingsRectSubject.next(rect)),
-            )),
-            tapEffect(provideLog),
-            map(() => value),
-          ),
-        )(ob),
-      }),
-    ),
-    co,
-    config$: configStream(
-      provideLog,
-      mainState,
+  Z.gen(function* (_) {
+    return {
+      eq: O.getEquivalence(strict()),
+      initDelay: D.millis(100),
+      urlDelay: D.millis(1700),
+      changeDetectInterval: D.millis(700),
+      bodyResizeDetectInterval: D.millis(300),
+      errorRetryInterval: D.millis(5000),
+      ...pipe(
+        new BehaviorSubject(new DOMRectReadOnly(
+          0,
+          0,
+          settingsPanelSize.width,
+          settingsPanelSize.height,
+        )),
+        (settingsRectSubject) => ({
+          settingsRectSubject,
+          tapUpdateSettingsRect: <T>(ob: Observable<T>) => switchMap(
+            (value: T) => pipe(
+              settingsRectSubject,
+              first(),
+              map(updateSettingsRect(wrappedToggleSettings.node)(
+                (rect) => Z.sync(() => settingsRectSubject.next(rect)),
+              )),
+              tapEffect(provideLog),
+              map(() => value),
+            ),
+          )(ob),
+        }),
+      ),
       co,
-      chatScreen,
-      live,
-    ),
-  },
-  Z.succeed,
-  Z.bind('css', () => mainCss),
-  Z.bind('documentMutationPair', () => observePair(MutationObserver)),
-  Z.bind('chatMutationPair', () => observePair(MutationObserver)),
-  Z.bind('playerResizePair', () => observePair(ResizeObserver)),
-  Z.bind('bodyResizePair', () => observePair(ResizeObserver)),
+      config$: configStream(
+        provideLog,
+        mainState,
+        co,
+        chatScreen,
+        live,
+      ),
+      css: yield* _(mainCss),
+      documentMutationPair: yield* _(observePair(MutationObserver)),
+      chatMutationPair: yield* _(observePair(MutationObserver)),
+      playerResizePair: yield* _(observePair(ResizeObserver)),
+      bodyResizePair: yield* _(observePair(ResizeObserver)),
+    }
+  }),
   Z.map((c) => pipe(
     reinitSubject,
     observeOn(asyncScheduler),
@@ -271,7 +270,7 @@ export default (
           // eslint-disable-next-line max-len
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           (co[key] as Subject<unknown>),
-          startWith(config[key]),
+          startWith(mainState.config[key]),
           bufferCount(2, 1),
           map(([x, y]) => diff(x, y)),
           map((x) => Z.logDebug(
