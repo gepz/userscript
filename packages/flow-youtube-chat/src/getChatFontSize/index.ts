@@ -1,7 +1,9 @@
 import MainState from '@/MainState';
 
 export default ({
-  config,
+  config: {
+    value: config,
+  },
   playerRect: {
     value: playerRect,
   },

@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/node/colorPicker/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAEL,KAAK,EACL,MAAM,EACP,MAAM,UAAU,CAAC;uFAIL,MAAM;AAFnB,wBAUG"}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/node/colorPicker/index.ts"],"names":[],"mappings":"AAGA,OAAO,EAEL,KAAK,EACL,MAAM,EACP,MAAM,UAAU,CAAC;uFAIL,MAAM;AAFnB,wBAUG"}

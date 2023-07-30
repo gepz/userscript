@@ -1,6 +1,7 @@
 import {
   constant,
   pipe,
+  identity
 } from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 import {
@@ -28,7 +29,7 @@ export default <T>(
     type: 'range',
     ...config,
     value: Ed.value(value).toString(),
-    oninput: action.onchange,
+    oninput: action.onchange ?? identity,
   }),
   h('input', {
     style: {
@@ -37,7 +38,7 @@ export default <T>(
       color: 'inherit',
       borderWidth: '1px',
       verticalAlign: 'middle',
-      borderColor: Ed.hasError(value) ? '#f55' : undefined,
+      borderColor: Ed.hasError(value) ? '#f55' : null,
     },
     inputmode: 'decimal',
     value: pipe(

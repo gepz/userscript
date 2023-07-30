@@ -38,7 +38,7 @@ export default (
   ),
   pipe(
     co.fieldScale,
-    startWith(mainState.config.fieldScale),
+    startWith(mainState.config.value.fieldScale),
     map(scaleChatField(live)),
     tapEffect(provideLog),
   ),
@@ -55,13 +55,13 @@ export default (
           co.flowY2,
           pipe(
             co.flowX1,
-            startWith(mainState.config.flowX1),
+            startWith(mainState.config.value.flowX1),
             tapEffect((x) => provideLog(Z.sync(() => Object.assign<
             CSSStyleDeclaration,
             Partial<CSSStyleDeclaration>
             >(chatScreen.style, {
               left: `${x * 100}%`,
-              width: `${(mainState.config.flowX2 - x) * 100}%`,
+              width: `${(mainState.config.value.flowX2 - x) * 100}%`,
             })))),
           ),
           pipe(
@@ -70,8 +70,8 @@ export default (
             CSSStyleDeclaration,
             Partial<CSSStyleDeclaration>
             >(chatScreen.style, {
-              left: `${mainState.config.flowX1 * 100}%`,
-              width: `${(x - mainState.config.flowX1) * 100}%`,
+              left: `${mainState.config.value.flowX1 * 100}%`,
+              width: `${(x - mainState.config.value.flowX1) * 100}%`,
             })))),
           ),
           co.textOnly,

@@ -1,6 +1,4 @@
-import {
-  seconds,
-} from '@effect/data/Duration';
+import * as D from '@effect/data/Duration';
 import {
   pipe,
 } from '@effect/data/Function';
@@ -30,7 +28,6 @@ import {
   makeSubject,
 } from '@/ConfigSubject';
 import FlowChat from '@/FlowChat';
-import LivePage from '@/LivePage';
 import {
   makePageState,
 } from '@/LivePageState';
@@ -55,10 +52,11 @@ import setSettingFromConfig from '@/setSettingFromConfig';
 import setterFromKeysMap from '@/setterFromKeysMap';
 import settingStateInit from '@/settingStateInit';
 import settingsComponent from '@/settingsComponent';
-import simpleWrap from '@/simpleWrap';
+import wrapApp from '@/wrapApp';
 import tapEffect from '@/tapEffect';
 import toggleChatButton from '@/toggleChatButton';
 import toggleSettingsPanelComponent from '@/toggleSettingsPanelComponent';
+import configKeys from '@/configKeys';
 
 export default ({
   settingUpdateApps,
@@ -70,8 +68,6 @@ export default ({
   defaultGMConfig,
   (x) => Z.succeed({
     gmConfig: x,
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    configKeys: Object.keys(x) as (keyof UserConfig)[],
     updateSettingState: (
       dispatchable: Dispatchable<SettingState>,
     ): Z.Effect<never, never, void> => provideLog(pipe(
@@ -84,21 +80,15 @@ export default ({
     const config = yield* _(makeConfig(ctx.gmConfig));
     return {
       ...ctx,
-      getConfig: makeGetter(config),
-      mainState: {
-        chatPlaying: new BehaviorSubject(true),
-        playerRect: new BehaviorSubject(new DOMRectReadOnly(0, 0, 600, 400)),
-        config,
-        flowChats: new BehaviorSubject<readonly FlowChat[]>([]),
-      } satisfies MainState,
-      configSubject:  makeSubject(ctx.configKeys),
-      setterFromKeysMap: setterFromKeysMap(ctx.configKeys),
+      configValue: config,
+      configSubject:  makeSubject(configKeys),
+      setterFromKeysMap: setterFromKeysMap(configKeys),
     }
   })),
   Z.flatMap((ctx) => Z.gen(function* (_) {
     const setConfigPlain = ctx.setterFromKeysMap(
       (key) => (val) => Z.promise(async () => {
-        Object.assign(ctx.mainState.config, {
+        Object.assign(ctx.configValue, {
           [key]: val,
         });
   
@@ -109,69 +99,85 @@ export default ({
     const changedConfigMap = (
       key: keyof UserConfig,
     ) => (val: never): Z.Effect<never, O.Option<never>, unknown> => pipe(
-      Z.promise(async () => ctx.mainState.config[key]),
+      Z.promise(async () => ctx.configValue[key]),
       Z.filterOrFail((x) => !deepEq(x, val), O.none),
       Z.flatMap(() => setConfigPlain[key](val)),
     );
 
-    yield* _(setConfigPlain.filterExp(defaultFilter(ctx.mainState.config)));
+    yield* _(setConfigPlain.filterExp(defaultFilter(ctx.configValue)));
     
     const channel = new BroadcastChannel<
     [keyof UserConfig, UserConfig[keyof UserConfig]]
     >(scriptIdentifier)
 
+    const {
+      configValue,
+      ...rest
+    } = ctx;
+
     return {
-      ...ctx,
+      ...rest,
       setChangedConfig: ctx.setterFromKeysMap(
         (key) => (val) => changedConfigMap(key)(val).pipe(Z.ignore),
       ),
       channel,
-      setConfig: ctx.setterFromKeysMap(
-        (key) => (val) => pipe(
-          changedConfigMap(key)(val),
-          Z.zipRight(Z.promise(() => channel.postMessage([key, val]))),
-          Z.zipRight(Z.promise(() => pipe(
-            ctx.gmConfig[key],
-            (x) => GM.setValue(x.gmKey, x.toGm(val)),
-          ))),
-          Z.ignore,
-        ),
-      ),
+      mainState: {
+        chatPlaying: new BehaviorSubject(true),
+        playerRect: new BehaviorSubject(new DOMRectReadOnly(0, 0, 600, 400)),
+        flowChats: new BehaviorSubject<readonly FlowChat[]>([]),
+        config: {
+          value: ctx.configValue,
+          getConfig: makeGetter(ctx.configValue),
+          setConfig: ctx.setterFromKeysMap(
+            (key) => (val) => pipe(
+              changedConfigMap(key)(val),
+              Z.zipRight(Z.promise(() => channel.postMessage([key, val]))),
+              Z.zipRight(Z.promise(() => pipe(
+                ctx.gmConfig[key],
+                (x) => GM.setValue(x.gmKey, x.toGm(val)),
+              ))),
+              Z.ignore,
+            ),
+          ),
+        }
+      } satisfies MainState,
     }
   })),
   Z.flatMap((ctx) => Z.gen(function* (_) {
     const reinitSubject = new Subject<void>();
-    const stateInit = settingStateInit(ctx.mainState.config);
+    const stateInit = settingStateInit(ctx.mainState.config.value);
     return {
       ...ctx,
       reinitSubject,
       reinitialize: provideLog(Z.sync(() => {
         requestAnimationFrame(() => forwardTo(reinitSubject)());
       })),
-      wrappedToggleChat:  yield* _(simpleWrap(
-        toggleChatButton(ctx.setConfig),
-        stateInit,
-      )),
-      wrappedSettings: yield* _(simpleWrap(
-        settingsComponent({
-          setConfig: ctx.setConfig,
-          act: {
-            clearFlowChats: removeOldChats(ctx.mainState.flowChats)(0),
-          },
-          provideLog,
-        }),
-        stateInit,
-      )),
-      wrappedToggleSettings: yield* _(simpleWrap(
-        toggleSettingsPanelComponent(ctx.updateSettingState),
-        stateInit,
-      )),
+      apps: {
+        toggleChatButtonApp:  yield* _(wrapApp(
+          toggleChatButton(ctx.mainState.config.setConfig),
+          stateInit,
+        )),
+        settingsApp: yield* _(wrapApp(
+          settingsComponent({
+            setConfig: ctx.mainState.config.setConfig,
+            act: {
+              clearFlowChats: removeOldChats(ctx.mainState.flowChats)(0),
+            },
+            provideLog,
+          }),
+          stateInit,
+        )),
+        toggleSettingsPanelApp: yield* _(wrapApp(
+          toggleSettingsPanelComponent(ctx.updateSettingState),
+          stateInit,
+        )),
+      }
     }
   })),
   Z.tap((ctx) => Z.sync(() => settingUpdateApps.next([
-    ctx.wrappedSettings.dispatch,
-    ctx.wrappedToggleSettings.dispatch,
-    ctx.wrappedToggleChat.dispatch,
+    ctx.apps.settingsApp.dispatch,
+    ctx.apps.toggleSettingsPanelApp.dispatch,
+    ctx.apps.toggleChatButtonApp.dispatch,
   ]))),
   Z.tap((ctx) => pipe(
     [
@@ -184,8 +190,8 @@ export default ({
   )),
   Z.zipLeft(pipe(
     Z.logDebug('10s...'),
-    Z.repeat(Schedule.fixed(seconds(10))),
-    Z.delay(seconds(10)),
+    Z.repeat(Schedule.fixed(D.seconds(10))),
+    Z.delay(D.seconds(10)),
     Z.forkDaemon,
   )),
   Z.flatMap((ctx) => Z.gen(function* (_) {
@@ -218,8 +224,8 @@ export default ({
                   'bannedWordRegexes',
                 ] as const,
                 RA.containsWith(Str.Equivalence)(k),
-                (x) => (x ? ctx.setConfig.filterExp(
-                  defaultFilter(ctx.mainState.config)
+                (x) => (x ? ctx.mainState.config.setConfig.filterExp(
+                  defaultFilter(ctx.mainState.config.value)
                 ) : Z.unit),
               )),
               (x) => () => Z.runPromise(provideLog(x)),
@@ -232,17 +238,15 @@ export default ({
     }
   })),
   Z.flatMap((ctx) => Z.gen(function* (_) {
-    const all$ = yield* _(allStream(
+    (yield* _(allStream(
       {
         ...ctx,
         // eslint-disable-next-line max-len
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        liveElementKeys: Object.keys(ctx.live) as (keyof LivePage)[]
+        liveElementKeys: Object.keys(ctx.live) as (keyof typeof ctx.live)[]
       },
       provideLog,
-    ));
-
-    all$.subscribe({
+    ))).subscribe({
       error: (x) => Z.runPromise(
         // eslint-disable-next-line max-len
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions

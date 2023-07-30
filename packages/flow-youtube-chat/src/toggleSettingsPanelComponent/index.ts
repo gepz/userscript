@@ -10,8 +10,11 @@ import {
   Dispatchable,
 } from 'hyperapp';
 import {
-  z,
-} from 'zod';
+  parseSync
+} from '@effect/schema/Parser';
+import {
+  instanceOf
+} from '@effect/schema/Schema';
 
 import RootComponent, {
   makeComponent,
@@ -31,7 +34,9 @@ const togglePanel = (
   },
   (newState) => [
     newState,
-    x.showPanel ? () => z.instanceof(HTMLElement).parse(e.currentTarget).blur()
+    x.showPanel ? () => parseSync(instanceOf(HTMLElement))(
+      e.currentTarget,
+    ).blur()
     : () => {},
     () => Z.runPromise(updateState((oldState) => ({
       ...oldState,

@@ -13,13 +13,13 @@ import updateSettingState from '@/updateSettingState';
 
 export default (
   apps: BehaviorSubject<Dispatch<SettingState>[]>,
-) => Logger.make<string, void>(({
+) => Logger.make<unknown, void>(({
   logLevel,
   message,
 }) => Z.runPromise(updateSettingState(apps.getValue())((s) => (s.logEvents ? ({
   ...s,
   eventLog: appendEventLog(
-    message,
+    String(message),
     logLevel.label,
   )(s.eventLog),
 }) : s))));

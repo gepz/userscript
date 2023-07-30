@@ -21,7 +21,7 @@ export default <T>(
   style: {
     verticalAlign: 'middle',
     width: '5.5em',
-    borderColor: Ed.hasError(value) ? '#f55' : undefined,
+    borderColor: Ed.hasError(value) ? '#f55' : null,
   },
   maxlength: 20,
   value: pipe(

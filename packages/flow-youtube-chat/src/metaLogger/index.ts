@@ -28,7 +28,7 @@ const getConsoleLog = (
 // eslint-disable-next-line no-console
 : console.log).bind(console);
 
-export default Logger.make<string, void>(({
+export default Logger.make<unknown, void>(({
   logLevel,
   message,
   context,

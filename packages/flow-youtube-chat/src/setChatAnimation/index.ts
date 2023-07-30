@@ -17,6 +17,7 @@ import getFlowChatProgress from '@/getFlowChatProgress';
 import getLaneY from '@/getLaneY';
 import intervalTooSmall from '@/intervalTooSmall';
 import setChatPlayState from '@/setChatPlayState';
+import * as Cause from '@effect/io/Cause';
 
 const getWidth = memoize(
   (ele: Element | null): number => ele?.getBoundingClientRect().width ?? 0,
@@ -39,63 +40,68 @@ export default (
     // eslint-disable-next-line no-param-reassign
     chat.element.style.transform = `translate(${
       mainState.playerRect.value.width
-         * (mainState.config.flowX2 - mainState.config.flowX1)
+         * (mainState.config.value.flowX2 - mainState.config.value.flowX1)
     }px, -${x.fontSize * 2}px)`;
   })),
-  Z.filterOrFail(() => !chat.animationEnded, O.none),
-  Z.tap((x) => Z.sync(() => {
-    // eslint-disable-next-line no-param-reassign
-    chat.animationDuration = flowDuration;
-    // eslint-disable-next-line no-param-reassign
-    chat.width = getWidth(chat.element.firstElementChild);
-    // eslint-disable-next-line no-param-reassign
-    chat.height = x.fontSize;
-  })),
+  Z.filterOrFail(
+    () => !chat.animationEnded,
+    () => Cause.NoSuchElementException(),
+  ),
+  Z.tap((x) => Z.sync(() => Object.assign(chat, {
+    animationDuration: flowDuration,
+    width: getWidth(chat.element.firstElementChild),
+    height: x.fontSize,
+  } satisfies Partial<FlowChat>))),
   Z.map(() => getFlowChatProgress(chat)),
   Z.map((progress) => ({
-    progress,
-    ...getChatLane(
-      chat,
-      progress,
-    )(mainState),
+    currentTime: progress * flowDuration,
+    ...pipe(
+      getChatLane(chat, progress)(mainState),
+      (x) => ({
+        lane: x.lane,
+        intervalTooSmall: intervalTooSmall(x.interval)(mainState.config.value)
+      }),
+    ),
   })),
   Z.filterOrElse(
-    (x) => !intervalTooSmall(x.interval)(mainState.config),
+    (x) => !x.intervalTooSmall,
     () => pipe(
       chat.animation,
-      Z.flatMap((x: Animation) => Z.sync(() => {
-        x.finish();
-        // eslint-disable-next-line no-param-reassign
-        chat.animation = O.none();
-      })),
-      Z.zipRight(Z.fail(O.none())),
+      Z.tap((x) => Z.sync(() => x.finish())),
+      Z.map(() => O.none()),
+      Z.tap((none) => Z.sync(() => Object.assign(chat, {
+        animation: none,
+      } satisfies Partial<FlowChat>))),
+      Z.flatten,
     ),
   ),
-  Z.tap((x) => Z.sync(() => {
-    // eslint-disable-next-line no-param-reassign
-    chat.lane = x.lane;
-  })),
+  Z.tap((x) => Z.sync(() => Object.assign(chat, {
+    lane: x.lane,
+  } satisfies Partial<FlowChat>))),
   Z.map((x) => ({
-    ...x,
-    laneY: getLaneY(chat.lane, mainState),
+    currentTime: x.currentTime,
+    laneY: getLaneY(x.lane, mainState),
   })),
-  Z.tap((ctx) => pipe(
+  Z.tap(({
+    currentTime,
+    laneY,
+  }) => pipe(
     [
       pipe(
         chat.animation,
-        Z.flatMap((x: Animation) => Z.sync(() => x.cancel())),
+        Z.flatMap((x) => Z.sync(() => x.cancel())),
         Z.ignore,
       ),
       pipe(
         [
           [
             mainState.playerRect.value.width
-             * (mainState.config.flowX2 - mainState.config.flowX1),
-            ctx.laneY,
+             * (mainState.config.value.flowX2 - mainState.config.value.flowX1),
+            laneY,
           ],
           [
             -chat.width,
-            ctx.laneY,
+            laneY,
           ],
         ] as const,
         RA.map(pipe(
@@ -110,24 +116,19 @@ export default (
         }))),
         (x) => Z.sync(() => chat.element.animate(x, {
           duration: flowDuration,
-          easing: mainState.config.timingFunction,
+          easing: mainState.config.value.timingFunction,
         })),
         Z.tap((x) => Z.sync(() => {
-          // eslint-disable-next-line no-param-reassign
-          x.onfinish = () => {
-            // eslint-disable-next-line no-param-reassign
-            chat.animationEnded = true;
-          };
-
-          // eslint-disable-next-line no-param-reassign
-          chat.y = ctx.laneY;
-          const newTime = ctx.progress * flowDuration;
-          // eslint-disable-next-line no-param-reassign
-          x.currentTime = newTime;
-        })),
-        Z.flatMap((x) => Z.sync(() => {
-          // eslint-disable-next-line no-param-reassign
-          chat.animation = O.some(x);
+          Object.assign(x, {
+            onfinish: () => Object.assign(chat, {
+              animationEnded: true,
+            } satisfies Partial<FlowChat>),
+            currentTime,
+          } satisfies Partial<Animation>);
+          Object.assign(chat, {
+            y: laneY,
+            animation: O.some(x),
+          } satisfies Partial<FlowChat>)
         })),
         Z.zipRight(setChatPlayState(chat)(mainState)),
       ),

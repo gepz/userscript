@@ -1,4 +1,7 @@
 import {
+  identity,
+} from '@effect/data/Function';
+import {
   h,
   VNode,
   Action,
@@ -13,5 +16,5 @@ export default <T>(
   },
   type: 'color',
   value: color,
-  oninput: action.onchange,
+  oninput: action.onchange ?? identity,
 });

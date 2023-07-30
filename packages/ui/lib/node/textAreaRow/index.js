@@ -34,7 +34,7 @@ exports.default = (rows, action) => (value) => (0, hyperapp_1.h)('textarea', {
         resize: 'none',
         boxSizing: 'border-box',
         width: '100%',
-        borderColor: Ed.hasError(value) ? '#f55' : undefined,
+        borderColor: Ed.hasError(value) ? '#f55' : null,
     },
     value: (0, Function_1.pipe)(value, Ed.text, O.getOrElse((0, Function_1.pipe)(Ed.value(value), RA.join('\n'), Function_1.constant))),
     ...action,

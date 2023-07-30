@@ -17,7 +17,9 @@ export default (
   flowChat: FlowChat,
   progress: number,
 ) => ({
-  config,
+  config: {
+    value: config,
+  },
   flowChats: {
     value: flowChats,
   },

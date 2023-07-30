@@ -25,7 +25,7 @@ export default <T>(
     resize: 'none',
     boxSizing: 'border-box',
     width: '100%',
-    borderColor: Ed.hasError(value) ? '#f55' : undefined,
+    borderColor: Ed.hasError(value) ? '#f55' : null,
   },
   value: pipe(
     value,

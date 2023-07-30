@@ -40,7 +40,7 @@ exports.default = (config, action) => (value) => (0, hyperapp_1.h)('div', {}, [
         type: 'range',
         ...config,
         value: Ed.value(value).toString(),
-        oninput: action.onchange,
+        oninput: action.onchange ?? Function_1.identity,
     }),
     (0, hyperapp_1.h)('input', {
         style: {
@@ -49,7 +49,7 @@ exports.default = (config, action) => (value) => (0, hyperapp_1.h)('div', {}, [
             color: 'inherit',
             borderWidth: '1px',
             verticalAlign: 'middle',
-            borderColor: Ed.hasError(value) ? '#f55' : undefined,
+            borderColor: Ed.hasError(value) ? '#f55' : null,
         },
         inputmode: 'decimal',
         value: (0, Function_1.pipe)(value, Ed.text, O.getOrElse((0, Function_1.constant)(Ed.value(value).toFixed(4).replace(/\.?0+$/, '')))),
