@@ -52,8 +52,7 @@ import LivePageState from '@/LivePageState';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
-import UserConfigGetter from '@/UserConfigGetter';
-import UserConfigSetter from '@/UserConfigSetter/index';
+import UserConfigSetter from '@/UserConfigSetter';
 import WrappedApp from '@/WrappedApp/index';
 import configStream from '@/configStream';
 import listeningBroadcastConfigKeys from '@/listeningBroadcastConfigKeys';
@@ -68,23 +67,23 @@ import settingsPanelSize from '@/settingsPanelSize';
 import tapEffect from '@/tapEffect';
 import updateSettingsRect from '@/updateSettingsRect';
 import videoToggleStream from '@/videoToggleStream';
+import configKeys from '@/configKeys';
 
 type Ctx = {
   updateSettingState: (
     dispatchable: Dispatchable<SettingState>,
   ) => Z.Effect<never, never, void>,
-  configKeys: (keyof UserConfig)[],
-  getConfig: UserConfigGetter,
-  setConfig: UserConfigSetter,
   setChangedConfig: UserConfigSetter,
   co: ConfigObservable,
   mainState: MainState,
   channel: BroadcastChannel<[keyof UserConfig, UserConfig[keyof UserConfig]]>,
   reinitSubject: Subject<void>,
   reinitialize: Z.Effect<never, never, void>,
-  wrappedToggleChat: WrappedApp<SettingState>,
-  wrappedSettings: WrappedApp<SettingState>,
-  wrappedToggleSettings: WrappedApp<SettingState>,
+  apps: {
+    toggleChatButtonApp: WrappedApp<SettingState>,
+    settingsApp: WrappedApp<SettingState>,
+    toggleSettingsPanelApp: WrappedApp<SettingState>,
+  },
   liveElementKeys: (keyof LivePage)[],
   live: LivePageState,
   chatScreen: HTMLDivElement,
@@ -93,18 +92,17 @@ type Ctx = {
 export default (
   {
     updateSettingState,
-    configKeys,
-    getConfig,
-    setConfig,
     setChangedConfig,
     co,
     mainState,
     channel,
     reinitSubject,
     reinitialize,
-    wrappedToggleChat,
-    wrappedSettings,
-    wrappedToggleSettings,
+    apps: {
+      toggleChatButtonApp,
+      settingsApp,
+      toggleSettingsPanelApp,
+    },
     liveElementKeys,
     live,
     chatScreen,
@@ -132,7 +130,7 @@ export default (
             (value: T) => pipe(
               settingsRectSubject,
               first(),
-              map(updateSettingsRect(wrappedToggleSettings.node)(
+              map(updateSettingsRect(toggleSettingsPanelApp.node)(
                 (rect) => Z.sync(() => settingsRectSubject.next(rect)),
               )),
               tapEffect(provideLog),
@@ -141,14 +139,7 @@ export default (
           )(ob),
         }),
       ),
-      co,
-      config$: configStream(
-        provideLog,
-        mainState,
-        co,
-        chatScreen,
-        live,
-      ),
+      config$: configStream(provideLog, mainState, co, chatScreen, live),
       css: yield* _(mainCss),
       documentMutationPair: yield* _(observePair(MutationObserver)),
       chatMutationPair: yield* _(observePair(MutationObserver)),
@@ -228,13 +219,13 @@ export default (
             )),
           ),
           live.toggleChatBtnParent.ele.pipe(
-            O.map((x) => Z.sync(() => x.prepend(wrappedToggleChat.node))),
+            O.map((x) => Z.sync(() => x.prepend(toggleChatButtonApp.node))),
           ),
           live.settingsToggleNextElement.ele.pipe(
-            O.map((x) => Z.sync(() => x.before(wrappedToggleSettings.node))),
+            O.map((x) => Z.sync(() => x.before(toggleSettingsPanelApp.node))),
           ),
           live.settingsContainer.ele.pipe(
-            O.map((x) => Z.sync(() => x.append(wrappedSettings.node))),
+            O.map((x) => Z.sync(() => x.append(settingsApp.node))),
           ),
           pipe(
             document.body,
@@ -254,6 +245,11 @@ export default (
     ))),
     switchMap(() => merge(
       pipe(
+        mainState.flowChats,
+        map((x) => Z.logDebug(`flowChats length: ${x.length}`)),
+        tapEffect(provideLog),
+      ),
+      pipe(
         fromEvent(channel, 'message'),
         map(([key, val]) => pipe(
           listeningBroadcastConfigKeys.includes(key),
@@ -270,7 +266,7 @@ export default (
           // eslint-disable-next-line max-len
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           (co[key] as Subject<unknown>),
-          startWith(mainState.config[key]),
+          startWith(mainState.config.value[key]),
           bufferCount(2, 1),
           map(([x, y]) => diff(x, y)),
           map((x) => Z.logDebug(
@@ -304,8 +300,6 @@ export default (
         map(onChatFieldMutate(
           chatScreen,
           mainState,
-          getConfig,
-          setConfig,
         )),
         tapEffect(provideLog),
       ),

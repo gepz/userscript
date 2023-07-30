@@ -33,61 +33,48 @@ export default (
     height: getChatFontSize(mainState),
     y: 0,
   } satisfies FlowChat,
-  (x: FlowChat) => getChatLane(
-    x,
-    0,
-  )(mainState).interval,
+  (x: FlowChat) => getChatLane(x, 0)(mainState).interval,
   intervalTooSmall,
-  (x) => x(mainState.config),
+  (x) => x(mainState.config.value),
 ) ? Z.unit
 : pipe(
   mainState.flowChats.value,
   RA.findFirstIndex((chat) => chat.animationEnded
-     || mainState.flowChats.value.length >= mainState.config.maxChatCount),
-  (offScreenIndex) => offScreenIndex.pipe(
-    O.map((index) => pipe(
-      mainState.flowChats.value,
-      RA.unsafeGet(index),
-      (x) => x.element,
-    )),
-    O.getOrElse(() => document.createElement('span')),
-    Z.succeed,
-    Z.tap((element) => pipe(
-      offScreenIndex,
-      O.match({
-        onNone: () => pipe(
-          Z.sync(() => chatScrn.append(element)),
-          Z.zipLeft(Z.logDebug('Flow chat added')),
-        ),
-        onSome: (index) => pipe(
-          mainState.flowChats.value,
-          RA.unsafeGet(index),
-          (x) => x.animation,
-          Z.flatMap((oldAnimation) => Z.sync(() => oldAnimation.cancel())),
-          Z.zipRight(Z.sync(() => mainState.flowChats.next(pipe(
-            mainState.flowChats.value,
-            RA.remove(index),
-          )))),
+    || mainState.flowChats.value.length
+    >= mainState.config.value.maxChatCount),
+  O.match({
+    onNone: (): Z.Effect<never, never, HTMLElement> => pipe(
+      Z.sync(() => document.createElement('span')),
+      Z.tap((element) => Z.sync(() => chatScrn.append(element))),
+      Z.tap((element) => Z.sync(() => element.classList.add('fyc_chat'))),
+      Z.zipLeft(Z.logDebug('Flow chat added')),
+    ),
+    onSome: (index): Z.Effect<never, never, HTMLElement> => pipe(
+      Z.gen(function* (_) {
+        const chats = mainState.flowChats;
+        const chat = RA.unsafeGet(chats.value, index);
+
+        yield* _(chat.animation.pipe(
+          Z.flatMap((animation) => Z.sync(() => animation.cancel())),
           Z.ignore,
-        ),
+        ));
+
+        chats.next(RA.remove(chats.value, index));
+        return chat.element;
       }),
-    )),
-  ),
-  Z.flatMap((element) => pipe(
-    {
-      getData,
-      element,
-      lane: -1,
-      animation: O.none(),
-      animationDuration: 0,
-      animationEnded: false,
-      width: 2,
-      height: getChatFontSize(mainState),
-      y: 0,
-    },
-    Z.succeed<FlowChat>,
-    Z.zipLeft(Z.sync(() => element.classList.add('fyc_chat'))),
-  )),
+    ),
+  }),
+  Z.map((element): FlowChat => ({
+    getData,
+    element,
+    lane: -1,
+    animation: O.none(),
+    animationDuration: 0,
+    animationEnded: false,
+    width: 2,
+    height: getChatFontSize(mainState),
+    y: 0,
+  })),
   Z.flatMap((flowChat) => pipe(
     Z.succeed(mainState),
     Z.tap(renderChat(flowChat)),

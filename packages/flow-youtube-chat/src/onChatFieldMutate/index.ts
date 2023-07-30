@@ -19,8 +19,6 @@ import setChatFieldSimplifyStyle from '@/setChatFieldSimplifyStyle';
 export default (
   chatScrn: HTMLElement,
   mainState: MainState,
-  getConfig: UserConfigGetter,
-  setConfig: UserConfigSetter,
 ) => (records: MutationRecord[]): Z.Effect<never, never, unknown> => pipe(
   records,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -33,15 +31,15 @@ export default (
       config: mainState.config,
     },
     Z.succeed,
-    Z.let('data', (x) => x.getData(x.config)),
+    Z.let('data', (x) => x.getData(x.config.value)),
     Z.zipLeft(Z.logDebug('Chat detected')),
-    Z.bind('banned', (x) => checkBannedWords(x.data, x.config)),
+    Z.bind('banned', (x) => checkBannedWords(x.data, x.config.value)),
     Z.flatMap((ctx) => (ctx.banned ? Z.sync(() => {
       // eslint-disable-next-line no-param-reassign
       chat.style.display = 'none';
     }) : Z.all([
       pipe(
-        ctx.config.createChats && ctx.data.chatType === 'normal',
+        ctx.config.value.createChats && ctx.data.chatType === 'normal',
         O.liftPredicate(identity<boolean>),
         Z.flatMap<boolean, never, never, void>(() => addFlowChat(
           ctx.getData,
@@ -51,16 +49,16 @@ export default (
         Z.ignore,
       ),
       ctx.data.authorID.pipe(
-        O.filter(() => ctx.config.createBanButton),
+        O.filter(() => ctx.config.value.createBanButton),
         O.filter(() => !chat.children.namedItem('card')),
         Z.flatMap((x: string) => appendChatMessage(
-          banButton(x)(getConfig)(setConfig)(chat),
+          banButton(x)(ctx.config.getConfig)(ctx.config.setConfig)(chat),
         )(chat)),
         Z.zipLeft(Z.logDebug('Ban button added')),
         Z.ignore,
       ),
       pipe(
-        ctx.config.simplifyChatField,
+        ctx.config.value.simplifyChatField,
         O.liftPredicate(identity<boolean>),
         Z.flatMap(() => setChatFieldSimplifyStyle(chat)),
         Z.zipLeft(Z.logDebug('Chat simplified')),

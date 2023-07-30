@@ -19,6 +19,7 @@
     "alwaysStrict": true,
     "noUncheckedIndexedAccess": true,
     "strict": true,
+    "exactOptionalPropertyTypes": true,
   },
   "include": [
     "./src/**/*.ts",

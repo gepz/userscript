@@ -1,7 +1,10 @@
 import {
-  z,
-} from 'zod';
+  parseSync,
+} from '@effect/schema/Parser';
+import {
+  instanceOf,
+} from '@effect/schema/Schema';
 
-export default (e: Event): boolean => z.instanceof(HTMLInputElement).parse(
+export default (e: Event): boolean => parseSync(instanceOf(HTMLInputElement))(
   e.currentTarget,
 ).checked;

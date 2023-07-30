@@ -25,7 +25,6 @@ export default merge(
         'hash-it': 'window[\'hash-it\']',
         'micro-memoize': 'window[\'micro-memoize\']',
         'lz-string': 'LZString',
-        zod: 'Zod',
       },
     ],
     plugins: [

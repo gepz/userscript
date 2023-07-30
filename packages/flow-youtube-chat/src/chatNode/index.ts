@@ -92,7 +92,7 @@ export default (
   chat: FlowChat,
   mainState: MainState,
 ): HTMLTemplateResult => pipe(
-  mainState.config,
+  mainState.config.value,
   (config) => ({
     data: chat.getData(config),
     config,
@@ -118,11 +118,16 @@ export default (
       pipe(
         data.authorName,
         O.filter((x) => x.visible),
-        O.map((x) => html`<span style=${styleMap({
-          color: O.getOrUndefined(data.textColor),
+        O.map((text) => html`<span style=${styleMap({
+          ...O.match(data.textColor, {
+            onNone: () => {},
+            onSome: (x) => ({
+              color: x,
+            }),
+          }),
           fontSize: '0.84em',
           ...textStyle,
-        } satisfies Partial<CSSStyleDeclaration>)}>${x.content}</span>`),
+        } satisfies Partial<CSSStyleDeclaration>)}>${text.content}</span>`),
       ),
       pipe(
         data.messageElement,
@@ -130,21 +135,31 @@ export default (
           x,
           config,
         )),
-        O.map((x) => html`<span style=${styleMap({
-          color: O.getOrUndefined(data.textColor),
+        O.map((text) => html`<span style=${styleMap({
+          ...O.match(data.textColor, {
+            onNone: () => {},
+            onSome: (x) => ({
+              color: x,
+            }),
+          }),
           ...textStyle,
-        } satisfies Partial<CSSStyleDeclaration>)}>${x.vnodes}</span>`),
+        } satisfies Partial<CSSStyleDeclaration>)}>${text.vnodes}</span>`),
       ),
       pipe(
         data.paymentInfo,
         O.filter((x) => x.visible),
-        O.map((x) => html`<span style=${styleMap({
-          color: O.getOrUndefined(data.paidColor),
+        O.map((text) => html`<span style=${styleMap({
+          ...O.match(data.paidColor, {
+            onNone: () => {},
+            onSome: (x) => ({
+              color: x,
+            }),
+          }),
           fontSize: '0.84em',
           ...textStyle,
         } satisfies Partial<CSSStyleDeclaration>)}><strong style=${
           styleMap(textStyle)
-        }></strong>${x.content}</span>`),
+        }></strong>${text.content}</span>`),
       ),
     ],
     RA.compact,

@@ -5,8 +5,11 @@ import {
   Effect,
 } from 'hyperapp';
 import {
-  z,
-} from 'zod';
+  parseSync
+} from '@effect/schema/Parser';
+import {
+  instanceOf
+} from '@effect/schema/Schema';
 
 import SettingState from '@/SettingState';
 import getText from '@/getText';
@@ -20,7 +23,7 @@ const togglePanel = (x: SettingState, e: MouseEvent): [
     showPanel: !x.showPanel,
   },
   [
-    x.showPanel ? () => z.instanceof(HTMLElement).parse(e.currentTarget).blur()
+    x.showPanel ? () => parseSync(instanceOf(HTMLElement))(e.currentTarget).blur()
     : () => {},
     undefined,
   ],
