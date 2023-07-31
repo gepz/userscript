@@ -27,13 +27,12 @@ export default (
     element: emptyElement,
     lane: -1,
     animation: O.none(),
-    animationDuration: 0,
     animationEnded: false,
     width: 2,
     height: getChatFontSize(mainState),
     y: 0,
   } satisfies FlowChat,
-  (x: FlowChat) => getChatLane(x, 0)(mainState).interval,
+  (x: FlowChat) => getChatLane(x, O.none(), 0)(mainState).interval,
   intervalTooSmall,
   (x) => x(mainState.config.value),
 ) ? Z.unit
@@ -69,7 +68,6 @@ export default (
     element,
     lane: -1,
     animation: O.none(),
-    animationDuration: 0,
     animationEnded: false,
     width: 2,
     height: getChatFontSize(mainState),
@@ -79,13 +77,12 @@ export default (
     Z.succeed(mainState),
     Z.tap(renderChat(flowChat)),
     Z.flatMap(setChatAnimation(flowChat)),
-    Z.flatMap((x) => (x ? Z.sync(() => mainState.flowChats.next(pipe(
-      mainState.flowChats.value,
-      RA.append(flowChat),
-    )))
-    : pipe(
-      Z.sync(() => flowChat.element.remove()),
-      Z.zipLeft(Z.logDebug('Flow chat removed')),
-    ))),
+    Z.match({
+      onFailure: () => pipe(
+        Z.sync(() => flowChat.element.remove()),
+        Z.zipLeft(Z.logDebug('Flow chat removed')),
+      ),
+      onSuccess: (x) => Z.unit, 
+    }),
   )),
 ));

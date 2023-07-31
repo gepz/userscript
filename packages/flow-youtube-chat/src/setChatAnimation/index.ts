@@ -31,109 +31,124 @@ export default (
   chat: FlowChat,
 ) => (
   mainState: MainState,
-): Z.Effect<never, never, boolean> => pipe(
-  {
-    fontSize: getChatFontSize(mainState),
-  },
-  Z.succeed,
-  Z.tap((x) => Z.sync(() => {
+): Z.Effect<never, Cause.NoSuchElementException, {
+  newChat: FlowChat,
+  oldChatIndex: O.Option<number>,
+}> => pipe(
+  Z.succeed(getChatFontSize(mainState)),
+  Z.tap((height) => Z.sync(() => {
     // eslint-disable-next-line no-param-reassign
     chat.element.style.transform = `translate(${
       mainState.playerRect.value.width
          * (mainState.config.value.flowX2 - mainState.config.value.flowX1)
-    }px, -${x.fontSize * 2}px)`;
+    }px, -${height * 2}px)`;
   })),
   Z.filterOrFail(
     () => !chat.animationEnded,
     () => Cause.NoSuchElementException(),
   ),
-  Z.tap((x) => Z.sync(() => Object.assign(chat, {
-    animationDuration: flowDuration,
-    width: getWidth(chat.element.firstElementChild),
-    height: x.fontSize,
-  } satisfies Partial<FlowChat>))),
-  Z.map(() => getFlowChatProgress(chat)),
-  Z.map((progress) => ({
-    currentTime: progress * flowDuration,
-    ...pipe(
-      getChatLane(chat, progress)(mainState),
-      (x) => ({
-        lane: x.lane,
-        intervalTooSmall: intervalTooSmall(x.interval)(mainState.config.value)
-      }),
+  Z.map((height) => (
+  {
+    newChat: {
+      ...chat,
+      width: getWidth(chat.element.firstElementChild),
+      height,
+    } satisfies FlowChat,
+    oldChatIndex: pipe(
+      mainState.flowChats.value,
+      RA.findFirstIndex((x) => x === chat),
     ),
+    progress: getFlowChatProgress(chat.animation),
   })),
+  Z.map((ctx) => pipe(
+    getChatLane(ctx.newChat, ctx.oldChatIndex, ctx.progress)(mainState),
+    (x) => ({
+      newChat: {
+        ...ctx.newChat,
+        lane: x.lane,
+      } satisfies FlowChat,
+      oldChatIndex: ctx.oldChatIndex,
+      currentTime: ctx.progress * flowDuration,
+      intervalTooSmall: intervalTooSmall(x.interval)(mainState.config.value)
+    }),
+  )),
   Z.filterOrElse(
     (x) => !x.intervalTooSmall,
-    () => pipe(
-      chat.animation,
+    (x) => pipe(
+      x.newChat.animation,
       Z.tap((x) => Z.sync(() => x.finish())),
-      Z.map(() => O.none()),
-      Z.tap((none) => Z.sync(() => Object.assign(chat, {
-        animation: none,
-      } satisfies Partial<FlowChat>))),
-      Z.flatten,
+      Z.map((): typeof x => ({
+        ...x,
+        newChat: {
+          ...x.newChat,
+          animation: O.none(),
+        },
+      })),
     ),
   ),
-  Z.tap((x) => Z.sync(() => Object.assign(chat, {
-    lane: x.lane,
-  } satisfies Partial<FlowChat>))),
-  Z.map((x) => ({
-    currentTime: x.currentTime,
-    laneY: getLaneY(x.lane, mainState),
+  Z.map((x): typeof x => ({
+    ...x,
+    newChat: {
+      ...x.newChat,
+      y: getLaneY(x.newChat.lane, mainState),
+    }
   })),
-  Z.tap(({
-    currentTime,
-    laneY,
-  }) => pipe(
-    [
-      pipe(
-        chat.animation,
-        Z.flatMap((x) => Z.sync(() => x.cancel())),
-        Z.ignore,
-      ),
-      pipe(
-        [
-          [
-            mainState.playerRect.value.width
-             * (mainState.config.value.flowX2 - mainState.config.value.flowX1),
-            laneY,
-          ],
-          [
-            -chat.width,
-            laneY,
-          ],
-        ] as const,
-        RA.map(pipe(
-          (x: number) => `${x}px`,
-          (x) => tuple.mapBoth({
-            onFirst: x,
-            onSecond: x,
-          }),
-        )),
-        RA.map((([x, y]) => ({
-          transform: `translate(${x}, ${y})`,
-        }))),
-        (x) => Z.sync(() => chat.element.animate(x, {
-          duration: flowDuration,
-          easing: mainState.config.value.timingFunction,
-        })),
-        Z.tap((x) => Z.sync(() => {
-          Object.assign(x, {
-            onfinish: () => Object.assign(chat, {
-              animationEnded: true,
-            } satisfies Partial<FlowChat>),
-            currentTime,
-          } satisfies Partial<Animation>);
-          Object.assign(chat, {
-            y: laneY,
-            animation: O.some(x),
-          } satisfies Partial<FlowChat>)
-        })),
-        Z.zipRight(setChatPlayState(chat)(mainState)),
-      ),
-    ],
-    Z.all,
+  Z.tap((x) => pipe(
+    x.newChat.animation,
+    O.match(({
+      onNone: () => Z.unit,
+      onSome: (x) => Z.sync(() => x.cancel()),
+    })),
   )),
-  Z.isSuccess,
+  Z.flatMap((ctx) => pipe(
+    [
+      [
+        mainState.playerRect.value.width
+          * (mainState.config.value.flowX2 - mainState.config.value.flowX1),
+        ctx.newChat.y,
+      ],
+      [
+        -ctx.newChat.width,
+        ctx.newChat.y,
+      ],
+    ] as const,
+    RA.map(pipe(
+      (x: number) => `${x}px`,
+      (x) => tuple.mapBoth({
+        onFirst: x,
+        onSecond: x,
+      }),
+    )),
+    RA.map((([x, y]) => ({
+      transform: `translate(${x}, ${y})`,
+    }))),
+    (x) => Z.sync(() => ctx.newChat.element.animate(x, {
+      duration: flowDuration,
+      easing: mainState.config.value.timingFunction,
+    })),
+    Z.tap((x) => Z.sync(() => {
+      Object.assign(x, {
+        onfinish: () => Object.assign(ctx.newChat, {
+          animationEnded: true,
+        } satisfies Partial<FlowChat>),
+        currentTime: ctx.currentTime,
+      } satisfies Partial<Animation>);
+    })),
+    Z.map((x) => ({
+      oldChatIndex: ctx.oldChatIndex,
+      newChat: {
+        ...ctx.newChat,
+        animation: O.some(x),
+      } satisfies FlowChat,
+    })),
+  )),
+  Z.tap((x) => setChatPlayState(x.newChat)(mainState)),
+  Z.tap((x) => O.match(x.oldChatIndex, {
+    onNone: () => Z.sync(() => mainState.flowChats.next(
+      RA.append(mainState.flowChats.value, x.newChat)
+    )),
+    onSome: (index) => Z.sync(() => mainState.flowChats.next(
+      RA.replace(mainState.flowChats.value, index, x.newChat)
+    )),
+  })),
 );

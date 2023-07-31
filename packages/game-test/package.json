@@ -17,7 +17,7 @@
     "pixi.js": "^7.2.4",
     "rxjs": "^7.8.1",
     "ts-toolbelt": "^9.6.0",
-    "type-fest": "^4.0.0"
+    "type-fest": "^4.1.0"
   },
   "devDependencies": {
     "@types/resize-observer-browser": "^0.1.7",

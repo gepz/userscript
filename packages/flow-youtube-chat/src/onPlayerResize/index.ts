@@ -21,7 +21,7 @@ export default (
     Z.map(() => mainState.flowChats.value),
     Z.map(RA.flatMap((x) => [
       renderChat(x)(mainState),
-      setChatAnimation(x)(mainState),
+      Z.ignore(setChatAnimation(x)(mainState)),
     ])),
     Z.flatMap(Z.all),
   )),

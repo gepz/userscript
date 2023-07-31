@@ -8,7 +8,6 @@ export default interface FlowChat {
   element: HTMLElement,
   lane: number,
   animation: O.Option<Animation>,
-  animationDuration: number,
   animationEnded: boolean,
   width: number,
   height: number,

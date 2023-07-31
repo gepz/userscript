@@ -136,9 +136,9 @@ export default (
             renderChat(chat),
             O.liftPredicate(() => c.render),
           ),
-          (c.setAnimation ? O.some(
-            setChatAnimation(chat),
-          ) : c.setPlayState ? O.some(setChatPlayState(chat))
+          (c.setAnimation ? O.some((mainState: MainState) => Z.ignore(
+            setChatAnimation(chat)(mainState)
+          )) : c.setPlayState ? O.some(setChatPlayState(chat))
           : O.none()),
         ],
         RA.compact,
@@ -146,7 +146,6 @@ export default (
         Z.all,
       )),
       Z.all,
-      Z.asUnit,
     ))),
   ),
   co.lang,
