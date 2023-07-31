@@ -2,7 +2,7 @@ import {
   apply,
   flip,
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import ExactTypeKey from '@/ExactTypeKey';
 import StateDispatchable from '@/StateDispatchable';

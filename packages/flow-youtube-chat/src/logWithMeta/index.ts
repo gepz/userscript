@@ -1,8 +1,8 @@
 import {
   pipe,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as Z from '@effect/io/Effect';
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as Z from 'effect/Effect';
 import * as LogLevel from '@effect/io/Logger/Level';
 
 import LogMeta, {

@@ -1,7 +1,7 @@
-import * as I from '@effect/data/Identity';
+import * as I from 'effect/Identity';
 import {
   flow,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import * as EOP from '@/ElementOpticPair';
 import Primitive from '@/type/Primitive';

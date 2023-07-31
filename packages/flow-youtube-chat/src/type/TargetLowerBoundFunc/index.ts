@@ -1,4 +1,4 @@
-import * as E from '@effect/data/Either';
+import * as E from 'effect/Either';
 
 import type GenericMap from '@/type/GenericMap';
 import type Type from '@/type/Type';

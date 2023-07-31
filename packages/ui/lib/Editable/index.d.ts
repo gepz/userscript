@@ -1,4 +1,4 @@
-import * as O from '@effect/data/Option';
+import * as O from 'effect/Option';
 type Editable<T> = readonly [
     T,
     O.Option<readonly [string, O.Option<string>]>

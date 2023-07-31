@@ -1,4 +1,4 @@
-import * as O from '@effect/data/Option';
+import * as O from 'effect/Option';
 
 import GenericMap from '@/type/GenericMap';
 import type Type from '@/type/Type';

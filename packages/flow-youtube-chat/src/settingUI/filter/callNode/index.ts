@@ -1,8 +1,8 @@
-import * as I from '@effect/data/Identity';
-import * as O from '@effect/data/Option';
+import * as I from 'effect/Identity';
+import * as O from 'effect/Option';
 import {
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import * as EOP from '@/ElementOpticPair';
 import CallExpression from '@/settingUI/EditableExpression/CallExpression';

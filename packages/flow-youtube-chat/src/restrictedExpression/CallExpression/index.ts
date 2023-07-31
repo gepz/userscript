@@ -1,9 +1,9 @@
-import * as E from '@effect/data/Either';
+import * as E from 'effect/Either';
 import {
   pipe,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as RA from '@effect/data/ReadonlyArray';
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as RA from 'effect/ReadonlyArray';
 import * as expEval from 'expression-eval';
 
 import TaggedValue, {

@@ -26,10 +26,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Function_1 = require("@effect/data/Function");
-const O = __importStar(require("@effect/data/Option"));
-const RA = __importStar(require("@effect/data/ReadonlyArray"));
-const Str = __importStar(require("@effect/data/String"));
+const Function_1 = require("effect/Function");
+const O = __importStar(require("effect/Option"));
+const RA = __importStar(require("effect/ReadonlyArray"));
+const Str = __importStar(require("effect/String"));
 const Setter_1 = __importDefault(require("../Setter"));
 const setFilteredString = (allowedStrings) => (value) => (state) => (0, Function_1.pipe)(value, O.liftPredicate((x) => RA.containsWith(Str.Equivalence)(allowedStrings, x)), O.getOrElse(() => state));
 exports.default = setFilteredString;

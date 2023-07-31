@@ -1,6 +1,6 @@
-import * as O from '@effect/data/Option';
-import * as Cause from '@effect/io/Cause';
-import * as Z from '@effect/io/Effect';
+import * as O from 'effect/Option';
+import * as Cause from 'effect/Cause';
+import * as Z from 'effect/Effect';
 
 import LivePage from '@/LivePage';
 import mapObject from '@/mapObject';

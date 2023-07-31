@@ -1,9 +1,9 @@
 import {
   constant,
   pipe,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as Tu from '@effect/data/Tuple';
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as Tu from 'effect/Tuple';
 
 type Editable<T> = readonly [
   T,

@@ -1,13 +1,13 @@
+import * as LogLevel from '@effect/io/Logger/Level';
+import * as Cause from 'effect/Cause';
+import * as Z from 'effect/Effect';
 import {
   pipe,
-} from '@effect/data/Function';
-import * as Cause from '@effect/io/Cause';
-import * as Z from '@effect/io/Effect';
-import * as Logger from '@effect/io/Logger';
+} from 'effect/Function';
+import * as Logger from 'effect/Logger';
 import {
   withMinimumLogLevel,
-} from '@effect/io/Logger';
-import * as LogLevel from '@effect/io/Logger/Level';
+} from 'effect/Logger';
 import {
   Dispatch,
 } from 'hyperapp';

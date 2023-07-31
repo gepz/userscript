@@ -1,9 +1,9 @@
 import {
   pipe,
   identity,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as Z from '@effect/io/Effect';
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as Z from 'effect/Effect';
 
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';

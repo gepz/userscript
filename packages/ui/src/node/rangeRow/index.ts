@@ -2,8 +2,8 @@ import {
   constant,
   pipe,
   identity
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
+} from 'effect/Function';
+import * as O from 'effect/Option';
 import {
   h,
   VNode,

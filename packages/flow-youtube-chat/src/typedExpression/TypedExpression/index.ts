@@ -1,8 +1,8 @@
-import * as E from '@effect/data/Either';
+import * as E from 'effect/Either';
 import {
   flow,
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import type Expression from '@/restrictedExpression/Expression';
 import TypedArray, * as typedArray from '@/typedExpression/TypedArray';

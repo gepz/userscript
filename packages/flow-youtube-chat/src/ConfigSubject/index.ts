@@ -1,7 +1,7 @@
 import {
   pipe,
-} from '@effect/data/Function';
-import * as RA from '@effect/data/ReadonlyArray';
+} from 'effect/Function';
+import * as RA from 'effect/ReadonlyArray';
 import {
   Subject,
 } from 'rxjs';

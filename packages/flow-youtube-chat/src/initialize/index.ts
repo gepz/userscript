@@ -1,13 +1,13 @@
-import * as D from '@effect/data/Duration';
+import * as D from 'effect/Duration';
 import {
   pipe,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as RA from '@effect/data/ReadonlyArray';
-import * as Str from '@effect/data/String';
-import * as Z from '@effect/io/Effect';
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as RA from 'effect/ReadonlyArray';
+import * as Str from 'effect/String';
+import * as Z from 'effect/Effect';
 import * as LogLevel from '@effect/io/Logger/Level';
-import * as Schedule from '@effect/io/Schedule';
+import * as Schedule from 'effect/Schedule';
 import forwardTo from '@userscript/forward-to';
 import {
   BroadcastChannel,

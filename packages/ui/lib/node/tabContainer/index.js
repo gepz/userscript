@@ -23,9 +23,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Function_1 = require("@effect/data/Function");
-const O = __importStar(require("@effect/data/Option"));
-const RA = __importStar(require("@effect/data/ReadonlyArray"));
+const Function_1 = require("effect/Function");
+const O = __importStar(require("effect/Option"));
+const RA = __importStar(require("effect/ReadonlyArray"));
 const hyperapp_1 = require("hyperapp");
 exports.default = (style) => (ontabSelect) => (labels) => (tabs) => (mainTab) => (0, hyperapp_1.h)('div', {
     style: style.container,

@@ -1,10 +1,10 @@
 import * as expEval from 'expression-eval';
-import * as E from '@effect/data/Either';
+import * as E from 'effect/Either';
 import * as R from 'fp-ts/Reader';
 import {
   flow,
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 // eslint-disable-next-line max-len
 import ArrayLiteral, * as arrayLiteral from '@/restrictedExpression/ArrayLiteral';

@@ -1,7 +1,7 @@
+import * as Ed from '@userscript/ui/Editable';
 import {
   pipe,
-} from '@effect/data/Function';
-import * as Ed from '@userscript/ui/Editable';
+} from 'effect/Function';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';

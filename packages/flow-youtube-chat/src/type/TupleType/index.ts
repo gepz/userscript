@@ -1,17 +1,17 @@
 import {
   tapNonNull,
 } from '@userscript/tap';
-import * as E from '@effect/data/Either';
+import * as E from 'effect/Either';
 import * as N from 'fp-ts/Number';
-import * as O from '@effect/data/Option';
+import * as O from 'effect/Option';
 import * as R from 'fp-ts/Reader';
-import * as RA from '@effect/data/ReadonlyArray';
+import * as RA from 'effect/ReadonlyArray';
 import * as RR from 'fp-ts/ReadonlyRecord';
 import * as SEP from 'fp-ts/Separated';
 import {
   pipe,
   flow,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import TaggedValue, {
   makeType,

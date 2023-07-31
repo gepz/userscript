@@ -1,8 +1,8 @@
 import {
   pipe,
   flow,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
+} from 'effect/Function';
+import * as O from 'effect/Option';
 
 import * as EOP from '@/ElementOpticPair';
 import MemberExpression from '@/settingUI/EditableExpression/MemberExpression';

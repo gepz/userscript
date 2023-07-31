@@ -1,9 +1,9 @@
 import {
   pipe,
   flow,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as I from '@effect/data/Identity';
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as I from 'effect/Identity';
 
 import * as EOP from '@/ElementOpticPair';
 import LiteralArray from '@/settingUI/EditableExpression/LiteralArray';

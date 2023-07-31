@@ -1,10 +1,10 @@
 import {
   pipe,
   constant,
-} from '@effect/data/Function';
-import * as P from '@effect/data/Predicate';
-import * as RA from '@effect/data/ReadonlyArray';
-import * as Str from '@effect/data/String';
+} from 'effect/Function';
+import * as P from 'effect/Predicate';
+import * as RA from 'effect/ReadonlyArray';
+import * as Str from 'effect/String';
 
 import Setter from '@/setter/Setter';
 

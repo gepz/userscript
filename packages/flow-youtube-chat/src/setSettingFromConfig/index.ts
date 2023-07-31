@@ -1,7 +1,7 @@
 // import {
 //   pipe,
-// } from '@effect/data/Function';
-// import * as O from '@effect/data/Option';
+// } from 'effect/Function';
+// import * as O from 'effect/Option';
 // import * as expEval from 'expression-eval';
 
 import Editable, * as Ed from '@userscript/ui/Editable';

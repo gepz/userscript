@@ -1,10 +1,10 @@
-import * as O from '@effect/data/Option';
+import * as O from 'effect/Option';
 import * as R from 'fp-ts/Reader';
 import {
   pipe,
   apply,
   constant,
-} from '@effect/data/Function';
+} from 'effect/Function';
 import * as Op from 'monocle-ts/Optional';
 
 import Expression from '@/typedExpression/Expression';

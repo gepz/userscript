@@ -26,8 +26,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Function_1 = require("@effect/data/Function");
-const O = __importStar(require("@effect/data/Option"));
+const Function_1 = require("effect/Function");
+const O = __importStar(require("effect/Option"));
 const hyperapp_1 = require("hyperapp");
 const Ed = __importStar(require("../../Editable"));
 const RangeConfig_1 = __importDefault(require("../RangeConfig"));

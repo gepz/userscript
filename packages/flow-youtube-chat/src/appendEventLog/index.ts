@@ -1,6 +1,6 @@
 import {
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 import * as logLevel from '@effect/io/Logger/Level';
 
 import Log, * as log from '@/Log';

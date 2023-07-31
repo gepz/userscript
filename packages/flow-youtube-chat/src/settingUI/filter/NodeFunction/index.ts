@@ -1,9 +1,9 @@
-import * as E from '@effect/data/Either';
+import * as E from 'effect/Either';
 import {
   pipe,
   flow,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
+} from 'effect/Function';
+import * as O from 'effect/Option';
 import {
   generate,
 } from 'astring';

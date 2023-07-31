@@ -1,7 +1,7 @@
-import * as E from '@effect/data/Either';
+import * as E from 'effect/Either';
 import {
   Refinement,
-} from '@effect/data/Predicate';
+} from 'effect/Predicate';
 
 export default <A, B extends A>(
   r: Refinement<A, B>,

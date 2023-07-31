@@ -4,9 +4,9 @@
   "version": "1.0.0",
   "author": "",
   "dependencies": {
-    "@effect/data": "^0.17.1",
     "@effect/schema": "^0.32.0",
     "@effect/typeclass": "^0.2.1",
+    "effect": "^2.0.0-next.23",
     "hyperapp": "^2.0.22",
     "ts-toolbelt": "^9.6.0",
     "type-fest": "^4.1.0",

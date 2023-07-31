@@ -1,7 +1,7 @@
 import {
   identity,
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 import panelBoxStyle from '@userscript/ui/panelBoxStyle';
 import {
   h,

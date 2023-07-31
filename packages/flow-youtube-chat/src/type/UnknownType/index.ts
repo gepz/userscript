@@ -1,6 +1,6 @@
 import {
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import AssignGenericFunction from '@/type/AssignGenericFunction';
 import type Type from '@/type/Type';

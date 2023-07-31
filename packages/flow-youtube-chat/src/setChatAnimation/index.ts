@@ -1,10 +1,10 @@
 import {
   pipe,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as RA from '@effect/data/ReadonlyArray';
-import * as tuple from '@effect/data/Tuple';
-import * as Z from '@effect/io/Effect';
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as RA from 'effect/ReadonlyArray';
+import * as tuple from 'effect/Tuple';
+import * as Z from 'effect/Effect';
 import hash from 'hash-it';
 import memoize from 'micro-memoize';
 
@@ -17,7 +17,7 @@ import getFlowChatProgress from '@/getFlowChatProgress';
 import getLaneY from '@/getLaneY';
 import intervalTooSmall from '@/intervalTooSmall';
 import setChatPlayState from '@/setChatPlayState';
-import * as Cause from '@effect/io/Cause';
+import * as Cause from 'effect/Cause';
 
 const getWidth = memoize(
   (ele: Element | null): number => ele?.getBoundingClientRect().width ?? 0,
@@ -33,7 +33,6 @@ export default (
   mainState: MainState,
 ): Z.Effect<never, Cause.NoSuchElementException, {
   newChat: FlowChat,
-  oldChatIndex: O.Option<number>,
 }> => pipe(
   Z.succeed(getChatFontSize(mainState)),
   Z.tap((height) => Z.sync(() => {
@@ -143,12 +142,15 @@ export default (
     })),
   )),
   Z.tap((x) => setChatPlayState(x.newChat)(mainState)),
-  Z.tap((x) => O.match(x.oldChatIndex, {
-    onNone: () => Z.sync(() => mainState.flowChats.next(
-      RA.append(mainState.flowChats.value, x.newChat)
-    )),
-    onSome: (index) => Z.sync(() => mainState.flowChats.next(
-      RA.replace(mainState.flowChats.value, index, x.newChat)
-    )),
+  Z.flatMap((x) => O.match(x.oldChatIndex, {
+    onNone: () => Z.succeed({
+      newChat: x.newChat,
+    }),
+    onSome: (index) => pipe(
+      Z.sync(() => mainState.flowChats.next(
+        RA.replace(mainState.flowChats.value, index, x.newChat)
+      )),
+      Z.zipRight(Z.fail(Cause.NoSuchElementException())),
+    ),
   })),
 );

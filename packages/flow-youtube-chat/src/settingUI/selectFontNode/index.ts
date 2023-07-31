@@ -1,12 +1,12 @@
-import {
-  pipe,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as RA from '@effect/data/ReadonlyArray';
 import * as Ed from '@userscript/ui/Editable';
 import option from '@userscript/ui/node/option';
 import settingRow from '@userscript/ui/node/settingRow';
 import setEditString from '@userscript/ui/setter/setEditString';
+import {
+  pipe,
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as RA from 'effect/ReadonlyArray';
 import {
   h,
   VNode,

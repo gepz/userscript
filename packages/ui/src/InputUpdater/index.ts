@@ -1,7 +1,7 @@
 import {
   apply,
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import StateDispatchable from '@/StateDispatchable';
 import getValue from '@/getValue';
