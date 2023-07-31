@@ -1,4 +1,4 @@
-import * as Z from '@effect/io/Effect';
+import * as Z from 'effect/Effect';
 
 export default interface GMConfigItem<T1> {
   gmKey: string,

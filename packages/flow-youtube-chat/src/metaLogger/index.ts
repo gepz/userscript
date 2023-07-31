@@ -1,11 +1,11 @@
 import {
   pipe,
-} from '@effect/data/Function';
-import * as HM from '@effect/data/HashMap';
-import * as O from '@effect/data/Option';
-import * as Z from '@effect/io/Effect';
-import * as FiberRefs from '@effect/io/FiberRefs';
-import * as Logger from '@effect/io/Logger';
+} from 'effect/Function';
+import * as HM from 'effect/HashMap';
+import * as O from 'effect/Option';
+import * as Z from 'effect/Effect';
+import * as FiberRefs from 'effect/FiberRefs';
+import * as Logger from 'effect/Logger';
 import * as LogLevel from '@effect/io/Logger/Level';
 
 import LogAnnotationKeys from '@/LogAnnotationKeys';

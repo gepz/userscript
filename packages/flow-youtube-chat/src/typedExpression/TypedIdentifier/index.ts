@@ -1,6 +1,6 @@
 import {
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import type Identifier from '@/restrictedExpression/Identifier';
 import TaggedValue, {

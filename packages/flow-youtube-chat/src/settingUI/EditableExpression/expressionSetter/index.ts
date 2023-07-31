@@ -2,8 +2,8 @@ import {
   pipe,
   apply,
   constant,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
+} from 'effect/Function';
+import * as O from 'effect/Option';
 import * as R from 'fp-ts/Reader';
 import * as Op from 'monocle-ts/Optional';
 

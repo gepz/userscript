@@ -1,6 +1,6 @@
 import {
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 import ComputedPropertySetters from '@userscript/ui/ComputedPropertySetters';
 import * as Ed from '@userscript/ui/Editable';
 

@@ -1,4 +1,4 @@
-import * as O from '@effect/data/Option';
+import * as O from 'effect/Option';
 
 import type Expression from '@/settingUI/EditableExpression/Expression';
 

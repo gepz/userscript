@@ -1,6 +1,6 @@
 import {
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import FlowChat from '@/FlowChat';
 import UserConfig from '@/UserConfig';

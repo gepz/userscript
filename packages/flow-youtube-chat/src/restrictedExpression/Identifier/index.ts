@@ -1,7 +1,7 @@
 import * as expEval from 'expression-eval';
 import {
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import TaggedValue, {
   makeType,

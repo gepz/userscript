@@ -2,16 +2,16 @@ import {
   pipe,
   flow,
   identity,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as RA from '@effect/data/ReadonlyArray';
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as RA from 'effect/ReadonlyArray';
 import * as En from 'fp-ts/Endomorphism';
 import {
   concatAll,
 } from 'fp-ts/Monoid';
 import * as R from 'fp-ts/Reader';
 import * as RR from 'fp-ts/ReadonlyRecord';
-import * as Tu from '@effect/data/Tuple';
+import * as Tu from 'effect/Tuple';
 import {
   VNode,
 } from 'hyperapp';

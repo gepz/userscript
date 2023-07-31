@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.make = void 0;
-const Function_1 = require("@effect/data/Function");
+const Function_1 = require("effect/Function");
 const ExactTypeKey_1 = __importDefault(require("../ExactTypeKey"));
 const StateDispatchable_1 = __importDefault(require("../StateDispatchable"));
 const getChecked_1 = __importDefault(require("../getChecked"));

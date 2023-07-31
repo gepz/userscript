@@ -1,6 +1,6 @@
 import {
   constant,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import Editable, * as Ed from '@/Editable';
 import EditSetter from '@/setter/EditSetter';

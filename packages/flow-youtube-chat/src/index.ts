@@ -1,7 +1,7 @@
+import * as Z from 'effect/Effect';
 import {
   pipe,
-} from '@effect/data/Function';
-import * as Z from '@effect/io/Effect';
+} from 'effect/Function';
 import {
   Dispatch,
 } from 'hyperapp';

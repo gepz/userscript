@@ -1,10 +1,10 @@
 import {
   pipe,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as RA from '@effect/data/ReadonlyArray';
-import * as Str from '@effect/data/String';
-import * as Z from '@effect/io/Effect';
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as RA from 'effect/ReadonlyArray';
+import * as Str from 'effect/String';
+import * as Z from 'effect/Effect';
 
 import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';

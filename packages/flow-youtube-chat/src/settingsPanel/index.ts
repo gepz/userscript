@@ -3,8 +3,8 @@ import {
   apply,
   constant,
   flip,
-} from '@effect/data/Function';
-import * as RA from '@effect/data/ReadonlyArray';
+} from 'effect/Function';
+import * as RA from 'effect/ReadonlyArray';
 import option from '@userscript/ui/node/option';
 import tabContainer from '@userscript/ui/node/tabContainer';
 import setFilteredString from '@userscript/ui/setter/setFilteredString';

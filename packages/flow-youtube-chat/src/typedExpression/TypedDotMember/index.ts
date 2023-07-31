@@ -1,7 +1,7 @@
-import * as I from '@effect/data/Identity';
+import * as I from 'effect/Identity';
 import {
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import type DotMemberAccess from '@/restrictedExpression/DotMemberAccess';
 import TaggedValue, {

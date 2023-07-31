@@ -24,9 +24,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hasError = exports.setText = exports.setValue = exports.error = exports.text = exports.value = exports.fromValueText = exports.of = void 0;
-const Function_1 = require("@effect/data/Function");
-const O = __importStar(require("@effect/data/Option"));
-const Tu = __importStar(require("@effect/data/Tuple"));
+const Function_1 = require("effect/Function");
+const O = __importStar(require("effect/Option"));
+const Tu = __importStar(require("effect/Tuple"));
 const of = (x) => [x, O.none()];
 exports.of = of;
 const fromValueText = (v) => (t) => [v, O.some([t, O.none()])];

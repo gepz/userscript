@@ -1,5 +1,5 @@
 import * as expEval from 'expression-eval';
-import * as E from '@effect/data/Either';
+import * as E from 'effect/Either';
 import * as R from 'fp-ts/Reader';
 
 import type Expression from '@/restrictedExpression/Expression';

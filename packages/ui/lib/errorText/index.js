@@ -23,8 +23,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Function_1 = require("@effect/data/Function");
-const O = __importStar(require("@effect/data/Option"));
+const Function_1 = require("effect/Function");
+const O = __importStar(require("effect/Option"));
 const Ed = __importStar(require("../Editable"));
 exports.default = (subject) => (edit) => (0, Function_1.pipe)(edit, Ed.error, O.map((x) => `${subject}${x === '' ? '' : ': '}${x}`), O.getOrElse((0, Function_1.constant)('')));
 //# sourceMappingURL=index.js.map

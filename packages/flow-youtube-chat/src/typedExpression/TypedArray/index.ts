@@ -1,8 +1,8 @@
 import {
   pipe,
-} from '@effect/data/Function';
-import * as RA from '@effect/data/ReadonlyArray';
-import * as I from '@effect/data/Identity';
+} from 'effect/Function';
+import * as RA from 'effect/ReadonlyArray';
+import * as I from 'effect/Identity';
 
 import type ArrayLiteral from '@/restrictedExpression/ArrayLiteral';
 import TaggedValue, {

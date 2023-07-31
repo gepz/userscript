@@ -1,5 +1,5 @@
-import * as Z from '@effect/io/Effect';
-import * as Logger from '@effect/io/Logger';
+import * as Z from 'effect/Effect';
+import * as Logger from 'effect/Logger';
 import {
   Dispatch,
 } from 'hyperapp';

@@ -1,15 +1,15 @@
 import {
   strict,
-} from '@effect/data/Equivalence';
+} from 'effect/Equivalence';
 import {
   pipe,
   apply,
   identity,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as D from '@effect/data/Duration';
-import * as RA from '@effect/data/ReadonlyArray';
-import * as Z from '@effect/io/Effect';
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as D from 'effect/Duration';
+import * as RA from 'effect/ReadonlyArray';
+import * as Z from 'effect/Effect';
 import * as LogLevel from '@effect/io/Logger/Level';
 import {
   BroadcastChannel,

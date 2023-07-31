@@ -1,7 +1,7 @@
+import * as Z from 'effect/Effect';
 import {
   flip,
-} from '@effect/data/Function';
-import * as Z from '@effect/io/Effect';
+} from 'effect/Function';
 
 export default flip((
   chat: HTMLElement,

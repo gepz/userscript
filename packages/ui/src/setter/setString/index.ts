@@ -1,6 +1,6 @@
 import {
   constant,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import Setter from '@/setter/Setter';
 

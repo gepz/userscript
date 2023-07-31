@@ -1,11 +1,11 @@
-import * as SM from '@effect/data/SortedMap';
-import * as Str from '@effect/data/String';
+import * as SM from 'effect/SortedMap';
+import * as Str from 'effect/String';
 import {
   tapNonNull,
 } from '@userscript/tap';
 import {
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 import type GenericType from '@/type/GenericType';
 import type Type from '@/type/Type';

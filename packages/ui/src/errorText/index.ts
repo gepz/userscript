@@ -1,8 +1,8 @@
 import {
   constant,
   pipe,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
+} from 'effect/Function';
+import * as O from 'effect/Option';
 
 import Editable, * as Ed from '@/Editable';
 

@@ -1,8 +1,8 @@
+import * as Z from 'effect/Effect';
 import {
   pipe,
-} from '@effect/data/Function';
-import * as RA from '@effect/data/ReadonlyArray';
-import * as Z from '@effect/io/Effect';
+} from 'effect/Function';
+import * as RA from 'effect/ReadonlyArray';
 
 import GMConfig from '@/GMConfig';
 import GMConfigItem from '@/GMConfigItem';

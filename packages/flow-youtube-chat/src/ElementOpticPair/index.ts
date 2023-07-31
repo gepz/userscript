@@ -1,11 +1,11 @@
 import {
   pipe,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
+} from 'effect/Function';
+import * as O from 'effect/Option';
 import {
   Refinement,
-} from '@effect/data/Predicate';
-import * as RA from '@effect/data/ReadonlyArray';
+} from 'effect/Predicate';
+import * as RA from 'effect/ReadonlyArray';
 import * as Op from 'monocle-ts/Optional';
 
 type ElementOpticPair<S, A> = {

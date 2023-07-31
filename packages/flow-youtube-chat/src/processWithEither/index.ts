@@ -1,7 +1,7 @@
-import * as E from '@effect/data/Either';
+import * as E from 'effect/Either';
 import {
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 
 export default <T1, T2>(
   f: (

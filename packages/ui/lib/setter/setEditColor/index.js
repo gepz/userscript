@@ -26,9 +26,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Function_1 = require("@effect/data/Function");
-const O = __importStar(require("@effect/data/Option"));
-const Tu = __importStar(require("@effect/data/Tuple"));
+const Function_1 = require("effect/Function");
+const O = __importStar(require("effect/Option"));
+const Tu = __importStar(require("effect/Tuple"));
 const validate_color_1 = __importDefault(require("validate-color"));
 const Ed = __importStar(require("../../Editable"));
 const EditSetter_1 = __importDefault(require("../EditSetter"));

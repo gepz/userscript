@@ -1,12 +1,12 @@
 import {
   pipe,
   flow,
-} from '@effect/data/Function';
-import * as RA from '@effect/data/ReadonlyArray';
+} from 'effect/Function';
+import * as RA from 'effect/ReadonlyArray';
 import {
   getApplicativeMonoid,
 } from 'fp-ts/Applicative';
-import * as E from '@effect/data/Either';
+import * as E from 'effect/Either';
 import {
   Monoid,
   concatAll,

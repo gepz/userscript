@@ -1,9 +1,9 @@
 import {
   pipe,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as RA from '@effect/data/ReadonlyArray';
-import * as Z from '@effect/io/Effect';
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as RA from 'effect/ReadonlyArray';
+import * as Z from 'effect/Effect';
 
 import ChatData from '@/ChatData';
 import FlowChat from '@/FlowChat';
@@ -82,7 +82,9 @@ export default (
         Z.sync(() => flowChat.element.remove()),
         Z.zipLeft(Z.logDebug('Flow chat removed')),
       ),
-      onSuccess: (x) => Z.unit, 
+      onSuccess: (x) => Z.sync(() => mainState.flowChats.next(
+        RA.append(mainState.flowChats.value, x.newChat)
+      )), 
     }),
   )),
 ));

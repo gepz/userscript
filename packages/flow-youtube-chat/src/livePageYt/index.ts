@@ -1,9 +1,9 @@
 import {
   pipe,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as Cause from '@effect/io/Cause';
-import * as Z from '@effect/io/Effect';
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as Cause from 'effect/Cause';
+import * as Z from 'effect/Effect';
 
 import LivePage from '@/LivePage';
 

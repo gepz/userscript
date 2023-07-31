@@ -1,6 +1,6 @@
 import {
   identity,
-} from '@effect/data/Function';
+} from 'effect/Function';
 import {
   h,
   VNode,

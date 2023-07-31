@@ -1,6 +1,6 @@
 import {
   pipe,
-} from '@effect/data/Function';
+} from 'effect/Function';
 import Editable, * as Ed from '@userscript/ui/Editable';
 
 import AppCommander from '@/AppCommander';

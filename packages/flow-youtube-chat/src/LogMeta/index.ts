@@ -1,5 +1,5 @@
-import * as O from '@effect/data/Option';
-import * as FiberRef from '@effect/io/FiberRef';
+import * as O from 'effect/Option';
+import * as FiberRef from 'effect/FiberRef';
 
 type LogMeta = O.Option<unknown>;
 

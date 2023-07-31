@@ -1,9 +1,9 @@
 import {
   pipe,
   constant,
-} from '@effect/data/Function';
-import * as O from '@effect/data/Option';
-import * as Tu from '@effect/data/Tuple';
+} from 'effect/Function';
+import * as O from 'effect/Option';
+import * as Tu from 'effect/Tuple';
 
 import Editable, * as Ed from '@/Editable';
 import EditSetter from '@/setter/EditSetter';

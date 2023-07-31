@@ -1,7 +1,7 @@
 import {
   pipe,
-} from '@effect/data/Function';
-import * as RA from '@effect/data/ReadonlyArray';
+} from 'effect/Function';
+import * as RA from 'effect/ReadonlyArray';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export default <T1 extends {}, T2 extends {}>(
