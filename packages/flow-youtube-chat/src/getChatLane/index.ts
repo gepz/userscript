@@ -15,6 +15,7 @@ import getFlowChatRect from '@/getFlowChatRect';
 
 export default (
   flowChat: FlowChat,
+  chatIndex: O.Option<number>,
   progress: number,
 ) => ({
   config: {
@@ -40,10 +41,9 @@ export default (
     x: chatX,
   } = getFlowChatRect(flowChat, config, playerRect);
 
-  const chatIndex = flowChats.indexOf(flowChat);
   const movingChats = pipe(
     flowChats,
-    RA.take(chatIndex >= 0 ? chatIndex : flowChats.length),
+    RA.take(O.getOrElse(chatIndex, () => flowChats.length)),
     RA.filter((chat) => !chat.animationEnded && chat.width > 0),
     RA.sort(mapInput((x: FlowChat) => x.lane)(N.Order)),
   );
@@ -66,7 +66,6 @@ export default (
 
   const occupyInfo = pipe(
     movingChats,
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     RA.map((x) => ({
       tooClose: () => tooCloseTo(x),
       lane: x.lane,
@@ -77,24 +76,31 @@ export default (
     }),
   );
 
-  const index = occupyInfo.findIndex((x) => x.lane >= flowChat.lane);
-  const bottomFreeLane = pipe(
-    occupyInfo.slice(index),
-    RA.findFirst((x) => x.tooClose()),
-    O.map((x) => x.lane),
-    O.getOrElse(() => config.laneCount),
+  const index = pipe(
+    occupyInfo,
+    RA.findFirstIndex((x) => x.lane >= flowChat.lane),
+    O.getOrElse(() => -1),
   );
 
-  const topFreeLane = pipe(
-    occupyInfo.slice(0, index),
+  const nextOccupiedLaneAbove = pipe(
+    occupyInfo,
+    RA.take(index),
     RA.findLast((x) => x.tooClose()),
     O.map((x) => x.lane),
     O.getOrElse(() => -1),
   );
 
+  const nextOccupiedLaneBelow = pipe(
+    occupyInfo,
+    RA.drop(index),
+    RA.findFirst((x) => x.tooClose()),
+    O.map((x) => x.lane),
+    O.getOrElse(() => config.laneCount),
+  );
+
   const formerLaneInterval = Math.min(
-    flowChat.lane - topFreeLane,
-    bottomFreeLane - flowChat.lane,
+    flowChat.lane - nextOccupiedLaneAbove,
+    nextOccupiedLaneBelow - flowChat.lane,
     1,
   );
 
@@ -115,9 +121,8 @@ export default (
     }
     : (() => {
       const nextLane = info.lane;
-      const interLane = Math.min(
-        Math.max((lastLane + nextLane) / 2, 0),
-        config.laneCount - 1,
+      const interLane = N.clamp(0, config.laneCount - 1)(
+        (lastLane + nextLane) / 2
       );
 
       const newInterval = Math.min(
@@ -126,14 +131,15 @@ export default (
         1,
       );
 
-      return (newInterval - maxInterval > 0.001) ? {
-        maxInterval: newInterval,
-        maxIntervalLane: Math.max(lastLane + newInterval, 0),
+      return {
         lastLane: nextLane,
-      } : {
-        maxInterval,
-        maxIntervalLane,
-        lastLane: nextLane,
+        ...(newInterval - maxInterval > 0.001) ? {
+          maxInterval: newInterval,
+          maxIntervalLane: Math.max(lastLane + newInterval, 0),
+        } : {
+          maxInterval,
+          maxIntervalLane,
+        }
       };
     })())),
     (x) => ({

@@ -1,14 +1,10 @@
-import {
-  pipe,
-} from '@effect/data/Function';
 import * as O from '@effect/data/Option';
 
-import FlowChat from '@/FlowChat';
+import flowDuration from '@/flowDuration';
 
-export default (chat: FlowChat): number => pipe(
-  chat.animation,
+export default (animation: O.Option<Animation>): number => animation.pipe(
   O.flatMapNullable((x) => x.currentTime),
   O.getOrElse(() => 0),
   (x) => (typeof x === 'number' ? x : x.to('ms').value)
-   / chat.animationDuration,
+   / flowDuration,
 );

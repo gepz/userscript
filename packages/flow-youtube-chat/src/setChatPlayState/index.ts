@@ -13,8 +13,7 @@ export default (
 ) => (mainState: MainState): Z.Effect<never, never, void> => pipe(
   chat,
   O.liftPredicate((x) => !x.animationEnded),
-  Z.map((x: FlowChat) => x.animation),
-  Z.flatMap(identity),
+  Z.flatMap((x: FlowChat) => x.animation),
   Z.tap((x) => Z.sync(mainState.chatPlaying.value ? () => x.play()
   : () => x.pause())),
   Z.flatMap((x) => Z.sync(() => {

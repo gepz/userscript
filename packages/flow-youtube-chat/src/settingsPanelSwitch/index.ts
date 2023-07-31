@@ -23,7 +23,9 @@ const togglePanel = (x: SettingState, e: MouseEvent): [
     showPanel: !x.showPanel,
   },
   [
-    x.showPanel ? () => parseSync(instanceOf(HTMLElement))(e.currentTarget).blur()
+    x.showPanel ? () => parseSync(instanceOf(HTMLElement))(
+      e.currentTarget,
+    ).blur()
     : () => {},
     undefined,
   ],

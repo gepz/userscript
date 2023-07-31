@@ -102,8 +102,8 @@ importers:
         specifier: ^9.6.0
         version: 9.6.0
       type-fest:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.1.0
+        version: 4.1.0
       zod:
         specifier: ^3.21.4
         version: 3.21.4
@@ -247,11 +247,11 @@ importers:
         specifier: ^0.17.1
         version: 0.17.1
       '@effect/io':
-        specifier: ^0.36.1
-        version: 0.36.1
+        specifier: ^0.37.1
+        version: 0.37.1
       '@effect/schema':
-        specifier: ^0.31.0
-        version: 0.31.0
+        specifier: ^0.32.0
+        version: 0.32.0
       '@effect/typeclass':
         specifier: ^0.2.1
         version: 0.2.1
@@ -319,8 +319,8 @@ importers:
         specifier: ^9.6.0
         version: 9.6.0
       type-fest:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.1.0
+        version: 4.1.0
     devDependencies:
       '@types/deep-diff':
         specifier: ^1.0.2
@@ -537,8 +537,8 @@ importers:
         specifier: ^9.6.0
         version: 9.6.0
       type-fest:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.1.0
+        version: 4.1.0
       zod:
         specifier: ^3.21.4
         version: 3.21.4
@@ -679,8 +679,8 @@ importers:
         specifier: ^9.6.0
         version: 9.6.0
       type-fest:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.1.0
+        version: 4.1.0
       zod:
         specifier: ^3.21.4
         version: 3.21.4
@@ -861,8 +861,8 @@ importers:
         specifier: ^0.17.1
         version: 0.17.1
       '@effect/schema':
-        specifier: ^0.31.0
-        version: 0.31.0
+        specifier: ^0.32.0
+        version: 0.32.0
       '@effect/typeclass':
         specifier: ^0.2.1
         version: 0.2.1
@@ -873,8 +873,8 @@ importers:
         specifier: ^9.6.0
         version: 9.6.0
       type-fest:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.1.0
+        version: 4.1.0
       validate-color:
         specifier: ^2.2.4
         version: 2.2.4
@@ -1171,17 +1171,17 @@ packages:
     resolution: {integrity: sha512-QCYkLE5Y5Dm5Yax5R3GmW4ZIgTx7W+kSZ7yq5eqQ/mFWa8i4yxbLuu8cudqzdeZtRtTGZKlhDxfFfgVtMywXJg==}
     dev: false
 
-  /@effect/io@0.36.1:
-    resolution: {integrity: sha512-qktbbvQX+tCQ2wxBcpr8g89ZAIAzRaq+/tWGogdVxfthWIhiLSagMeKYzLHqQ/MaXzN7sQSYLHbFgxcE+D8keQ==}
+  /@effect/io@0.37.1:
+    resolution: {integrity: sha512-Ez3GfcG+gDDfAiBXtSjJpSrPU5Guiyw69LsYkMtIukFwyNwpHWLhYaVgfVbVjoQasil8KiFSQJSd5DbJL6nqPg==}
     dependencies:
       '@effect/data': 0.17.1
     dev: false
 
-  /@effect/schema@0.31.0:
-    resolution: {integrity: sha512-bVAUl6Y0Fn0VL+gGHFsuqjtj4OvPl4bdEK/AFG3jsNor/cZK5vY1H8j1xDiCVJro2Wsu/GuISNu8wJQoXVRxEQ==}
+  /@effect/schema@0.32.0:
+    resolution: {integrity: sha512-4HJK/cFkVPdIjYICy0eRsL7JuuLJ6mE3aJC5rX9OuUIei/qfctFEEX2NaARjtGX7hACBrRcuJCNwiq+54TTjFw==}
     dependencies:
       '@effect/data': 0.17.1
-      '@effect/io': 0.36.1
+      '@effect/io': 0.37.1
       fast-check: 3.12.0
     dev: false
 
@@ -6812,8 +6812,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /type-fest@4.0.0:
-    resolution: {integrity: sha512-d/oYtUnPM9zar2fqqGLYPzgcY0qUlYK0evgNVti93xpzfjGkMgZHu9Lvgrkn0rqGXTgsFRxFamzjGoD9Uo+dgw==}
+  /type-fest@4.1.0:
+    resolution: {integrity: sha512-VJGJVepayd8OWavP+rgXt4i3bfLk+tSomTV7r4mca2XD/oTCWnkJlNkpXavkxdmtU2aKdAmFGeHvoQutOVHCZg==}
     engines: {node: '>=16'}
     dev: false
 
