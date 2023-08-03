@@ -125,20 +125,25 @@ export default (
       duration: flowDuration,
       easing: mainState.config.value.timingFunction,
     })),
-    Z.tap((x) => Z.sync(() => {
-      Object.assign(x, {
-        onfinish: () => Object.assign(ctx.newChat, {
+    Z.flatMap((animation) => Z.sync((): FlowChat => {
+      const newChat = ctx.newChat;
+      
+      Object.assign(animation, {
+        onfinish: () => Object.assign(newChat, {
           animationEnded: true,
         } satisfies Partial<FlowChat>),
         currentTime: ctx.currentTime,
       } satisfies Partial<Animation>);
+
+      Object.assign(newChat, {
+        animation: O.some(animation),
+      } satisfies Partial<FlowChat>);
+
+      return newChat;
     })),
-    Z.map((x) => ({
+    Z.map((newChat) => ({
       oldChatIndex: ctx.oldChatIndex,
-      newChat: {
-        ...ctx.newChat,
-        animation: O.some(x),
-      } satisfies FlowChat,
+      newChat,
     })),
   )),
   Z.tap((x) => setChatPlayState(x.newChat)(mainState)),
