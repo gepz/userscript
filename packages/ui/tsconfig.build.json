@@ -25,10 +25,6 @@
     "sourceMap": true,
     "declarationMap": true,
     "outDir": "lib",
-    "plugins": [
-      // { "transform": "typescript-transform-paths" },
-      // { "transform": "typescript-transform-paths", "afterDeclarations": true }
-    ]
   },
   "include": [
     "./src/**/*.ts"
