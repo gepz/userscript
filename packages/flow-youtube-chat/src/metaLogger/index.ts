@@ -6,7 +6,7 @@ import * as O from 'effect/Option';
 import * as Z from 'effect/Effect';
 import * as FiberRefs from 'effect/FiberRefs';
 import * as Logger from 'effect/Logger';
-import * as LogLevel from '@effect/io/Logger/Level';
+import * as LogLevel from 'effect/LoggerLevel';
 
 import LogAnnotationKeys from '@/LogAnnotationKeys';
 import {

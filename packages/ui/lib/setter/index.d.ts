@@ -1,13 +1,13 @@
-import type EditSetter from "./EditSetter";
-import type Setter from "./Setter";
-import setEditColor from "./setEditColor";
-import setEditInt from "./setEditInt";
-import setEditNumber from "./setEditNumber";
-import setEditRegexes from "./setEditRegexes";
-import setEditString from "./setEditString";
-import setEditStrings from "./setEditStrings";
-import setFilteredString from "./setFilteredString";
-import setString from "./setString";
-import setStrings from "./setStrings";
+import type EditSetter from '../setter/EditSetter';
+import type Setter from '../setter/Setter';
+import setEditColor from '../setter/setEditColor';
+import setEditInt from '../setter/setEditInt';
+import setEditNumber from '../setter/setEditNumber';
+import setEditRegexes from '../setter/setEditRegexes';
+import setEditString from '../setter/setEditString';
+import setEditStrings from '../setter/setEditStrings';
+import setFilteredString from '../setter/setFilteredString';
+import setString from '../setter/setString';
+import setStrings from '../setter/setStrings';
 export { EditSetter, Setter, setEditColor, setEditInt, setEditNumber, setEditRegexes, setEditString, setEditStrings, setFilteredString, setString, setStrings, };
 //# sourceMappingURL=index.d.ts.map

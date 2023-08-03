@@ -8,9 +8,9 @@ import {
   merge,
 } from 'webpack-merge';
 
-export default (rootDir: string): Configuration => merge(
+export default (rootDir: string, mapping: boolean = false): Configuration => merge(
   baseConfig(rootDir),
-  tsLoaderConfig('tsconfig.build.json'),
+  tsLoaderConfig('tsconfig.build.json', mapping),
   {
     resolve: {
       extensions: ['.tsx', '.ts'],

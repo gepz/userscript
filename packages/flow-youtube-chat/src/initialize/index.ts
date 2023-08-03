@@ -4,9 +4,10 @@ import {
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
+import * as Ed from '@userscript/ui/Editable';
 import * as Str from 'effect/String';
 import * as Z from 'effect/Effect';
-import * as LogLevel from '@effect/io/Logger/Level';
+import * as LogLevel from 'effect/LoggerLevel';
 import * as Schedule from 'effect/Schedule';
 import forwardTo from '@userscript/forward-to';
 import {
@@ -81,9 +82,9 @@ export default ({
     return {
       ...ctx,
       configValue: config,
-      configSubject:  makeSubject(configKeys),
+      configSubject: makeSubject(configKeys),
       setterFromKeysMap: setterFromKeysMap(configKeys),
-    }
+    };
   })),
   Z.flatMap((ctx) => Z.gen(function* (_) {
     const setConfigPlain = ctx.setterFromKeysMap(

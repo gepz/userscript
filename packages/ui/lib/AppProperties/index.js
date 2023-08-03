@@ -1,9 +1,2 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const AppPropertiesKey_1 = __importDefault(require("../AppPropertiesKey"));
-const AppPropertiesValue_1 = __importDefault(require("../AppPropertiesValue"));
-const ComputedProperties_1 = __importDefault(require("../ComputedProperties"));
+export {};
 //# sourceMappingURL=index.js.map

@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/appNode/checkboxNode/index.ts"],"names":[],"mappings":"AAAA,OAAO,EACL,KAAK,EACN,MAAM,UAAU,CAAC;AAElB,OAAO,WAAW,0BAAsB;AACxC,OAAO,YAAY,2BAAuB;AAC1C,OAAO,aAAa,yBAAgC;6MAc/B,OAAO;AAT5B,wBAqBE"}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/appNode/checkboxNode/index.ts"],"names":[],"mappings":"AAAA,OAAO,EACL,KAAK,EACN,MAAM,UAAU,CAAC;AAElB,OAAO,WAAW,MAAM,eAAe,CAAC;AACxC,OAAO,YAAY,MAAM,gBAAgB,CAAC;AAC1C,OAAO,aAAa,MAAM,yBAAyB,CAAC;6MAc/B,OAAO;AAT5B,wBAqBE"}

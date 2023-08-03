@@ -1,7 +1,10 @@
-import libConfig from '@userscript/webpack-config/libConfig';
+import umdLibConfig from '@userscript/webpack-config/umdLibConfig';
 import {
   Configuration,
 } from 'webpack';
+import {
+  BundleAnalyzerPlugin,
+} from 'webpack-bundle-analyzer';
 import {
   merge,
 } from 'webpack-merge';
@@ -10,5 +13,12 @@ import webpackBaseConf from './webpack.base.conf';
 
 export default merge<Configuration>(
   webpackBaseConf,
-  libConfig('ui'),
+  umdLibConfig('ui'),
+  {
+    plugins: [
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+      }),
+    ],
+  },
 );

@@ -1,1 +1,1 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../src/appNode/numberNode/index.ts"],"names":[],"mappings":";;;;;AAAA,iEAAgD;AAChD,yCAEkB;AAElB,kBAAe,IAAA,qBAAW,EAAC,sBAAa,CAAC,CAAC"}
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../src/appNode/numberNode/index.ts"],"names":[],"mappings":"AAAA,OAAO,WAAW,MAAM,uBAAuB,CAAC;AAChD,OAAO,EACL,aAAa,GACd,MAAM,UAAU,CAAC;AAElB,eAAe,WAAW,CAAC,aAAa,CAAC,CAAC"}

@@ -1,5 +1,5 @@
-import TextGetter from "../../TextGetter";
-import AppNodeTextKey from "../AppNodeTextKey";
+import TextGetter from '../../TextGetter';
+import AppNodeTextKey from '../../appNode/AppNodeTextKey';
 type AppTextGetter<Key, State> = TextGetter<Key | AppNodeTextKey, State>;
 export default AppTextGetter;
 //# sourceMappingURL=index.d.ts.map

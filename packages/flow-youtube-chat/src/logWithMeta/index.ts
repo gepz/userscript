@@ -1,9 +1,9 @@
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
+import * as LogLevel from 'effect/LoggerLevel';
 import * as O from 'effect/Option';
-import * as Z from 'effect/Effect';
-import * as LogLevel from '@effect/io/Logger/Level';
 
 import LogMeta, {
   logMeta,

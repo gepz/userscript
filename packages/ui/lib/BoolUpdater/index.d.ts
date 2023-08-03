@@ -1,5 +1,5 @@
-import ExactTypeKey from "../ExactTypeKey";
-import StateDispatchable from "../StateDispatchable";
+import ExactTypeKey from '../ExactTypeKey';
+import StateDispatchable from '../StateDispatchable';
 export default interface BoolUpdater<State, Props, AppCommander> {
     (key: ExactTypeKey<Props, boolean>): (c: AppCommander) => (s: State, e: Event) => StateDispatchable<State>;
 }

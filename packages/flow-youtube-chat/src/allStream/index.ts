@@ -10,7 +10,7 @@ import * as O from 'effect/Option';
 import * as D from 'effect/Duration';
 import * as RA from 'effect/ReadonlyArray';
 import * as Z from 'effect/Effect';
-import * as LogLevel from '@effect/io/Logger/Level';
+import * as LogLevel from 'effect/LoggerLevel';
 import {
   BroadcastChannel,
 } from 'broadcast-channel';

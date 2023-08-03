@@ -2,7 +2,7 @@ import {
   Configuration,
 } from 'webpack';
 
-export default (configFile: string): Configuration => ({
+export default (configFile: string, mapping: boolean = false): Configuration => ({
   module: {
     rules: [
       {
@@ -12,9 +12,9 @@ export default (configFile: string): Configuration => ({
           options: { 
             configFile,
             compilerOptions: {
-              declaration: false,
-              sourceMap: false,
-              declarationMap: false,
+              declaration: mapping,
+              sourceMap: mapping,
+              declarationMap: mapping,
             },
           },
         },
