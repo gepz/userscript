@@ -1,5 +1,5 @@
-import StateDispatchable from "../StateDispatchable";
-import { Setter } from "../setter";
+import StateDispatchable from '../StateDispatchable';
+import { Setter } from '../setter';
 export default interface InputUpdater<State, Props, AppCommander> {
     <K extends keyof Props>(key: K): (setter: Setter<string, Props[K]>) => (c: AppCommander) => (s: State, e: Event) => StateDispatchable<State>;
 }

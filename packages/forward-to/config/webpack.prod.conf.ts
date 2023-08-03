@@ -1,4 +1,4 @@
-import libConfig from '@userscript/webpack-config/libConfig';
+import umdLibConfig from '@userscript/webpack-config/umdLibConfig';
 import {
   Configuration,
 } from 'webpack';
@@ -10,5 +10,5 @@ import webpackBaseConf from './webpack.base.conf';
 
 export default merge<Configuration>(
   webpackBaseConf,
-  libConfig('forwardTo'),
+  umdLibConfig('forwardTo'),
 );

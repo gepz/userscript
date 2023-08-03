@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
-import {
-  BundleAnalyzerPlugin,
-} from 'webpack-bundle-analyzer';
+// import {
+//   BundleAnalyzerPlugin,
+// } from 'webpack-bundle-analyzer';
 import {
   merge,
 } from 'webpack-merge';
@@ -18,7 +18,6 @@ export default merge(
       {
         sweetalert2: 'Swal',
         rxjs: 'rxjs',
-        loglevel: 'log',
         'deep-diff': 'DeepDiff',
         astring: 'astring',
         jsep: 'jsep',
@@ -28,10 +27,10 @@ export default merge(
       },
     ],
     plugins: [
-      new BundleAnalyzerPlugin({
-        analyzerMode: 'static',
-      }),
-      // userscriptPlugin(false),
+      // new BundleAnalyzerPlugin({
+      //   analyzerMode: 'static',
+      // }),
+      userscriptPlugin(false),
     ],
     optimization: {
       minimizer: [

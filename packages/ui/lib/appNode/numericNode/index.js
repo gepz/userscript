@@ -1,18 +1,8 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const EditAction_1 = __importDefault(require("../../EditAction"));
-const Editable_1 = __importDefault(require("../../Editable"));
-const ExactTypeKey_1 = __importDefault(require("../../ExactTypeKey"));
-const AppTextGetter_1 = __importDefault(require("../AppTextGetter"));
-const errorText_1 = __importDefault(require("../../errorText"));
-const rangeRow_1 = __importDefault(require("../../node/rangeRow"));
-const settingRow_1 = __importDefault(require("../../node/settingRow"));
-const EditSetter_1 = __importDefault(require("../../setter/EditSetter"));
-exports.default = (setter) => (editAction, getText, getState) => (label, min, max, step) => (c) => (s) => (0, settingRow_1.default)(getText(label)(s), (0, errorText_1.default)(getText('inputNonNumberic')(s))(getState(label)(s)), [
-    (0, rangeRow_1.default)({
+import errorText from '../../errorText';
+import rangeRow from '../../node/rangeRow';
+import settingRow from '../../node/settingRow';
+export default (setter) => (editAction, getText, getState) => (label, min, max, step) => (c) => (s) => settingRow(getText(label)(s), errorText(getText('inputNonNumberic')(s))(getState(label)(s)), [
+    rangeRow({
         min,
         max,
         step,

@@ -1,1 +1,1 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../src/panelBoxStyle/index.ts"],"names":[],"mappings":";;AAIA,kBAAe,CAAC,KAAa,EAAa,EAAE,CAAC,CAAC;IAC5C,IAAI,EAAE,OAAO,KAAK,IAAI;IACtB,KAAK,EAAE,GAAG,KAAK,IAAI;IACnB,MAAM,EAAE,KAAK;CACd,CAAC,CAAC"}
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../src/panelBoxStyle/index.ts"],"names":[],"mappings":"AAIA,eAAe,CAAC,KAAa,EAAa,EAAE,CAAC,CAAC;IAC5C,IAAI,EAAE,OAAO,KAAK,IAAI;IACtB,KAAK,EAAE,GAAG,KAAK,IAAI;IACnB,MAAM,EAAE,KAAK;CACd,CAAC,CAAC"}

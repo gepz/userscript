@@ -34,8 +34,6 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
       require: [
         (x = cdnSegment('sweetalert2')) => `${x.begin}cdn.jsdelivr.net/npm/${
           x.nameVer}/dist/${x.name}.all${x.end}`,
-        (x = cdnSegment('loglevel')) => `${x.begin}unpkg.com/${
-          x.nameVer}/dist/${x.name}${x.end}`,
         (x = cdnSegment('rxjs')) => `${x.begin}unpkg.com/${
           x.nameVer}/dist/bundles/${x.name}.umd${x.end}`,
         (x = cdnSegment('deep-diff')) => `${x.begin}cdn.jsdelivr.net/npm/${

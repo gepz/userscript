@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/setter/EditSetter/index.ts"],"names":[],"mappings":"AAAA,OAAO,MAAM,kBAAwB;AAErC,MAAM,CAAC,OAAO,WAAW,UAAU,CAAC,CAAC;IACnC,CAAC,OAAO,EAAE,OAAO,GAAG,MAAM,CAAC,MAAM,EAAE,CAAC,CAAC,CAAA;CACtC"}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/setter/EditSetter/index.ts"],"names":[],"mappings":"AAAA,OAAO,MAAM,MAAM,iBAAiB,CAAC;AAErC,MAAM,CAAC,OAAO,WAAW,UAAU,CAAC,CAAC;IACnC,CAAC,OAAO,EAAE,OAAO,GAAG,MAAM,CAAC,MAAM,EAAE,CAAC,CAAC,CAAA;CACtC"}

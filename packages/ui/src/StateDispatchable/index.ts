@@ -4,4 +4,6 @@ import {
 
 type StateDispatchable<S> = [s: S, ...e: Effect<S>[]];
 
-export default StateDispatchable;
+export type {
+  StateDispatchable as default,
+};
