@@ -126,7 +126,10 @@ export default (
       easing: mainState.config.value.timingFunction,
     })),
     Z.flatMap((animation) => Z.sync((): FlowChat => {
-      const newChat = ctx.newChat;
+      const newChat = {
+        ...ctx.newChat,
+        animation: O.some(animation),
+      };
       
       Object.assign(animation, {
         onfinish: () => Object.assign(newChat, {
@@ -134,11 +137,7 @@ export default (
         } satisfies Partial<FlowChat>),
         currentTime: ctx.currentTime,
       } satisfies Partial<Animation>);
-
-      Object.assign(newChat, {
-        animation: O.some(animation),
-      } satisfies Partial<FlowChat>);
-
+      
       return newChat;
     })),
     Z.map((newChat) => ({
