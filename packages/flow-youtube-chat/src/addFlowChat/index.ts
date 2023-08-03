@@ -46,7 +46,7 @@ export default (
       Z.sync(() => document.createElement('span')),
       Z.tap((element) => Z.sync(() => chatScrn.append(element))),
       Z.tap((element) => Z.sync(() => element.classList.add('fyc_chat'))),
-      Z.zipLeft(Z.logDebug('Flow chat added')),
+      Z.zipLeft(Z.logDebug('Flow chat element added')),
     ),
     onSome: (index): Z.Effect<never, never, HTMLElement> => pipe(
       Z.gen(function* (_) {
@@ -77,10 +77,10 @@ export default (
     Z.succeed(mainState),
     Z.tap(renderChat(flowChat)),
     Z.flatMap(setChatAnimation(flowChat)),
-    Z.match({
+    Z.matchEffect({
       onFailure: () => pipe(
         Z.sync(() => flowChat.element.remove()),
-        Z.zipLeft(Z.logDebug('Flow chat removed')),
+        Z.zipLeft(Z.logDebug('Flow chat element removed')),
       ),
       onSuccess: (x) => Z.sync(() => mainState.flowChats.next(
         RA.append(mainState.flowChats.value, x.newChat)
