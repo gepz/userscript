@@ -1,6 +1,4 @@
-import {
-  tapNonNull,
-} from '@userscript/tap';
+import tapNonNull from '@userscript/tap-non-null';
 import * as O from 'fp-ts/Option';
 import {
   pipe,

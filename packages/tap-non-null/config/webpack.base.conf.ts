@@ -9,9 +9,16 @@ import {
 } from 'webpack-merge';
 
 export default merge(
-  tsbaseConfig(path.resolve(__dirname, '../')),
+  tsbaseConfig(path.resolve(__dirname, '../'), true),
   {
-    plugins: [new ForkTsCheckerWebpackPlugin()],
+    plugins: [
+      // new ForkTsCheckerWebpackPlugin({
+      //   typescript: {
+      //     build: true,
+      //     mode: 'write-dts',
+      //   },
+      // }),
+    ],
     stats: {
       errorDetails: true,
     },

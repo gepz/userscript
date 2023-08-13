@@ -3,6 +3,9 @@ import {
   Configuration,
 } from 'webpack';
 import {
+  BundleAnalyzerPlugin,
+} from 'webpack-bundle-analyzer';
+import {
   merge,
 } from 'webpack-merge';
 
@@ -10,5 +13,12 @@ import webpackBaseConf from './webpack.base.conf';
 
 export default merge<Configuration>(
   webpackBaseConf,
-  umdLibConfig('tap'),
+  umdLibConfig('tapNonNull'),
+  {
+    plugins: [
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+      }),
+    ],
+  },
 );

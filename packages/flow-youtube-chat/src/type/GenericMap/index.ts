@@ -1,8 +1,6 @@
 import * as SM from 'effect/SortedMap';
 import * as Str from 'effect/String';
-import {
-  tapNonNull,
-} from '@userscript/tap';
+import * as tapNonNull from '@userscript/tap-non-null';
 import {
   pipe,
 } from 'effect/Function';
