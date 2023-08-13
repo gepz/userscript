@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "noImplicitAny": true,
     "resolveJsonModule": true,
-    "module": "es6",
+    "module": "es2020",
     "target": "es2020",
     "jsx": "react",
     "allowJs": true,
@@ -11,22 +11,20 @@
       "esnext",
       "dom"
     ],
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     },
     "esModuleInterop": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
+    "noUncheckedIndexedAccess": true,
     "strict": true,
+    "exactOptionalPropertyTypes": true,
     "declaration": true,
-    "outDir": "lib",
     "sourceMap": true,
     "declarationMap": true,
-    "plugins": [
-      { "transform": "typescript-transform-paths" },
-      { "transform": "typescript-transform-paths", "afterDeclarations": true }
-    ]
+    "outDir": "lib",
   },
   "include": [
     "./src/**/*.ts"

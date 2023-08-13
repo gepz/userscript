@@ -3,9 +3,7 @@ import {
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
-import {
-  tapNonNull,
-} from '@userscript/tap';
+import tapNonNull from '@userscript/tap-non-null';
 
 import ChatData from '@/ChatData';
 import UserConfig from '@/UserConfig';

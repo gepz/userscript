@@ -1,6 +1,4 @@
-import {
-  tapNonNull,
-} from '@userscript/tap';
+import tapNonNull from '@userscript/tap-non-null';
 import {
   BroadcastChannel,
 } from 'broadcast-channel';

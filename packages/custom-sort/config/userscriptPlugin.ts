@@ -15,7 +15,6 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
       headers.version ?? ''
     }${devMode ? `+${ctx.buildTime.getTime()}` : ''}`,
     name: 'Iwara Custom Sort',
-    'name:ja': 'Iwara Custom ソート',
     'run-at': RunAt.DocumentEnd,
     grant: [
       'GM.setValue',
@@ -32,13 +31,9 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
     ].map((x) => `http${x}://${subDomain}.${mainDomain}/*`))),
     license: 'AGPL-3.0-or-later',
     description: 'Automatically sort teaser images on '
-      + '/videos, /images, /subscriptions, /users, /playlist'
-      + ', and sidebars using customizable sort function.'
-      + ' Can load and sort multiple pages at once.',
-    'description:ja': '/videos、/images、/subscriptions、/users、/playlist'
-      + 'とサイドバーのサムネイルを自動的にソートします。'
-      + 'ソート方法はカスタマイズすることができます、'
-      + '一度に複数のページを読み込んでソートすることができます。',
+    + '/videos, /images, /subscriptions, /users, /playlist'
+    + ', and sidebars using customizable sort function.'
+    + ' Can load and sort multiple pages at once.',
     require: [
       (x = cdnSegment('sweetalert2')) => `${x.begin}cdn.jsdelivr.net/npm/${
         x.nameVer}/dist/${x.name}.all${x.end}`,
@@ -51,6 +46,15 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
     ].map((x) => x()),
     namespace: 'https://greasyfork.org/users/245195',
   }),
+  i18n: {
+    'ja': {
+      name: 'Iwara Custom ソート',
+      description: '/videos、/images、/subscriptions、/users、/playlist'
+      + 'とサイドバーのサムネイルを自動的にソートします。'
+      + 'ソート方法はカスタマイズすることができます、'
+      + '一度に複数のページを読み込んでソートすることができます。',
+    },
+  },
   ssri: {
     algorithms: ['sha384'],
   },
