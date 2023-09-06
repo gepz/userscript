@@ -30,8 +30,6 @@ import getState from '@/settingUI/getState';
 import updateAt from '@/settingUI/updateAt';
 import updateInput from '@/settingUI/updateInput';
 
-type test = typeof getText
-
 export default (
   c: AppCommander,
 ) => (
