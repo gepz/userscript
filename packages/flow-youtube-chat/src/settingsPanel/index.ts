@@ -30,6 +30,8 @@ import getState from '@/settingUI/getState';
 import updateAt from '@/settingUI/updateAt';
 import updateInput from '@/settingUI/updateInput';
 
+type test = typeof getText
+
 export default (
   c: AppCommander,
 ) => (
@@ -93,7 +95,7 @@ export default (
       'chatFilter',
       'chatField',
       'feedback',
-    ],
+    ] as const,
     RA.map(getText),
     RA.map(apply(state)),
   ))(pipe(

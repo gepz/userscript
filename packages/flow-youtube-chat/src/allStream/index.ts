@@ -10,7 +10,7 @@ import * as O from 'effect/Option';
 import * as D from 'effect/Duration';
 import * as RA from 'effect/ReadonlyArray';
 import * as Z from 'effect/Effect';
-import * as LogLevel from 'effect/LoggerLevel';
+import * as LogLevel from 'effect/LogLevel';
 import {
   BroadcastChannel,
 } from 'broadcast-channel';
@@ -169,7 +169,7 @@ export default (
             })),
             Z.map(O.isSome),
             Z.map((x) => `${key} ${x ? 'found' : 'lost'}`),
-            Z.flatMap((x) => Z.logDebug(x)),
+            Z.flatMap(Z.logDebug),
             Z.isSuccess,
           )),
           Z.all,

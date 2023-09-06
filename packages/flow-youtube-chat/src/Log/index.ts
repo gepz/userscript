@@ -3,7 +3,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as RA from 'effect/ReadonlyArray';
-import * as logLevel from 'effect/LoggerLevel';
+import * as logLevel from 'effect/LogLevel';
 import {
   compressToUTF16,
   decompressFromUTF16,
