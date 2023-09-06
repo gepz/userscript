@@ -6,7 +6,8 @@ import * as O from 'effect/Option';
 import * as Z from 'effect/Effect';
 import * as FiberRefs from 'effect/FiberRefs';
 import * as Logger from 'effect/Logger';
-import * as LogLevel from 'effect/LoggerLevel';
+import * as LogLevel from 'effect/LogLevel';
+import * as Console from 'effect/Console';
 
 import LogAnnotationKeys from '@/LogAnnotationKeys';
 import {
@@ -16,17 +17,12 @@ import {
 const getConsoleLog = (
   x: LogLevel.LogLevel,
   // eslint-disable-next-line no-console
-) => (x === LogLevel.Trace ? console.trace
-// eslint-disable-next-line no-console
-: x === LogLevel.Debug ? console.debug
-// eslint-disable-next-line no-console
-: x === LogLevel.Info ? console.info
-// eslint-disable-next-line no-console
-: x === LogLevel.Warning ? console.warn
-// eslint-disable-next-line no-console
-: x === LogLevel.Error || x === LogLevel.Fatal ? console.error
-// eslint-disable-next-line no-console
-: console.log).bind(console);
+) => (x === LogLevel.Trace ? Console.trace
+: x === LogLevel.Debug ? Console.debug
+: x === LogLevel.Info ? Console.info
+: x === LogLevel.Warning ? Console.warn
+: x === LogLevel.Error || x === LogLevel.Fatal ? Console.error
+: Console.log);
 
 export default Logger.make<unknown, void>(({
   logLevel,

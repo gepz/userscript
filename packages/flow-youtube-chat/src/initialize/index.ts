@@ -4,10 +4,9 @@ import {
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
-import * as Ed from '@userscript/ui/Editable';
 import * as Str from 'effect/String';
 import * as Z from 'effect/Effect';
-import * as LogLevel from 'effect/LoggerLevel';
+import * as LogLevel from 'effect/LogLevel';
 import * as Schedule from 'effect/Schedule';
 import forwardTo from '@userscript/forward-to';
 import {

@@ -79,7 +79,7 @@ export default (
         map(() => ({
           render: true,
           setAnimation: true,
-        })),
+        } as const)),
       ),
       pipe(
         merge(
@@ -94,13 +94,13 @@ export default (
         ),
         map(() => ({
           render: true,
-        })),
+        } as const)),
       ),
       pipe(
         co.flowSpeed,
         map(() => ({
           setPlayState: true,
-        })),
+        } as const)),
       ),
       pipe(
         merge(
@@ -114,7 +114,7 @@ export default (
         ),
         map(() => ({
           setAnimation: true,
-        })),
+        } as const)),
       ),
     ),
     throttleTime(180, undefined, {

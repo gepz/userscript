@@ -1,8 +1,8 @@
-import AppTextGetter from '@userscript/ui/appNode/AppTextGetter';
 
 import TextKey from '@/TextKey';
 import defaultText from '@/defaultText';
 import languages from '@/languages';
+import AppTextGetter from '@userscript/ui/appNode/AppTextGetter';
 
 interface State {
   lang: typeof languages[number],

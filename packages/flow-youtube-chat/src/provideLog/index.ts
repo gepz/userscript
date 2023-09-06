@@ -3,11 +3,11 @@ import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
+import * as LogLevel from 'effect/LogLevel';
 import * as Logger from 'effect/Logger';
 import {
   withMinimumLogLevel,
 } from 'effect/Logger';
-import * as LogLevel from 'effect/LoggerLevel';
 import {
   Dispatch,
 } from 'hyperapp';
