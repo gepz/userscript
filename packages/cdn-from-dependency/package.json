@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "author": "",
   "devDependencies": {
-    "@types/node": "20.5.9",
+    "@types/node": "20.6.2",
     "@userscript/eslint-config": "workspace:^1.0.0",
     "@userscript/webpack-config": "workspace:^1.0.0",
     "cross-env": "^7.0.3",

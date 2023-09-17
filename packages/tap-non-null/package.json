@@ -7,7 +7,7 @@
     "typed-assert": "^1.0.9"
   },
   "devDependencies": {
-    "@types/node": "20.5.9",
+    "@types/node": "20.6.2",
     "@types/webpack-bundle-analyzer": "^4.6.0",
     "@userscript/eslint-config": "workspace:^1.0.0",
     "@userscript/webpack-config": "workspace:^1.0.0",
