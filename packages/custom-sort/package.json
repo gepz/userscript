@@ -26,7 +26,7 @@
     "@typescript-eslint/parser": "^6.7.0",
     "@userscript/cdn-from-dependency": "workspace:^1.0.0",
     "@userscript/eslint-config": "workspace:^1.0.0",
-    "@userscript/webpack-config": "workspace:^1.0.0",
+    "@userscript/webpack-config": "workspace:^1.0.2",
     "autoprefixer": "^10.4.15",
     "cross-env": "^7.0.3",
     "css-loader": "^6.8.1",

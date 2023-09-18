@@ -1,8 +1,9 @@
 {
   "name": "@userscript/webpack-config",
   "description": "",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "",
+  "type": "module",
   "dependencies": {
     "@types/node": "20.6.2",
     "webpack": "^5.88.2",
