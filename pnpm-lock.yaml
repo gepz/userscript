@@ -300,9 +300,6 @@ importers:
       monocle-ts:
         specifier: ^2.3.13
         version: 2.3.13(fp-ts@2.16.1)
-      newtype-ts:
-        specifier: 0.3.5
-        version: 0.3.5(fp-ts@2.16.1)(monocle-ts@2.3.13)
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
@@ -4645,16 +4642,6 @@ packages:
 
   /neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
-
-  /newtype-ts@0.3.5(fp-ts@2.16.1)(monocle-ts@2.3.13):
-    resolution: {integrity: sha512-v83UEQMlVR75yf1OUdoSFssjitxzjZlqBAjiGQ4WJaML8Jdc68LJ+BaSAXUmKY4bNzp7hygkKLYTsDi14PxI2g==}
-    peerDependencies:
-      fp-ts: ^2.0.0
-      monocle-ts: ^2.0.0
-    dependencies:
-      fp-ts: 2.16.1
-      monocle-ts: 2.3.13(fp-ts@2.16.1)
-    dev: false
 
   /nice-try@1.0.5:
     resolution: {integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==}
