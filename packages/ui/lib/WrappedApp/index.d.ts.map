@@ -1,0 +1,1 @@
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../src/WrappedApp/index.ts"],"names":[],"mappings":"AAAA,OAAO,EACL,QAAQ,EACT,MAAM,UAAU,CAAC;AAElB,MAAM,CAAC,OAAO,WAAW,UAAU,CAAC,CAAC;IACnC,QAAQ,CAAC,IAAI,EAAE,WAAW,CAAC;IAC3B,QAAQ,CAAC,QAAQ,EAAE,QAAQ,CAAC,CAAC,CAAC,CAAC;CAChC"}

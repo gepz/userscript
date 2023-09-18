@@ -1,14 +1,14 @@
+import RootComponent, {
+  makeComponent,
+} from '@userscript/ui/RootComponent';
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as Z from 'effect/Effect';
 import {
   h,
 } from 'hyperapp';
 
-import RootComponent, {
-  makeComponent,
-} from '@/RootComponent';
 import SettingState from '@/SettingState';
 import UserConfigSetter from '@/UserConfigSetter';
 import getText from '@/getText';
