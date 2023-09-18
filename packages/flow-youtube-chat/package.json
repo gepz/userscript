@@ -8,7 +8,7 @@
     "effect": "^2.0.0-next.34",
     "@userscript/forward-to": "workspace:^1.0.1",
     "@userscript/tap-non-null": "workspace:^1.0.1",
-    "@userscript/ui": "workspace:^1.0.1",
+    "@userscript/ui": "workspace:^1.1.0",
     "astring": "^1.8.6",
     "broadcast-channel": "^5.3.0",
     "deep-diff": "^1.0.2",
