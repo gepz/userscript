@@ -1,17 +1,18 @@
-import * as D from 'effect/Duration';
-import {
-  pipe,
-} from 'effect/Function';
-import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
-import * as Str from 'effect/String';
-import * as Z from 'effect/Effect';
-import * as LogLevel from 'effect/LogLevel';
-import * as Schedule from 'effect/Schedule';
 import forwardTo from '@userscript/forward-to';
+import wrapApp from '@userscript/ui/wrapApp';
 import {
   BroadcastChannel,
 } from 'broadcast-channel';
+import * as D from 'effect/Duration';
+import * as Z from 'effect/Effect';
+import {
+  pipe,
+} from 'effect/Function';
+import * as LogLevel from 'effect/LogLevel';
+import * as O from 'effect/Option';
+import * as RA from 'effect/ReadonlyArray';
+import * as Schedule from 'effect/Schedule';
+import * as Str from 'effect/String';
 import deepEq from 'fast-deep-equal';
 import {
   Dispatch,
@@ -40,6 +41,7 @@ import {
   makeGetter,
 } from '@/UserConfigGetter';
 import allStream from '@/allStream';
+import configKeys from '@/configKeys';
 import defaultFilter from '@/defaultFilter';
 import defaultGMConfig from '@/defaultGMConfig';
 import livePageYt from '@/livePageYt';
@@ -52,11 +54,9 @@ import setSettingFromConfig from '@/setSettingFromConfig';
 import setterFromKeysMap from '@/setterFromKeysMap';
 import settingStateInit from '@/settingStateInit';
 import settingsComponent from '@/settingsComponent';
-import wrapApp from '@/wrapApp';
 import tapEffect from '@/tapEffect';
 import toggleChatButton from '@/toggleChatButton';
 import toggleSettingsPanelComponent from '@/toggleSettingsPanelComponent';
-import configKeys from '@/configKeys';
 
 export default ({
   settingUpdateApps,
@@ -74,7 +74,7 @@ export default ({
       settingUpdateApps.value,
       RA.map((x) => Z.sync(() => x(dispatchable))),
       Z.all,
-    ))
+    )),
   }),
   Z.flatMap((ctx) => Z.gen(function* (_) {
     const config = yield* _(makeConfig(ctx.gmConfig));
@@ -91,7 +91,7 @@ export default ({
         Object.assign(ctx.configValue, {
           [key]: val,
         });
-  
+
         ctx.configSubject[key].next(val);
       }),
     );
@@ -105,10 +105,10 @@ export default ({
     );
 
     yield* _(setConfigPlain.filterExp(defaultFilter(ctx.configValue)));
-    
+
     const channel = new BroadcastChannel<
     [keyof UserConfig, UserConfig[keyof UserConfig]]
-    >(scriptIdentifier)
+    >(scriptIdentifier);
 
     const {
       configValue,
@@ -139,9 +139,9 @@ export default ({
               Z.ignore,
             ),
           ),
-        }
+        },
       } satisfies MainState,
-    }
+    };
   })),
   Z.flatMap((ctx) => Z.gen(function* (_) {
     const reinitSubject = new Subject<void>();
@@ -153,7 +153,7 @@ export default ({
         requestAnimationFrame(() => forwardTo(reinitSubject)());
       })),
       apps: {
-        toggleChatButtonApp:  yield* _(wrapApp(
+        toggleChatButtonApp: yield* _(wrapApp(
           toggleChatButton(ctx.mainState.config.setConfig),
           stateInit,
         )),
@@ -171,8 +171,8 @@ export default ({
           toggleSettingsPanelComponent(ctx.updateSettingState),
           stateInit,
         )),
-      }
-    }
+      },
+    };
   })),
   Z.tap((ctx) => Z.sync(() => settingUpdateApps.next([
     ctx.apps.settingsApp.dispatch,
@@ -225,7 +225,7 @@ export default ({
                 ] as const,
                 RA.containsWith(Str.Equivalence)(k),
                 (x) => (x ? ctx.mainState.config.setConfig.filterExp(
-                  defaultFilter(ctx.mainState.config.value)
+                  defaultFilter(ctx.mainState.config.value),
                 ) : Z.unit),
               )),
               (x) => () => Z.runPromise(provideLog(x)),
@@ -235,7 +235,7 @@ export default ({
           ),
         ]),
       ),
-    }
+    };
   })),
   Z.flatMap((ctx) => Z.gen(function* (_) {
     (yield* _(allStream(
@@ -243,7 +243,7 @@ export default ({
         ...ctx,
         // eslint-disable-next-line max-len
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        liveElementKeys: Object.keys(ctx.live) as (keyof typeof ctx.live)[]
+        liveElementKeys: Object.keys(ctx.live) as (keyof typeof ctx.live)[],
       },
       provideLog,
     ))).subscribe({

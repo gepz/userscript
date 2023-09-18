@@ -1,3 +1,6 @@
+import RootComponent, {
+  makeComponent,
+} from '@userscript/ui/RootComponent';
 import {
   pipe,
 } from 'effect/Function';
@@ -6,9 +9,6 @@ import {
 } from 'hyperapp';
 
 import AppCommander from '@/AppCommander';
-import RootComponent, {
-  makeComponent,
-} from '@/RootComponent';
 import SettingState from '@/SettingState';
 import settingsPanel from '@/settingsPanel';
 

@@ -9,5 +9,6 @@ import getValue from './getValue';
 import * as node from './node';
 import panelBoxStyle from './panelBoxStyle';
 import * as setter from './setter';
-export { boolUpdater, editAction, ExactTypeKey, inputUpdater, appNode, errorText, getChecked, getValue, node, panelBoxStyle, setter, };
+import * as wrapApp from './wrapApp';
+export { boolUpdater, editAction, ExactTypeKey, inputUpdater, appNode, errorText, getChecked, getValue, node, panelBoxStyle, setter, wrapApp, };
 //# sourceMappingURL=index.js.map

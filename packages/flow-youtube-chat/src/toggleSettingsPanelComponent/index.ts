@@ -1,7 +1,16 @@
 import {
+  parseSync,
+} from '@effect/schema/Parser';
+import {
+  instanceOf,
+} from '@effect/schema/Schema';
+import RootComponent, {
+  makeComponent,
+} from '@userscript/ui/RootComponent';
+import * as Z from 'effect/Effect';
+import {
   pipe,
 } from 'effect/Function';
-import * as Z from 'effect/Effect';
 import {
   h,
   VNode,
@@ -9,16 +18,7 @@ import {
   Effect,
   Dispatchable,
 } from 'hyperapp';
-import {
-  parseSync
-} from '@effect/schema/Parser';
-import {
-  instanceOf
-} from '@effect/schema/Schema';
 
-import RootComponent, {
-  makeComponent,
-} from '@/RootComponent';
 import SettingState from '@/SettingState';
 import getText from '@/getText';
 

@@ -1,3 +1,12 @@
+import WrappedApp from '@userscript/ui/WrappedApp';
+import {
+  BroadcastChannel,
+} from 'broadcast-channel';
+import {
+  diff,
+} from 'deep-diff';
+import * as D from 'effect/Duration';
+import * as Z from 'effect/Effect';
 import {
   strict,
 } from 'effect/Equivalence';
@@ -6,17 +15,9 @@ import {
   apply,
   identity,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as D from 'effect/Duration';
-import * as RA from 'effect/ReadonlyArray';
-import * as Z from 'effect/Effect';
 import * as LogLevel from 'effect/LogLevel';
-import {
-  BroadcastChannel,
-} from 'broadcast-channel';
-import {
-  diff,
-} from 'deep-diff';
+import * as O from 'effect/Option';
+import * as RA from 'effect/ReadonlyArray';
 import {
   Dispatchable,
 } from 'hyperapp';
@@ -53,7 +54,7 @@ import MainState from '@/MainState';
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
 import UserConfigSetter from '@/UserConfigSetter';
-import WrappedApp from '@/WrappedApp/index';
+import configKeys from '@/configKeys';
 import configStream from '@/configStream';
 import listeningBroadcastConfigKeys from '@/listeningBroadcastConfigKeys';
 import logWithMeta from '@/logWithMeta';
@@ -67,7 +68,6 @@ import settingsPanelSize from '@/settingsPanelSize';
 import tapEffect from '@/tapEffect';
 import updateSettingsRect from '@/updateSettingsRect';
 import videoToggleStream from '@/videoToggleStream';
-import configKeys from '@/configKeys';
 
 type Ctx = {
   updateSettingState: (
@@ -145,7 +145,7 @@ export default (
       chatMutationPair: yield* _(observePair(MutationObserver)),
       playerResizePair: yield* _(observePair(ResizeObserver)),
       bodyResizePair: yield* _(observePair(ResizeObserver)),
-    }
+    };
   }),
   Z.map((c) => pipe(
     reinitSubject,
@@ -158,7 +158,7 @@ export default (
       concatMap((index) => pipe(
         from(Z.runPromise(provideLog(pipe(
           liveElementKeys,
-          RA.map((key) =>  live[key].read.pipe(
+          RA.map((key) => live[key].read.pipe(
             Z.option,
             Z.flatMap(O.liftPredicate(
               (newEle) => !c.eq(live[key].ele, newEle),
@@ -271,7 +271,7 @@ export default (
           map(([x, y]) => diff(x, y)),
           map((x) => Z.logDebug(
             `Config ${key}: ${JSON.stringify(x, undefined, 2)}`,
-           )),
+          )),
           tapEffect(provideLog),
         )),
       ),
