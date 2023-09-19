@@ -1,40 +1,35 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
+    "moduleResolution": "Node10",
     "noImplicitAny": true,
     "resolveJsonModule": true,
-    "module": "es6",
-    "target": "es2018",
+    "module": "es2020",
+    "target": "es2020",
     "jsx": "react",
     "allowJs": true,
     "lib": [
       "esnext",
-      "dom"
+      "dom",
     ],
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     },
     "esModuleInterop": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
+    "noUncheckedIndexedAccess": true,
     "strict": true,
-    "declaration": true,
-    "outDir": "lib",
+    "exactOptionalPropertyTypes": true,
     "sourceMap": true,
-    "declarationMap": true,
-    "plugins": [
-      { "transform": "typescript-transform-paths" },
-      { "transform": "typescript-transform-paths", "afterDeclarations": true }
-    ]
   },
   "include": [
-    "./src/**/*.ts"
+    "./src/**/*.ts",
   ],
   "exclude": [
     "node_modules",
     "dist",
     "lib",
-    "**/*.spec.ts"
-  ]
+    "**/*.spec.ts",
+  ],
 }

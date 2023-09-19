@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../src/styleLoaderConfig/index.ts"],"names":[],"mappings":"AAIA,eAAe,CAAC;IACd,MAAM,EAAE;QACN,KAAK,EAAE;YACL;gBACE,IAAI,EAAE,QAAQ;gBACd,GAAG,EAAE;oBACH;wBACE,MAAM,EAAE,cAAc;qBACvB;oBACD;wBACE,MAAM,EAAE,YAAY;qBACrB;oBACD;wBACE,MAAM,EAAE,gBAAgB;qBACzB;iBACF;aACF;SACF;KACF;CACF,CAAyB,CAAC"}

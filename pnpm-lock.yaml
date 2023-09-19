@@ -30,7 +30,7 @@ importers:
         specifier: workspace:^1.0.1
         version: link:../eslint-config
       '@userscript/webpack-config':
-        specifier: workspace:^1.0.1
+        specifier: workspace:^1.0.2
         version: link:../webpack-config
       cross-env:
         specifier: ^7.0.3
@@ -47,18 +47,15 @@ importers:
       ts-node:
         specifier: ^10.9.1
         version: 10.9.1(@types/node@20.6.2)(typescript@5.3.0-dev.20230906)
-      ts-patch:
-        specifier: ^3.0.2
-        version: 3.0.2
+      tsc-alias:
+        specifier: ^1.8.7
+        version: 1.8.7
       tsconfig-paths:
         specifier: ^4.2.0
         version: 4.2.0
       typescript:
         specifier: ^5.3.0-dev.20230906
         version: 5.3.0-dev.20230906
-      typescript-transform-paths:
-        specifier: ^3.4.6
-        version: 3.4.6(typescript@5.3.0-dev.20230906)
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@5.1.4)
@@ -139,7 +136,7 @@ importers:
         specifier: workspace:^1.0.0
         version: link:../eslint-config
       '@userscript/webpack-config':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.0.2
         version: link:../webpack-config
       autoprefixer:
         specifier: ^10.4.15
@@ -232,8 +229,8 @@ importers:
         specifier: ^15.0.0
         version: 15.0.0(eslint-plugin-import@2.27.5)(eslint@8.38.0)
       eslint-config-airbnb-typescript:
-        specifier: ^17.0.0
-        version: 17.0.0(@typescript-eslint/eslint-plugin@6.7.0)(@typescript-eslint/parser@6.7.0)(eslint-plugin-import@2.27.5)(eslint@8.38.0)
+        specifier: ^17.1.0
+        version: 17.1.0(@typescript-eslint/eslint-plugin@6.7.0)(@typescript-eslint/parser@6.7.0)(eslint-plugin-import@2.27.5)(eslint@8.38.0)
       eslint-plugin-consistent-default-export-name:
         specifier: ^0.0.15
         version: 0.0.15
@@ -347,7 +344,7 @@ importers:
         specifier: workspace:^1.0.1
         version: link:../eslint-config
       '@userscript/webpack-config':
-        specifier: workspace:^1.0.1
+        specifier: workspace:^1.0.2
         version: link:../webpack-config
       autoprefixer:
         specifier: ^10.4.15
@@ -444,7 +441,7 @@ importers:
         specifier: workspace:^1.0.1
         version: link:../eslint-config
       '@userscript/webpack-config':
-        specifier: workspace:^1.0.1
+        specifier: workspace:^1.0.2
         version: link:../webpack-config
       cross-env:
         specifier: ^7.0.3
@@ -461,18 +458,15 @@ importers:
       ts-node:
         specifier: ^10.9.1
         version: 10.9.1(@types/node@20.6.2)(typescript@5.3.0-dev.20230906)
-      ts-patch:
-        specifier: ^3.0.2
-        version: 3.0.2
+      tsc-alias:
+        specifier: ^1.8.7
+        version: 1.8.7
       tsconfig-paths:
         specifier: ^4.2.0
         version: 4.2.0
       typescript:
         specifier: ^5.3.0-dev.20230906
         version: 5.3.0-dev.20230906
-      typescript-transform-paths:
-        specifier: ^3.4.6
-        version: 3.4.6(typescript@5.3.0-dev.20230906)
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@5.1.4)
@@ -502,7 +496,7 @@ importers:
         specifier: workspace:^1.0.1
         version: link:../eslint-config
       '@userscript/webpack-config':
-        specifier: workspace:^1.0.1
+        specifier: workspace:^1.0.2
         version: link:../webpack-config
       cross-env:
         specifier: ^7.0.3
@@ -519,9 +513,6 @@ importers:
       ts-node:
         specifier: ^10.9.1
         version: 10.9.1(@types/node@20.6.2)(typescript@5.3.0-dev.20230906)
-      ts-patch:
-        specifier: ^3.0.2
-        version: 3.0.2
       tsc-alias:
         specifier: ^1.8.7
         version: 1.8.7
@@ -584,7 +575,7 @@ importers:
         specifier: workspace:^1.0.1
         version: link:../eslint-config
       '@userscript/webpack-config':
-        specifier: workspace:^1.0.1
+        specifier: workspace:^1.0.2
         version: link:../webpack-config
       cross-env:
         specifier: ^7.0.3
@@ -601,9 +592,6 @@ importers:
       ts-node:
         specifier: ^10.9.1
         version: 10.9.1(@types/node@20.6.2)(typescript@5.3.0-dev.20230906)
-      ts-patch:
-        specifier: ^3.0.2
-        version: 3.0.2
       tsc-alias:
         specifier: ^1.8.7
         version: 1.8.7
@@ -646,6 +634,13 @@ importers:
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
+    devDependencies:
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
+      tsc-alias:
+        specifier: ^1.8.7
+        version: 1.8.7
 
 packages:
 
@@ -2915,11 +2910,11 @@ packages:
       semver: 6.3.0
     dev: true
 
-  /eslint-config-airbnb-typescript@17.0.0(@typescript-eslint/eslint-plugin@6.7.0)(@typescript-eslint/parser@6.7.0)(eslint-plugin-import@2.27.5)(eslint@8.38.0):
-    resolution: {integrity: sha512-elNiuzD0kPAPTXjFWg+lE24nMdHMtuxgYoD30OyMD6yrW1AhFZPAg27VX7d3tzOErw+dgJTNWfRSDqEcXb4V0g==}
+  /eslint-config-airbnb-typescript@17.1.0(@typescript-eslint/eslint-plugin@6.7.0)(@typescript-eslint/parser@6.7.0)(eslint-plugin-import@2.27.5)(eslint@8.38.0):
+    resolution: {integrity: sha512-GPxI5URre6dDpJ0CtcthSZVBAfI+Uw7un5OYNVxP2EYi3H81Jw701yFP7AU+/vCE7xBtFmjge7kfhhk4+RAiig==}
     peerDependencies:
-      '@typescript-eslint/eslint-plugin': ^5.13.0
-      '@typescript-eslint/parser': ^5.0.0
+      '@typescript-eslint/eslint-plugin': ^5.13.0 || ^6.0.0
+      '@typescript-eslint/parser': ^5.0.0 || ^6.0.0
       eslint: ^7.32.0 || ^8.2.0
       eslint-plugin-import: ^2.25.3
     dependencies:
@@ -3680,15 +3675,6 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       ini: 1.3.8
-    dev: true
-
-  /global-prefix@3.0.0:
-    resolution: {integrity: sha512-awConJSVCHVGND6x3tmMaKcQvwXLhjdkmomy2W+Goaui8YPgYgXJZewhg3fWC+DlfqqQuWg8AwqjGTD2nAPVWg==}
-    engines: {node: '>=6'}
-    dependencies:
-      ini: 1.3.8
-      kind-of: 6.0.3
-      which: 1.3.1
     dev: true
 
   /globals@13.20.0:
@@ -5985,18 +5971,6 @@ packages:
       yn: 3.1.1
     dev: true
 
-  /ts-patch@3.0.2:
-    resolution: {integrity: sha512-iTg8euqiNsNM1VDfOsVIsP0bM4kAVXU38n7TGQSkky7YQX/syh6sDPIRkvSS0HjT8ZOr0pq1h+5Le6jdB3hiJQ==}
-    hasBin: true
-    dependencies:
-      chalk: 4.1.2
-      global-prefix: 3.0.0
-      minimist: 1.2.8
-      resolve: 1.22.4
-      semver: 7.5.4
-      strip-ansi: 6.0.1
-    dev: true
-
   /ts-toolbelt@9.6.0:
     resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}
     dev: false
@@ -6099,15 +6073,6 @@ packages:
   /typed-assert@1.0.9:
     resolution: {integrity: sha512-KNNZtayBCtmnNmbo5mG47p1XsCyrx6iVqomjcZnec/1Y5GGARaxPs6r49RnSPeUP3YjNYiU9sQHAtY4BBvnZwg==}
     dev: false
-
-  /typescript-transform-paths@3.4.6(typescript@5.3.0-dev.20230906):
-    resolution: {integrity: sha512-qdgpCk9oRHkIBhznxaHAapCFapJt5e4FbFik7Y4qdqtp6VyC3smAIPoDEIkjZ2eiF7x5+QxUPYNwJAtw0thsTw==}
-    peerDependencies:
-      typescript: '>=3.6.5'
-    dependencies:
-      minimatch: 3.1.2
-      typescript: 5.3.0-dev.20230906
-    dev: true
 
   /typescript@5.1.6:
     resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
