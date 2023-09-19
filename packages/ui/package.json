@@ -1,7 +1,7 @@
 {
   "name": "@userscript/ui",
   "description": "",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "",
   "dependencies": {
     "@effect/schema": "^0.36.1",
@@ -16,14 +16,13 @@
     "@types/node": "20.6.2",
     "@types/webpack-bundle-analyzer": "^4.6.0",
     "@typescript/lib-dom": "npm:@types/web@^0.0.86",
-    "@userscript/eslint-config": "workspace:^1.0.1",
-    "@userscript/webpack-config": "workspace:^1.0.2",
+    "@userscript/eslint-config": "workspace:^1.0.2",
+    "@userscript/webpack-config": "workspace:^1.0.3",
     "cross-env": "^7.0.3",
     "fork-ts-checker-webpack-plugin": "^8.0.0",
     "npm-run-all": "^4.1.5",
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
-    "ts-patch": "^3.0.2",
     "tsc-alias": "^1.8.7",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.0-dev.20230906",
@@ -51,11 +50,10 @@
     }
   },
   "scripts": {
-    "prepare": "ts-patch install -s",
     "preinstall": "npx only-allow pnpm",
     "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.dev.conf.ts",
     "prod": "run-s prod_lib prod_umd",
-    "prod_lib": "tspc --project tsconfig.lib.json && tsc-alias -p tsconfig.lib.json",
+    "prod_lib": "tsc --project tsconfig.lib.json && tsc-alias -p tsconfig.lib.json",
     "prod_umd": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.prod.conf.ts",
     "start": "pnpm dev"
   },

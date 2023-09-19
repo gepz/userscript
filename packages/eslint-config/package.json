@@ -1,7 +1,7 @@
 {
   "name": "@userscript/eslint-config",
   "description": "",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "",
   "keywords": [],
   "license": "AGPL-3.0-or-later",
@@ -10,7 +10,7 @@
     "@typescript-eslint/parser": "^6.7.0",
     "eslint": "^8.23.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-airbnb-typescript": "^17.1.0",
     "eslint-plugin-consistent-default-export-name": "^0.0.15",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-import-newlines": "^1.2.3"

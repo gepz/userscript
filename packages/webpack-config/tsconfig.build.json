@@ -9,7 +9,7 @@
     "allowJs": true,
     "lib": [
       "esnext",
-      "dom",
+      "dom"
     ],
     "baseUrl": "./",
     "paths": {
@@ -24,7 +24,7 @@
     "sourceMap": true,
   },
   "include": [
-    "./src/**/*.ts",
+    "./src/**/*.ts"
   ],
   "exclude": [
     "node_modules",

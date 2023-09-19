@@ -2,10 +2,11 @@
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "module": "commonjs",
+    "moduleResolution": "node",
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
   },
   "include": [
-    "**/*.ts"
-  ]
+    "**/*.ts",
+  ],
 }
