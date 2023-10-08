@@ -20,7 +20,7 @@
     "lit-html": "^2.8.0",
     "lz-string": "^1.5.0",
     "micro-memoize": "^4.1.2",
-    "monocle-ts": "^2.3.13",
+    "@fp-ts/optic": "^0.10.0",
     "rxjs": "^7.8.1",
     "sweetalert2": "^11.7.32",
     "ts-toolbelt": "^9.6.0",

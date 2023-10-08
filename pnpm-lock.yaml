@@ -249,6 +249,9 @@ importers:
       '@effect/typeclass':
         specifier: ^0.9.0
         version: 0.9.0(effect@2.0.0-next.47)
+      '@fp-ts/optic':
+        specifier: ^0.10.0
+        version: 0.10.0(@effect/typeclass@0.9.0)(effect@2.0.0-next.47)
       '@userscript/forward-to':
         specifier: workspace:^1.0.1
         version: link:../forward-to
@@ -294,9 +297,6 @@ importers:
       micro-memoize:
         specifier: ^4.1.2
         version: 4.1.2
-      monocle-ts:
-        specifier: ^2.3.13
-        version: 2.3.13(fp-ts@2.16.1)
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
@@ -407,7 +407,7 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0
       typescript:
-        specifier: ^5.3.0-beta
+        specifier: ^5.3.0-dev.20231008
         version: 5.3.0-dev.20231008
       webpack:
         specifier: ^5.88.2
@@ -1129,6 +1129,16 @@ packages:
     resolution: {integrity: sha512-HxjQ8Qn+4SI3/AFv6sOrDB+g6PpUTDwSJiQqOrnneEk8L71161srI9gjzzZvYVbzHiVg/BvcH95+cK/zfIt4pg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
+
+  /@fp-ts/optic@0.10.0(@effect/typeclass@0.9.0)(effect@2.0.0-next.47):
+    resolution: {integrity: sha512-ArMc8qawBESuvps1BR74y3s8Vn8AiDnbNe/Pu1Pxc3RwVPDxb34cui6PblAIRXEieYH2QQiwsVp+bNDfxA48Zg==}
+    peerDependencies:
+      '@effect/typeclass': ^0.6.2
+      effect: ^2.0.0-next.44
+    dependencies:
+      '@effect/typeclass': 0.9.0(effect@2.0.0-next.47)
+      effect: 2.0.0-next.47
+    dev: false
 
   /@humanwhocodes/config-array@0.11.11:
     resolution: {integrity: sha512-N2brEuAadi0CcdeMXUkhbZB84eskAc8MEX1By6qEchoVywSgXPIjou4rYsl0V3Hj0ZnuGycGCjdNgockbzeWNA==}
@@ -4525,14 +4535,6 @@ packages:
     resolution: {integrity: sha512-VC5fg6ySUscaWUpI4gxCBTQMH2RdUpNrk+MsbpCYtIvf9SBJdiUey4qE7BXviJsJR4nDQxCZ+3yaYNW3guz/Pw==}
     engines: {node: '>= 8.0.0'}
     dev: true
-
-  /monocle-ts@2.3.13(fp-ts@2.16.1):
-    resolution: {integrity: sha512-D5Ygd3oulEoAm3KuGO0eeJIrhFf1jlQIoEVV2DYsZUMz42j4tGxgct97Aq68+F8w4w4geEnwFa8HayTS/7lpKQ==}
-    peerDependencies:
-      fp-ts: ^2.5.0
-    dependencies:
-      fp-ts: 2.16.1
-    dev: false
 
   /mrmime@1.0.1:
     resolution: {integrity: sha512-hzzEagAgDyoU1Q6yg5uI+AorQgdvMCur3FcKf7NhMKWsaYg+RnbTyHRa/9IlLF9rf455MOCtcqqrQQ83pPP7Uw==}
