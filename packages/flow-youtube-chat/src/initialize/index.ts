@@ -66,8 +66,8 @@ export default ({
   provideLog: <T>(x: Z.Effect<never, never, T>) => Z.Effect<never, never, T>
 }): Z.Effect<never, never, unknown> => provideLog(pipe(
   defaultGMConfig,
-  (x) => Z.succeed({
-    gmConfig: x,
+  (gmConfig) => Z.succeed({
+    gmConfig,
     updateSettingState: (
       dispatchable: Dispatchable<SettingState>,
     ): Z.Effect<never, never, void> => provideLog(pipe(
@@ -76,6 +76,7 @@ export default ({
       Z.all,
     )),
   }),
+  // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* (_) {
     const config = yield* _(makeConfig(ctx.gmConfig));
     return {
@@ -85,6 +86,7 @@ export default ({
       setterFromKeysMap: setterFromKeysMap(configKeys),
     };
   })),
+  // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* (_) {
     const setConfigPlain = ctx.setterFromKeysMap(
       (key) => (val) => Z.promise(async () => {
@@ -143,6 +145,7 @@ export default ({
       } satisfies MainState,
     };
   })),
+  // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* (_) {
     const reinitSubject = new Subject<void>();
     const stateInit = settingStateInit(ctx.mainState.config.value);
@@ -194,6 +197,7 @@ export default ({
     Z.delay(D.seconds(10)),
     Z.forkDaemon,
   )),
+  // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* (_) {
     return {
       ...ctx,
@@ -237,6 +241,7 @@ export default ({
       ),
     };
   })),
+  // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* (_) {
     (yield* _(allStream(
       {

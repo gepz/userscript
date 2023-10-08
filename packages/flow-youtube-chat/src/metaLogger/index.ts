@@ -1,13 +1,13 @@
+import * as Console from 'effect/Console';
+import * as Z from 'effect/Effect';
+import * as FiberRefs from 'effect/FiberRefs';
 import {
   pipe,
 } from 'effect/Function';
 import * as HM from 'effect/HashMap';
-import * as O from 'effect/Option';
-import * as Z from 'effect/Effect';
-import * as FiberRefs from 'effect/FiberRefs';
-import * as Logger from 'effect/Logger';
 import * as LogLevel from 'effect/LogLevel';
-import * as Console from 'effect/Console';
+import * as Logger from 'effect/Logger';
+import * as O from 'effect/Option';
 
 import LogAnnotationKeys from '@/LogAnnotationKeys';
 import {
@@ -29,7 +29,6 @@ export default Logger.make<unknown, void>(({
   message,
   context,
   annotations,
-  // eslint-disable-next-line max-params, no-console
 }) => Z.runPromise(pipe(
   () => `${pipe(
     annotations,
@@ -38,15 +37,16 @@ export default Logger.make<unknown, void>(({
       onNone: () => '',
       onSome: (x) => `[${x}] `,
     }),
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   )}${message}`,
   (getStr) => pipe(
     FiberRefs.getOrDefault(context, logMeta),
     (x) => x,
     O.match({
       onNone: () => (
-        LogLevel.greaterThanEqual(LogLevel.Warning)(logLevel) ? Z.sync(
-          () => getConsoleLog(logLevel)(getStr()),
-        ) : Z.unit),
+        LogLevel.greaterThanEqual(LogLevel.Warning)(logLevel)
+          ? getConsoleLog(logLevel)(getStr())
+          : Z.unit),
       onSome: (meta) => Z.sync(() => getConsoleLog(logLevel)(
         `${getStr()}: `,
         meta,
