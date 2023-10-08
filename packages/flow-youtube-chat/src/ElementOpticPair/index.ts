@@ -1,3 +1,4 @@
+import * as Op from '@fp-ts/optic';
 import {
   pipe,
 } from 'effect/Function';
@@ -6,7 +7,6 @@ import {
   Refinement,
 } from 'effect/Predicate';
 import * as RA from 'effect/ReadonlyArray';
-import * as Op from 'monocle-ts/Optional';
 
 type ElementOpticPair<S, A> = {
   ele: A,
@@ -33,10 +33,7 @@ export const filter = <S, A, B extends A>(
   O.liftPredicate(refinement),
   O.map((x) => ({
     ele: x,
-    opt: pipe(
-      pair.opt,
-      Op.filter(refinement),
-    ),
+    opt: pair.opt.filter(refinement),
   })),
 );
 
@@ -44,10 +41,7 @@ export const prop = <A, P extends keyof A>(p: P) => <S>(
   pair: ElementOpticPair<S, A>,
 ): ElementOpticPair<S, A[P]> => ({
   ele: pair.ele[p],
-  opt: pipe(
-    pair.opt,
-    Op.prop(p),
-  ),
+  opt: pair.opt.at(p),
 });
 
 export const toArray = <S, A>(
@@ -55,8 +49,7 @@ export const toArray = <S, A>(
 ): readonly ElementOpticPair<S, A>[] => pipe(
   pair.ele,
   RA.map((e, i) => pipe(
-    pair.opt,
-    Op.index(i),
+    pair.opt.index(i),
     make(e),
   )),
 );
@@ -67,9 +60,6 @@ export const some = <S, A>(
   pair.ele,
   O.map((x) => ({
     ele: x,
-    opt: pipe(
-      pair.opt,
-      Op.some,
-    ),
+    opt: pair.opt.some(),
   })),
 );
