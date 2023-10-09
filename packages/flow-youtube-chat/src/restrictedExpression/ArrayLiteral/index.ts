@@ -1,4 +1,4 @@
-import * as E from 'effect/Either';
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
@@ -25,12 +25,13 @@ export const fromJsExp = (
   exp: expEval.parse.ArrayExpression,
 ) => (
   f: ExpressionFromJsExp,
-): E.Either<string, ArrayLiteral> => pipe(
+): Z.Effect<never, string, ArrayLiteral> => pipe(
   exp.elements,
   RA.map(f),
-  E.sequenceArray,
-  E.bindTo('elements'),
-  E.map(of),
+  (x) => x,
+  Z.all,
+  Z.bindTo('elements'),
+  Z.map(of),
 );
 
 export const toJsExp = ({

@@ -2,8 +2,8 @@ import * as Brand from 'effect/Brand';
 import {
   pipe,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
 import * as logLevel from 'effect/LogLevel';
+import * as RA from 'effect/ReadonlyArray';
 import {
   compressToUTF16,
   decompressFromUTF16,

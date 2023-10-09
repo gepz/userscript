@@ -1,17 +1,17 @@
-import * as E from 'effect/Either';
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
 import * as expEval from 'expression-eval';
 
+import TaggedValue, {
+  makeType,
+} from '@/TaggedValue';
 import type Expression from '@/restrictedExpression/Expression';
 import ExpressionFromJsExp from '@/restrictedExpression/ExpressionFromJsExp';
 // eslint-disable-next-line max-len
 import ExpressionFromTypedExp from '@/restrictedExpression/ExpressionFromTypedExp';
 import JsExpFromExpression from '@/restrictedExpression/JsExpFromExpression';
-import TaggedValue, {
-  makeType,
-} from '@/TaggedValue';
 import TypedDotMember from '@/typedExpression/TypedDotMember';
 
 type DotMemberAccess = TaggedValue<'dotMemberAccess', {
@@ -25,23 +25,25 @@ export const fromJsExp = (
   exp: expEval.parse.MemberExpression,
 ) => (
   f: ExpressionFromJsExp,
-) : E.Either<string, DotMemberAccess> => pipe(
+) : Z.Effect<never, string, DotMemberAccess> => pipe(
   exp,
-  E.liftPredicate(
+  Z.succeed,
+  Z.filterOrFail(
     (x) => !x.computed,
     () => 'Computed member access is not supported',
   ),
-  E.flatMap((x) => f(x.object)),
-  E.bindTo('object'),
-  E.apS('property', pipe(
+  Z.flatMap((x) => f(x.object)),
+  Z.bindTo('object'),
+  Z.bind('property', () => pipe(
     exp.property,
-    E.liftPredicate(
+    Z.succeed,
+    Z.filterOrFail(
       (x): x is expEval.parse.Identifier => x.type === 'Identifier',
       () => 'For the dot notation, the property name must be a JS identifier',
     ),
-    E.map((x) => x.name),
+    Z.map((x) => x.name),
   )),
-  E.map(of),
+  Z.map(of),
 );
 
 export const toJsExp = ({

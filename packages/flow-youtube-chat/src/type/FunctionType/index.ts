@@ -1,15 +1,15 @@
-import {
-  omit,
-} from 'effect/Struct';
 import * as E from 'effect/Either';
-import * as I from 'effect/Identity';
-import * as O from 'effect/Option';
-import * as R from 'fp-ts/Reader';
-import * as RA from 'effect/ReadonlyArray';
 import {
   flow,
   pipe,
 } from 'effect/Function';
+import * as I from 'effect/Identity';
+import * as O from 'effect/Option';
+import * as RA from 'effect/ReadonlyArray';
+import {
+  omit,
+} from 'effect/Struct';
+import * as R from 'fp-ts/Reader';
 
 import TaggedValue, {
   makeType,

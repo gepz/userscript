@@ -1,18 +1,21 @@
 import {
+  bind,
+} from '@effect/typeclass/Chainable';
+import * as I from '@effect/typeclass/data/Identity';
+import {
   pipe,
 } from 'effect/Function';
 import * as RA from 'effect/ReadonlyArray';
-import * as I from 'effect/Identity';
 
-import type ArrayLiteral from '@/restrictedExpression/ArrayLiteral';
 import TaggedValue, {
   makeType,
 } from '@/TaggedValue';
-import TypeBase from '@/typedExpression/TypeBase';
-import type TypedExpression from '@/typedExpression/typedExpression';
-import TypedExpressionFunction from '@/typedExpression/typedExpressionFunction';
+import type ArrayLiteral from '@/restrictedExpression/ArrayLiteral';
 import * as tupleType from '@/type/TupleType';
 import Type from '@/type/Type';
+import TypeBase from '@/typedExpression/TypeBase';
+import TypedExpressionFunction from '@/typedExpression/TypedExpressionFunction';
+import type TypedExpression from '@/typedExpression/typedExpression';
 
 type TypedArray = TaggedValue<'typedArray', TypeBase & {
   elements: readonly TypedExpression[];
@@ -29,12 +32,15 @@ export const fromExp = ({
 }: { expected: Type }): TypedArray => pipe(
   value.elements,
   RA.map((x) => f(x)(expected)),
-  I.bindTo('elements'),
-  I.apS('expected', expected),
-  I.bind('synthed', (c) => tupleType.of(pipe(
+  (elements) => ({
+    elements,
+  }),
+  bind(I.Chainable)('expected', () => expected),
+  (ctx) => bind(I.Chainable)(ctx, 'synthed', (c) => tupleType.of(pipe(
     c.elements,
     RA.map((x) => x.value.synthed),
   ))),
+  (x) => x,
   of,
 );
 

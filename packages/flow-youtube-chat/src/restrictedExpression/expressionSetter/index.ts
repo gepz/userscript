@@ -1,14 +1,12 @@
-import * as O from 'effect/Option';
-import * as R from 'fp-ts/Reader';
+import * as Op from '@fp-ts/optic';
+import EditSetter from '@userscript/ui/setter/EditSetter';
 import {
   pipe,
   apply,
-  constant,
 } from 'effect/Function';
-import * as Op from 'monocle-ts/Optional';
+import * as O from 'effect/Option';
 
 import Expression from '@/restrictedExpression/Expression';
-import EditSetter from '@userscript/ui/EditSetter';
 
 export default <T>(
   setter: EditSetter<T>,
@@ -16,15 +14,16 @@ export default <T>(
   opt: Op.Optional<Expression, T>,
 ) => (
   empty: T,
+) => (
+  editing: boolean,
+) => (
+  value: string,
+) => (
+  exp: Expression,
 ) => pipe(
-  setter,
-  R.map(R.map(
-    (f) => (x: Expression) => pipe(
-      opt.getOption(x),
-      O.getOrElse(constant(empty)),
-      f,
-      opt.set,
-      apply(x),
-    ),
-  )),
+  Op.getOption(opt)(exp),
+  O.getOrElse(() => empty),
+  setter(editing)(value),
+  Op.replace(opt),
+  apply(exp),
 );
