@@ -1,11 +1,13 @@
-import * as expEval from 'expression-eval';
 import * as E from 'effect/Either';
-import * as R from 'fp-ts/Reader';
 import {
   flow,
   pipe,
 } from 'effect/Function';
+import * as expEval from 'expression-eval';
 
+import chainFilterMapElse from '@/chainFilterMapElse';
+import chainTagged from '@/chainTagged';
+import processWithEither from '@/processWithEither';
 // eslint-disable-next-line max-len
 import ArrayLiteral, * as arrayLiteral from '@/restrictedExpression/ArrayLiteral';
 import * as booleanLiteral from '@/restrictedExpression/BooleanLiteral';
@@ -23,9 +25,6 @@ import * as numberLiteral from '@/restrictedExpression/NumberLiteral';
 import PrimitiveLiteral, * as primitiveLiteral from '@/restrictedExpression/PrimitiveLiteral';
 import * as stringLiteral from '@/restrictedExpression/StringLiteral';
 import TypedExpression from '@/typedExpression/typedExpression';
-import chainFilterMapElse from '@/chainFilterMapElse';
-import chainTagged from '@/chainTagged';
-import processWithEither from '@/processWithEither';
 
 type Expression = CallExpression
 | Identifier
@@ -57,11 +56,11 @@ export const fromJsExp: ExpressionFromJsExp = processWithEither(flow(
   E.mapLeft((x) => x(fromJsExp)),
   chainFilterMapElse(isJsExp('Identifier'))(pipe(
     identifier.fromJsExp,
-    R.map(E.right),
+    (f) => (exp) => E.right(f(exp)),
   )),
   chainFilterMapElse(isJsExp('Literal'))(pipe(
     primitiveLiteral.fromJsExp,
-    R.map(E.right),
+    (f) => (exp) => E.right(f(exp)),
   )),
   E.map((x) => E.left(`${x.type} expression type is not supported.`)),
 ));

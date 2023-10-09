@@ -1,11 +1,11 @@
-import type BooleanLiteral from '@/restrictedExpression/BooleanLiteral';
 import TaggedValue, {
   makeType,
 } from '@/TaggedValue';
-import TypeBase from '@/typedExpression/TypeBase';
+import type BooleanLiteral from '@/restrictedExpression/BooleanLiteral';
 import Primitive from '@/type/Primitive';
 import * as simpleType from '@/type/SimpleType';
 import Type from '@/type/Type';
+import TypeBase from '@/typedExpression/TypeBase';
 
 type TypedBoolean = TaggedValue<'typedBoolean', TypeBase & {
   value: boolean

@@ -1,4 +1,4 @@
-import * as E from 'effect/Either';
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
@@ -27,18 +27,22 @@ export const fromJsExp = (
   exp: expEval.parse.CallExpression,
 ) => (
   f: ExpressionFromJsExp,
-): E.Either<string, CallExpression> => pipe(
+): Z.Effect<never, string, CallExpression> => pipe(
   exp.arguments,
-  E.liftPredicate(
+  Z.succeed,
+  Z.filterOrFail(
     (x): x is [expEval.parse.Expression] | [] => x.length <= 1,
     () => 'A function call cannot take more than 1 arguments',
   ),
-  E.map(RA.head),
-  E.map(O.map(f)),
-  E.flatMap(O.sequence(E.Applicative)),
-  E.bindTo('argument'),
-  E.apS('callee', f(exp.callee)),
-  E.map(of),
+  Z.map(RA.head),
+  Z.map(O.map(f)),
+  Z.flatMap(O.match({
+    onNone: () => Z.succeed(O.none()),
+    onSome: Z.map((x) => O.some(x)),
+  })),
+  Z.bindTo('argument'),
+  Z.bind('callee', () => f(exp.callee)),
+  Z.map(of),
 );
 
 export const toJsExp = ({

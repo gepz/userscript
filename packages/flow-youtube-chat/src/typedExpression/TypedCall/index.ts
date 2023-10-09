@@ -1,19 +1,22 @@
 import {
+  bind,
+} from '@effect/typeclass/Chainable';
+import * as I from '@effect/typeclass/data/Identity';
+import {
   pipe,
 } from 'effect/Function';
-import * as I from 'effect/Identity';
 import * as O from 'effect/Option';
 
-import type CallExpression from '@/restrictedExpression/CallExpression';
 import TaggedValue, {
   makeType,
 } from '@/TaggedValue';
-import TypeBase from '@/typedExpression/TypeBase';
-import type TypedExpression from '@/typedExpression/typedExpression';
-import TypedExpressionFunction from '@/typedExpression/typedExpressionFunction';
+import type CallExpression from '@/restrictedExpression/CallExpression';
 import * as functionType from '@/type/FunctionType';
 import Type from '@/type/Type';
 import * as unknownType from '@/type/UnknownType';
+import TypeBase from '@/typedExpression/TypeBase';
+import TypedExpressionFunction from '@/typedExpression/TypedExpressionFunction';
+import type TypedExpression from '@/typedExpression/typedExpression';
 
 type TypedCall = TaggedValue<'typedCall', TypeBase & {
   argument: O.Option<TypedExpression>;
@@ -35,7 +38,7 @@ export const fromExp = ({
     )(expected)),
     expected,
   },
-  I.bind('argument', (c) => pipe(
+  bind(I.Chainable)('argument', (c) => pipe(
     value.argument,
     O.map((arg) => pipe(
       c.callee.value.synthed,
@@ -44,11 +47,12 @@ export const fromExp = ({
       (x) => f(arg)(x),
     )),
   )),
-  I.bind('synthed', (c) => pipe(
+  bind(I.Chainable)('synthed', (c) => pipe(
     c.callee.value.synthed,
     (x) => (x.tag === 'func' ? functionType.returnOf(x)
     : unknownType.unknown),
   )),
+  (x) => x,
   of,
 );
 
