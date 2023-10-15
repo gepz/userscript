@@ -1,12 +1,11 @@
+import * as E from 'effect/Either';
 import {
   pipe,
   flow,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
-import * as E from 'effect/Either';
-import * as R from 'fp-ts/Reader';
-import * as RR from 'fp-ts/ReadonlyRecord';
+import * as RR from 'effect/ReadonlyRecord';
 
 import TaggedValue, {
   makeType,

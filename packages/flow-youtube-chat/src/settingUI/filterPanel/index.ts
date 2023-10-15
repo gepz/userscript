@@ -2,15 +2,11 @@ import {
   pipe,
   flow,
   identity,
+  compose,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
-import * as En from 'fp-ts/Endomorphism';
-import {
-  concatAll,
-} from 'fp-ts/Monoid';
-import * as R from 'fp-ts/Reader';
-import * as RR from 'fp-ts/ReadonlyRecord';
+import * as RR from 'effect/ReadonlyRecord';
 import * as Tu from 'effect/Tuple';
 import {
   VNode,
@@ -100,7 +96,7 @@ const updateTypeMap = (
   expected: Type,
 ) => (
   actual: Type | ErrorType,
-): En.Endomorphism<GenericMap> => (
+): (m: GenericMap) => GenericMap => (
   expected.tag === 'var'
   && actual.tag !== 'error'
   && actual.tag !== 'unknown'
@@ -133,7 +129,11 @@ const updateTypeMap = (
       [...a[0], a[1]],
     )),
     O.map(RA.map(([e, a]) => updateTypeMap(e)(a))),
-    O.map(concatAll(En.getMonoid())),
+    O.map(RA.reduce(identity, (f, g) => compose(f, g))),
+    O.getOrElse(() => identity),
+  )
+  : expected.tag === 'tuple' && actual.tag === expected.tag? pipe(
+    RA.zip(expected.value, actual.)),
     O.getOrElse(() => identity),
   )
   : expected.tag === 'tuple' && actual.tag === expected.tag ? pipe(

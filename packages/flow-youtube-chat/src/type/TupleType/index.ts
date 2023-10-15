@@ -2,11 +2,10 @@ import {
   tapNonNull,
 } from '@userscript/tap';
 import * as E from 'effect/Either';
-import * as N from 'fp-ts/Number';
+import * as N from 'effect/Number';
 import * as O from 'effect/Option';
-import * as R from 'fp-ts/Reader';
 import * as RA from 'effect/ReadonlyArray';
-import * as RR from 'fp-ts/ReadonlyRecord';
+import * as RR from 'effect/ReadonlyRecord';
 import * as SEP from 'fp-ts/Separated';
 import {
   pipe,

@@ -1,12 +1,11 @@
 import {
+  first,
+} from '@effect/typeclass/Semigroup';
+import {
   flow,
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as R from 'fp-ts/Reader';
-import {
-  first,
-} from 'fp-ts/Semigroup';
 
 import AssignGenericFunction from '@/type/AssignGenericFunction';
 import GenericMap, {

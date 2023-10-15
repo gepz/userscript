@@ -1,3 +1,4 @@
+import * as Ed from '@userscript/ui/Editable';
 import {
   identity,
   pipe,
@@ -5,7 +6,6 @@ import {
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
 import * as expEval from 'expression-eval';
-import * as R from 'fp-ts/Reader';
 
 // eslint-disable-next-line max-len
 import type ArrayExpression from '@/settingUI/EditableExpression/ArrayExpression';
@@ -16,7 +16,6 @@ import type Literal from '@/settingUI/EditableExpression/Literal';
 import LiteralArray from '@/settingUI/EditableExpression/LiteralArray';
 // eslint-disable-next-line max-len
 import type MemberExpression from '@/settingUI/EditableExpression/MemberExpression';
-import * as Ed from '@userscript/ui/Editable';
 
 type Expression = ArrayExpression
 | CallExpression
@@ -28,11 +27,11 @@ type Expression = ArrayExpression
 
 export default Expression;
 
-type ExpressionFunctoin = R.Reader<
-expEval.parse.Expression,
-O.Option<Expression>>;
+type ExpressionFunctoin = (
+  exp: expEval.parse.Expression
+) => O.Option<Expression>;
 
-const identifier: R.Reader<expEval.parse.Identifier, Identifier> = identity;
+const identifier: (id: expEval.parse.Identifier) => Identifier = identity;
 
 const memberExp = (
   f: ExpressionFunctoin,

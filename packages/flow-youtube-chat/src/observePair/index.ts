@@ -1,5 +1,5 @@
-import * as Z from 'effect/Effect';
 import forwardTo from '@userscript/forward-to';
+import * as Z from 'effect/Effect';
 import {
   Subject,
 } from 'rxjs';

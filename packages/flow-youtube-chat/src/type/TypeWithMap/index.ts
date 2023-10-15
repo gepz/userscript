@@ -1,7 +1,8 @@
-import * as O from 'effect/Option';
 import {
   Semigroup,
-} from 'fp-ts/Semigroup';
+} from '@effect/typeclass/Semigroup';
+import * as O from 'effect/Option';
+
 import GenericMap from '@/type/GenericMap';
 import type Type from '@/type/Type';
 

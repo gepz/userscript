@@ -1,20 +1,20 @@
 import {
+  getMonoid,
+} from '@effect/typeclass/Applicative';
+import {
+  Monoid,
+  concatAll,
+} from '@effect/typeclass/Monoid';
+import {
+  Semigroup,
+} from '@effect/typeclass/Semigroup';
+import * as E from 'effect/Either';
+import {
   pipe,
   flow,
 } from 'effect/Function';
 import * as RA from 'effect/ReadonlyArray';
-import {
-  getApplicativeMonoid,
-} from 'fp-ts/Applicative';
-import * as E from 'effect/Either';
-import {
-  Monoid,
-  concatAll,
-} from 'fp-ts/Monoid';
-import * as RR from 'fp-ts/ReadonlyRecord';
-import {
-  Semigroup,
-} from 'fp-ts/Semigroup';
+import * as RR from 'effect/ReadonlyRecord';
 
 import TaggedValue, {
   makeType,
@@ -65,7 +65,7 @@ export const targetLowerBound = (
   target,
 ) => flow(
   resolveGeneric,
-  resolveUnion(getApplicativeMonoid(
+  resolveUnion(getMonoid(
     E.Applicative,
   )<GenericMap, string>(
     RR.getUnionMonoid(semigroup),
