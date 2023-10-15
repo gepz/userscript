@@ -8,14 +8,14 @@ import * as RA from 'effect/ReadonlyArray';
 import * as expEval from 'expression-eval';
 
 // eslint-disable-next-line max-len
-import type ArrayExpression from '@/settingUI/EditableExpression/ArrayExpression';
-import CallExpression from '@/settingUI/EditableExpression/CallExpression';
-import type Compound from '@/settingUI/EditableExpression/Compound';
-import type Identifier from '@/settingUI/EditableExpression/Identifier';
-import type Literal from '@/settingUI/EditableExpression/Literal';
-import LiteralArray from '@/settingUI/EditableExpression/LiteralArray';
+import type ArrayExpression from '@/settingUI/editableExpression/ArrayExpression';
+import CallExpression from '@/settingUI/editableExpression/CallExpression';
+import type Compound from '@/settingUI/editableExpression/Compound';
+import type Identifier from '@/settingUI/editableExpression/Identifier';
+import type Literal from '@/settingUI/editableExpression/Literal';
+import LiteralArray from '@/settingUI/editableExpression/LiteralArray';
 // eslint-disable-next-line max-len
-import type MemberExpression from '@/settingUI/EditableExpression/MemberExpression';
+import type MemberExpression from '@/settingUI/editableExpression/MemberExpression';
 
 type Expression = ArrayExpression
 | CallExpression

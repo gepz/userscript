@@ -8,14 +8,14 @@ import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
 import * as expEval from 'expression-eval';
 
-import ArrayExpression from '@/settingUI/EditableExpression/ArrayExpression';
-import CallExpression from '@/settingUI/EditableExpression/CallExpression';
-import Compound from '@/settingUI/EditableExpression/Compound';
-import Expression from '@/settingUI/EditableExpression/Expression';
-import Identifier from '@/settingUI/EditableExpression/Identifier';
-import Literal from '@/settingUI/EditableExpression/Literal';
-import LiteralArray from '@/settingUI/EditableExpression/LiteralArray';
-import MemberExpression from '@/settingUI/EditableExpression/MemberExpression';
+import ArrayExpression from '@/settingUI/editableExpression/ArrayExpression';
+import CallExpression from '@/settingUI/editableExpression/CallExpression';
+import Compound from '@/settingUI/editableExpression/Compound';
+import Expression from '@/settingUI/editableExpression/Expression';
+import Identifier from '@/settingUI/editableExpression/Identifier';
+import Literal from '@/settingUI/editableExpression/Literal';
+import LiteralArray from '@/settingUI/editableExpression/LiteralArray';
+import MemberExpression from '@/settingUI/editableExpression/MemberExpression';
 import * as Ed from '@userscript/ui/Editable';
 
 type JsepExpressionFunction = (x: Expression) => expEval.parse.Expression;

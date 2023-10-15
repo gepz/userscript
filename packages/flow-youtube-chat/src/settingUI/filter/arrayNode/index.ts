@@ -14,7 +14,7 @@ import {
 
 import * as EOP from '@/ElementOpticPair';
 import SettingState from '@/SettingState';
-import ArrayExpression from '@/settingUI/EditableExpression/ArrayExpression';
+import ArrayExpression from '@/settingUI/editableExpression/ArrayExpression';
 import type NodeFunction from '@/settingUI/filter/NodeFunction';
 import errorResult from '@/settingUI/filter/errorResult';
 import ErrorType from '@/type/ErrorType';

@@ -5,7 +5,7 @@ import {
 import * as O from 'effect/Option';
 
 import * as EOP from '@/ElementOpticPair';
-import MemberExpression from '@/settingUI/EditableExpression/MemberExpression';
+import MemberExpression from '@/settingUI/editableExpression/MemberExpression';
 import type NodeFunction from '@/settingUI/filter/NodeFunction';
 import type * as nodeFunction from '@/settingUI/filter/NodeFunction';
 import RecordType, * as recordType from '@/type/RecordType';

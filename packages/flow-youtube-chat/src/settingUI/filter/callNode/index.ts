@@ -5,7 +5,7 @@ import {
 } from 'effect/Function';
 
 import * as EOP from '@/ElementOpticPair';
-import CallExpression from '@/settingUI/EditableExpression/CallExpression';
+import CallExpression from '@/settingUI/editableExpression/CallExpression';
 import type NodeFunction from '@/settingUI/filter/NodeFunction';
 import type * as nodeFunction from '@/settingUI/filter/NodeFunction';
 import errorResult from '@/settingUI/filter/errorResult';

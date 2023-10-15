@@ -9,9 +9,9 @@ import Editable, * as Ed from '@userscript/ui/Editable';
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
 import isEditable from '@/isEditable';
-// import Compound from '@/settingUI/EditableExpression/Compound';
+// import Compound from '@/settingUI/editableExpression/Compound';
 
-// import fromJsepExp from '@/settingUI/EditableExpression/fromJsepExp';
+// import fromJsepExp from '@/settingUI/editableExpression/fromJsepExp';
 
 export default <T extends keyof UserConfig & keyof SettingState>(
   key: T,

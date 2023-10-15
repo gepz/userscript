@@ -7,7 +7,7 @@ import * as EOP from '@/ElementOpticPair';
 import Primitive from '@/type/Primitive';
 import * as simpleType from '@/type/SimpleType';
 import UI from '@/type/UI';
-import Literal from '@/settingUI/EditableExpression/Literal';
+import Literal from '@/settingUI/editableExpression/Literal';
 import editAction from '@/settingUI/editAction';
 import type NodeFunction from '@/settingUI/filter/NodeFunction';
 import setEditString from '@/settingUi/setter/setEditString';

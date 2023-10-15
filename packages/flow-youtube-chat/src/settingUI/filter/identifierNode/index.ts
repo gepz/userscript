@@ -11,9 +11,9 @@ import {
 
 import SettingState from '@/SettingState';
 import filterContextType from '@/filter/filterContextType';
-import Identifier from '@/settingUI/EditableExpression/Identifier';
+import Identifier from '@/settingUI/editableExpression/Identifier';
 // eslint-disable-next-line max-len
-import editableExpressionToJsep from '@/settingUI/EditableExpression/editableExpressionToJsep';
+import editableExpressionToJsep from '@/settingUI/editableExpression/editableExpressionToJsep';
 import type NodeFunction from '@/settingUI/filter/NodeFunction';
 import errorResult from '@/settingUI/filter/errorResult';
 import simplifyTypeForLog from '@/settingUI/filter/simplifyTypeForLog';

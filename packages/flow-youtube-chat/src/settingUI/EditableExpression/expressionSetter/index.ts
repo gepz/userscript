@@ -7,7 +7,7 @@ import {
 import * as O from 'effect/Option';
 import * as Op from 'monocle-ts/Optional';
 
-import Expression from '@/settingUI/EditableExpression/Expression';
+import Expression from '@/settingUI/editableExpression/Expression';
 
 export default <T>(
   setter: EditSetter<T>,
