@@ -17,9 +17,9 @@ import {
 import AppCommander from '@/AppCommander';
 import ElementOpticPair, * as EOP from '@/ElementOpticPair';
 import SettingState from '@/SettingState';
-import Expression from '@/settingUI/EditableExpression/Expression';
+import Expression from '@/settingUI/editableExpression/Expression';
 // eslint-disable-next-line max-len
-import editableExpressionToJsep from '@/settingUI/EditableExpression/editableExpressionToJsep';
+import editableExpressionToJsep from '@/settingUI/editableExpression/editableExpressionToJsep';
 import arrayNode from '@/settingUI/filter/arrayNode';
 import callNode from '@/settingUI/filter/callNode';
 import identifierNode from '@/settingUI/filter/identifierNode';

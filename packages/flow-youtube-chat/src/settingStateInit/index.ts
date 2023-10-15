@@ -11,10 +11,10 @@ import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
 import isEditable from '@/isEditable';
 import mapObject from '@/mapObject';
-// import Compound from '@/settingUI/EditableExpression/Compound';
+// import Compound from '@/settingUI/editableExpression/Compound';
 import settingsPanelSize from '@/settingsPanelSize';
 
-// import fromJsepExp from '@/settingUI/EditableExpression/fromJsepExp';
+// import fromJsepExp from '@/settingUI/editableExpression/fromJsepExp';
 
 export default (config: UserConfig): SettingState => pipe(
   config,

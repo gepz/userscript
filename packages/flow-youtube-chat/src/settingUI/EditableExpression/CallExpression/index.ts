@@ -1,6 +1,6 @@
 import * as O from 'effect/Option';
 
-import type Expression from '@/settingUI/EditableExpression/Expression';
+import type Expression from '@/settingUI/editableExpression/Expression';
 
 export default interface CallExpression {
   type: 'CallExpression';

@@ -1,16 +1,16 @@
+import Editable, * as Ed from '@userscript/ui/Editable';
 import {
   pipe,
 } from 'effect/Function';
-import Editable, * as Ed from '@userscript/ui/Editable';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
 import UserConfigSetter from '@/UserConfigSetter';
 import isEditable from '@/isEditable';
-// import Expression from '@/settingUI/EditableExpression/Expression';
+// import Expression from '@/settingUI/editableExpression/Expression';
 // eslint-disable-next-line max-len
-// import editableExpressionToJsep from '@/settingUI/EditableExpression/editableExpressionToJsep';
+// import editableExpressionToJsep from '@/settingUI/editableExpression/editableExpressionToJsep';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import SettingKey from '@/settingUI/SettingKey';
 import SettingProps from '@/settingUI/SettingProps';

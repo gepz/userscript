@@ -6,7 +6,7 @@ import * as O from 'effect/Option';
 import * as I from 'effect/Identity';
 
 import * as EOP from '@/ElementOpticPair';
-import LiteralArray from '@/settingUI/EditableExpression/LiteralArray';
+import LiteralArray from '@/settingUI/editableExpression/LiteralArray';
 import editAction from '@/settingUI/editAction';
 import type NodeFunction from '@/settingUI/filter/NodeFunction';
 import setEditRegexes from '@/settingUi/setter/setEditRegexes';

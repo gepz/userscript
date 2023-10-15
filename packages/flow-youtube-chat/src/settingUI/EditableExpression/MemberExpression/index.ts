@@ -1,6 +1,6 @@
-import ArrayExpression from '@/settingUI/EditableExpression/ArrayExpression';
-import type Expression from '@/settingUI/EditableExpression/Expression';
-import LiteralArray from '@/settingUI/EditableExpression/LiteralArray';
+import ArrayExpression from '@/settingUI/editableExpression/ArrayExpression';
+import type Expression from '@/settingUI/editableExpression/Expression';
+import LiteralArray from '@/settingUI/editableExpression/LiteralArray';
 
 export default interface MemberExpression {
   type: 'MemberExpression';
