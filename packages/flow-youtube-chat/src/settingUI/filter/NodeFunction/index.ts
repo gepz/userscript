@@ -1,13 +1,12 @@
+import {
+  generate,
+} from 'astring';
 import * as E from 'effect/Either';
 import {
   pipe,
   flow,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import {
-  generate,
-} from 'astring';
-import * as R from 'fp-ts/Reader';
 import {
   Refinement,
 } from 'fp-ts/Refinement';

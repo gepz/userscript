@@ -1,7 +1,7 @@
-import * as expEval from 'expression-eval';
 import {
   pipe,
 } from 'effect/Function';
+import * as expEval from 'expression-eval';
 
 import BooleanLiteral from '@/restrictedExpression/BooleanLiteral';
 import * as booleanLiteral from '@/restrictedExpression/BooleanLiteral';

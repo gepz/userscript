@@ -1,9 +1,9 @@
-import * as SM from 'effect/SortedMap';
-import * as Str from 'effect/String';
-import * as tapNonNull from '@userscript/tap-non-null';
+import tapNonNull from '@userscript/tap-non-null';
 import {
   pipe,
 } from 'effect/Function';
+import * as SM from 'effect/SortedMap';
+import * as Str from 'effect/String';
 
 import type GenericType from '@/type/GenericType';
 import type Type from '@/type/Type';
@@ -21,7 +21,7 @@ export const resolveGeneric = ({
   map: GenericMap,
 } => (
   type.tag === 'generic' ? pipe(
-    SM.get()
+    SM.get(),
     map[`${type.value}`],
     (x) => tapNonNull(
       x,

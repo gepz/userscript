@@ -1,7 +1,7 @@
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as Z from 'effect/Effect';
 import Swal from 'sweetalert2';
 
 import AppCommander from '@/AppCommander';

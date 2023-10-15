@@ -1,3 +1,6 @@
+import {
+  Semigroup,
+} from '@effect/typeclass/Semigroup';
 import * as E from 'effect/Either';
 import {
   flow,
@@ -5,9 +8,6 @@ import {
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
-import {
-  Semigroup,
-} from 'fp-ts/Semigroup';
 
 import AssignGenericFunction from '@/type/AssignGenericFunction';
 import FunctionType, * as functionType from '@/type/FunctionType';
