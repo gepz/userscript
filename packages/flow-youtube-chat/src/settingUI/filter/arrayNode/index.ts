@@ -44,7 +44,7 @@ export default (
     expectedType,
     RA.liftPredicate((x): x is TupleType => x.tag === 'tuple'),
     RA.map((x) => x.value),
-    RA.filter(RA.isNonEmpty),
+    RA.filter(RA.isNonEmptyArray),
     RA.append<RA.NonEmptyReadonlyArray<Type | RestType>>(
       [restType.of(unknownType.unknown)] as const,
     ),
@@ -69,7 +69,7 @@ export default (
       ] as const) : ([first, [rest]] as const))),
       ([firstType, restTypesList]) => pipe(
         restTypesList,
-        RA.filter(RA.isNonEmpty),
+        RA.filter(RA.isNonEmptyArray),
         RA.match(() => [], (() => flow(
           RA.map(pipe(
             elementFn(replaceVarType(match.typeMap)(firstType))(match.typeMap),

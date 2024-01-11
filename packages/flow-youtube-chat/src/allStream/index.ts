@@ -109,6 +109,7 @@ export default (
   }: Ctx,
   provideLog: <T>(x: Z.Effect<never, never, T>) => Z.Effect<never, never, T>,
 ): Z.Effect<never, never, Observable<unknown>> => pipe(
+  // eslint-disable-next-line func-names
   Z.gen(function* (_) {
     return {
       eq: O.getEquivalence(strict()),
@@ -233,7 +234,7 @@ export default (
             O.map((x) => Z.sync(() => c.bodyResizePair.observer.observe(x))),
           ),
         ],
-        RA.compact,
+        RA.getSomes,
         RA.append(live.video.ele.pipe(
           O.filter((x) => !x.paused),
           O.orElse(() => live.offlineSlate.ele),
@@ -312,7 +313,7 @@ export default (
         map((x) => Z.all([
           Z.logDebug(`URL Changed: ${x}`),
           removeOldChats(mainState.flowChats)(0),
-          Z.logDebug(`Wait for ${c.urlDelay}ms...`),
+          Z.logDebug(`Wait for ${D.toMillis(c.urlDelay)}ms...`),
         ])),
         tapEffect(provideLog),
         delay(D.toMillis(c.urlDelay)),

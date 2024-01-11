@@ -1,10 +1,10 @@
+import * as Z from 'effect/Effect';
 import {
   pipe,
   apply,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
-import * as Z from 'effect/Effect';
 import {
   merge,
   map,
@@ -136,12 +136,12 @@ export default (
             renderChat(chat),
             O.liftPredicate(() => c.render),
           ),
-          (c.setAnimation ? O.some((mainState: MainState) => Z.ignore(
-            setChatAnimation(chat)(mainState)
+          (c.setAnimation ? O.some((state: MainState) => Z.ignore(
+            setChatAnimation(chat)(state),
           )) : c.setPlayState ? O.some(setChatPlayState(chat))
           : O.none()),
         ],
-        RA.compact,
+        RA.getSomes,
         RA.map(apply(mainState)),
         Z.all,
       )),

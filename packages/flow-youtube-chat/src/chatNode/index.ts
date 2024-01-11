@@ -162,6 +162,6 @@ export default (
         }></strong>${text.content}</span>`),
       ),
     ],
-    RA.compact,
+    RA.getSomes,
   )}</span>`,
 );

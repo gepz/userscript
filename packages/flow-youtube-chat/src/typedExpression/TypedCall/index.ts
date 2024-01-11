@@ -52,7 +52,6 @@ export const fromExp = ({
     (x) => (x.tag === 'func' ? functionType.returnOf(x)
     : unknownType.unknown),
   )),
-  (x) => x,
   of,
 );
 

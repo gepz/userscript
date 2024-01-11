@@ -18,7 +18,7 @@ const setEditRegexes = (editing) => (value) => pipe(value, Str.split(/\r\n|\n/),
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `${e} in regex number ${i}`);
         }
-    }), RA.compact, RA.reduce('', (b, a) => `${b}\n${a}`), O.liftPredicate(Str.isNonEmpty)),
+    }), RA.getSomes, RA.reduce('', (b, a) => `${b}\n${a}`), O.liftPredicate(Str.isNonEmpty)),
 }), (ctx) => (editing ? Ed.setText(value)
     : pipe(ctx.errors, O.map((x) => Tu.mapSecond(() => O.some([value, O.some(x)]))), O.getOrElse(() => () => Ed.of(ctx.regexes)))));
 export default setEditRegexes;

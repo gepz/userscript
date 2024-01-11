@@ -121,9 +121,10 @@ export default (
     }
     : (() => {
       const nextLane = info.lane;
-      const interLane = N.clamp(0, config.laneCount - 1)(
-        (lastLane + nextLane) / 2
-      );
+      const interLane = N.clamp({
+        minimum: 0,
+        maximum: config.laneCount - 1,
+      })((lastLane + nextLane) / 2);
 
       const newInterval = Math.min(
         interLane - lastLane,
@@ -139,7 +140,7 @@ export default (
         } : {
           maxInterval,
           maxIntervalLane,
-        }
+        },
       };
     })())),
     (x) => ({

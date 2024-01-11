@@ -40,7 +40,6 @@ export const fromExp = ({
     c.elements,
     RA.map((x) => x.value.synthed),
   ))),
-  (x) => x,
   of,
 );
 

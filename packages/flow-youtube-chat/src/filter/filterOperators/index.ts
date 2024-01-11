@@ -1,14 +1,14 @@
 import {
+  MonoidEvery,
+  MonoidSome,
+} from '@effect/typeclass/data/Boolean';
+import {
   flip,
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
 import * as Str from 'effect/String';
-import {
-  MonoidEvery,
-  MonoidSome,
-} from '@effect/typeclass/data/Boolean';
 import {
   Tail,
 } from 'ts-toolbelt/out/List/Tail';
@@ -35,7 +35,7 @@ const filterOperators = {
   or: MonoidSome.combineAll,
   RA: {
     some: RA.some,
-    compact: RA.compact,
+    getSomes: RA.getSomes,
   },
   O: {
     exists: O.exists,

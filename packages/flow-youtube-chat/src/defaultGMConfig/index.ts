@@ -1,12 +1,12 @@
 import {
+  generate,
+} from 'astring';
+import {
   pipe,
 } from 'effect/Function';
 import * as P from 'effect/Predicate';
 import * as RA from 'effect/ReadonlyArray';
 import * as Str from 'effect/String';
-import {
-  generate,
-} from 'astring';
 import * as expEval from 'expression-eval';
 
 import GMConfig from '@/GMConfig';
@@ -94,7 +94,7 @@ const defaultGMConfig: GMConfig = pipe(
   or([
   RA.some(
     flip(flow([inText, RA.some]))(${JSON.stringify(x.bannedWords.defaultValue)})
-  )(RA.compact([
+  )(RA.getSomes([
     messageText,
     paymentInfo
   ])),
@@ -102,7 +102,7 @@ const defaultGMConfig: GMConfig = pipe(
     flip(flow([matchedByText, RA.some]))(${
     JSON.stringify(x.bannedWordRegexes.defaultValue)
     })
-  )(RA.compact([
+  )(RA.getSomes([
     messageText,
     paymentInfo
   ])),

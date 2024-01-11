@@ -181,7 +181,7 @@ export const targetLowerBound = (
         E.merge,
       ),
     )),
-    RA.compact,
+    RA.getSomes,
     RA.lookup(0),
   ) : O.some(`Type ${source.tag} is not assignable to type ${target.tag}`))),
 );

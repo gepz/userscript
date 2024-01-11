@@ -29,7 +29,7 @@ const makeFunc = (
   returnType: functionType.FinalReturnType,
 ): FunctionType => pipe(
   params,
-  RA.mapNonEmpty((x) => ('map' in x ? x : functionType.paramOf(x))),
+  RA.map((x) => ('map' in x ? x : functionType.paramOf(x))),
   (x) => functionType.of([
     x,
     returnType,

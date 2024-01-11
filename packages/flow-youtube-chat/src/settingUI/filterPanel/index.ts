@@ -50,7 +50,7 @@ const replaceVarType = (
         type.value[1],
         r,
         (returnType) => (returnType.tag === 'func' ? functionType.of([
-          RA.appendAllNonEmpty(pipe(
+          RA.appendAll(pipe(
             returnType.value[0],
             ([
               {
@@ -119,11 +119,11 @@ const updateTypeMap = (
     ) : O.some<
     readonly [RA.NonEmptyReadonlyArray<functionType.ParamType>, Type]
     >(actual.value)),
-    O.map(Tu.mapFirst(RA.mapNonEmpty((x) => x.type))),
+    O.map(Tu.mapFirst(RA.map((x) => x.type))),
     O.map((a) => RA.zip(
       pipe(
         expected.value,
-        Tu.mapFirst(RA.mapNonEmpty((x) => x.type)),
+        Tu.mapFirst(RA.map((x) => x.type)),
         (x) => [...x[0], x[1]],
       ),
       [...a[0], a[1]],

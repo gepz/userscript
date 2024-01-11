@@ -34,7 +34,7 @@ const setEditRegexes: EditSetter<Editable<readonly string[]>> = (
           );
         }
       }),
-      RA.compact,
+      RA.getSomes,
       RA.reduce('', (b, a) => `${b}\n${a}`),
       O.liftPredicate(Str.isNonEmpty),
     ),
