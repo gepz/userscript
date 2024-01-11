@@ -33,6 +33,7 @@ export default merge(
       userscriptPlugin(false),
     ],
     optimization: {
+      usedExports: true,
       minimizer: [
         new TerserPlugin({
           terserOptions: {
@@ -46,10 +47,12 @@ export default merge(
               ).toString(),
             },
             compress: {
+              defaults: true,
               ecma: 2020,
               sequences: false,
               toplevel: true,
               passes: 2,
+              // unused: false,
             },
           },
         }),

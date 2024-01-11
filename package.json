@@ -2,9 +2,9 @@
   "name": "root",
   "private": true,
   "devDependencies": {
-    "@changesets/cli": "^2.26.2",
-    "@commitlint/cli": "^17.7.2",
-    "@commitlint/config-conventional": "^17.7.0",
+    "@changesets/cli": "^2.27.1",
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
     "husky": "^8.0.3"
   },
   "scripts": {

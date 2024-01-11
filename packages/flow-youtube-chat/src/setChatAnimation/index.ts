@@ -1,10 +1,11 @@
+import * as Cause from 'effect/Cause';
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
 import * as tuple from 'effect/Tuple';
-import * as Z from 'effect/Effect';
 import hash from 'hash-it';
 import memoize from 'micro-memoize';
 
@@ -17,7 +18,6 @@ import getFlowChatProgress from '@/getFlowChatProgress';
 import getLaneY from '@/getLaneY';
 import intervalTooSmall from '@/intervalTooSmall';
 import setChatPlayState from '@/setChatPlayState';
-import * as Cause from 'effect/Cause';
 
 const getWidth = memoize(
   (ele: Element | null): number => ele?.getBoundingClientRect().width ?? 0,
@@ -44,21 +44,21 @@ export default (
   })),
   Z.filterOrFail(
     () => !chat.animationEnded,
-    () => Cause.NoSuchElementException(),
+    () => new Cause.NoSuchElementException(),
   ),
   Z.map((height) => (
-  {
-    newChat: {
-      ...chat,
-      width: getWidth(chat.element.firstElementChild),
-      height,
-    } satisfies FlowChat,
-    oldChatIndex: pipe(
-      mainState.flowChats.value,
-      RA.findFirstIndex((x) => x === chat),
-    ),
-    progress: getFlowChatProgress(chat.animation),
-  })),
+    {
+      newChat: {
+        ...chat,
+        width: getWidth(chat.element.firstElementChild),
+        height,
+      } satisfies FlowChat,
+      oldChatIndex: pipe(
+        mainState.flowChats.value,
+        RA.findFirstIndex((x) => x === chat),
+      ),
+      progress: getFlowChatProgress(chat.animation),
+    })),
   Z.map((ctx) => pipe(
     getChatLane(ctx.newChat, ctx.oldChatIndex, ctx.progress)(mainState),
     (x) => ({
@@ -68,18 +68,18 @@ export default (
       } satisfies FlowChat,
       oldChatIndex: ctx.oldChatIndex,
       currentTime: ctx.progress * flowDuration,
-      intervalTooSmall: intervalTooSmall(x.interval)(mainState.config.value)
+      intervalTooSmall: intervalTooSmall(x.interval)(mainState.config.value),
     }),
   )),
   Z.filterOrElse(
     (x) => !x.intervalTooSmall,
-    (x) => pipe(
-      x.newChat.animation,
+    (ctx) => pipe(
+      ctx.newChat.animation,
       Z.tap((x) => Z.sync(() => x.finish())),
-      Z.map((): typeof x => ({
-        ...x,
+      Z.map((): typeof ctx => ({
+        ...ctx,
         newChat: {
-          ...x.newChat,
+          ...ctx.newChat,
           animation: O.none(),
         },
       })),
@@ -90,10 +90,10 @@ export default (
     newChat: {
       ...x.newChat,
       y: getLaneY(x.newChat.lane, mainState),
-    }
+    },
   })),
-  Z.tap((x) => pipe(
-    x.newChat.animation,
+  Z.tap((ctx) => pipe(
+    ctx.newChat.animation,
     O.match(({
       onNone: () => Z.unit,
       onSome: (x) => Z.sync(() => x.cancel()),
@@ -130,14 +130,14 @@ export default (
         ...ctx.newChat,
         animation: O.some(animation),
       };
-      
+
       Object.assign(animation, {
         onfinish: () => Object.assign(newChat, {
           animationEnded: true,
         } satisfies Partial<FlowChat>),
         currentTime: ctx.currentTime,
       } satisfies Partial<Animation>);
-      
+
       return newChat;
     })),
     Z.map((newChat) => ({
@@ -152,9 +152,9 @@ export default (
     }),
     onSome: (index) => pipe(
       Z.sync(() => mainState.flowChats.next(
-        RA.replace(mainState.flowChats.value, index, x.newChat)
+        RA.replace(mainState.flowChats.value, index, x.newChat),
       )),
-      Z.zipRight(Z.fail(Cause.NoSuchElementException())),
+      Z.zipRight(Z.fail(new Cause.NoSuchElementException())),
     ),
   })),
 );

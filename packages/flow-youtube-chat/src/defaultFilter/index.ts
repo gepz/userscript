@@ -8,7 +8,7 @@ export default (
 or([
 RA.some(
   flip(flow([inText, RA.some]))(${JSON.stringify(config.bannedWords)})
-)(RA.compact([
+)(RA.getSomes([
   messageText,
   paymentInfo
 ])),
@@ -16,7 +16,7 @@ RA.some(
   flip(flow([matchedByText, RA.some]))(${
   JSON.stringify(config.bannedWordRegexes)
 })
-)(RA.compact([
+)(RA.getSomes([
   messageText,
   paymentInfo
 ])),

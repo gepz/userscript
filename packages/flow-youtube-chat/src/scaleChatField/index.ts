@@ -1,9 +1,9 @@
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
-import * as Z from 'effect/Effect';
 
 import LivePageState from '@/LivePageState';
 
@@ -36,7 +36,7 @@ export default (
         })),
       ),
     ],
-    RA.compact,
+    RA.getSomes,
     Z.all,
   )),
   Z.ignore,

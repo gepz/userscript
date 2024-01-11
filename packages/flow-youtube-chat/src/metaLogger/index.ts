@@ -35,13 +35,14 @@ export default Logger.make<unknown, void>(({
     HM.get(LogAnnotationKeys.name),
     O.match({
       onNone: () => '',
+      // eslint-disable-next-line max-len
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       onSome: (x) => `[${x}] `,
     }),
   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   )}${message}`,
   (getStr) => pipe(
     FiberRefs.getOrDefault(context, logMeta),
-    (x) => x,
     O.match({
       onNone: () => (
         LogLevel.greaterThanEqual(LogLevel.Warning)(logLevel)

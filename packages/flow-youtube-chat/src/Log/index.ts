@@ -51,7 +51,7 @@ export const exportLog = (x: Log): string => `<pre>${JSON.stringify({
     x.compressedBlocks,
     RA.map(decompressFromUTF16),
     RA.append(JSON.stringify(x.lastBlock)),
-    RA.mapNonEmpty(compressToEncodedURIComponent),
+    RA.map(compressToEncodedURIComponent),
   ),
 } satisfies LogExport)}</pre>`;
 
@@ -63,7 +63,7 @@ export const importLog = (s: string): Log => makeLog(pipe(
     nextId: log.nextId,
     ...pipe(
       log.blocks,
-      RA.mapNonEmpty(decompressFromEncodedURIComponent),
+      RA.map(decompressFromEncodedURIComponent),
       RA.matchRight({
         onEmpty: () => ({
           compressedBlocks: [],
