@@ -4,3 +4,4 @@ export default interface Literal {
   type: 'Literal';
   value: Editable<string>
 }
+

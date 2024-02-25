@@ -1,9 +1,9 @@
 // import * as O from 'effect/Option';
 // import * as expEval from 'expression-eval';
+import * as Ed from '@userscript/ui/Editable';
 import {
   pipe,
 } from 'effect/Function';
-import * as Ed from '@userscript/ui/Editable';
 
 import * as log from '@/Log';
 import MappedConfigState from '@/MappedConfigState';

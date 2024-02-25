@@ -1,7 +1,7 @@
-import {
+﻿import {
   constant,
   pipe,
-  identity
+  identity,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import {

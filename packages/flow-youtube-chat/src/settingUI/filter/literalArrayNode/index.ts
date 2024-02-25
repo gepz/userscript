@@ -55,3 +55,4 @@ export default (
   }),
   I.let('typeMap', (x) => updateTypeMap(expectedType)(x.type)(m)),
 );
+

@@ -5,7 +5,8 @@ import UserConfig from '@/UserConfig';
 type UserConfigSetter = {
   [P in keyof UserConfig]: (
     val: UserConfig[P],
-  ) => Z.Effect<never, never, void>;
+  ) => Z.Effect<void>;
 };
 
 export default UserConfigSetter;
+

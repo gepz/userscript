@@ -31,5 +31,6 @@ export default ({
   ),
 }) satisfies Record<
 string,
-(c: AppCommander) => (s: SettingState) => Z.Effect<never, never, SettingState>
+(c: AppCommander) => (s: SettingState) => Z.Effect<SettingState>
 >;
+

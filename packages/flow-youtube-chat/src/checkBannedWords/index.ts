@@ -1,9 +1,9 @@
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
-import * as Z from 'effect/Effect';
 import * as expEval from 'expression-eval';
 
 import ChatData from '@/ChatData';
@@ -13,7 +13,7 @@ import filterContext from '@/filter/filterContext';
 export default (
   data: ChatData,
   config: UserConfig,
-): Z.Effect<never, never, boolean> => pipe(
+): Z.Effect<boolean> => pipe(
   data,
   O.liftPredicate(() => pipe(
     config.filterExp,
@@ -23,18 +23,16 @@ export default (
       filterContext(data),
     ) as boolean,
   )),
-  O.map((x) => [
-    pipe(
-      x.message,
-      O.map((m) => m.content),
-    ),
-    pipe(
-      x.paymentInfo,
-      O.map((p) => p.content),
-    ),
-  ]),
-  O.map(RA.map(O.getOrElse(() => ''))),
+  O.map((d) => pipe(
+    [
+      d.message,
+      d.paymentInfo,
+    ],
+    RA.map(O.map((x) => x.content)),
+    RA.map(O.getOrElse(() => '')),
+  )),
   O.map(JSON.stringify),
   Z.flatMap((x: string) => Z.logDebug(`Filtered: ${x}`)),
   Z.isSuccess,
 );
+

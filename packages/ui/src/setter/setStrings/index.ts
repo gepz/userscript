@@ -1,4 +1,4 @@
-import {
+﻿import {
   pipe,
   constant,
 } from 'effect/Function';
@@ -15,3 +15,4 @@ const setStrings: Setter<string, readonly string[]> = (x) => pipe(
 );
 
 export default setStrings;
+

@@ -13,3 +13,4 @@ type ChatUpdateConfig = {
 };
 
 export default ChatUpdateConfig;
+

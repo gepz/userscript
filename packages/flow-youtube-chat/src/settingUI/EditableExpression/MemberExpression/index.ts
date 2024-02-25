@@ -8,3 +8,4 @@ export default interface MemberExpression {
   object: Expression;
   property: Exclude<Expression, ArrayExpression | LiteralArray>;
 }
+

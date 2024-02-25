@@ -74,3 +74,4 @@ export const targetLowerBound = (
     O.map((s) => `Type ${s.tag} is not assignable to type ${target.type.tag}`),
   )),
 );
+

@@ -96,3 +96,4 @@ const flowChatPanel: (
 );
 
 export default flowChatPanel;
+

@@ -1,5 +1,6 @@
-export default interface RangeConfig {
+﻿export default interface RangeConfig {
   min: number,
   max: number,
   step: number,
 }
+

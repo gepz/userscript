@@ -3,3 +3,4 @@ import {
 } from 'hyperapp';
 
 export default text('error');
+

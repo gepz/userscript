@@ -11,3 +11,4 @@ export default Swal.mixin({
     toast.addEventListener('pointerleave', Swal.resumeTimer);
   },
 });
+

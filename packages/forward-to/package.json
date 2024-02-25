@@ -7,7 +7,7 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@types/node": "20.10.6",
+    "@types/node": "20.11.20",
     "@userscript/eslint-config": "workspace:^1.0.2",
     "@userscript/webpack-config": "workspace:^1.0.3",
     "cross-env": "^7.0.3",
@@ -17,10 +17,10 @@
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.3.3",
-    "webpack": "^5.89.0",
+    "typescript": "^5.5.0-dev.20240222",
+    "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1",
+    "webpack-dev-server": "^5.0.2",
     "webpack-merge": "^5.10.0"
   },
   "keywords": [],

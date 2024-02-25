@@ -1,4 +1,4 @@
-import {
+﻿import {
   pipe,
   constant,
 } from 'effect/Function';
@@ -31,3 +31,4 @@ const setEditInt: EditSetter<Editable<number>> = (
 );
 
 export default setEditInt;
+

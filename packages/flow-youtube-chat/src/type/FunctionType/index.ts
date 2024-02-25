@@ -185,3 +185,4 @@ export const targetLowerBound = (
     RA.lookup(0),
   ) : O.some(`Type ${source.tag} is not assignable to type ${target.tag}`))),
 );
+

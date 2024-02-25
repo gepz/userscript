@@ -85,3 +85,4 @@ export const fromTypedExp: ExpressionFromTypedExp = processWithEither(flow(
   chainTyped(numberLiteral.fromTypedExp)('typedNumber'),
   chainTyped(stringLiteral.fromTypedExp)('typedString'),
 ));
+

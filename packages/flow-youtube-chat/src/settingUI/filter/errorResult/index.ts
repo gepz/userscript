@@ -14,3 +14,4 @@ export default (
   nodes: [errorNode],
   typeMap,
 });
+

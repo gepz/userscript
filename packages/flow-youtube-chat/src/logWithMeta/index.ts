@@ -15,8 +15,9 @@ export default (
   message: string,
 ) => (
   data: unknown,
-): Z.Effect<never, never, void> => pipe(
+): Z.Effect<void> => pipe(
   Z.log(message),
   Z.locally<LogMeta>(logMeta, O.some(data)),
   (x) => LogLevel.locally(level)(x),
 );
+

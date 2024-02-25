@@ -23,8 +23,8 @@ import metaLogger from '@/metaLogger';
 export default (
   settingUpdateApps: BehaviorSubject<Dispatch<SettingState>[]>,
 ) => <T>(
-  effect: Z.Effect<never, never, T>,
-): Z.Effect<never, never, T> => pipe(
+  effect: Z.Effect<T>,
+): Z.Effect<T> => pipe(
   Z.succeed(Logger.replace(
     Logger.defaultLogger,
     Logger.zip(metaLogger)(eventLogger(settingUpdateApps)),
@@ -37,3 +37,4 @@ export default (
   Z.annotateLogs(LogAnnotationKeys.name, 'FYC'),
   withMinimumLogLevel(LogLevel.Debug),
 );
+

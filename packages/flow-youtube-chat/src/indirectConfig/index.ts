@@ -25,3 +25,4 @@ export default <T1 extends GM.Value, T2>(
     ),
   }),
 );
+

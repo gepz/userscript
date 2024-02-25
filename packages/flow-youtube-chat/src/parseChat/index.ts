@@ -1,14 +1,13 @@
+import tapNonNull from '@userscript/tap-non-null';
 import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
-import tapNonNull from '@userscript/tap-non-null';
 
 import ChatData from '@/ChatData';
 import UserConfig from '@/UserConfig';
 
-// チャット欄に追加されたチャットを抽出する
 export default (
   chat: HTMLElement,
 ): (

@@ -1,4 +1,4 @@
-import {
+﻿import {
   constant,
   pipe,
 } from 'effect/Function';
@@ -45,3 +45,4 @@ export const setText: <T>(x: string) => (e: Editable<T>) => Editable<T> = (
 ));
 
 export const hasError = <T>(x: Editable<T>) => O.isSome(error(x));
+

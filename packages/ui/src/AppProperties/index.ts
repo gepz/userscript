@@ -1,4 +1,4 @@
-import AppPropertiesKey from '@/AppPropertiesKey';
+﻿import AppPropertiesKey from '@/AppPropertiesKey';
 import AppPropertiesValue from '@/AppPropertiesValue';
 import ComputedProperties from '@/ComputedProperties';
 
@@ -7,3 +7,4 @@ type AppProperties<State, C extends ComputedProperties<State>> = {
 } & State;
 
 export default AppProperties;
+

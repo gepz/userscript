@@ -101,3 +101,4 @@ export default (
   )),
   O.getOrElse(() => errorResult(map)),
 );
+

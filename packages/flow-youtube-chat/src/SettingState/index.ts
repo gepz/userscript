@@ -11,3 +11,4 @@ export default interface SettingState extends MappedConfigState {
   eventLog: Log,
   panelRect: DOMRectReadOnly,
 }
+

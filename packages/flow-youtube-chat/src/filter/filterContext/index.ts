@@ -8,7 +8,7 @@ import filterOperators from '@/filter/filterOperators';
 
 export default (
   data: ChatData,
-) => ({
+) => (({
   ...filterOperators,
   authorName: data.authorName,
   message: data.message,
@@ -21,4 +21,4 @@ export default (
       content: x,
     })),
   ),
-}) as const;
+}) as const);

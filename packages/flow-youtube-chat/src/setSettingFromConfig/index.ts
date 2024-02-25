@@ -37,3 +37,4 @@ export default <T extends keyof UserConfig & keyof SettingState>(
   // )
   : value,
 });
+

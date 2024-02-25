@@ -1,4 +1,4 @@
-import {
+﻿import {
   apply,
   pipe,
 } from 'effect/Function';
@@ -50,3 +50,4 @@ AppCommander
   updateAt(key),
   (x) => x(c)(s),
 );
+

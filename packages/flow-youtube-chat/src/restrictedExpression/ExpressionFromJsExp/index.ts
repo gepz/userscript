@@ -5,6 +5,7 @@ import type Expression from '@/restrictedExpression/Expression';
 
 type ExpressionFromJsExp = (
   exp: expEval.parse.Expression
-) => Z.Effect<never, string, Expression>;
+) => Z.Effect<Expression, string>;
 
 export default ExpressionFromJsExp;
+

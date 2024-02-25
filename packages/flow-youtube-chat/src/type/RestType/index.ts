@@ -8,3 +8,4 @@ type RestType = TaggedValue<'rest', Type>;
 export default RestType;
 
 export const of = makeType<RestType>('rest');
+

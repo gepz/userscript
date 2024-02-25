@@ -11,7 +11,7 @@ export default (
   live: LivePageState,
 ) => (
   scale: number,
-): Z.Effect<never, never, void> => pipe(
+): Z.Effect<void> => pipe(
   live.chatField.ele,
   Z.flatMap((field: HTMLElement) => pipe(
     [
@@ -41,3 +41,4 @@ export default (
   )),
   Z.ignore,
 );
+

@@ -127,7 +127,7 @@ export default (
           }),
           fontSize: '0.84em',
           ...textStyle,
-        } satisfies Partial<CSSStyleDeclaration>)}>${text.content}</span>`),
+        } satisfies Partial<CSSStyleDeclaration>)}>${text.content}: </span>`),
       ),
       pipe(
         data.messageElement,
@@ -159,7 +159,7 @@ export default (
           ...textStyle,
         } satisfies Partial<CSSStyleDeclaration>)}><strong style=${
           styleMap(textStyle)
-        }></strong>${text.content}</span>`),
+        }></strong> ${text.content.trim()}</span>`),
       ),
     ],
     RA.getSomes,

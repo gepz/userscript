@@ -49,3 +49,4 @@ export const checkAssignability = (
     O.map((s) => `Type ${s.tag} is not assignable to type ${target.tag}`),
   )),
 );
+

@@ -17,3 +17,4 @@ type MappedConfigState = {
 };
 
 export default MappedConfigState;
+

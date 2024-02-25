@@ -14,3 +14,4 @@ export default ((key: TextKey) => (
   state.lang === 'FYC_EN' ? 0
   : 1
 ]) satisfies AppTextGetter<TextKey, State>;
+

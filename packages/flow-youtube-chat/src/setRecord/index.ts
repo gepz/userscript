@@ -8,3 +8,4 @@ export default <T1 extends string | number | symbol, T2>(
   ...rec,
   [key]: value,
 });
+

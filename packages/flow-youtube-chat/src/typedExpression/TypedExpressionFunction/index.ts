@@ -7,3 +7,4 @@ type TypedExpressionFunction = (
 ) => (type: Type) => TypedExpression;
 
 export default TypedExpressionFunction;
+

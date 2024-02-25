@@ -21,3 +21,4 @@ export const makeSubject = (
   RA.map((x) => [x, new Subject()]),
   Object.fromEntries,
 );
+

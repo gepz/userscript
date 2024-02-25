@@ -23,4 +23,5 @@ export default pipe(
   color: var(--yt-spec-text-secondary);
 }`;
   })),
-) satisfies Z.Effect<never, never, HTMLStyleElement>;
+) satisfies Z.Effect<HTMLStyleElement>;
+

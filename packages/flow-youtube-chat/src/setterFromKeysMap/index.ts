@@ -8,9 +8,10 @@ import UserConfig from '@/UserConfig';
 import UserConfigSetter from '@/UserConfigSetter';
 
 export default (keys: (keyof UserConfig)[]) => (
-  f: (k: keyof UserConfig) => (v: never) => Z.Effect<never, never, unknown>,
+  f: (k: keyof UserConfig) => (v: never) => Z.Effect<unknown>,
 ): UserConfigSetter => pipe(
   keys,
   RA.map((x) => [x, f(x)]),
   Object.fromEntries,
 );
+

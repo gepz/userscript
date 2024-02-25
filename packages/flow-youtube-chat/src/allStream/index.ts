@@ -72,13 +72,13 @@ import videoToggleStream from '@/videoToggleStream';
 type Ctx = {
   updateSettingState: (
     dispatchable: Dispatchable<SettingState>,
-  ) => Z.Effect<never, never, void>,
+  ) => Z.Effect<void>,
   setChangedConfig: UserConfigSetter,
   co: ConfigObservable,
   mainState: MainState,
   channel: BroadcastChannel<[keyof UserConfig, UserConfig[keyof UserConfig]]>,
   reinitSubject: Subject<void>,
-  reinitialize: Z.Effect<never, never, void>,
+  reinitialize: Z.Effect<void>,
   apps: {
     toggleChatButtonApp: WrappedApp<SettingState>,
     settingsApp: WrappedApp<SettingState>,
@@ -107,8 +107,8 @@ export default (
     live,
     chatScreen,
   }: Ctx,
-  provideLog: <T>(x: Z.Effect<never, never, T>) => Z.Effect<never, never, T>,
-): Z.Effect<never, never, Observable<unknown>> => pipe(
+  provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>,
+): Z.Effect<Observable<unknown>> => pipe(
   // eslint-disable-next-line func-names
   Z.gen(function* (_) {
     return {
@@ -367,3 +367,4 @@ export default (
     }),
   )),
 );
+

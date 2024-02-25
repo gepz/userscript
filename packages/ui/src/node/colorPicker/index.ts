@@ -1,4 +1,4 @@
-import {
+﻿import {
   identity,
 } from 'effect/Function';
 import {
@@ -18,3 +18,4 @@ export default <T>(
   value: color,
   oninput: action.onchange ?? identity,
 });
+

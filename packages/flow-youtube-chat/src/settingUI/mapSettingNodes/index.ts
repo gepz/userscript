@@ -18,3 +18,4 @@ export default <T>(
   RA.map((x) => x(c)(s)),
   f,
 );
+

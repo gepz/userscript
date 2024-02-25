@@ -16,4 +16,5 @@ export default pipe(
     height: '100%',
     width: '100%',
   }))),
-) satisfies Z.Effect<never, never, HTMLElement>;
+) satisfies Z.Effect<HTMLElement>;
+

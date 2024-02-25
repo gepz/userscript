@@ -1,4 +1,4 @@
-import {
+﻿import {
   apply,
   flip,
   pipe,
@@ -42,3 +42,4 @@ AppCommander
   flip,
   apply(s),
 ));
+

@@ -1,4 +1,4 @@
-import {
+﻿import {
   ConditionalKeys,
 } from 'type-fest';
 
@@ -10,3 +10,4 @@ type AppPropertiesKey<
   T> = ConditionalKeys<State, T> | ConditionalKeys<C, (s: State) => T>;
 
 export default AppPropertiesKey;
+

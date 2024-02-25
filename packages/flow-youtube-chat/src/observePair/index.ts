@@ -6,7 +6,7 @@ import {
 
 export default <T, T2>(
   con: new (x: (a: T2) => void) => T,
-): Z.Effect<never, never, {
+): Z.Effect<{
   subject: Subject<T2>;
   observer: T;
 }> => Z.sync(() => {
@@ -17,3 +17,4 @@ export default <T, T2>(
     observer: new con(forwardTo(subject)),
   };
 });
+

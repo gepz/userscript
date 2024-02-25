@@ -15,3 +15,4 @@ SettingProps,
 AppCommander,
 SettingKey<boolean> & TextKey
 >(getText, getState, updateBool);
+

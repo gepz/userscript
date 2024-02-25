@@ -14,3 +14,4 @@ export default (shadowColor: string) => (offset: number): string => pipe(
     x('', ''),
   ]),
 );
+

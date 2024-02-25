@@ -41,3 +41,4 @@ export default interface GMConfig {
   filterExp: GMConfigItem<expEval.parse.Expression>,
   // displayMatrix: ConfigItem<readonly (readonly boolean[])[]>,
 }
+

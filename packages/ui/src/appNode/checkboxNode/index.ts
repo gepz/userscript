@@ -1,4 +1,4 @@
-import {
+﻿import {
   VNode,
 } from 'hyperapp';
 
@@ -31,3 +31,4 @@ export default <
   getState(label)(s),
   updateBool(label)(c),
 );
+

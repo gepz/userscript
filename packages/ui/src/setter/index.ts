@@ -1,4 +1,4 @@
-import type EditSetter from '@/setter/EditSetter';
+﻿import type EditSetter from '@/setter/EditSetter';
 import type Setter from '@/setter/Setter';
 import setEditColor from '@/setter/setEditColor';
 import setEditInt from '@/setter/setEditInt';
@@ -23,3 +23,4 @@ export {
   setString,
   setStrings,
 };
+

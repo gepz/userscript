@@ -21,7 +21,7 @@ export default (
   label: TextKey
   & ConditionalKeys<
   typeof action,
-  (c: AppCommander) => (s: SettingState) => Z.Effect<never, never, SettingState>
+  (c: AppCommander) => (s: SettingState) => Z.Effect<SettingState>
   >,
 ): (c: AppCommander) => (s: SettingState) => VNode<SettingState> => (
   c,
@@ -35,3 +35,4 @@ export default (
     ))),
   ],
 }, text(getText(label)(state)));
+

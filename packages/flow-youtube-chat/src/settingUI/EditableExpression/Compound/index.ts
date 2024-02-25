@@ -4,3 +4,4 @@ export default interface Compound {
   type: 'Compound';
   body: readonly Expression[];
 }
+

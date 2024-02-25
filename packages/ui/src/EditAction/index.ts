@@ -1,4 +1,4 @@
-import InputUpdater from '@/InputUpdater';
+﻿import InputUpdater from '@/InputUpdater';
 import StateDispatchable from '@/StateDispatchable';
 import EditSetter from '@/setter/EditSetter';
 
@@ -25,3 +25,4 @@ export const make = <State, Props, AppCommander>(
   oninput: updateInput(key)(setter(true))(c),
   onchange: updateInput(key)(setter(false))(c),
 });
+

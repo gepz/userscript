@@ -1,5 +1,5 @@
 import {
-  parseSync,
+  decodeUnknownSync,
 } from '@effect/schema/Parser';
 import {
   instanceOf,
@@ -23,7 +23,7 @@ import SettingState from '@/SettingState';
 import getText from '@/getText';
 
 const togglePanel = (
-  updateState: (x: Dispatchable<SettingState>) => Z.Effect<never, never, void>,
+  updateState: (x: Dispatchable<SettingState>) => Z.Effect<void>,
 ) => (x: SettingState, e: MouseEvent): [
   s: SettingState,
   ...e: Effect<SettingState>[],
@@ -34,7 +34,7 @@ const togglePanel = (
   },
   (newState) => [
     newState,
-    x.showPanel ? () => parseSync(instanceOf(HTMLElement))(
+    x.showPanel ? () => decodeUnknownSync(instanceOf(HTMLElement))(
       e.currentTarget,
     ).blur()
     : () => {},
@@ -46,7 +46,7 @@ const togglePanel = (
 );
 
 export default (
-  updateState: (x: Dispatchable<SettingState>) => Z.Effect<never, never, void>,
+  updateState: (x: Dispatchable<SettingState>) => Z.Effect<void>,
 ) => pipe(
   togglePanel(updateState),
   (toggle) => (
@@ -98,3 +98,4 @@ export default (
     }, button(s)),
   )('span'),
 );
+

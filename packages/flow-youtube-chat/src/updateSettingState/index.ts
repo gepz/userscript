@@ -14,8 +14,9 @@ export default (
   apps: Dispatch<SettingState>[],
 ) => (
   dispatchable: Dispatchable<SettingState>,
-): Z.Effect<never, never, void> => pipe(
+): Z.Effect<void> => pipe(
   apps,
   RA.map((x) => Z.sync(() => x(dispatchable))),
   Z.all,
 );
+

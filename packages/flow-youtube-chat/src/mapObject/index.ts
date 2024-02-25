@@ -12,3 +12,4 @@ export default <T1 extends {}, T2 extends {}>(
   RA.map(f),
   Object.fromEntries,
 );
+

@@ -13,3 +13,4 @@ export default (s: SettingState): StyleProp => ({
     Ed.value(s.shadowFontWeight),
   ),
 });
+

@@ -127,3 +127,4 @@ export const expressionNode: NodeFunction = fromSwitcher(flow(
   chainNode(literalArrayNode)('LiteralArray'),
   chainNode(arrayNode)('ArrayExpression'),
 ));
+

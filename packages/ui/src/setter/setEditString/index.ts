@@ -1,4 +1,4 @@
-import {
+﻿import {
   constant,
 } from 'effect/Function';
 
@@ -13,3 +13,4 @@ const setEditString: EditSetter<Editable<string>> = (
 );
 
 export default setEditString;
+
