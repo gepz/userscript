@@ -24,3 +24,4 @@ export const fromExp = ({
 });
 
 export default TypedBoolean;
+

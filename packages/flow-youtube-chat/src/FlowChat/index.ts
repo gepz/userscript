@@ -13,3 +13,4 @@ export default interface FlowChat {
   height: number,
   y: number,
 }
+

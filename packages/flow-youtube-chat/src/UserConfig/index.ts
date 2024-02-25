@@ -15,7 +15,7 @@ export default UserConfig;
 
 export const makeConfig = (
   config: GMConfig,
-): Z.Effect<never, never, UserConfig> => pipe(
+): Z.Effect<UserConfig> => pipe(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   Object.entries(config) as [(keyof GMConfig), GMConfig[keyof GMConfig]][],
   RA.map(([k, c]) => c.getValue.pipe(
@@ -27,3 +27,4 @@ export const makeConfig = (
   UserConfig
   >(Object.fromEntries),
 );
+

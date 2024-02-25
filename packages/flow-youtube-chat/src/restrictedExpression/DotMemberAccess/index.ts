@@ -25,7 +25,7 @@ export const fromJsExp = (
   exp: expEval.parse.MemberExpression,
 ) => (
   f: ExpressionFromJsExp,
-) : Z.Effect<never, string, DotMemberAccess> => pipe(
+) : Z.Effect<DotMemberAccess, string> => pipe(
   exp,
   Z.succeed,
   Z.filterOrFail(
@@ -74,3 +74,4 @@ export const fromTypedExp = ({
 );
 
 export default DotMemberAccess;
+

@@ -1,4 +1,4 @@
-import { constant, pipe, identity } from 'effect/Function';
+import { constant, pipe, identity, } from 'effect/Function';
 import * as O from 'effect/Option';
 import { h, } from 'hyperapp';
 import * as Ed from '../../Editable';

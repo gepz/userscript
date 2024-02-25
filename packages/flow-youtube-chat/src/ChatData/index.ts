@@ -14,3 +14,4 @@ export default interface ChatData {
   textColor: O.Option<string>,
   paidColor: O.Option<string>,
 }
+

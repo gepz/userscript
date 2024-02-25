@@ -25,7 +25,7 @@ import setChatPlayState from '@/setChatPlayState';
 import tapEffect from '@/tapEffect';
 
 export default (
-  provideLog: (x: Z.Effect<never, never, void>) => Z.Effect<never, never, void>,
+  provideLog: (x: Z.Effect<void>) => Z.Effect<void>,
   mainState: MainState,
   co: ConfigObservable,
   chatScreen: HTMLElement,
@@ -157,3 +157,4 @@ export default (
   co.displaySuperChatAuthor,
   co.fieldScale,
 ));
+

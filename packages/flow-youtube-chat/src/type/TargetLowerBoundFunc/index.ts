@@ -11,3 +11,4 @@ type TargetLowerBoundFunc<T extends Type> = (
 ) => E.Either<string, GenericMap>;
 
 export default TargetLowerBoundFunc;
+

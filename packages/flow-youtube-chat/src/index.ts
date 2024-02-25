@@ -23,3 +23,4 @@ Z.runPromise(pipe(
   Z.flatMap(initialize),
   Z.withConcurrency(30),
 ));
+

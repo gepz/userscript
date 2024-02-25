@@ -14,3 +14,4 @@ export default <T extends keyof UserConfig>(
   c,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 ) => () => Z.runPromise(c.provideLog(c.setConfig[k](v as never)));
+

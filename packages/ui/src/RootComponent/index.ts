@@ -1,4 +1,4 @@
-import {
+﻿import {
   VNode,
 } from 'hyperapp';
 
@@ -13,3 +13,4 @@ export const makeComponent = <T>(
   tag,
   view: x(tag),
 });
+

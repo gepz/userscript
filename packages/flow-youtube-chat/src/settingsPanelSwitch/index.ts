@@ -1,15 +1,15 @@
 import {
+  decodeUnknownSync,
+} from '@effect/schema/Parser';
+import {
+  instanceOf,
+} from '@effect/schema/Schema';
+import {
   VNode,
   h,
   text,
   Effect,
 } from 'hyperapp';
-import {
-  parseSync
-} from '@effect/schema/Parser';
-import {
-  instanceOf
-} from '@effect/schema/Schema';
 
 import SettingState from '@/SettingState';
 import getText from '@/getText';
@@ -23,7 +23,7 @@ const togglePanel = (x: SettingState, e: MouseEvent): [
     showPanel: !x.showPanel,
   },
   [
-    x.showPanel ? () => parseSync(instanceOf(HTMLElement))(
+    x.showPanel ? () => decodeUnknownSync(instanceOf(HTMLElement))(
       e.currentTarget,
     ).blur()
     : () => {},
@@ -72,3 +72,4 @@ export default (
     },
   }, text(getText('setting')(state))),
 ]);
+

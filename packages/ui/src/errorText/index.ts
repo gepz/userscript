@@ -1,4 +1,4 @@
-import {
+﻿import {
   constant,
   pipe,
 } from 'effect/Function';
@@ -12,3 +12,4 @@ export default <T>(subject: string) => (edit: Editable<T>): string => pipe(
   O.map((x) => `${subject}${x === '' ? '' : ': '}${x}`),
   O.getOrElse(constant('')),
 );
+

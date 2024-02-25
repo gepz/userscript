@@ -1,4 +1,4 @@
-import {
+﻿import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
@@ -18,3 +18,4 @@ const setFilteredString = <S extends string>(
 );
 
 export default setFilteredString;
+

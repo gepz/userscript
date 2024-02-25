@@ -16,3 +16,4 @@ export default (
   )(x) : x,
   log.append(text, level),
 );
+

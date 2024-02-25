@@ -1,14 +1,12 @@
+import * as Z from 'effect/Effect';
 import {
   pipe,
   identity,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
-import * as Z from 'effect/Effect';
 
 import MainState from '@/MainState';
-import UserConfigGetter from '@/UserConfigGetter';
-import UserConfigSetter from '@/UserConfigSetter';
 import addFlowChat from '@/addFlowChat';
 import appendChatMessage from '@/appendChatMessage';
 import banButton from '@/banButton';
@@ -19,7 +17,7 @@ import setChatFieldSimplifyStyle from '@/setChatFieldSimplifyStyle';
 export default (
   chatScrn: HTMLElement,
   mainState: MainState,
-) => (records: MutationRecord[]): Z.Effect<never, never, unknown> => pipe(
+) => (records: MutationRecord[]): Z.Effect<unknown> => pipe(
   records,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   RA.flatMap((e) => (Array.from(e.addedNodes) as HTMLElement[])),
@@ -41,7 +39,7 @@ export default (
       pipe(
         ctx.config.value.createChats && ctx.data.chatType === 'normal',
         O.liftPredicate(identity<boolean>),
-        Z.flatMap<boolean, never, never, void>(() => addFlowChat(
+        Z.flatMap(() => addFlowChat(
           ctx.getData,
           chatScrn,
           mainState,

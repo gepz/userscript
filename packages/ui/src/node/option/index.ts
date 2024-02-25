@@ -1,4 +1,4 @@
-import {
+﻿import {
   h,
   VNode,
   text,
@@ -12,3 +12,4 @@ export default <T>(
   value,
   selected,
 }, text(label));
+

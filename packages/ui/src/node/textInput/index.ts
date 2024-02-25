@@ -1,4 +1,4 @@
-import {
+﻿import {
   constant,
   pipe,
 } from 'effect/Function';
@@ -31,3 +31,4 @@ export default <T>(
   ),
   ...action,
 });
+

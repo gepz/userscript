@@ -7,3 +7,4 @@ type TypeBase = {
 };
 
 export default TypeBase;
+

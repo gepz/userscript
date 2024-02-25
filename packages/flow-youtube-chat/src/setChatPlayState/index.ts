@@ -1,16 +1,15 @@
+import * as Z from 'effect/Effect';
 import {
   pipe,
-  identity,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as Z from 'effect/Effect';
 
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
 
 export default (
   chat: FlowChat,
-) => (mainState: MainState): Z.Effect<never, never, void> => pipe(
+) => (mainState: MainState): Z.Effect<void> => pipe(
   chat,
   O.liftPredicate((x) => !x.animationEnded),
   Z.flatMap((x: FlowChat) => x.animation),

@@ -63,14 +63,14 @@ export default ({
   provideLog,
 }: {
   settingUpdateApps: BehaviorSubject<Dispatch<SettingState>[]>,
-  provideLog: <T>(x: Z.Effect<never, never, T>) => Z.Effect<never, never, T>
-}): Z.Effect<never, never, unknown> => provideLog(pipe(
+  provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>
+}): Z.Effect<unknown> => provideLog(pipe(
   defaultGMConfig,
   (gmConfig) => Z.succeed({
     gmConfig,
     updateSettingState: (
       dispatchable: Dispatchable<SettingState>,
-    ): Z.Effect<never, never, void> => provideLog(pipe(
+    ): Z.Effect<void> => provideLog(pipe(
       settingUpdateApps.value,
       RA.map((x) => Z.sync(() => x(dispatchable))),
       Z.all,
@@ -100,7 +100,7 @@ export default ({
 
     const changedConfigMap = (
       key: keyof UserConfig,
-    ) => (val: never): Z.Effect<never, O.Option<never>, unknown> => pipe(
+    ) => (val: never): Z.Effect<unknown, O.Option<never>> => pipe(
       Z.promise(async () => ctx.configValue[key]),
       Z.filterOrFail((x) => !deepEq(x, val), O.none),
       Z.flatMap(() => setConfigPlain[key](val)),
@@ -153,6 +153,7 @@ export default ({
       ...ctx,
       reinitSubject,
       reinitialize: provideLog(Z.sync(() => {
+        // eslint-disable-next-line compat/compat
         requestAnimationFrame(() => forwardTo(reinitSubject)());
       })),
       apps: {
@@ -233,6 +234,7 @@ export default ({
                 ) : Z.unit),
               )),
               (x) => () => Z.runPromise(provideLog(x)),
+              // eslint-disable-next-line compat/compat
               (x) => Z.sync(() => requestAnimationFrame(x)),
             ))),
             share(),

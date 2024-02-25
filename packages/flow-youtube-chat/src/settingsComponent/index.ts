@@ -22,3 +22,4 @@ export default (
     },
   }, panel(s)))('span'),
 );
+

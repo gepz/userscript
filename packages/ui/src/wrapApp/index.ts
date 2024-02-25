@@ -1,4 +1,4 @@
-import * as Z from 'effect/Effect';
+﻿import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
@@ -12,7 +12,7 @@ import WrappedApp from '@/WrappedApp';
 export default <T>(
   comp: RootComponent<T>,
   init: T,
-): Z.Effect<never, never, WrappedApp<T>> => pipe(
+): Z.Effect<WrappedApp<T>> => pipe(
   Z.sync(() => document.createElement(comp.tag)),
   Z.flatMap((node) => Z.sync(() => ({
     node,
@@ -24,3 +24,4 @@ export default <T>(
   }
   ))),
 );
+

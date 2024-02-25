@@ -8,3 +8,4 @@ export default (animation: O.Option<Animation>): number => animation.pipe(
   (x) => (typeof x === 'number' ? x : x.to('ms').value)
    / flowDuration,
 );
+

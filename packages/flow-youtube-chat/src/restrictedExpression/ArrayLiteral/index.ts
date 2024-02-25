@@ -25,7 +25,7 @@ export const fromJsExp = (
   exp: expEval.parse.ArrayExpression,
 ) => (
   f: ExpressionFromJsExp,
-): Z.Effect<never, string, ArrayLiteral> => pipe(
+): Z.Effect<ArrayLiteral, string> => pipe(
   exp.elements,
   RA.map(f),
   (x) => x,
@@ -55,3 +55,4 @@ export const fromTypedExp = ({
 );
 
 export default ArrayLiteral;
+

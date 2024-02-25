@@ -100,13 +100,13 @@ export const removeBlock = (
   log: Log,
 ): Log => (i > log.compressedBlocks.length ? log : makeLog({
   nextId: log.nextId,
-  ...i === log.compressedBlocks.length ? {
+  ...(i === log.compressedBlocks.length ? {
     lastBlock: [],
     compressedBlocks: log.compressedBlocks,
   } : {
     lastBlock: log.lastBlock,
     compressedBlocks: RA.remove(log.compressedBlocks, i),
-  },
+  }),
 }));
 
 export const append = (
@@ -133,3 +133,4 @@ export const append = (
     }),
   ),
 });
+

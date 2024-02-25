@@ -1,4 +1,4 @@
-import TextKey from '@/TextKey';
+﻿import TextKey from '@/TextKey';
 
 export default {
   setting: ['Settings', '設定'],
@@ -58,3 +58,4 @@ export default {
   logEvents: ['Enable event logging', 'イベントログを有効にする'],
   importLog: ['Import event log', 'イベントログを取り込む'],
 } as const satisfies Record<TextKey, readonly string[]>;
+

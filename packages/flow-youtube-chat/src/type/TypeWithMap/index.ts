@@ -17,3 +17,4 @@ export const of = <T extends Type>(x: T) => ({
   type: x,
   map: {},
 });
+

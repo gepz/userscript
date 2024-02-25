@@ -7,7 +7,7 @@ import * as RA from 'effect/ReadonlyArray';
 
 export default (
   chat: HTMLElement,
-): Z.Effect<never, never, void> => (chat.querySelector(
+): Z.Effect<void> => (chat.querySelector(
   '.style-scope.yt-live-chat-paid-message-renderer',
 ) ? Z.unit
 : pipe(
@@ -27,3 +27,4 @@ export default (
   })),
   Z.all,
 ));
+

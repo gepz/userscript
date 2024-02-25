@@ -14,3 +14,4 @@ export default <T extends GM.Value>(
   defaultValue,
   toGm: identity,
 });
+

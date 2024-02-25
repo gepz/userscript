@@ -1,10 +1,10 @@
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
 import * as Str from 'effect/String';
-import * as Z from 'effect/Effect';
 
 import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';
@@ -49,9 +49,9 @@ export default (
   setConfig: UserConfigSetter,
 ) => (
   chat: HTMLElement,
-): Z.Effect<never, never, HTMLElement> => pipe(
+): Z.Effect<HTMLElement> => pipe(
   getConfig.bannedUsers,
-  Z.filterOrFail((x) => !x.includes(id), O.none),
+  Z.filterOrFail((x): boolean => !x.includes(id), O.none),
   Z.map((x) => pipe(
     RA.dedupeWith(x, Str.Equivalence),
     RA.append(id),

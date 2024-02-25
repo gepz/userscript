@@ -1,4 +1,4 @@
-import type AppProperties from '@/AppProperties';
+﻿import type AppProperties from '@/AppProperties';
 import type AppPropertiesKey from '@/AppPropertiesKey';
 import type AppPropertiesValue from '@/AppPropertiesValue';
 import type BoolUpdater from '@/BoolUpdater';
@@ -53,3 +53,4 @@ export {
   setter,
   wrapApp,
 };
+

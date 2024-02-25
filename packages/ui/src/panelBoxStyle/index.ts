@@ -1,4 +1,4 @@
-import {
+﻿import {
   StyleProp,
 } from 'hyperapp';
 
@@ -7,3 +7,4 @@ export default (width: number): StyleProp => ({
   width: `${width}px`,
   margin: '2px',
 });
+

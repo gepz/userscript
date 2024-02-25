@@ -22,3 +22,4 @@ export default (video: HTMLVideoElement): Observable<boolean> => pipe(
   )),
   (x) => merge(...x),
 );
+

@@ -7,7 +7,8 @@ import {
 } from 'rxjs';
 
 export default <T1>(
-  f: (x: T1) => Z.Effect<never, never, unknown>,
+  f: (x: T1) => Z.Effect<unknown>,
 ): OperatorFunction<T1, T1> => concatMap((x) => from(Z.runPromise(f(x))).pipe(
   map(() => x),
 ));
+

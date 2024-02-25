@@ -1,13 +1,13 @@
+import * as Cause from 'effect/Cause';
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as Cause from 'effect/Cause';
-import * as Z from 'effect/Effect';
 
 import LivePage from '@/LivePage';
 
-const chatApp: Z.Effect<never, Cause.NoSuchElementException, Element> = pipe(
+const chatApp: Z.Effect<Element, Cause.NoSuchElementException> = pipe(
   Z.sync(() => document.querySelector<HTMLIFrameElement>('#chatframe')),
   Z.flatMap((nullableFrame) => pipe(
     O.fromNullable(nullableFrame),

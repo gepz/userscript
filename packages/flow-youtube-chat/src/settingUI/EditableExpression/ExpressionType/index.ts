@@ -11,3 +11,4 @@ type ExpressionType = 'Compound'
 | 'ArrayExpression';
 
 export default ExpressionType;
+

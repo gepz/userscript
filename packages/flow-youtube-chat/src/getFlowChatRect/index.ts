@@ -18,3 +18,4 @@ export default (
   ))) * getFlowChatProgress(chat.animation)),
   (x) => new DOMRectReadOnly(x, chat.y, chat.width, chat.height),
 );
+

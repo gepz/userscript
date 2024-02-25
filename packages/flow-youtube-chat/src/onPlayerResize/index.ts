@@ -1,8 +1,8 @@
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
 import * as RA from 'effect/ReadonlyArray';
-import * as Z from 'effect/Effect';
 
 import MainState from '@/MainState';
 import renderChat from '@/renderChat';
@@ -11,7 +11,7 @@ import setChatAnimation from '@/setChatAnimation';
 export default (
   rect: DOMRectReadOnly,
   mainState: MainState,
-): Z.Effect<never, never, void> => pipe(
+): Z.Effect<void> => pipe(
   Z.succeed(rect),
   Z.tap((x) => Z.logDebug(
     `Resize [${x.width.toFixed(1)}, ${x.height.toFixed(1)}]`,

@@ -134,13 +134,13 @@ export default (
 
       return {
         lastLane: nextLane,
-        ...(newInterval - maxInterval > 0.001) ? {
+        ...((newInterval - maxInterval > 0.001) ? {
           maxInterval: newInterval,
           maxIntervalLane: Math.max(lastLane + newInterval, 0),
         } : {
           maxInterval,
           maxIntervalLane,
-        },
+        }),
       };
     })())),
     (x) => ({
@@ -152,3 +152,4 @@ export default (
     }),
   );
 };
+

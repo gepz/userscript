@@ -1,4 +1,4 @@
-import {
+﻿import {
   h,
   VNode,
   StyleProp,
@@ -13,3 +13,4 @@ export default <T>(
     color,
   },
 }, text('Aa1あア亜'));
+

@@ -1,4 +1,4 @@
-import type AppNodeTextKey from '@/appNode/AppNodeTextKey';
+﻿import type AppNodeTextKey from '@/appNode/AppNodeTextKey';
 import type AppTextGetter from '@/appNode/AppTextGetter';
 import checkboxNode from '@/appNode/checkboxNode';
 import colorNode from '@/appNode/colorNode';
@@ -23,3 +23,4 @@ export {
   textAreaNode,
   textColorNode,
 };
+

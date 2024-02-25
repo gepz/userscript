@@ -1,4 +1,4 @@
-import {
+﻿import {
   constant,
 } from 'effect/Function';
 import * as O from 'effect/Option';
@@ -20,3 +20,4 @@ const setEditColor: EditSetter<Editable<string>> = (
   : Tu.mapSecond(constant(O.some([value, O.some('')])))));
 
 export default setEditColor;
+

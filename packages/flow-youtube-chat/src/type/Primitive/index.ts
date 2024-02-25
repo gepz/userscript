@@ -5,3 +5,4 @@ enum Primitive {
 }
 
 export default Primitive;
+

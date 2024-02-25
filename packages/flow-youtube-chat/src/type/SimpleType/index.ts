@@ -61,3 +61,4 @@ export const checkAssignability = (
       : O.some('The types of the two primitives are different.')
     : O.some(`Type ${s.tag} is not assignable to type ${target.tag}`))),
 );
+

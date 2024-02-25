@@ -1,18 +1,18 @@
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as Z from 'effect/Effect';
 
 import settingsPanelSize from '@/settingsPanelSize';
 
 export default (
   toggleSettingsElement: HTMLElement,
 ) => (
-  nextSettingsRect: (r: DOMRectReadOnly) => Z.Effect<never, never, void>,
+  nextSettingsRect: (r: DOMRectReadOnly) => Z.Effect<void>,
 ) => (
   last: DOMRectReadOnly,
-): Z.Effect<never, never, void> => pipe(
+): Z.Effect<void> => pipe(
   Z.succeed(toggleSettingsElement),
   Z.filterOrFail((x) => x.offsetParent !== null, O.none),
   Z.map((x) => x.getBoundingClientRect()),

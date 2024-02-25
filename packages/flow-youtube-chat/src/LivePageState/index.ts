@@ -7,14 +7,13 @@ import mapObject from '@/mapObject';
 
 type LiveElementState<T> = {
   ele: O.Option<T>,
-  read: Z.Effect<never, Cause.NoSuchElementException, T>,
+  read: Z.Effect<T, Cause.NoSuchElementException>,
 };
 
 type LivePageState = {
   [P in keyof LivePage]: LivePage[P] extends Z.Effect<
-  never,
-  Cause.NoSuchElementException,
-  infer R
+  infer R,
+  Cause.NoSuchElementException
   > ? LiveElementState<R> : never;
 };
 

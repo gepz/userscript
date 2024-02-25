@@ -5,3 +5,4 @@ import editAction from '@/settingUI/editAction';
 import getState from '@/settingUI/getState';
 
 export default regexTextAreaNode(editAction, getText, getState);
+

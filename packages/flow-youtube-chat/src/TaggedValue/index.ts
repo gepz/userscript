@@ -13,3 +13,4 @@ export const makeType = <A extends TaggedValue<string, unknown>>(
   tag,
   value,
 });
+

@@ -37,3 +37,4 @@ export default (
     typeMap: updateTypeMap(expectedType)(type)(typeMap),
   }),
 ) : errorResult(typeMap));
+

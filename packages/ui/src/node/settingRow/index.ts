@@ -1,4 +1,4 @@
-import {
+﻿import {
   h,
   VNode,
   text,
@@ -19,3 +19,4 @@ export default <T>(
   }, text(error)),
   h('div', {}, content),
 ]);
+

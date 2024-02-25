@@ -1,4 +1,4 @@
-import {
+﻿import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
@@ -57,3 +57,4 @@ export default <T>(
     }),
   )),
 ]);
+

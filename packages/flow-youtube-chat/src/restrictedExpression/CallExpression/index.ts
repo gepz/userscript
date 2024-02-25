@@ -27,7 +27,7 @@ export const fromJsExp = (
   exp: expEval.parse.CallExpression,
 ) => (
   f: ExpressionFromJsExp,
-): Z.Effect<never, string, CallExpression> => pipe(
+): Z.Effect<CallExpression, string> => pipe(
   exp.arguments,
   Z.succeed,
   Z.filterOrFail(
@@ -76,3 +76,4 @@ export const fromTypedExp = ({
 );
 
 export default CallExpression;
+

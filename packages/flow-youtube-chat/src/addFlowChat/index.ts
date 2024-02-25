@@ -1,9 +1,9 @@
+import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
-import * as Z from 'effect/Effect';
 
 import ChatData from '@/ChatData';
 import FlowChat from '@/FlowChat';
@@ -21,7 +21,7 @@ export default (
   getData: (config: UserConfig) => ChatData,
   chatScrn: HTMLElement,
   mainState: MainState,
-): Z.Effect<never, never, void> => (pipe(
+): Z.Effect<void> => (pipe(
   {
     getData,
     element: emptyElement,
@@ -42,13 +42,14 @@ export default (
     || mainState.flowChats.value.length
     >= mainState.config.value.maxChatCount),
   O.match({
-    onNone: (): Z.Effect<never, never, HTMLElement> => pipe(
+    onNone: (): Z.Effect<HTMLElement> => pipe(
       Z.sync(() => document.createElement('span')),
       Z.tap((element) => Z.sync(() => chatScrn.append(element))),
       Z.tap((element) => Z.sync(() => element.classList.add('fyc_chat'))),
       Z.zipLeft(Z.logDebug('Flow chat element added')),
     ),
-    onSome: (index): Z.Effect<never, never, HTMLElement> => pipe(
+    onSome: (index): Z.Effect<HTMLElement> => pipe(
+      // eslint-disable-next-line func-names
       Z.gen(function* (_) {
         const chats = mainState.flowChats;
         const chat = RA.unsafeGet(chats.value, index);
@@ -83,8 +84,8 @@ export default (
         Z.zipLeft(Z.logDebug('Flow chat element removed')),
       ),
       onSuccess: (x) => Z.sync(() => mainState.flowChats.next(
-        RA.append(mainState.flowChats.value, x.newChat)
-      )), 
+        RA.append(mainState.flowChats.value, x.newChat),
+      )),
     }),
   )),
 ));

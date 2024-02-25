@@ -87,3 +87,4 @@ const simplifyTypeForLog = (obj: unknown): unknown => pipe(
 );
 
 export default simplifyTypeForLog;
+

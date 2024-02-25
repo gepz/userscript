@@ -7,3 +7,4 @@ export default ErrorType;
 export const error: ErrorType = {
   tag: 'error',
 };
+

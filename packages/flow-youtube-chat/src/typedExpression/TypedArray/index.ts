@@ -44,3 +44,4 @@ export const fromExp = ({
 );
 
 export default TypedArray;
+

@@ -1,4 +1,4 @@
-import {
+﻿import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
@@ -52,3 +52,4 @@ const setEditRegexes: EditSetter<Editable<readonly string[]>> = (
 );
 
 export default setEditRegexes;
+

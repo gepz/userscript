@@ -31,9 +31,9 @@ export default (
   chat: FlowChat,
 ) => (
   mainState: MainState,
-): Z.Effect<never, Cause.NoSuchElementException, {
+): Z.Effect<{
   newChat: FlowChat,
-}> => pipe(
+}, Cause.NoSuchElementException> => pipe(
   Z.succeed(getChatFontSize(mainState)),
   Z.tap((height) => Z.sync(() => {
     // eslint-disable-next-line no-param-reassign
@@ -158,3 +158,4 @@ export default (
     ),
   })),
 );
+

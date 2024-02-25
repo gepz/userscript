@@ -1,4 +1,4 @@
-import ComputedProperties from '@/ComputedProperties';
+﻿import ComputedProperties from '@/ComputedProperties';
 import StateDispatchable from '@/StateDispatchable';
 
 type ComputedPropertySetters<
@@ -12,3 +12,4 @@ type ComputedPropertySetters<
 };
 
 export default ComputedPropertySetters;
+

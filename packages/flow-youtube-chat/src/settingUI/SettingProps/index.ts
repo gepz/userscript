@@ -6,3 +6,4 @@ type SettingProps = {
 };
 
 export default SettingProps;
+

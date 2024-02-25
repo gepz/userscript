@@ -72,8 +72,8 @@ const semigroup = (
 ): Semigroup<Type> => ({
   concat: (a, b) => pipe(
     [
-      ...a.tag === 'union' ? a.value : [a],
-      ...b.tag === 'union' ? b.value : [b],
+      ...(a.tag === 'union' ? a.value : [a]),
+      ...(b.tag === 'union' ? b.value : [b]),
     ],
     RA.uniq({
       equals: flow(
@@ -117,3 +117,4 @@ const targetLowerBound: TargetLowerBoundFunc<Type> = ({
   )(map)(type)
   : () => O.none,
 );
+
