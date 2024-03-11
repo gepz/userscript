@@ -1,7 +1,7 @@
 {
   "name": "@userscript/tap-non-null",
   "description": "",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "",
   "dependencies": {
     "typed-assert": "^1.0.9"
@@ -9,8 +9,8 @@
   "devDependencies": {
     "@types/node": "20.11.25",
     "@types/webpack-bundle-analyzer": "^4.7.0",
-    "@userscript/eslint-config": "workspace:^1.0.2",
-    "@userscript/webpack-config": "workspace:^1.0.3",
+    "@userscript/eslint-config": "workspace:^1.0.3",
+    "@userscript/webpack-config": "workspace:^1.0.4",
     "cross-env": "^7.0.3",
     "fork-ts-checker-webpack-plugin": "^9.0.2",
     "npm-run-all": "^4.1.5",

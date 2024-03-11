@@ -1,5 +1,12 @@
 # @userscript/ui
 
+## 1.1.2
+
+### Patch Changes
+
+- 585837b: update dependencies
+- refine chat detection
+
 ## 1.1.1
 
 ### Patch Changes

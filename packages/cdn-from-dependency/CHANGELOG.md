@@ -1,5 +1,12 @@
 # @userscript/cdn-from-dependency
 
+## 1.0.3
+
+### Patch Changes
+
+- 585837b: update dependencies
+- refine chat detection
+
 ## 1.0.2
 
 ### Patch Changes
