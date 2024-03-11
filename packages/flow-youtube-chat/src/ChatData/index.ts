@@ -1,17 +1,15 @@
 import * as O from 'effect/Option';
 
-import DisplayText from '@/DisplayText';
-
 export default interface ChatData {
   chatType: 'normal' | 'membership' | 'ticker' | 'engagement',
   authorType: 'owner' | 'moderator' | 'member' | 'normal',
   authorID: O.Option<string>,
-  authorName: O.Option<DisplayText>,
+  authorName: O.Option<string>,
+  timestamp: O.Option<string>,
   messageElement: O.Option<Element>,
-  message: O.Option<DisplayText>,
-  messageText: O.Option<DisplayText>,
-  paymentInfo: O.Option<DisplayText>,
+  message: O.Option<string>,
+  messageText: O.Option<string>,
+  paymentInfo: O.Option<string>,
   textColor: O.Option<string>,
   paidColor: O.Option<string>,
 }
-

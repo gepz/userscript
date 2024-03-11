@@ -14,19 +14,17 @@ import {
 } from 'ts-toolbelt/out/List/Tail';
 // import * as P from 'effect/Predicate';
 
-import DisplayText from '@/DisplayText';
-
-const inText = (text: DisplayText) => (
+const inText = (text: string) => (
   x: string,
-): boolean => Str.includes(x)(text.content);
+): boolean => Str.includes(x)(text);
 
-const eqText = (text: DisplayText) => (
+const eqText = (text: string) => (
   x: string,
-): boolean => text.content === x;
+): boolean => text === x;
 
-const matchedByText = (text: DisplayText) => (
+const matchedByText = (text: string) => (
   x: string,
-): boolean => Boolean(text.content.match(RegExp(x, 'u')));
+): boolean => Boolean(text.match(RegExp(x, 'u')));
 
 const filterOperators = {
   flip,
@@ -45,8 +43,6 @@ const filterOperators = {
   inText,
   eqText,
   matchedByText,
-  isVisible: (x: DisplayText): boolean => x.visible,
 };
 
 export default filterOperators;
-

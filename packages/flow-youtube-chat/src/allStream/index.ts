@@ -183,7 +183,6 @@ export default (
     )),
     tapEffect(() => provideLog(pipe(
       Z.logDebug('Loading...'),
-      Z.zipRight(removeOldChats(mainState.flowChats)(0)),
       Z.zipRight(
         Z.sync(() => {
           c.documentMutationPair.observer.disconnect();
@@ -367,4 +366,3 @@ export default (
     }),
   )),
 );
-

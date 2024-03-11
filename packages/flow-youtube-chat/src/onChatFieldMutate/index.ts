@@ -1,5 +1,8 @@
 import * as Z from 'effect/Effect';
 import {
+  strict,
+} from 'effect/Equivalence';
+import {
   pipe,
   identity,
 } from 'effect/Function';
@@ -25,11 +28,11 @@ export default (
   RA.reverse,
   RA.map((chat) => pipe(
     {
-      getData: parseChat(chat),
+      data: parseChat(chat),
       config: mainState.config,
+      eq: O.getEquivalence(strict()),
     },
     Z.succeed,
-    Z.let('data', (x) => x.getData(x.config.value)),
     Z.zipLeft(Z.logDebug('Chat detected')),
     Z.bind('banned', (x) => checkBannedWords(x.data, x.config.value)),
     Z.flatMap((ctx) => (ctx.banned ? Z.sync(() => {
@@ -37,10 +40,16 @@ export default (
       chat.style.display = 'none';
     }) : Z.all([
       pipe(
-        ctx.config.value.createChats && ctx.data.chatType === 'normal',
+        ctx.config.value.createChats && ctx.data.chatType === 'normal' && !pipe(
+          mainState.flowChats.value,
+          RA.filter(((x) => !x.animationEnded)),
+          RA.some((x) => ctx.eq(x.data.authorID, ctx.data.authorID)
+          && ctx.eq(x.data.messageText, ctx.data.messageText)
+          && ctx.eq(x.data.timestamp, ctx.data.timestamp)),
+        ),
         O.liftPredicate(identity<boolean>),
         Z.flatMap(() => addFlowChat(
-          ctx.getData,
+          ctx.data,
           chatScrn,
           mainState,
         )),

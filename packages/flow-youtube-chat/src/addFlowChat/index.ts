@@ -8,7 +8,6 @@ import * as RA from 'effect/ReadonlyArray';
 import ChatData from '@/ChatData';
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
-import UserConfig from '@/UserConfig';
 import getChatFontSize from '@/getChatFontSize';
 import getChatLane from '@/getChatLane';
 import intervalTooSmall from '@/intervalTooSmall';
@@ -18,12 +17,12 @@ import setChatAnimation from '@/setChatAnimation';
 const emptyElement = document.createElement('span');
 
 export default (
-  getData: (config: UserConfig) => ChatData,
+  data: ChatData,
   chatScrn: HTMLElement,
   mainState: MainState,
 ): Z.Effect<void> => (pipe(
   {
-    getData,
+    data,
     element: emptyElement,
     lane: -1,
     animation: O.none(),
@@ -65,7 +64,7 @@ export default (
     ),
   }),
   Z.map((element): FlowChat => ({
-    getData,
+    data,
     element,
     lane: -1,
     animation: O.none(),
