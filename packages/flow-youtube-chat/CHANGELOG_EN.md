@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 * Nothing
 
+## 1.17.0
+
+### Changed
+
+* Existing flow chats will no longer be unnecessarily removed when there are changes to YouTube's UI.
+* Repeated detections of the exact same chats will now be filtered out to prevent them from being added to the flow chat.
+
+### Fixed
+
+* Fix a logging bug.
+
 ## 1.16.2
 
 ### Changed
