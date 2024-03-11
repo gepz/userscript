@@ -51,7 +51,7 @@ export default merge(
               ecma: 2020,
               sequences: false,
               toplevel: true,
-              passes: 2,
+              passes: 3,
               // unused: false,
             },
           },
