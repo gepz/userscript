@@ -1,10 +1,9 @@
 import * as O from 'effect/Option';
 
 import ChatData from '@/ChatData';
-import UserConfig from '@/UserConfig';
 
 export default interface FlowChat {
-  getData: (config: UserConfig) => ChatData,
+  data: ChatData,
   element: HTMLElement,
   lane: number,
   animation: O.Option<Animation>,
@@ -13,4 +12,3 @@ export default interface FlowChat {
   height: number,
   y: number,
 }
-

@@ -28,11 +28,9 @@ export default (
       d.message,
       d.paymentInfo,
     ],
-    RA.map(O.map((x) => x.content)),
     RA.map(O.getOrElse(() => '')),
   )),
   O.map(JSON.stringify),
   Z.flatMap((x: string) => Z.logDebug(`Filtered: ${x}`)),
   Z.isSuccess,
 );
-

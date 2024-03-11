@@ -92,11 +92,10 @@ export default (
   chat: FlowChat,
   mainState: MainState,
 ): HTMLTemplateResult => pipe(
-  mainState.config.value,
-  (config) => ({
-    data: chat.getData(config),
-    config,
-  }),
+  {
+    data: chat.data,
+    config: mainState.config.value,
+  },
   ({
     data,
     config,
@@ -117,7 +116,11 @@ export default (
     [
       pipe(
         data.authorName,
-        O.filter((x) => x.visible),
+        O.filter(() => (
+          data.authorType === 'moderator' && config.displayModName
+        ) || (
+          O.isSome(data.paymentInfo) && config.displaySuperChatAuthor
+        )),
         O.map((text) => html`<span style=${styleMap({
           ...O.match(data.textColor, {
             onNone: () => {},
@@ -127,7 +130,7 @@ export default (
           }),
           fontSize: '0.84em',
           ...textStyle,
-        } satisfies Partial<CSSStyleDeclaration>)}>${text.content}: </span>`),
+        } satisfies Partial<CSSStyleDeclaration>)}>${text}: </span>`),
       ),
       pipe(
         data.messageElement,
@@ -147,7 +150,6 @@ export default (
       ),
       pipe(
         data.paymentInfo,
-        O.filter((x) => x.visible),
         O.map((text) => html`<span style=${styleMap({
           ...O.match(data.paidColor, {
             onNone: () => {},
@@ -159,7 +161,7 @@ export default (
           ...textStyle,
         } satisfies Partial<CSSStyleDeclaration>)}><strong style=${
           styleMap(textStyle)
-        }></strong> ${text.content.trim()}</span>`),
+        }></strong> ${text.trim()}</span>`),
       ),
     ],
     RA.getSomes,

@@ -46,6 +46,8 @@ export default (
     merge(
       pipe(
         merge(
+          co.displayModName,
+          co.displaySuperChatAuthor,
           co.font,
           co.fontSize,
           co.fontWeight,
@@ -153,8 +155,5 @@ export default (
   co.simplifyChatField,
   co.createBanButton,
   co.createChats,
-  co.displayModName,
-  co.displaySuperChatAuthor,
   co.fieldScale,
 ));
-
