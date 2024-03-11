@@ -1,7 +1,7 @@
 {
   "name": "@userscript/webpack-config",
   "description": "",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "",
   "dependencies": {
     "@types/node": "20.11.25",
