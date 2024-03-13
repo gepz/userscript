@@ -158,8 +158,8 @@ export default (
       c.tapUpdateSettingsRect,
       concatMap((index) => pipe(
         from(Z.runPromise(provideLog(pipe(
-          liveElementKeys,
-          RA.map((key) => live[key].read.pipe(
+          Z.succeed(liveElementKeys),
+          Z.flatMap(Z.forEach((key) => live[key].read.pipe(
             Z.option,
             Z.flatMap(O.liftPredicate(
               (newEle) => !c.eq(live[key].ele, newEle),
@@ -172,8 +172,7 @@ export default (
             Z.map((x) => `${key} ${x ? 'found' : 'lost'}`),
             Z.flatMap(Z.logDebug),
             Z.isSuccess,
-          )),
-          Z.all,
+          ))),
           Z.map(RA.some<boolean>(identity)),
         )))),
         filter(identity),
@@ -197,51 +196,47 @@ export default (
           document.head.append(c.css);
         }),
       ),
-      Z.zipRight(pipe(
-        [
-          live.chatField.ele.pipe(
-            O.map((x) => Z.sync(() => c.chatMutationPair.observer.observe(x, {
-              childList: true,
-            }))),
+      Z.zipRight(Z.allSuccesses([
+        live.chatField.ele.pipe(
+          Z.flatMap((x) => Z.sync(() => c.chatMutationPair.observer.observe(x, {
+            childList: true,
+          }))),
+        ),
+        live.chatTicker.ele.pipe(
+          Z.flatMap((x) => Z.sync(() => c.chatMutationPair.observer.observe(x, {
+            childList: true,
+          }))),
+        ),
+        live.player.ele.pipe(
+          Z.flatMap((element) => pipe(
+            Z.succeed(element),
+            Z.tap((x) => Z.sync(() => c.playerResizePair.observer.observe(x))),
+            Z.flatMap((x) => Z.sync(() => x.prepend(chatScreen))),
+          )),
+        ),
+        live.toggleChatBtnParent.ele.pipe(
+          Z.flatMap((x) => Z.sync(() => x.prepend(toggleChatButtonApp.node))),
+        ),
+        live.settingsToggleNextElement.ele.pipe(
+          Z.flatMap((x) => Z.sync(() => x.before(toggleSettingsPanelApp.node))),
+        ),
+        live.settingsContainer.ele.pipe(
+          Z.flatMap((x) => Z.sync(() => x.append(settingsApp.node))),
+        ),
+        pipe(
+          document.body,
+          Z.fromNullable,
+          Z.flatMap((x) => Z.sync(() => c.bodyResizePair.observer.observe(x))),
+        ),
+        live.video.ele.pipe(
+          Z.filterOrElse(
+            (x) => !x.paused,
+            () => live.offlineSlate.ele,
           ),
-          live.chatTicker.ele.pipe(
-            O.map((x) => Z.sync(() => c.chatMutationPair.observer.observe(x, {
-              childList: true,
-            }))),
-          ),
-          live.player.ele.pipe(
-            O.map((element) => pipe(
-              Z.succeed(element),
-              Z.tap((x) => Z.sync(
-                () => c.playerResizePair.observer.observe(x),
-              )),
-              Z.flatMap((x) => Z.sync(() => x.prepend(chatScreen))),
-            )),
-          ),
-          live.toggleChatBtnParent.ele.pipe(
-            O.map((x) => Z.sync(() => x.prepend(toggleChatButtonApp.node))),
-          ),
-          live.settingsToggleNextElement.ele.pipe(
-            O.map((x) => Z.sync(() => x.before(toggleSettingsPanelApp.node))),
-          ),
-          live.settingsContainer.ele.pipe(
-            O.map((x) => Z.sync(() => x.append(settingsApp.node))),
-          ),
-          pipe(
-            document.body,
-            O.fromNullable,
-            O.map((x) => Z.sync(() => c.bodyResizePair.observer.observe(x))),
-          ),
-        ],
-        RA.getSomes,
-        RA.append(live.video.ele.pipe(
-          O.filter((x) => !x.paused),
-          O.orElse(() => live.offlineSlate.ele),
-          O.isSome,
-          (x) => Z.sync(() => mainState.chatPlaying.next(x)),
-        )),
-        Z.all,
-      )),
+          Z.isSuccess,
+          Z.flatMap((x) => Z.sync(() => mainState.chatPlaying.next(x))),
+        ),
+      ])),
     ))),
     switchMap(() => merge(
       pipe(
@@ -285,10 +280,9 @@ export default (
             map((chatPlaying) => pipe(
               Z.sync(() => mainState.chatPlaying.next(chatPlaying)),
               Z.zipRight(pipe(
-                mainState.flowChats.value,
-                RA.map(setChatPlayState),
-                RA.map(apply(mainState)),
-                Z.all,
+                Z.succeed(mainState.flowChats.value),
+                Z.map(RA.map(setChatPlayState)),
+                Z.flatMap(Z.forEach(apply(mainState))),
               )),
             )),
             tapEffect(provideLog),
@@ -297,10 +291,7 @@ export default (
       ),
       pipe(
         c.chatMutationPair.subject,
-        map(onChatFieldMutate(
-          chatScreen,
-          mainState,
-        )),
+        map(onChatFieldMutate(chatScreen, mainState)),
         tapEffect(provideLog),
       ),
       pipe(

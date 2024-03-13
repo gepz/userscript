@@ -27,12 +27,11 @@ export default (
   RA.filter((x) => x.children.length > 0),
   RA.reverse,
   RA.map((chat) => pipe(
-    {
+    Z.succeed({
       data: parseChat(chat),
       config: mainState.config,
       eq: O.getEquivalence(strict()),
-    },
-    Z.succeed,
+    }),
     Z.zipLeft(Z.logDebug('Chat detected')),
     Z.bind('banned', (x) => checkBannedWords(x.data, x.config.value)),
     Z.flatMap((ctx) => (ctx.banned ? Z.sync(() => {
