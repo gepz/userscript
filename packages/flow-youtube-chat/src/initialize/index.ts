@@ -184,18 +184,16 @@ export default ({
     ctx.apps.toggleChatButtonApp.dispatch,
   ]))),
   Z.tap((ctx) => pipe(
-    [
+    Z.succeed([
       `Version: ${packageJson.version}`,
       `User Agent: ${window.navigator.userAgent}`,
       `GMConfig: ${JSON.stringify(ctx.mainState.config, undefined, '\t')}`,
-    ],
-    RA.map((x) => Z.logDebug(x)),
-    Z.all,
+    ]),
+    Z.flatMap(Z.forEach((x) => Z.logDebug(x))),
   )),
   Z.zipLeft(pipe(
     Z.logDebug('10s...'),
-    Z.repeat(Schedule.fixed(D.seconds(10))),
-    Z.delay(D.seconds(10)),
+    Z.schedule(Schedule.fixed(D.seconds(10))),
     Z.forkDaemon,
   )),
   // eslint-disable-next-line func-names
@@ -211,12 +209,10 @@ export default ({
           pipe(
             value,
             tapEffect<unknown>((v) => provideLog(pipe(
-              v,
-              (x) => <T>(s: T) => ({
+              Z.succeed(<T>(s: T) => ({
                 ...s,
-                [k]: x,
-              }),
-              Z.succeed,
+                [k]: v,
+              })),
               Z.zipLeft(ctx.updateSettingState(
                 // eslint-disable-next-line max-len
                 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -233,9 +229,9 @@ export default ({
                   defaultFilter(ctx.mainState.config.value),
                 ) : Z.unit),
               )),
-              (x) => () => Z.runPromise(provideLog(x)),
-              // eslint-disable-next-line compat/compat
-              (x) => Z.sync(() => requestAnimationFrame(x)),
+              (x) => Z.sync(
+                () => setTimeout(() => Z.runPromise(provideLog(x)), 0),
+              ),
             ))),
             share(),
           ),

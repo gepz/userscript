@@ -11,8 +11,7 @@ import UserConfigSetter from '@/UserConfigSetter';
 import defaultToast from '@/defaultToast';
 
 const template = Z.runPromise(pipe(
-  document.createElement('button'),
-  Z.succeed,
+  Z.succeed(document.createElement('button')),
   Z.tap((x) => Z.sync(() => x.classList.add(
     'style-scope',
     'yt-icon-button',

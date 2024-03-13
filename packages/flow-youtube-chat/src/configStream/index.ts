@@ -1,9 +1,11 @@
+import {
+  Cause,
+} from 'effect';
 import * as Z from 'effect/Effect';
 import {
   pipe,
   apply,
 } from 'effect/Function';
-import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
 import {
   merge,
@@ -130,24 +132,19 @@ export default (
       ...x,
     }) satisfies ChatUpdateConfig),
     tapEffect((c) => provideLog(pipe(
-      mainState.flowChats.value,
-      RA.filter((x) => !x.animationEnded),
-      RA.map((chat) => pipe(
-        [
-          pipe(
-            renderChat(chat),
-            O.liftPredicate(() => c.render),
-          ),
-          (c.setAnimation ? O.some((state: MainState) => Z.ignore(
+      Z.succeed(mainState.flowChats.value),
+      Z.map(RA.filter((x) => !x.animationEnded)),
+      Z.flatMap(Z.forEach((chat) => pipe(
+        Z.allSuccesses([
+          c.render ? Z.succeed(renderChat(chat))
+          : Z.fail(new Cause.NoSuchElementException()),
+          c.setAnimation ? Z.succeed((state: MainState) => Z.ignore(
             setChatAnimation(chat)(state),
-          )) : c.setPlayState ? O.some(setChatPlayState(chat))
-          : O.none()),
-        ],
-        RA.getSomes,
-        RA.map(apply(mainState)),
-        Z.all,
-      )),
-      Z.all,
+          )) : c.setPlayState ? Z.succeed(setChatPlayState(chat))
+          : Z.fail(new Cause.NoSuchElementException()),
+        ]),
+        Z.flatMap(Z.forEach(apply(mainState))),
+      ))),
     ))),
   ),
   co.lang,
