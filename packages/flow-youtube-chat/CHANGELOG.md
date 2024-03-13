@@ -1,5 +1,11 @@
 # @userscript/flow-youtube-chat
 
+## 1.17.1
+
+### Patch Changes
+
+- d15e2f6: Fix the user ID filter.
+
 ## 1.17.0
 
 ### Minor Changes
