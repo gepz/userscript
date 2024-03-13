@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 * Nothing
 
+## 1.17.1
+
+### Fixed
+
+* Fix the "Banned Users" filter.
+
 ## 1.17.0
 
 ### Changed
