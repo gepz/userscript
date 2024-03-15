@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-* Removed auto-generated SRIs to prevent future instability of external scripts from stopping the script from running and simply trust the CDNs.
+* Fix a SRI bug that prevent the script from running.
 
 ## 1.17.1
 
