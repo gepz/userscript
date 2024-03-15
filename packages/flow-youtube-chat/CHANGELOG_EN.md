@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Nothing
 
+## [1.17.4] - 2023-03-15
+
+### Fixed
+
+- Fix the color of superchats.
+
 ## [1.17.3] - 2023-03-15
 
 ### Fixed
