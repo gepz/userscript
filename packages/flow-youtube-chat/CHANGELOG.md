@@ -1,5 +1,11 @@
 # @userscript/flow-youtube-chat
 
+## 1.17.3
+
+### Patch Changes
+
+- 8a6d5aa: Add back ssri to comply with Greasyfork policies
+
 ## 1.17.2
 
 ### Patch Changes
