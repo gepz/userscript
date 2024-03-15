@@ -4,7 +4,6 @@ import {
 } from 'effect/Equivalence';
 import {
   pipe,
-  identity,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
@@ -21,12 +20,12 @@ export default (
   chatScrn: HTMLElement,
   mainState: MainState,
 ) => (records: MutationRecord[]): Z.Effect<unknown> => pipe(
-  records,
+  Z.succeed(records),
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  RA.flatMap((e) => (Array.from(e.addedNodes) as HTMLElement[])),
-  RA.filter((x) => x.children.length > 0),
-  RA.reverse,
-  RA.map((chat) => pipe(
+  Z.map(RA.flatMap((e) => (Array.from(e.addedNodes) as HTMLElement[]))),
+  Z.map(RA.filter((x) => x.children.length > 0)),
+  Z.map(RA.reverse),
+  Z.flatMap(Z.forEach((chat) => pipe(
     Z.succeed({
       data: parseChat(chat),
       config: mainState.config,
@@ -39,38 +38,33 @@ export default (
       chat.style.display = 'none';
     }) : Z.all([
       pipe(
-        ctx.config.value.createChats && ctx.data.chatType === 'normal' && !pipe(
+        Z.sync(() => addFlowChat(ctx.data, chatScrn, mainState)),
+        Z.when(() => ctx.config.value.createChats
+        && ctx.data.chatType === 'normal' && !pipe(
           mainState.flowChats.value,
-          RA.filter(((x) => !x.animationEnded)),
-          RA.some((x) => ctx.eq(x.data.authorID, ctx.data.authorID)
+          RA.some((x) => !x.animationEnded
+          && ctx.eq(x.data.authorID, ctx.data.authorID)
           && ctx.eq(x.data.messageText, ctx.data.messageText)
           && ctx.eq(x.data.timestamp, ctx.data.timestamp)),
-        ),
-        O.liftPredicate(identity<boolean>),
-        Z.flatMap(() => addFlowChat(
-          ctx.data,
-          chatScrn,
-          mainState,
         )),
-        Z.ignore,
+        Z.flatMap(Z.flatten),
       ),
       ctx.data.authorID.pipe(
-        O.filter(() => ctx.config.value.createBanButton),
-        O.filter(() => !chat.children.namedItem('card')),
+        O.filter(() => ctx.config.value.createBanButton
+         && !chat.children.namedItem('card')),
         Z.flatMap((x: string) => appendChatMessage(
           banButton(x)(ctx.config.getConfig)(ctx.config.setConfig)(chat),
         )(chat)),
         Z.zipLeft(Z.logDebug('Ban button added')),
-        Z.ignore,
       ),
       pipe(
-        ctx.config.value.simplifyChatField,
-        O.liftPredicate(identity<boolean>),
-        Z.flatMap(() => setChatFieldSimplifyStyle(chat)),
+        Z.sync(() => setChatFieldSimplifyStyle(chat)),
+        Z.when(() => ctx.config.value.simplifyChatField),
+        Z.flatMap(Z.flatten),
         Z.zipLeft(Z.logDebug('Chat simplified')),
-        Z.ignore,
       ),
-    ]))),
-  )),
-  Z.all,
+    ], {
+      mode: 'either',
+    }))),
+  ))),
 );

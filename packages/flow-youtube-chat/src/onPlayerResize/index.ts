@@ -2,7 +2,6 @@ import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
 
 import MainState from '@/MainState';
 import renderChat from '@/renderChat';
@@ -19,10 +18,9 @@ export default (
   Z.flatMap((r) => pipe(
     Z.sync(() => mainState.playerRect.next(r)),
     Z.map(() => mainState.flowChats.value),
-    Z.map(RA.flatMap((x) => [
+    Z.flatMap(Z.forEach((x) => Z.all([
       renderChat(x)(mainState),
       Z.ignore(setChatAnimation(x)(mainState)),
-    ])),
-    Z.flatMap(Z.all),
+    ]))),
   )),
 );
