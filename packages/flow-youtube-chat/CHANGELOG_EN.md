@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Nothing
 
+## [1.17.5] - 2023-03-16
+
+### Fixed
+
+- Fix a bug where a chat would not be removed properly when the lane interval became too small during flowing, typically when user adjusted settings.
+
 ## [1.17.4] - 2023-03-15
 
 ### Fixed
