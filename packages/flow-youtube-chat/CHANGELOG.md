@@ -1,5 +1,11 @@
 # @userscript/flow-youtube-chat
 
+## 1.17.5
+
+### Patch Changes
+
+- 9050eb1: Fix a bug where a chat would not be removed properly when the lane interval became too small during animation, typically when user adjusted settings.
+
 ## 1.17.4
 
 ### Patch Changes
