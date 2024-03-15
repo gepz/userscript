@@ -37,7 +37,7 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
         (x = cdnSegment('rxjs')) => `${x.begin}unpkg.com/${
           x.nameVer}/dist/bundles/${x.name}.umd${x.end}`,
         (x = cdnSegment('deep-diff')) => `${x.begin}cdn.jsdelivr.net/npm/${
-          x.nameVer}/index${x.end}`,
+          x.nameVer}/dist/${x.name}${x.end}`,
         (x = cdnSegment('astring')) => `${x.begin}cdn.jsdelivr.net/npm/${
           x.nameVer}/dist/${x.name}${x.end}`,
         (x = cdnSegment('jsep')) => `${x.begin}cdn.jsdelivr.net/npm/${
@@ -51,4 +51,7 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
       ].map((x) => x()),
     },
   }),
+  ssri: {
+    algorithms: ['sha384'],
+  },
 });
