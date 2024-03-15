@@ -1,5 +1,11 @@
 # @userscript/flow-youtube-chat
 
+## 1.17.2
+
+### Patch Changes
+
+- 979598b: Fix ssri bug
+
 ## 1.17.1
 
 ### Patch Changes
