@@ -1,4 +1,3 @@
-import tapNonNull from '@userscript/tap-non-null';
 import {
   pipe,
 } from 'effect/Function';
@@ -46,6 +45,14 @@ export default (
     chat.querySelector('.yt-live-chat-paid-sticker-renderer'),
   ) : false;
 
+  const visibleBackgroundColor = (element: Element) => pipe(
+    window.getComputedStyle(
+      element,
+    ).getPropertyValue('background-color'),
+    O.liftPredicate((x) => x !== 'transparent'
+    && x !== 'rgba(0, 0, 0, 0)'),
+  );
+
   return {
     chatType,
     authorType: chat.querySelector('.owner') ? 'owner'
@@ -75,17 +82,33 @@ export default (
       O.map((x) => x.textContent ?? ''),
     ),
     paymentInfo,
-    textColor: O.fromNullable(isPaidNormal ? window.getComputedStyle(
-      tapNonNull(chat.querySelector('#header')),
-    ).getPropertyValue('background-color')
-    : isPaidSticker ? window.getComputedStyle(chat).getPropertyValue(
+    textColor: isPaidNormal ? pipe(
+      O.fromNullable(chat.querySelector('#header')),
+      O.flatMap(visibleBackgroundColor),
+      O.orElse(() => pipe(
+        O.fromNullable(chat.querySelector('#card')),
+        O.flatMap(visibleBackgroundColor),
+      )),
+      O.orElse(() => pipe(
+        O.fromNullable(chat.querySelector('#content')),
+        O.flatMap(visibleBackgroundColor),
+      )),
+    ) : isPaidSticker ? O.some(window.getComputedStyle(chat).getPropertyValue(
       '--yt-live-chat-paid-sticker-chip-background-color',
-    ) : undefined),
-    paidColor: O.fromNullable(isPaidNormal ? window.getComputedStyle(
-      tapNonNull(chat.querySelector('#content')),
-    ).getPropertyValue('background-color')
-    : isPaidSticker ? window.getComputedStyle(chat).getPropertyValue(
+    )) : O.none(),
+    paidColor: isPaidNormal ? pipe(
+      O.fromNullable(chat.querySelector('#content')),
+      O.flatMap(visibleBackgroundColor),
+      O.orElse(() => pipe(
+        O.fromNullable(chat.querySelector('#card')),
+        O.flatMap(visibleBackgroundColor),
+      )),
+      O.orElse(() => pipe(
+        O.fromNullable(chat.querySelector('#header')),
+        O.flatMap(visibleBackgroundColor),
+      )),
+    ) : isPaidSticker ? O.some(window.getComputedStyle(chat).getPropertyValue(
       '--yt-live-chat-paid-sticker-background-color',
-    ) : undefined),
+    )) : O.none(),
   };
 };
