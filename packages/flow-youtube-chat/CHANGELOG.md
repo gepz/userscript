@@ -1,5 +1,11 @@
 # @userscript/flow-youtube-chat
 
+## 1.17.4
+
+### Patch Changes
+
+- 0ecd233: Fix the color of superchats
+
 ## 1.17.3
 
 ### Patch Changes
