@@ -65,17 +65,16 @@ export default ({
   settingUpdateApps: BehaviorSubject<Dispatch<SettingState>[]>,
   provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>
 }): Z.Effect<unknown> => provideLog(pipe(
-  defaultGMConfig,
-  (gmConfig) => Z.succeed({
+  Z.succeed(defaultGMConfig),
+  Z.map((gmConfig) => ({
     gmConfig,
     updateSettingState: (
       dispatchable: Dispatchable<SettingState>,
     ): Z.Effect<void> => provideLog(pipe(
-      settingUpdateApps.value,
-      RA.map((x) => Z.sync(() => x(dispatchable))),
-      Z.all,
+      Z.succeed(settingUpdateApps.value),
+      Z.flatMap(Z.forEach((x) => Z.sync(() => x(dispatchable)))),
     )),
-  }),
+  })),
   // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* (_) {
     const config = yield* _(makeConfig(ctx.gmConfig));

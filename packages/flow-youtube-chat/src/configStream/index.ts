@@ -1,6 +1,4 @@
-import {
-  Cause,
-} from 'effect';
+import * as Cause from 'effect/Cause';
 import * as Z from 'effect/Effect';
 import {
   pipe,
