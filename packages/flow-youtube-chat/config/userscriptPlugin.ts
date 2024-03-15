@@ -51,7 +51,4 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
       ].map((x) => x()),
     },
   }),
-  ssri: {
-    algorithms: ['sha384'],
-  },
 });
