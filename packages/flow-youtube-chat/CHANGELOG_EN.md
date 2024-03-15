@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 * Nothing
 
+## 1.17.2
+
+### Fixed
+
+* Removed auto-generated SRIs to prevent future instability of external scripts from stopping the script from running and simply trust the CDNs.
+
 ## 1.17.1
 
 ### Fixed
