@@ -219,6 +219,11 @@ export default (
         ),
         live.settingsToggleNextElement.ele.pipe(
           Z.flatMap((x) => Z.sync(() => x.before(toggleSettingsPanelApp.node))),
+          Z.orElse(() => live.toggleChatBtnParent.ele.pipe(
+            Z.flatMap(() => Z.sync(() => toggleChatButtonApp.node.before(
+              toggleSettingsPanelApp.node,
+            ))),
+          )),
         ),
         live.settingsContainer.ele.pipe(
           Z.flatMap((x) => Z.sync(() => x.append(settingsApp.node))),

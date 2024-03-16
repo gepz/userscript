@@ -29,7 +29,7 @@ export default (
         cursor: 'pointer',
         float: 'left',
         fontSize: '1em',
-        height: '4em',
+        height: '100%',
         outline: 'none',
         overflow: 'visible',
         padding: '0 0 0em',
@@ -70,4 +70,3 @@ export default (
     ]),
   )),
 );
-

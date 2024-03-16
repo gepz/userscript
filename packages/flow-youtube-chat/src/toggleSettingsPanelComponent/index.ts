@@ -93,9 +93,10 @@ export default (
   (button): RootComponent<SettingState> => makeComponent(
     (tag) => (s: SettingState) => h(tag, {
       style: {
+        float: 'left',
         display: 'flex',
+        minHeight: '100%',
       },
     }, button(s)),
   )('span'),
 );
-

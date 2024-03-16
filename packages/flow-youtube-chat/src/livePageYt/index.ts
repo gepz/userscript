@@ -4,6 +4,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
+import * as RA from 'effect/ReadonlyArray';
 
 import LivePage from '@/LivePage';
 
@@ -23,21 +24,28 @@ const chatApp: Z.Effect<Element, Cause.NoSuchElementException> = pipe(
 
 export default ({
   toggleChatBtnParent: pipe(
-    Z.sync(() => document.querySelector('.ytp-right-controls')),
-    Z.flatMap(O.fromNullable),
+    Z.sync(() => Array.from(
+      document.querySelectorAll<HTMLElement>('.ytp-right-controls'),
+    )),
+    Z.flatMap(RA.findFirst((x) => x.offsetParent !== null)),
   ),
   settingsToggleNextElement: pipe(
     Z.sync(() => document.querySelector<HTMLElement>('#menu-container')),
-    Z.flatMap((container) => pipe(
-      O.fromNullable(container),
-      O.filter((x) => x.offsetParent !== null),
-      O.flatMapNullable((x) => x.querySelector(
-        '.dropdown-trigger.ytd-menu-renderer',
-      )),
-      O.orElse(() => O.fromNullable(document.querySelector(
-        '#top-row .dropdown-trigger.ytd-menu-renderer',
-      ))),
-    )),
+    Z.flatMap(Z.fromNullable),
+    Z.filterOrFail(
+      (x) => x.offsetParent !== null,
+      () => new Cause.NoSuchElementException(),
+    ),
+    Z.flatMap((x) => Z.fromNullable(x.querySelector<HTMLElement>(
+      '.dropdown-trigger.ytd-menu-renderer',
+    ))),
+    Z.orElse(() => Z.fromNullable(document.querySelector<HTMLElement>(
+      '#top-row .dropdown-trigger.ytd-menu-renderer',
+    ))),
+    Z.filterOrFail(
+      (x) => x.parentElement?.offsetParent !== null,
+      () => new Cause.NoSuchElementException(),
+    ),
   ),
   settingsContainer: pipe(
     Z.sync(() => document.body),
