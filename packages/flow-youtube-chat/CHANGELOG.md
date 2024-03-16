@@ -1,5 +1,11 @@
 # @userscript/flow-youtube-chat
 
+## 1.18.0
+
+### Minor Changes
+
+- d9b30b9: Make UI insertion more reliable: Make chat toggle button insertion more reliable. If the usual place to insert the UI settings panel toggle cannot be found, it will be added next to the chat toggle button if possible.
+
 ## 1.17.5
 
 ### Patch Changes
