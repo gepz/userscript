@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Nothing
 
+## [1.18.0] - 2023-03-16
+
+### Changed
+
+- UI insertion is now more reliable.
+    - Chat toggle button insertion is now more reliable.
+    - If the usual place to insert the settings panel toggle cannot be found, it will be added next to the chat toggle button if possible.
+
 ## [1.17.5] - 2023-03-16
 
 ### Fixed
