@@ -39,7 +39,7 @@ export default (
   style: {
     backgroundColor: 'rgba(30,30,30,0.9)',
     position: 'absolute',
-    zIndex: '1000',
+    zIndex: '66666',
     color: '#fff',
     fontSize: '14px',
     overflow: 'auto',
