@@ -62,8 +62,7 @@ export default (
       lane, interval,
     }) => pipe(
       intervalTooSmall(interval)(mainState.config.value)
-        ? pipe(
-          ctx.newChat.animation,
+        ? ctx.newChat.animation.pipe(
           Z.tap((x) => Z.sync(() => x.finish())),
           Z.map((): FlowChat => ({
             ...ctx.newChat,
@@ -77,6 +76,7 @@ export default (
       })),
     ),
   )),
+  Z.tap((x) => setChatPlayState(x.newChat)(mainState)),
   Z.flatMap((x) => O.match(x.oldChatIndex, {
     onNone: () => Z.succeed({
       newChat: x.newChat,
@@ -88,5 +88,4 @@ export default (
       Z.zipRight(Z.fail(new Cause.NoSuchElementException())),
     ),
   })),
-  Z.tap((x) => setChatPlayState(x.newChat)(mainState)),
 );
