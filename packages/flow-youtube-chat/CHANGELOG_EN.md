@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Nothing
 
+## [1.18.1] - 2023-03-18
+
+### Fixed
+
+- Fix a bug where the flow speed of a chat would reset when chat animation changed, typically when users adjust settings or when player size changes.
+
 ## [1.18.0] - 2023-03-16
 
 ### Changed
