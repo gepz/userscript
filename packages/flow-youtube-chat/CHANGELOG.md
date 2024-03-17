@@ -1,5 +1,11 @@
 # @userscript/flow-youtube-chat
 
+## 1.18.1
+
+### Patch Changes
+
+- Fix a bug where the flow speed of a chat would reset when chat animation changed, typically when users adjust settings or when player size changes.
+
 ## 1.18.0
 
 ### Minor Changes
