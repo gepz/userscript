@@ -40,10 +40,7 @@ export default (
          * (mainState.config.value.flowX2 - mainState.config.value.flowX1)
     }px, -${height * 2}px)`;
   })),
-  Z.filterOrFail(
-    () => !chat.animationEnded,
-    () => new Cause.NoSuchElementException(),
-  ),
+  Z.filterOrFail(() => !chat.animationEnded),
   Z.map((height) => ({
     newChat: {
       ...chat,

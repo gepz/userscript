@@ -3,13 +3,13 @@ import wrapApp from '@userscript/ui/wrapApp';
 import {
   BroadcastChannel,
 } from 'broadcast-channel';
+import * as Cause from 'effect/Cause';
 import * as D from 'effect/Duration';
 import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
 import * as LogLevel from 'effect/LogLevel';
-import * as O from 'effect/Option';
 import * as RA from 'effect/ReadonlyArray';
 import * as Schedule from 'effect/Schedule';
 import * as Str from 'effect/String';
@@ -99,9 +99,9 @@ export default ({
 
     const changedConfigMap = (
       key: keyof UserConfig,
-    ) => (val: never): Z.Effect<unknown, O.Option<never>> => pipe(
+    ) => (val: never): Z.Effect<unknown, Cause.NoSuchElementException> => pipe(
       Z.promise(async () => ctx.configValue[key]),
-      Z.filterOrFail((x) => !deepEq(x, val), O.none),
+      Z.filterOrFail((x) => !deepEq(x, val)),
       Z.flatMap(() => setConfigPlain[key](val)),
     );
 

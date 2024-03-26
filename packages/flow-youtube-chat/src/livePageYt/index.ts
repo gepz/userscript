@@ -32,20 +32,14 @@ export default ({
   settingsToggleNextElement: pipe(
     Z.sync(() => document.querySelector<HTMLElement>('#menu-container')),
     Z.flatMap(Z.fromNullable),
-    Z.filterOrFail(
-      (x) => x.offsetParent !== null,
-      () => new Cause.NoSuchElementException(),
-    ),
+    Z.filterOrFail((x) => x.offsetParent !== null),
     Z.flatMap((x) => Z.fromNullable(x.querySelector<HTMLElement>(
       '.dropdown-trigger.ytd-menu-renderer',
     ))),
     Z.orElse(() => Z.fromNullable(document.querySelector<HTMLElement>(
       '#top-row .dropdown-trigger.ytd-menu-renderer',
     ))),
-    Z.filterOrFail(
-      (x) => x.parentElement?.offsetParent !== null,
-      () => new Cause.NoSuchElementException(),
-    ),
+    Z.filterOrFail((x) => x.parentElement?.offsetParent !== null),
   ),
   settingsContainer: pipe(
     Z.sync(() => document.body),

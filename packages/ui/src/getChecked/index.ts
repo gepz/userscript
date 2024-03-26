@@ -1,6 +1,6 @@
 ﻿import {
   decodeUnknownSync,
-} from '@effect/schema/Parser';
+} from '@effect/schema/ParseResult';
 import {
   instanceOf,
 } from '@effect/schema/Schema';
@@ -10,4 +10,3 @@ export default (e: Event): boolean => decodeUnknownSync(
 )(
   e.currentTarget,
 ).checked;
-

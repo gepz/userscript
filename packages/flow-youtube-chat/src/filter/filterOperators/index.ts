@@ -7,12 +7,12 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
+import * as P from 'effect/Predicate';
 import * as RA from 'effect/ReadonlyArray';
 import * as Str from 'effect/String';
 import {
   Tail,
 } from 'ts-toolbelt/out/List/Tail';
-// import * as P from 'effect/Predicate';
 
 const inText = (text: string) => (
   x: string,
@@ -24,7 +24,7 @@ const eqText = (text: string) => (
 
 const matchedByText = (text: string) => (
   x: string,
-): boolean => Boolean(text.match(RegExp(x, 'u')));
+): boolean => P.isTruthy(text.match(RegExp(x, 'u')));
 
 const filterOperators = {
   flip,

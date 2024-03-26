@@ -2,6 +2,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
+import * as P from 'effect/Predicate';
 import * as RA from 'effect/ReadonlyArray';
 
 import ChatData from '@/ChatData';
@@ -37,13 +38,13 @@ export default (
     chat.querySelector<HTMLElement>('#message'),
   );
 
-  const isPaidNormal = O.isSome(paymentInfo) ? Boolean(chat.querySelector(
+  const isPaidNormal = O.isSome(paymentInfo) && P.isTruthy(chat.querySelector(
     '.yt-live-chat-paid-message-renderer',
-  )) : false;
+  ));
 
-  const isPaidSticker = (O.isSome(paymentInfo) && !isPaidNormal) ? Boolean(
+  const isPaidSticker = O.isSome(paymentInfo) && !isPaidNormal && P.isTruthy(
     chat.querySelector('.yt-live-chat-paid-sticker-renderer'),
-  ) : false;
+  );
 
   const visibleBackgroundColor = (element: Element) => pipe(
     window.getComputedStyle(

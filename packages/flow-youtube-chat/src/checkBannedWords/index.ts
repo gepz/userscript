@@ -1,4 +1,3 @@
-import * as Cause from 'effect/Cause';
 import * as Z from 'effect/Effect';
 import {
   pipe,
@@ -17,7 +16,6 @@ export default (
   Z.filterOrFail(
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     (x) => expEval.eval(config.filterExp, filterContext(x)) as boolean,
-    () => new Cause.NoSuchElementException(),
   ),
   Z.map((x) => [
     x.message,
