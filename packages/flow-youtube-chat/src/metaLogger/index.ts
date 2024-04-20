@@ -47,7 +47,7 @@ export default Logger.make<unknown, void>(({
       onNone: () => (
         LogLevel.greaterThanEqual(LogLevel.Warning)(logLevel)
           ? getConsoleLog(logLevel)(getStr())
-          : Z.unit),
+          : Z.void),
       onSome: (meta) => Z.sync(() => getConsoleLog(logLevel)(
         `${getStr()}: `,
         meta,
@@ -55,4 +55,3 @@ export default Logger.make<unknown, void>(({
     }),
   ),
 )));
-

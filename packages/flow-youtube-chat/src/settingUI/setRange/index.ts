@@ -2,7 +2,7 @@ import Editable, * as Ed from '@userscript/ui/Editable';
 import {
   pipe,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import {
   ConditionalKeys,
 } from 'type-fest';
@@ -41,7 +41,7 @@ export default (
     ],
     (xs) => (c: AppCommander) => pipe(
       xs,
-      RA.map((x) => x(c)),
+      A.map((x) => x(c)),
       (effects): SettingDispatchable => [
         {
           ...s,
@@ -53,4 +53,3 @@ export default (
     ),
   )(commander),
 );
-

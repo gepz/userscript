@@ -4,7 +4,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import hash from 'hash-it';
 import memoize from 'micro-memoize';
 
@@ -21,7 +21,7 @@ const getWidth = memoize(
   (ele: Element | null): number => ele?.getBoundingClientRect().width ?? 0,
   {
     maxSize: 2000,
-    transformKey: RA.map(hash),
+    transformKey: A.map(hash),
   },
 );
 
@@ -49,7 +49,7 @@ export default (
     } satisfies FlowChat,
     oldChatIndex: pipe(
       mainState.flowChats.value,
-      RA.findFirstIndex((x) => x === chat),
+      A.findFirstIndex((x) => x === chat),
     ),
     progress: getFlowChatProgress(chat.animation),
   })),
@@ -80,7 +80,7 @@ export default (
     }),
     onSome: (index) => pipe(
       Z.sync(() => mainState.flowChats.next(
-        RA.replace(mainState.flowChats.value, index, x.newChat),
+        A.replace(mainState.flowChats.value, index, x.newChat),
       )),
       Z.zipRight(Z.fail(new Cause.NoSuchElementException())),
     ),

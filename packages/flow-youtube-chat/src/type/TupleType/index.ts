@@ -4,7 +4,7 @@ import {
 import * as E from 'effect/Either';
 import * as N from 'effect/Number';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as RR from 'effect/ReadonlyRecord';
 import * as SEP from 'fp-ts/Separated';
 import {
@@ -55,7 +55,7 @@ export const targetLowerBound = (
     map: sourceConstraint,
   }) => (source.tag === target.tag ? pipe(
     target.value,
-    RA.reduceWithIndex<
+    A.reduceWithIndex<
     Type | RestType,
     SEP.Separated<readonly string[], readonly {
       index: number,
@@ -67,12 +67,12 @@ export const targetLowerBound = (
     }]), (indexA, {
       left: failures,
       right: sourceMatches,
-    }, targetType) => (RA.isEmpty(sourceMatches) ? SEP.separated(failures, [])
+    }, targetType) => (A.isEmpty(sourceMatches) ? SEP.separated(failures, [])
     : pipe(
       sourceMatches,
       targetType.tag === 'rest' ? flow(
-        RA.flatMap((match) => pipe(
-          RA.unfold<E.Either<string, {
+        A.flatMap((match) => pipe(
+          A.unfold<E.Either<string, {
             index: number,
             lowerBound: GenericMap,
           }>, O.Option<{
@@ -82,7 +82,7 @@ export const targetLowerBound = (
             O.some(match),
             flow(
               O.map((currentMatch) => pipe(
-                RA.lookup(currentMatch.index)(source.value),
+                A.lookup(currentMatch.index)(source.value),
                 E.fromOption(() => 'Source has too few elements'),
                 E.map((x) => f(targetConstraint)(targetType.value)(
                   sourceConstraint,
@@ -101,11 +101,11 @@ export const targetLowerBound = (
               )),
             ),
           ),
-          RA.prepend(E.right(match)),
+          A.prepend(E.right(match)),
         )),
       ) : flow(
-        RA.map((match) => pipe(
-          RA.lookup(match.index)(source.value),
+        A.map((match) => pipe(
+          A.lookup(match.index)(source.value),
           E.fromOption(() => 'Source has too few elements'),
           E.filterOrElse(
             (x): x is Type => x.tag !== 'rest',
@@ -118,22 +118,21 @@ export const targetLowerBound = (
           }))),
         )),
       ),
-      RA.separate,
+      A.separate,
       SEP.map((()),
-      SEP.map(RA.uniq(N.Ord)),
+      SEP.map(A.uniq(N.Ord)),
     ))),
     (result) => pipe(
       result.right,
-      RA.map(E.liftPredicate(
+      A.map(E.liftPredicate(
         (x) => x >= source.value.length,
         () => 'Source has too many elements',
       )),
-      RA.separate,
-      (x) => SEP.separated(RA.isEmpty(x.left) ? result.left : x.left, x.right),
+      A.separate,
+      (x) => SEP.separated(A.isEmpty(x.left) ? result.left : x.left, x.right),
     ),
-    O.liftPredicate((x) => RA.isEmpty(x.right)),
+    O.liftPredicate((x) => A.isEmpty(x.right)),
     O.map((x) => x.left[0]),
     O.map((x) => tapNonNull(x, 'Defect: Nothing is in the result')),
   ) : O.some(`Type ${source.tag} is not assignable to type ${target.tag}`))),
 );
-

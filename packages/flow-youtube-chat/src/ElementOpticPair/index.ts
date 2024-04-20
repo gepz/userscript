@@ -6,7 +6,7 @@ import * as O from 'effect/Option';
 import {
   Refinement,
 } from 'effect/Predicate';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 
 type ElementOpticPair<S, A> = {
   ele: A,
@@ -48,7 +48,7 @@ export const toArray = <S, A>(
   pair: ElementOpticPair<S, readonly A[]>,
 ): readonly ElementOpticPair<S, A>[] => pipe(
   pair.ele,
-  RA.map((e, i) => pipe(
+  A.map((e, i) => pipe(
     pair.opt.index(i),
     make(e),
   )),
@@ -63,4 +63,3 @@ export const some = <S, A>(
     opt: pair.opt.some(),
   })),
 );
-

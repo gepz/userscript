@@ -5,7 +5,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as P from 'effect/Predicate';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as Str from 'effect/String';
 import * as expEval from 'expression-eval';
 
@@ -23,9 +23,9 @@ const stringsArgs: [
   [],
   (x) => pipe(
     Str.split(x, /\r\n|\n/),
-    RA.filter(P.not(Str.isEmpty)),
+    A.filter(P.not(Str.isEmpty)),
   ),
-  RA.join('\n'),
+  A.join('\n'),
 ];
 
 const sc = <T extends GM.Value>(
@@ -92,22 +92,22 @@ const defaultGMConfig: GMConfig = pipe(
       'filterExp',
       expEval.parse(`
   or([
-  RA.some(
-    flip(flow([inText, RA.some]))(${JSON.stringify(x.bannedWords.defaultValue)})
-  )(RA.getSomes([
+  A.some(
+    flip(flow([inText, A.some]))(${JSON.stringify(x.bannedWords.defaultValue)})
+  )(A.getSomes([
     messageText,
     paymentInfo
   ])),
-  RA.some(
-    flip(flow([matchedByText, RA.some]))(${
+  A.some(
+    flip(flow([matchedByText, A.some]))(${
     JSON.stringify(x.bannedWordRegexes.defaultValue)
     })
-  )(RA.getSomes([
+  )(A.getSomes([
     messageText,
     paymentInfo
   ])),
   O.exists(
-    flip(flow([eqText, RA.some]))(${JSON.stringify(x.bannedUsers.defaultValue)})
+    flip(flow([eqText, A.some]))(${JSON.stringify(x.bannedUsers.defaultValue)})
   )(authorID)
   ])
         `),
@@ -129,14 +129,13 @@ export default defaultGMConfig;
 //   ],
 //   flow(
 //     S.split(','),
-//     RA.map(flow(
+//     A.map(flow(
 //       S.split(''),
-//       RA.map((x) => x === '1'),
+//       A.map((x) => x === '1'),
 //     )),
 //   ),
 //   flow(
-//     RA.map(RA.join('')),
-//     RA.join(','),
+//     A.map(A.join('')),
+//     A.join(','),
 //   ),
 // ),
-

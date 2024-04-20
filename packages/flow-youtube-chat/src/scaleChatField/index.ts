@@ -3,7 +3,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 
 import LivePageState from '@/LivePageState';
 
@@ -36,9 +36,8 @@ export default (
         })),
       ),
     ],
-    RA.getSomes,
+    A.getSomes,
     Z.all,
   )),
   Z.ignore,
 );
-

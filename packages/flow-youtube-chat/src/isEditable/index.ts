@@ -1,4 +1,4 @@
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
@@ -15,5 +15,4 @@ export default (
 ) => (typeof v === 'number'
  || typeof v === 'string'
  || (Array.isArray(v) && (typeof v[0] === 'string' || v.length === 0)))
- && !RA.some<string>((x) => x === k)(exceptions);
-
+ && !A.some<string>((x) => x === k)(exceptions);

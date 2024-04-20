@@ -1,7 +1,7 @@
 import {
   pipe,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export default <T1 extends {}, T2 extends {}>(
@@ -9,7 +9,6 @@ export default <T1 extends {}, T2 extends {}>(
 ) => (o: T1): T2 => pipe(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   Object.entries(o) as [(keyof T1), T1[keyof T1]][],
-  RA.map(f),
+  A.map(f),
   Object.fromEntries,
 );
-

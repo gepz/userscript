@@ -6,7 +6,7 @@ import * as O from 'effect/Option';
 import {
   mapInput,
 } from 'effect/Order';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import memoize from 'micro-memoize';
 
 import FlowChat from '@/FlowChat';
@@ -43,9 +43,9 @@ export default (
 
   const movingChats = pipe(
     flowChats,
-    RA.take(O.getOrElse(chatIndex, () => flowChats.length)),
-    RA.filter((chat) => !chat.animationEnded && chat.width > 0),
-    RA.sort(mapInput((x: FlowChat) => x.lane)(N.Order)),
+    A.take(O.getOrElse(chatIndex, () => flowChats.length)),
+    A.filter((chat) => !chat.animationEnded && chat.width > 0),
+    A.sort(mapInput((x: FlowChat) => x.lane)(N.Order)),
   );
 
   const tooCloseTo = memoize((x: FlowChat) => {
@@ -66,11 +66,11 @@ export default (
 
   const occupyInfo = pipe(
     movingChats,
-    RA.map((x) => ({
+    A.map((x) => ({
       tooClose: () => tooCloseTo(x),
       lane: x.lane,
     })),
-    RA.append({
+    A.append({
       tooClose: (): boolean => true,
       lane: config.laneCount,
     }),
@@ -78,22 +78,22 @@ export default (
 
   const index = pipe(
     occupyInfo,
-    RA.findFirstIndex((x) => x.lane >= flowChat.lane),
+    A.findFirstIndex((x) => x.lane >= flowChat.lane),
     O.getOrElse(() => -1),
   );
 
   const nextOccupiedLaneAbove = pipe(
     occupyInfo,
-    RA.take(index),
-    RA.findLast((x) => x.tooClose()),
+    A.take(index),
+    A.findLast((x) => x.tooClose()),
     O.map((x) => x.lane),
     O.getOrElse(() => -1),
   );
 
   const nextOccupiedLaneBelow = pipe(
     occupyInfo,
-    RA.drop(index),
-    RA.findFirst((x) => x.tooClose()),
+    A.drop(index),
+    A.findFirst((x) => x.tooClose()),
     O.map((x) => x.lane),
     O.getOrElse(() => config.laneCount),
   );
@@ -106,7 +106,7 @@ export default (
 
   return pipe(
     occupyInfo,
-    RA.reduce({
+    A.reduce({
       maxInterval: 0,
       maxIntervalLane: 0,
       lastLane: -1,
@@ -152,4 +152,3 @@ export default (
     }),
   );
 };
-

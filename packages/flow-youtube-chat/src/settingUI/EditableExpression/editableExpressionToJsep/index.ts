@@ -5,7 +5,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as expEval from 'expression-eval';
 
 import ArrayExpression from '@/settingUI/editableExpression/ArrayExpression';
@@ -42,7 +42,7 @@ const callExp = (
   arguments: pipe(
     exp.argument,
     O.map(f),
-    O.map(RA.of),
+    O.map(A.of),
     O.getOrElse<expEval.parse.Expression[]>(constant([])),
   ),
   callee: f(exp.callee),
@@ -68,7 +68,7 @@ const literalArray = (
   elements: pipe(
     exp.value,
     Ed.value,
-    RA.map(flow(
+    A.map(flow(
       (x): expEval.parse.Literal => ({
         type: 'Literal',
         value: x,
@@ -86,7 +86,7 @@ const arrayExp = (
   {
     type: exp.type,
     elements: pipe(
-      RA.map(f)(exp.elements),
+      A.map(f)(exp.elements),
     ),
   },
 );
@@ -98,7 +98,7 @@ const compound = (
 ): expEval.parse.Compound => pipe(
   {
     type: exp.type,
-    body: RA.map(f)(exp.body),
+    body: A.map(f)(exp.body),
   },
 );
 
@@ -113,4 +113,3 @@ const editableExpressionToJsep: JsepExpressionFunction = (
 : compound(editableExpressionToJsep)(x));
 
 export default editableExpressionToJsep;
-

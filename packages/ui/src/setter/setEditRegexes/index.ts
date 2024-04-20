@@ -1,9 +1,9 @@
-﻿import {
+﻿import * as A from 'effect/Array';
+import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as P from 'effect/Predicate';
-import * as RA from 'effect/ReadonlyArray';
 import * as Str from 'effect/String';
 import * as Tu from 'effect/Tuple';
 
@@ -17,12 +17,12 @@ const setEditRegexes: EditSetter<Editable<readonly string[]>> = (
 ) => pipe(
   value,
   Str.split(/\r\n|\n/),
-  RA.filter(P.not(Str.isEmpty)),
+  A.filter(P.not(Str.isEmpty)),
   (regexes) => ({
     regexes,
     errors: pipe(
       regexes,
-      RA.map((x, i) => {
+      A.map((x, i) => {
         try {
           RegExp(x, 'u');
           return O.none();
@@ -34,8 +34,8 @@ const setEditRegexes: EditSetter<Editable<readonly string[]>> = (
           );
         }
       }),
-      RA.getSomes,
-      RA.reduce('', (b, a) => `${b}\n${a}`),
+      A.getSomes,
+      A.reduce('', (b, a) => `${b}\n${a}`),
       O.liftPredicate(Str.isNonEmpty),
     ),
   }),
@@ -52,4 +52,3 @@ const setEditRegexes: EditSetter<Editable<readonly string[]>> = (
 );
 
 export default setEditRegexes;
-

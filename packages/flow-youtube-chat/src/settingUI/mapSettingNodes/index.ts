@@ -1,7 +1,7 @@
 import {
   pipe,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import {
   VNode,
 } from 'hyperapp';
@@ -15,7 +15,6 @@ export default <T>(
   xs: ((c: AppCommander) => (s: SettingState) => VNode<SettingState>)[],
 ) => (c: AppCommander) => (s: SettingState) => pipe(
   xs,
-  RA.map((x) => x(c)(s)),
+  A.map((x) => x(c)(s)),
   f,
 );
-

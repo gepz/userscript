@@ -60,7 +60,7 @@ export default (
           ctx.calleeResult.type.value[0][0].type,
           primitiveTupleUI(Primitive.boolean),
           O.exists((x) => x === UI.card),
-        ) ? RA.map((x) => h('div', {
+        ) ? A.map((x) => h('div', {
           style: panelBoxStyle(212),
         }, [x]))
         : identity,
@@ -75,4 +75,3 @@ export default (
   )),
   O.getOrElse<nodeFunction.Result<Type | ErrorType>>(() => errorResult(m)),
 );
-

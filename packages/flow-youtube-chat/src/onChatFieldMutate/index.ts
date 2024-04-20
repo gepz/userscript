@@ -6,7 +6,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 
 import MainState from '@/MainState';
 import addFlowChat from '@/addFlowChat';
@@ -22,9 +22,9 @@ export default (
 ) => (records: MutationRecord[]): Z.Effect<unknown> => pipe(
   Z.succeed(records),
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  Z.map(RA.flatMap((e) => (Array.from(e.addedNodes) as HTMLElement[]))),
-  Z.map(RA.filter((x) => x.children.length > 0)),
-  Z.map(RA.reverse),
+  Z.map(A.flatMap((e) => (Array.from(e.addedNodes) as HTMLElement[]))),
+  Z.map(A.filter((x) => x.children.length > 0)),
+  Z.map(A.reverse),
   Z.flatMap(Z.forEach((chat) => pipe(
     Z.succeed({
       data: parseChat(chat),
@@ -42,7 +42,7 @@ export default (
         Z.when(() => ctx.config.value.createChats
         && ctx.data.chatType === 'normal' && !pipe(
           mainState.flowChats.value,
-          RA.some((x) => !x.animationEnded
+          A.some((x) => !x.animationEnded
           && ctx.eq(x.data.authorID, ctx.data.authorID)
           && ctx.eq(x.data.messageText, ctx.data.messageText)
           && ctx.eq(x.data.timestamp, ctx.data.timestamp)),

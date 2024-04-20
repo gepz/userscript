@@ -4,7 +4,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 
 import LivePage from '@/LivePage';
 
@@ -27,7 +27,7 @@ export default ({
     Z.sync(() => Array.from(
       document.querySelectorAll<HTMLElement>('.ytp-right-controls'),
     )),
-    Z.flatMap(RA.findFirst((x) => x.offsetParent !== null)),
+    Z.flatMap(A.findFirst((x) => x.offsetParent !== null)),
   ),
   settingsToggleNextElement: pipe(
     Z.sync(() => document.querySelector<HTMLElement>('#menu-container')),

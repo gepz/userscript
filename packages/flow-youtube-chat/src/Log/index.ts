@@ -3,7 +3,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as logLevel from 'effect/LogLevel';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import {
   compressToUTF16,
   decompressFromUTF16,
@@ -37,7 +37,7 @@ type LogExportBlock = string;
 
 type LogExport = {
   nextId: number,
-  blocks: RA.NonEmptyReadonlyArray<LogExportBlock>,
+  blocks: A.NonEmptyReadonlyArray<LogExportBlock>,
 };
 
 export const decompressBlock = (x: CompressedLogBlock): LogBlock => pipe(
@@ -49,9 +49,9 @@ export const exportLog = (x: Log): string => `<pre>${JSON.stringify({
   nextId: x.nextId,
   blocks: pipe(
     x.compressedBlocks,
-    RA.map(decompressFromUTF16),
-    RA.append(JSON.stringify(x.lastBlock)),
-    RA.map(compressToEncodedURIComponent),
+    A.map(decompressFromUTF16),
+    A.append(JSON.stringify(x.lastBlock)),
+    A.map(compressToEncodedURIComponent),
   ),
 } satisfies LogExport)}</pre>`;
 
@@ -63,14 +63,14 @@ export const importLog = (s: string): Log => makeLog(pipe(
     nextId: log.nextId,
     ...pipe(
       log.blocks,
-      RA.map(decompressFromEncodedURIComponent),
-      RA.matchRight({
+      A.map(decompressFromEncodedURIComponent),
+      A.matchRight({
         onEmpty: () => ({
           compressedBlocks: [],
           lastBlock: [],
         }),
         onNonEmpty: (init, last) => ({
-          compressedBlocks: RA.map(
+          compressedBlocks: A.map(
             init,
             (x) => pipe(
               compressToUTF16(x),
@@ -105,7 +105,7 @@ export const removeBlock = (
     compressedBlocks: log.compressedBlocks,
   } : {
     lastBlock: log.lastBlock,
-    compressedBlocks: RA.remove(log.compressedBlocks, i),
+    compressedBlocks: A.remove(log.compressedBlocks, i),
   }),
 }));
 
@@ -116,13 +116,13 @@ export const append = (
   nextId: log.nextId + 1,
   ...pipe(
     log.lastBlock,
-    RA.append({
+    A.append({
       id: log.nextId,
       text,
       level,
     }),
     (x) => (x.length === blockSize ? {
-      compressedBlocks: RA.append(
+      compressedBlocks: A.append(
         log.compressedBlocks,
         makeCompressedLogBlock(compressToUTF16(JSON.stringify(x))),
       ),
@@ -133,4 +133,3 @@ export const append = (
     }),
   ),
 });
-

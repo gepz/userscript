@@ -3,7 +3,7 @@ import {
   flow,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import {
   omit,
 } from 'effect/Struct';
@@ -35,24 +35,24 @@ export default (
   pair,
   EOP.prop('elements'),
   EOP.toArray,
-  RA.map((e, i) => (
+  A.map((e, i) => (
     et: Type,
   ) => (
     m: GenericMap,
   ) => nodeF(et)(global)(m)(commander)(e)),
-  RA.reduce(pipe(
+  A.reduce(pipe(
     expectedType,
-    RA.liftPredicate((x): x is TupleType => x.tag === 'tuple'),
-    RA.map((x) => x.value),
-    RA.filter(RA.isNonEmptyArray),
-    RA.append<RA.NonEmptyReadonlyArray<Type | RestType>>(
+    A.liftPredicate((x): x is TupleType => x.tag === 'tuple'),
+    A.map((x) => x.value),
+    A.filter(A.isNonEmptyArray),
+    A.append<A.NonEmptyReadonlyArray<Type | RestType>>(
       [restType.of(unknownType.unknown)] as const,
     ),
-    RA.map((x): {
+    A.map((x): {
       types: (Type | ErrorType)[],
       nodes: VNode<SettingState>[],
       typeMap: GenericMap,
-      expectedTupleTypes: RA.NonEmptyReadonlyArray<Type | RestType>,
+      expectedTupleTypes: A.NonEmptyReadonlyArray<Type | RestType>,
     } => ({
       types: [],
       nodes: [],
@@ -61,17 +61,17 @@ export default (
     })),
   ), (matches, elementFn) => pipe(
     matches,
-    RA.flatMap((match) => pipe(
+    A.flatMap((match) => pipe(
       match.expectedTupleTypes,
-      RA.matchLeft(() => [5], (first, rest) => (first.tag === 'rest' ? ([
+      A.matchLeft(() => [5], (first, rest) => (first.tag === 'rest' ? ([
         first.value,
         [rest, match.expectedTupleTypes],
       ] as const) : ([first, [rest]] as const))),
       ([firstType, restTypesList]) => pipe(
         restTypesList,
-        RA.filter(RA.isNonEmptyArray),
-        RA.match(() => [], (() => flow(
-          RA.map(pipe(
+        A.filter(A.isNonEmptyArray),
+        A.match(() => [], (() => flow(
+          A.map(pipe(
             elementFn(replaceVarType(match.typeMap)(firstType))(match.typeMap),
             (x) => (restTypes) => ({
               types: [...match.types, x.type],
@@ -84,11 +84,11 @@ export default (
       ),
     )),
   )),
-  RA.head,
+  A.head,
   O.map(omit(['expectedTupleTypes'])),
   O.map((ctx) => pipe(
     ctx.types,
-    O.liftPredicate(RA.every((x): x is Type => x.tag !== 'error')),
+    O.liftPredicate(A.every((x): x is Type => x.tag !== 'error')),
     O.match({
       onNone: () => errorType.error,
       onSome: tupleType.of,
@@ -101,4 +101,3 @@ export default (
   )),
   O.getOrElse(() => errorResult(map)),
 );
-

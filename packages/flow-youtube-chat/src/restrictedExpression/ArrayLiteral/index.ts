@@ -2,7 +2,7 @@ import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as expEval from 'expression-eval';
 
 import TaggedValue, {
@@ -27,7 +27,7 @@ export const fromJsExp = (
   f: ExpressionFromJsExp,
 ): Z.Effect<ArrayLiteral, string> => pipe(
   exp.elements,
-  RA.map(f),
+  A.map(f),
   (x) => x,
   Z.all,
   Z.bindTo('elements'),
@@ -40,7 +40,7 @@ export const toJsExp = ({
   f: JsExpFromExpression,
 ): expEval.parse.ArrayExpression => pipe({
   type: 'ArrayExpression',
-  elements: RA.map(f)(value.elements),
+  elements: A.map(f)(value.elements),
 });
 
 export const fromTypedExp = ({
@@ -49,10 +49,9 @@ export const fromTypedExp = ({
   f: ExpressionFromTypedExp,
 ): ArrayLiteral => pipe(
   {
-    elements: RA.map(f)(value.elements),
+    elements: A.map(f)(value.elements),
   },
   of,
 );
 
 export default ArrayLiteral;
-

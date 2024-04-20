@@ -4,7 +4,7 @@ import {
   flow,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 
 import mapObject from '@/mapObject';
 import Primitive from '@/type/Primitive';
@@ -14,7 +14,7 @@ import UI from '@/type/UI';
 import chainOptionElse from '@/chainOptionElse';
 
 const simplifyTypeForLog = (obj: unknown): unknown => pipe(
-  Array.isArray(obj) ? RA.map(simplifyTypeForLog)(obj)
+  Array.isArray(obj) ? A.map(simplifyTypeForLog)(obj)
   : typeof obj === 'object' && obj !== null ? pipe(
     obj,
     E.right,
@@ -24,7 +24,7 @@ const simplifyTypeForLog = (obj: unknown): unknown => pipe(
       } => 'tag' in x && Object.keys(x).length === 2),
       O.flatMap((o) => pipe(
         Object.entries(o),
-        RA.findFirst(([k]) => k !== 'tag'),
+        A.findFirst(([k]) => k !== 'tag'),
         O.map(([, v]) => ({
         // eslint-disable-next-line max-len
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -87,4 +87,3 @@ const simplifyTypeForLog = (obj: unknown): unknown => pipe(
 );
 
 export default simplifyTypeForLog;
-

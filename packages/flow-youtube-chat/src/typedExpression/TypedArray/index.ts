@@ -5,7 +5,7 @@ import * as I from '@effect/typeclass/data/Identity';
 import {
   pipe,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 
 import TaggedValue, {
   makeType,
@@ -31,17 +31,16 @@ export const fromExp = ({
   expected,
 }: { expected: Type }): TypedArray => pipe(
   value.elements,
-  RA.map((x) => f(x)(expected)),
+  A.map((x) => f(x)(expected)),
   (elements) => ({
     elements,
   }),
   bind(I.Chainable)('expected', () => expected),
   (ctx) => bind(I.Chainable)(ctx, 'synthed', (c) => tupleType.of(pipe(
     c.elements,
-    RA.map((x) => x.value.synthed),
+    A.map((x) => x.value.synthed),
   ))),
   of,
 );
 
 export default TypedArray;
-

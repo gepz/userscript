@@ -1,8 +1,8 @@
-﻿import {
+﻿import * as A from 'effect/Array';
+import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
 import {
   h,
   VNode,
@@ -33,7 +33,7 @@ export default <T>(
 }, [
   h('div', {}, pipe(
     labels,
-    RA.map((x, i) => h('span', {
+    A.map((x, i) => h('span', {
       style: {
         ...style.label,
         ...(mainTab === i ? style.labelFocus : {}),
@@ -50,11 +50,10 @@ export default <T>(
     },
   }, pipe(
     tabs,
-    RA.get(mainTab),
+    A.get(mainTab),
     O.match({
       onNone: () => undefined,
       onSome: (x) => x(),
     }),
   )),
 ]);
-

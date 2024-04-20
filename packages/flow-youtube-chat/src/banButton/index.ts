@@ -2,7 +2,7 @@ import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as Str from 'effect/String';
 
 import UserConfigGetter from '@/UserConfigGetter';
@@ -51,8 +51,8 @@ export default (
   getConfig.bannedUsers,
   Z.filterOrFail((x): boolean => !x.includes(id)),
   Z.map((x) => pipe(
-    RA.dedupeWith(x, Str.Equivalence),
-    RA.append(id),
+    A.dedupeWith(x, Str.Equivalence),
+    A.append(id),
   )),
   Z.flatMap((x) => pipe(
     setConfig.bannedUsers(x),

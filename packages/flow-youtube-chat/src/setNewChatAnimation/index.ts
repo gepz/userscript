@@ -3,7 +3,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as tuple from 'effect/Tuple';
 
 import FlowChat from '@/FlowChat';
@@ -28,7 +28,7 @@ export default (
   Z.tap((newChat) => pipe(
     newChat.animation,
     O.match(({
-      onNone: () => Z.unit,
+      onNone: () => Z.void,
       onSome: (x) => Z.sync(() => x.cancel()),
     })),
   )),
@@ -46,12 +46,12 @@ export default (
     ] as const),
     Z.map(pipe(
       (x: number) => `${x}px`,
-      (x) => RA.map(tuple.mapBoth({
+      (x) => A.map(tuple.mapBoth({
         onFirst: x,
         onSecond: x,
       })),
     )),
-    Z.map(RA.map(([x, y]) => ({
+    Z.map(A.map(([x, y]) => ({
       transform: `translate(${x}, ${y})`,
     }))),
     Z.flatMap((x) => Z.sync(() => newChat.element.animate(x, {

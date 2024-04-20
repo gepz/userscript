@@ -4,7 +4,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import {
   h,
   text,
@@ -68,16 +68,16 @@ export default (
             padding: '6px',
           },
         })((_, n) => updateAt('logTab')(n)(c))(pipe(
-          RA.makeBy(logPageCount, (x) => `${x}`),
+          A.makeBy(logPageCount, (x) => `${x}`),
         ))(pipe(
           getState('eventLog')(s),
-          (l) => RA.makeBy(
+          (l) => A.makeBy(
             logPageCount,
             (i) => () => pipe(
-              RA.get(l.compressedBlocks, i),
+              A.get(l.compressedBlocks, i),
               O.map(log.decompressBlock),
               O.getOrElse(() => l.lastBlock),
-              RA.map((x, j) => h('div', {
+              A.map((x, j) => h('div', {
                 style: {
                   display: 'flex',
                 },

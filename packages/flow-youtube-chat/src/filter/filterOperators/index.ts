@@ -8,7 +8,7 @@ import {
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as P from 'effect/Predicate';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as Str from 'effect/String';
 import {
   Tail,
@@ -32,8 +32,8 @@ const filterOperators = {
   and: MonoidEvery.combineAll,
   or: MonoidSome.combineAll,
   RA: {
-    some: RA.some,
-    getSomes: RA.getSomes,
+    some: A.some,
+    getSomes: A.getSomes,
   },
   O: {
     exists: O.exists,

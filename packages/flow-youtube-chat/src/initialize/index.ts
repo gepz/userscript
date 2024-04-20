@@ -10,7 +10,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as LogLevel from 'effect/LogLevel';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as Schedule from 'effect/Schedule';
 import * as Str from 'effect/String';
 import deepEq from 'fast-deep-equal';
@@ -223,10 +223,10 @@ export default ({
                   'bannedUsers',
                   'bannedWordRegexes',
                 ] as const,
-                RA.containsWith(Str.Equivalence)(k),
+                A.containsWith(Str.Equivalence)(k),
                 (x) => (x ? ctx.mainState.config.setConfig.filterExp(
                   defaultFilter(ctx.mainState.config.value),
-                ) : Z.unit),
+                ) : Z.void),
               )),
               (x) => Z.sync(
                 () => setTimeout(() => Z.runPromise(provideLog(x)), 0),

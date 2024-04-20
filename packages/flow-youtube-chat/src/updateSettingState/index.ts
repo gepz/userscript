@@ -2,7 +2,7 @@ import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import {
   Dispatch,
   Dispatchable,
@@ -16,7 +16,6 @@ export default (
   dispatchable: Dispatchable<SettingState>,
 ): Z.Effect<void> => pipe(
   apps,
-  RA.map((x) => Z.sync(() => x(dispatchable))),
+  A.map((x) => Z.sync(() => x(dispatchable))),
   Z.all,
 );
-

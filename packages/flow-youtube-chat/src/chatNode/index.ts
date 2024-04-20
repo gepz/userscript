@@ -2,7 +2,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as Str from 'effect/String';
 import {
   html,
@@ -46,7 +46,7 @@ const parseMessage = (
 
   return pipe(
     Array.from(message.childNodes),
-    RA.reduce(initResult, ({
+    A.reduce(initResult, ({
       vnodes,
       length,
     }, node) => (length >= maxChatLength ? {
@@ -164,6 +164,6 @@ export default (
         }></strong> ${text.trim()}</span>`),
       ),
     ],
-    RA.getSomes,
+    A.getSomes,
   )}</span>`,
 );
