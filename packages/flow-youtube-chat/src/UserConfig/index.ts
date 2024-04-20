@@ -2,7 +2,7 @@ import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 
 import GMConfig from '@/GMConfig';
 import GMConfigItem from '@/GMConfigItem';
@@ -18,7 +18,7 @@ export const makeConfig = (
 ): Z.Effect<UserConfig> => pipe(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   Object.entries(config) as [(keyof GMConfig), GMConfig[keyof GMConfig]][],
-  RA.map(([k, c]) => c.getValue.pipe(
+  A.map(([k, c]) => c.getValue.pipe(
     Z.map((x: UserConfig[keyof GMConfig]) => [k, x] as const),
   )),
   Z.all,
@@ -27,4 +27,3 @@ export const makeConfig = (
   UserConfig
   >(Object.fromEntries),
 );
-

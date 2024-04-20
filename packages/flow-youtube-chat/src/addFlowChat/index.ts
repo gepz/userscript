@@ -3,7 +3,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 
 import ChatData from '@/ChatData';
 import FlowChat from '@/FlowChat';
@@ -34,10 +34,10 @@ export default (
   (x: FlowChat) => getChatLane(x, O.none(), 0)(mainState).interval,
   intervalTooSmall,
   (x) => x(mainState.config.value),
-) ? Z.unit
+) ? Z.void
 : pipe(
   mainState.flowChats.value,
-  RA.findFirstIndex((chat) => chat.animationEnded
+  A.findFirstIndex((chat) => chat.animationEnded
     || mainState.flowChats.value.length
     >= mainState.config.value.maxChatCount),
   O.match({
@@ -51,14 +51,14 @@ export default (
       // eslint-disable-next-line func-names
       Z.gen(function* (_) {
         const chats = mainState.flowChats;
-        const chat = RA.unsafeGet(chats.value, index);
+        const chat = A.unsafeGet(chats.value, index);
 
         yield* _(chat.animation.pipe(
           Z.flatMap((animation) => Z.sync(() => animation.cancel())),
           Z.ignore,
         ));
 
-        chats.next(RA.remove(chats.value, index));
+        chats.next(A.remove(chats.value, index));
         return chat.element;
       }),
     ),
@@ -83,7 +83,7 @@ export default (
         Z.zipLeft(Z.logDebug('Flow chat element removed')),
       ),
       onSuccess: (x) => Z.sync(() => mainState.flowChats.next(
-        RA.append(mainState.flowChats.value, x.newChat),
+        A.append(mainState.flowChats.value, x.newChat),
       )),
     }),
   )),

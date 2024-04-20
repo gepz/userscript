@@ -6,23 +6,22 @@ export default (
   config: UserConfig,
 ): expEval.parse.Expression => expEval.parse(`
 or([
-RA.some(
-  flip(flow([inText, RA.some]))(${JSON.stringify(config.bannedWords)})
-)(RA.getSomes([
+A.some(
+  flip(flow([inText, A.some]))(${JSON.stringify(config.bannedWords)})
+)(A.getSomes([
   messageText,
   paymentInfo
 ])),
-RA.some(
-  flip(flow([matchedByText, RA.some]))(${
+A.some(
+  flip(flow([matchedByText, A.some]))(${
   JSON.stringify(config.bannedWordRegexes)
 })
-)(RA.getSomes([
+)(A.getSomes([
   messageText,
   paymentInfo
 ])),
 O.exists(
-  flip(flow([eqText, RA.some]))(${JSON.stringify(config.bannedUsers)})
+  flip(flow([eqText, A.some]))(${JSON.stringify(config.bannedUsers)})
 )(authorID)
 ])
 `);
-

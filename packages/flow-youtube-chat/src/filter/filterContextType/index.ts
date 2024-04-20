@@ -1,7 +1,7 @@
 import {
   pipe,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 
 import filterContext from '@/filter/filterContext';
 import filterOperators from '@/filter/filterOperators';
@@ -18,18 +18,18 @@ const withUnknowns = (n: number) => <T extends Type>(
   param: T,
 ): functionType.ParamType => ({
   map: {
-    ...RA.replicate(n, unknownType.unknown),
+    ...A.replicate(n, unknownType.unknown),
   },
   type: param,
 });
 
 const makeFunc = (
-  params: RA.NonEmptyReadonlyArray<functionType.ParamType | Type>,
+  params: A.NonEmptyReadonlyArray<functionType.ParamType | Type>,
 ) => (
   returnType: functionType.FinalReturnType,
 ): FunctionType => pipe(
   params,
-  RA.map((x) => ('map' in x ? x : functionType.paramOf(x))),
+  A.map((x) => ('map' in x ? x : functionType.paramOf(x))),
   (x) => functionType.of([
     x,
     returnType,

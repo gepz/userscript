@@ -7,7 +7,7 @@ import {
   constant,
   flip,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import {
   h,
   text,
@@ -66,8 +66,8 @@ export default (
       )(c),
     }, pipe(
       languages,
-      RA.zip(languageLabels),
-      RA.map(([lang, label]) => option(
+      A.zip(languageLabels),
+      A.map(([lang, label]) => option(
         lang,
         label,
         lang === state.lang,
@@ -94,8 +94,8 @@ export default (
       'chatField',
       'feedback',
     ] as const,
-    RA.map(getText),
-    RA.map(apply(state)),
+    A.map(getText),
+    A.map(apply(state)),
   ))(pipe(
     [
       flowChatPanel,
@@ -103,9 +103,9 @@ export default (
       chatFieldPanel,
       feedbackPanel,
     ] as const,
-    RA.map(apply(c)),
-    RA.map(constant),
-    RA.map(flip),
-    RA.map(apply(state)),
+    A.map(apply(c)),
+    A.map(constant),
+    A.map(flip),
+    A.map(apply(state)),
   ))(getState('mainTab')(state)),
 ]) : h('div', {}));

@@ -13,7 +13,7 @@ import {
   pipe,
   flow,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as RR from 'effect/ReadonlyRecord';
 
 import TaggedValue, {
@@ -53,7 +53,7 @@ export const resolveUnion = <T>(
   f: (x: Exclude<Type, UnionType>) => T,
 ) => (x: Type): T => (x.tag === 'union' ? pipe(
   x.value,
-  RA.map(f),
+  A.map(f),
   concatAll(m),
 ) : f(x));
 
@@ -74,4 +74,3 @@ export const targetLowerBound = (
     O.map((s) => `Type ${s.tag} is not assignable to type ${target.type.tag}`),
   )),
 );
-

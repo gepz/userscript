@@ -1,7 +1,7 @@
 import {
   pipe,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import {
   Subject,
 } from 'rxjs';
@@ -18,7 +18,6 @@ export const makeSubject = (
   configKeys: (keyof UserConfig)[],
 ): ConfigSubject => pipe(
   configKeys,
-  RA.map((x) => [x, new Subject()]),
+  A.map((x) => [x, new Subject()]),
   Object.fromEntries,
 );
-

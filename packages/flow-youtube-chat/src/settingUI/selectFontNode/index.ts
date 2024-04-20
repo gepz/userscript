@@ -6,7 +6,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import {
   h,
   VNode,
@@ -33,16 +33,16 @@ export default (
       onchange: updateInput('font')(setEditString(false))(c),
     }, pipe(
       fonts(font),
-      RA.findFirstIndex((x) => x[0] === font),
+      A.findFirstIndex((x) => x[0] === font),
       O.getOrElse(() => 0),
       (index) => pipe(
         fonts(font),
-        RA.map((f, i) => option(
+        A.map((f, i) => option(
           f[0],
           pipe(
             languages,
-            RA.findFirstIndex((x) => x === s.lang),
-            O.map((x) => RA.unsafeGet(x + 1)(f)),
+            A.findFirstIndex((x) => x === s.lang),
+            O.map((x) => A.unsafeGet(x + 1)(f)),
             O.getOrElse(() => 'Error'),
           ),
           i === index,
@@ -57,4 +57,3 @@ export default (
     }),
   ]),
 );
-

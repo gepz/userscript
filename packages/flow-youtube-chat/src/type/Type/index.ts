@@ -7,7 +7,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 
 import AssignGenericFunction from '@/type/AssignGenericFunction';
 import FunctionType, * as functionType from '@/type/FunctionType';
@@ -75,7 +75,7 @@ const semigroup = (
       ...(a.tag === 'union' ? a.value : [a]),
       ...(b.tag === 'union' ? b.value : [b]),
     ],
-    RA.uniq({
+    A.uniq({
       equals: flow(
         (x, y) => [typeWithMap.of(x), typeWithMap.of(y)] as const,
         ([x, y]) => pipe(
@@ -89,7 +89,7 @@ const semigroup = (
     (u) => pipe(
       u.value,
       O.liftPredicate((x): x is [Exclude<Type, UnionType>] => x.length === 1),
-      O.map(RA.headNonEmpty),
+      O.map(A.headNonEmpty),
       O.getOrElse(() => u),
     ),
   ),
@@ -117,4 +117,3 @@ const targetLowerBound: TargetLowerBoundFunc<Type> = ({
   )(map)(type)
   : () => O.none,
 );
-

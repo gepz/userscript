@@ -17,7 +17,7 @@ import {
 } from 'effect/Function';
 import * as LogLevel from 'effect/LogLevel';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import {
   Dispatchable,
 } from 'hyperapp';
@@ -173,7 +173,7 @@ export default (
             Z.flatMap(Z.logDebug),
             Z.isSuccess,
           ))),
-          Z.map(RA.some<boolean>(identity)),
+          Z.map(A.some<boolean>(identity)),
         )))),
         filter(identity),
         map(() => index),
@@ -262,7 +262,7 @@ export default (
       ),
       ...pipe(
         configKeys,
-        RA.map((key) => pipe(
+        A.map((key) => pipe(
           // eslint-disable-next-line max-len
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           (co[key] as Subject<unknown>),
@@ -286,7 +286,7 @@ export default (
               Z.sync(() => mainState.chatPlaying.next(chatPlaying)),
               Z.zipRight(pipe(
                 Z.succeed(mainState.flowChats.value),
-                Z.map(RA.map(setChatPlayState)),
+                Z.map(A.map(setChatPlayState)),
                 Z.flatMap(Z.forEach(apply(mainState))),
               )),
             )),
@@ -324,7 +324,7 @@ export default (
         map(() => live.player.ele.pipe(
           O.map((x) => x.getBoundingClientRect()),
           O.match({
-            onNone: () => Z.unit,
+            onNone: () => Z.void,
             onSome: (x) => onPlayerResize(x, mainState),
           }),
         )),

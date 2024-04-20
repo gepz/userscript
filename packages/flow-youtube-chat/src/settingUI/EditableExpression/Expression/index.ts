@@ -4,7 +4,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as expEval from 'expression-eval';
 
 // eslint-disable-next-line max-len
@@ -63,7 +63,7 @@ const callExp = (
   O.some,
   O.bind('argument', () => pipe(
     exp.arguments,
-    RA.head,
+    A.head,
     O.map(f),
   )),
   O.bind('callee', () => f(exp.callee)),
@@ -84,10 +84,10 @@ const arrayExp = (
   exp.elements,
   (elements) => pipe(
     elements,
-    O.liftPredicate(RA.every((
+    O.liftPredicate(A.every((
       x,
     ): x is expEval.parse.Literal => x.type === 'Literal')),
-    O.filter(RA.every((
+    O.filter(A.every((
       x,
     ): x is {
       type: 'Literal';
@@ -98,7 +98,7 @@ const arrayExp = (
       type: 'LiteralArray',
       value: Ed.of(pipe(
         es,
-        RA.map((x) => x.value),
+        A.map((x) => x.value),
       )),
     })),
     (x) => (O.isSome(x) ? x : pipe(
@@ -108,7 +108,7 @@ const arrayExp = (
       O.some,
       O.bind('elements', () => pipe(
         elements,
-        RA.map(f),
+        A.map(f),
         O.sequenceArray,
       )),
     )),
@@ -126,7 +126,7 @@ const compound = (
   O.some,
   O.bind('body', () => pipe(
     exp.body,
-    RA.map(f),
+    A.map(f),
     O.sequenceArray,
   )),
 );
@@ -155,4 +155,3 @@ export const fromJsepExp: ExpressionFunctoin = (
 : isExpType('ArrayExpression')(x) ? arrayExp(fromJsepExp)(x)
 : isExpType('Compound')(x) ? compound(fromJsepExp)(x)
 : O.none());
-

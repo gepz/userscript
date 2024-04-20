@@ -4,7 +4,7 @@ import {
   pipe,
   apply,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import {
   merge,
   map,
@@ -131,7 +131,7 @@ export default (
     }) satisfies ChatUpdateConfig),
     tapEffect((c) => provideLog(pipe(
       Z.succeed(mainState.flowChats.value),
-      Z.map(RA.filter((x) => !x.animationEnded)),
+      Z.map(A.filter((x) => !x.animationEnded)),
       Z.flatMap(Z.forEach((chat) => pipe(
         Z.allSuccesses([
           c.render ? Z.succeed(renderChat(chat))

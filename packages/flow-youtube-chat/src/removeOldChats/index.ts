@@ -6,7 +6,7 @@ import {
 import {
   mapInput,
 } from 'effect/Order';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import {
   BehaviorSubject,
 } from 'rxjs';
@@ -19,8 +19,8 @@ export default (
   maxChatCount: number,
 ): Z.Effect<void> => pipe(
   Z.sync(() => flowChats.value),
-  Z.map(RA.sort(mapInput((x: FlowChat) => !x.animationEnded)(B.Order))),
-  Z.map((x) => RA.splitAt(x, x.length - maxChatCount)),
+  Z.map(A.sort(mapInput((x: FlowChat) => !x.animationEnded)(B.Order))),
+  Z.map((x) => A.splitAt(x, x.length - maxChatCount)),
   Z.flatMap(([oldChats, newChats]) => pipe(
     oldChats,
     Z.forEach((x) => pipe(

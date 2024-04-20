@@ -41,7 +41,7 @@ export default merge(
             format: {
               comments: false,
               ecma: 2020,
-              semicolons: false,
+              semicolons: true,
               preamble: fs.readFileSync(
                 path.join(__dirname, './userscript_header.js'),
               ).toString(),

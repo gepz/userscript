@@ -72,13 +72,13 @@ const flowChatPanel: (
         checkboxNode('noOverlap'),
         // ...pipe(
         //   state.displayMatrix,
-        //   RA.map(RA.map((y) => h<SettingState>('span', {
+        //   A.map(A.map((y) => h<SettingState>('span', {
         //     style: {
         //       background: y ? '#000' : '#333',
         //       color: y ? '#fff' : '#999',
         //     },
         //   }, text(y)))),
-        //   RA.map((x) => h('div', {
+        //   A.map((x) => h('div', {
         //     style: {
         //       display: 'grid',
         //       gridTemplateColumns: '1fr 1fr 1fr',
@@ -96,4 +96,3 @@ const flowChatPanel: (
 );
 
 export default flowChatPanel;
-

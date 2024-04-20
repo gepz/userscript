@@ -5,7 +5,7 @@ import {
   compose,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as RR from 'effect/ReadonlyRecord';
 import * as Tu from 'effect/Tuple';
 import {
@@ -50,7 +50,7 @@ const replaceVarType = (
         type.value[1],
         r,
         (returnType) => (returnType.tag === 'func' ? functionType.of([
-          RA.appendAll(pipe(
+          A.appendAll(pipe(
             returnType.value[0],
             ([
               {
@@ -72,7 +72,7 @@ const replaceVarType = (
     )
     : type.tag === 'tuple' ? pipe(
       type.value,
-      RA.map((x) => (x.tag === 'rest' ? restType.of(r(x.value))
+      A.map((x) => (x.tag === 'rest' ? restType.of(r(x.value))
       : r(x))),
       tupleType.of,
     )
@@ -107,9 +107,9 @@ const updateTypeMap = (
     expected.value[0].length,
     (expectedParamCount) => (expectedParamCount < actual.value[0].length ? pipe(
       actual.value[0],
-      RA.splitNonEmptyAt(expectedParamCount),
+      A.splitNonEmptyAt(expectedParamCount),
       ([a, b]) => pipe(
-        RA.fromReadonlyArray(b),
+        A.fromReadonlyArray(b),
         O.map((x) => functionType.of([
           x,
           actual.value[1],
@@ -117,32 +117,32 @@ const updateTypeMap = (
         O.map((x) => [a, x] as const),
       ),
     ) : O.some<
-    readonly [RA.NonEmptyReadonlyArray<functionType.ParamType>, Type]
+    readonly [A.NonEmptyReadonlyArray<functionType.ParamType>, Type]
     >(actual.value)),
-    O.map(Tu.mapFirst(RA.map((x) => x.type))),
-    O.map((a) => RA.zip(
+    O.map(Tu.mapFirst(A.map((x) => x.type))),
+    O.map((a) => A.zip(
       pipe(
         expected.value,
-        Tu.mapFirst(RA.map((x) => x.type)),
+        Tu.mapFirst(A.map((x) => x.type)),
         (x) => [...x[0], x[1]],
       ),
       [...a[0], a[1]],
     )),
-    O.map(RA.map(([e, a]) => updateTypeMap(e)(a))),
-    O.map(RA.reduce(identity, (f, g) => compose(f, g))),
+    O.map(A.map(([e, a]) => updateTypeMap(e)(a))),
+    O.map(A.reduce(identity, (f, g) => compose(f, g))),
     O.getOrElse(() => identity),
   )
   : expected.tag === 'tuple' && actual.tag === expected.tag? pipe(
-    RA.zip(expected.value, actual.)),
+    A.zip(expected.value, actual.)),
     O.getOrElse(() => identity),
   )
   : expected.tag === 'tuple' && actual.tag === expected.tag ? pipe(
-    RA.zip(expected.value, actual.value),
-    RA.takeWhile(
+    A.zip(expected.value, actual.value),
+    A.takeWhile(
       (x): x is readonly [Type, Type] => x[0].tag !== 'rest'
       && x[1].tag !== 'rest',
     ),
-    RA.map(([e, a]) => updateTypeMap(e)(a)),
+    A.map(([e, a]) => updateTypeMap(e)(a)),
     concatAll(En.getMonoid()),
   )
   : identity);
@@ -169,4 +169,3 @@ export default (
   typeMap: {},
   commander,
 })(EOP.of(s.filterExp)).nodes;
-

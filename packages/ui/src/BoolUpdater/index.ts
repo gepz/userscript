@@ -42,4 +42,3 @@ AppCommander
   flip,
   apply(s),
 ));
-

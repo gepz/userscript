@@ -3,7 +3,7 @@ import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as expEval from 'expression-eval';
 
 import TaggedValue, {
@@ -34,7 +34,7 @@ export const fromJsExp = (
     (x): x is [expEval.parse.Expression] | [] => x.length <= 1,
     () => 'A function call cannot take more than 1 arguments',
   ),
-  Z.map(RA.head),
+  Z.map(A.head),
   Z.map(O.map(f)),
   Z.flatMap(O.match({
     onNone: () => Z.succeed(O.none()),
@@ -54,7 +54,7 @@ export const toJsExp = ({
   arguments: pipe(
     value.argument,
     O.map(f),
-    RA.fromOption,
+    A.fromOption,
   ),
   callee: f(value.callee),
 }
@@ -76,4 +76,3 @@ export const fromTypedExp = ({
 );
 
 export default CallExpression;
-

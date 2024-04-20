@@ -3,7 +3,7 @@ import {
 } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as P from 'effect/Predicate';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 
 import ChatData from '@/ChatData';
 
@@ -24,7 +24,7 @@ export default (
   const paymentInfo = pipe(
     chatType === 'ticker' || chat.querySelector<HTMLElement>('#card') !== null,
     (isPaid) => O.fromNullable(
-      isPaid ? chat.querySelector<HTMLElement>(RA.join(', ')(
+      isPaid ? chat.querySelector<HTMLElement>(A.join(', ')(
         [
           '#purchase-amount',
           '#purchase-amount-chip',
@@ -61,7 +61,7 @@ export default (
     : chat.querySelector('.member') ? 'member'
     : 'normal',
     authorID: pipe(
-      chat.querySelector<HTMLImageElement>(RA.join(' ')([
+      chat.querySelector<HTMLImageElement>(A.join(' ')([
         '#author-photo',
         'img',
       ]))?.src.match(/ggpht\.com\/(ytc\/)?(.*)=/),

@@ -1,9 +1,9 @@
-﻿import {
+﻿import * as A from 'effect/Array';
+import {
   constant,
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
 import {
   h,
   VNode,
@@ -32,10 +32,9 @@ export default <T>(
     Ed.text,
     O.getOrElse(pipe(
       Ed.value(value),
-      RA.join('\n'),
+      A.join('\n'),
       constant,
     )),
   ),
   ...action,
 });
-

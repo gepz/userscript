@@ -4,7 +4,7 @@ import {
   flow,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import * as RR from 'effect/ReadonlyRecord';
 
 import TaggedValue, {
@@ -49,7 +49,7 @@ export const targetLowerBound = (
   }) => (source.tag === target.tag ? pipe(
     target.value,
     RR.toReadonlyArray,
-    RA.map(flow(
+    A.map(flow(
       ([key, type]) => pipe(
         source.value[key],
         E.fromNullable(`Source is missing property ${key}`),
@@ -57,8 +57,7 @@ export const targetLowerBound = (
         E.merge,
       ),
     )),
-    RA.getSomes,
-    RA.lookup(0),
+    A.getSomes,
+    A.lookup(0),
   ) : O.some(`Type ${source.tag} is not assignable to type ${target.tag}`))),
 );
-

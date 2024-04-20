@@ -1,11 +1,11 @@
 import { pipe, } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import { h, text, } from 'hyperapp';
 export default (style) => (ontabSelect) => (labels) => (tabs) => (mainTab) => h('div', {
     style: style.container,
 }, [
-    h('div', {}, pipe(labels, RA.map((x, i) => h('span', {
+    h('div', {}, pipe(labels, A.map((x, i) => h('span', {
         style: {
             ...style.label,
             ...(mainTab === i ? style.labelFocus : {}),
@@ -19,7 +19,7 @@ export default (style) => (ontabSelect) => (labels) => (tabs) => (mainTab) => h(
             overflow: 'auto',
             boxSizing: 'border-box',
         },
-    }, pipe(tabs, RA.get(mainTab), O.match({
+    }, pipe(tabs, A.get(mainTab), O.match({
         onNone: () => undefined,
         onSome: (x) => x(),
     }))),

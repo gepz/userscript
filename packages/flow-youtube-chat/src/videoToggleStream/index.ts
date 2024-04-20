@@ -1,7 +1,7 @@
 import {
   pipe,
 } from 'effect/Function';
-import * as RA from 'effect/ReadonlyArray';
+import * as A from 'effect/Array';
 import {
   fromEvent,
   merge,
@@ -11,15 +11,14 @@ import {
 
 export default (video: HTMLVideoElement): Observable<boolean> => pipe(
   [['playing'], ['waiting', 'pause']],
-  RA.map((x, i) => [x, i === 0] as const),
-  RA.flatMap(([xs, b]) => pipe(
+  A.map((x, i) => [x, i === 0] as const),
+  A.flatMap(([xs, b]) => pipe(
     xs,
-    RA.map((x) => [x, b] as const),
+    A.map((x) => [x, b] as const),
   )),
-  RA.map(([x, b]) => pipe(
+  A.map(([x, b]) => pipe(
     fromEvent(video, x),
     map(() => b),
   )),
   (x) => merge(...x),
 );
-
