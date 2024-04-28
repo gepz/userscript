@@ -9,8 +9,8 @@
   "devDependencies": {
     "@types/node": "20.12.7",
     "@types/webpack-bundle-analyzer": "^4.7.0",
-    "@typescript-eslint/eslint-plugin": "^7.7.0",
-    "@typescript-eslint/parser": "^7.7.0",
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/parser": "^7.7.1",
     "@userscript/eslint-config": "workspace:^1.0.3",
     "@userscript/webpack-config": "workspace:^1.0.4",
     "cross-env": "^7.0.3",

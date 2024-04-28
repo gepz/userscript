@@ -4,12 +4,12 @@
   "version": "1.1.2",
   "author": "",
   "dependencies": {
-    "@effect/schema": "^0.66.5",
-    "@effect/typeclass": "^0.24.3",
-    "effect": "^3.0.3",
+    "@effect/schema": "^0.66.10",
+    "@effect/typeclass": "^0.24.7",
+    "effect": "^3.0.7",
     "hyperapp": "^2.0.22",
     "ts-toolbelt": "^9.6.0",
-    "type-fest": "^4.15.0",
+    "type-fest": "^4.17.0",
     "validate-color": "^2.2.4"
   },
   "devDependencies": {
@@ -18,8 +18,8 @@
     "@typescript/lib-dom": "npm:@types/web@^0.0.86",
     "@userscript/eslint-config": "workspace:^1.0.3",
     "@userscript/webpack-config": "workspace:^1.0.4",
-    "@typescript-eslint/eslint-plugin": "^7.7.0",
-    "@typescript-eslint/parser": "^7.7.0",
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/parser": "^7.7.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",

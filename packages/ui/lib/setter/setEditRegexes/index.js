@@ -1,7 +1,7 @@
+import * as A from 'effect/Array';
 import { pipe, } from 'effect/Function';
 import * as O from 'effect/Option';
 import * as P from 'effect/Predicate';
-import * as A from 'effect/Array';
 import * as Str from 'effect/String';
 import * as Tu from 'effect/Tuple';
 import * as Ed from '../../Editable';

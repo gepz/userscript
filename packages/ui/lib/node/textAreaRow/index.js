@@ -1,6 +1,6 @@
+import * as A from 'effect/Array';
 import { constant, pipe, } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as A from 'effect/Array';
 import { h, } from 'hyperapp';
 import * as Ed from '../../Editable';
 export default (rows, action) => (value) => h('textarea', {
