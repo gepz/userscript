@@ -3,6 +3,7 @@ import wrapApp from '@userscript/ui/wrapApp';
 import {
   BroadcastChannel,
 } from 'broadcast-channel';
+import * as A from 'effect/Array';
 import * as Cause from 'effect/Cause';
 import * as D from 'effect/Duration';
 import * as Z from 'effect/Effect';
@@ -10,7 +11,6 @@ import {
   pipe,
 } from 'effect/Function';
 import * as LogLevel from 'effect/LogLevel';
-import * as A from 'effect/Array';
 import * as Schedule from 'effect/Schedule';
 import * as Str from 'effect/String';
 import deepEq from 'fast-deep-equal';
@@ -76,8 +76,8 @@ export default ({
     )),
   })),
   // eslint-disable-next-line func-names
-  Z.flatMap((ctx) => Z.gen(function* (_) {
-    const config = yield* _(makeConfig(ctx.gmConfig));
+  Z.flatMap((ctx) => Z.gen(function* () {
+    const config = yield* makeConfig(ctx.gmConfig);
     return {
       ...ctx,
       configValue: config,
@@ -86,7 +86,7 @@ export default ({
     };
   })),
   // eslint-disable-next-line func-names
-  Z.flatMap((ctx) => Z.gen(function* (_) {
+  Z.flatMap((ctx) => Z.gen(function* () {
     const setConfigPlain = ctx.setterFromKeysMap(
       (key) => (val) => Z.promise(async () => {
         Object.assign(ctx.configValue, {
@@ -105,7 +105,7 @@ export default ({
       Z.flatMap(() => setConfigPlain[key](val)),
     );
 
-    yield* _(setConfigPlain.filterExp(defaultFilter(ctx.configValue)));
+    yield* setConfigPlain.filterExp(defaultFilter(ctx.configValue));
 
     const channel = new BroadcastChannel<
     [keyof UserConfig, UserConfig[keyof UserConfig]]
@@ -145,7 +145,7 @@ export default ({
     };
   })),
   // eslint-disable-next-line func-names
-  Z.flatMap((ctx) => Z.gen(function* (_) {
+  Z.flatMap((ctx) => Z.gen(function* () {
     const reinitSubject = new Subject<void>();
     const stateInit = settingStateInit(ctx.mainState.config.value);
     return {
@@ -156,11 +156,11 @@ export default ({
         requestAnimationFrame(() => forwardTo(reinitSubject)());
       })),
       apps: {
-        toggleChatButtonApp: yield* _(wrapApp(
+        toggleChatButtonApp: yield* wrapApp(
           toggleChatButton(ctx.mainState.config.setConfig),
           stateInit,
-        )),
-        settingsApp: yield* _(wrapApp(
+        ),
+        settingsApp: yield* wrapApp(
           settingsComponent({
             setConfig: ctx.mainState.config.setConfig,
             act: {
@@ -169,11 +169,11 @@ export default ({
             provideLog,
           }),
           stateInit,
-        )),
-        toggleSettingsPanelApp: yield* _(wrapApp(
+        ),
+        toggleSettingsPanelApp: yield* wrapApp(
           toggleSettingsPanelComponent(ctx.updateSettingState),
           stateInit,
-        )),
+        ),
       },
     };
   })),
@@ -196,11 +196,11 @@ export default ({
     Z.forkDaemon,
   )),
   // eslint-disable-next-line func-names
-  Z.flatMap((ctx) => Z.gen(function* (_) {
+  Z.flatMap((ctx) => Z.gen(function* () {
     return {
       ...ctx,
       live: makePageState(livePageYt),
-      chatScreen: yield* _(makeChatScreen),
+      chatScreen: yield* makeChatScreen,
       co: pipe(
         ctx.configSubject,
         mapObject(([k, value]) => [
@@ -239,8 +239,8 @@ export default ({
     };
   })),
   // eslint-disable-next-line func-names
-  Z.flatMap((ctx) => Z.gen(function* (_) {
-    (yield* _(allStream(
+  Z.flatMap((ctx) => Z.gen(function* () {
+    (yield* allStream(
       {
         ...ctx,
         // eslint-disable-next-line max-len
@@ -248,7 +248,7 @@ export default ({
         liveElementKeys: Object.keys(ctx.live) as (keyof typeof ctx.live)[],
       },
       provideLog,
-    ))).subscribe({
+    )).subscribe({
       error: (x) => Z.runPromise(
         // eslint-disable-next-line max-len
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -257,6 +257,6 @@ export default ({
       complete: () => Z.runPromise(Z.logWarning('Stream complete')),
     });
 
-    yield* _(ctx.reinitialize);
+    yield* ctx.reinitialize;
   })),
 ));

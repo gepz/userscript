@@ -1,9 +1,9 @@
+import * as A from 'effect/Array';
 import * as Z from 'effect/Effect';
 import {
   pipe,
 } from 'effect/Function';
 import * as O from 'effect/Option';
-import * as A from 'effect/Array';
 
 import ChatData from '@/ChatData';
 import FlowChat from '@/FlowChat';
@@ -49,14 +49,14 @@ export default (
     ),
     onSome: (index): Z.Effect<HTMLElement> => pipe(
       // eslint-disable-next-line func-names
-      Z.gen(function* (_) {
+      Z.gen(function* () {
         const chats = mainState.flowChats;
         const chat = A.unsafeGet(chats.value, index);
 
-        yield* _(chat.animation.pipe(
+        yield* chat.animation.pipe(
           Z.flatMap((animation) => Z.sync(() => animation.cancel())),
           Z.ignore,
-        ));
+        );
 
         chats.next(A.remove(chats.value, index));
         return chat.element;

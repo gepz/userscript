@@ -5,6 +5,7 @@ import {
 import {
   diff,
 } from 'deep-diff';
+import * as A from 'effect/Array';
 import * as D from 'effect/Duration';
 import * as Z from 'effect/Effect';
 import {
@@ -17,7 +18,6 @@ import {
 } from 'effect/Function';
 import * as LogLevel from 'effect/LogLevel';
 import * as O from 'effect/Option';
-import * as A from 'effect/Array';
 import {
   Dispatchable,
 } from 'hyperapp';
@@ -110,7 +110,7 @@ export default (
   provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>,
 ): Z.Effect<Observable<unknown>> => pipe(
   // eslint-disable-next-line func-names
-  Z.gen(function* (_) {
+  Z.gen(function* () {
     return {
       eq: O.getEquivalence(strict()),
       initDelay: D.millis(100),
@@ -141,11 +141,11 @@ export default (
         }),
       ),
       config$: configStream(provideLog, mainState, co, chatScreen, live),
-      css: yield* _(mainCss),
-      documentMutationPair: yield* _(observePair(MutationObserver)),
-      chatMutationPair: yield* _(observePair(MutationObserver)),
-      playerResizePair: yield* _(observePair(ResizeObserver)),
-      bodyResizePair: yield* _(observePair(ResizeObserver)),
+      css: yield* mainCss,
+      documentMutationPair: yield* observePair(MutationObserver),
+      chatMutationPair: yield* observePair(MutationObserver),
+      playerResizePair: yield* observePair(ResizeObserver),
+      bodyResizePair: yield* observePair(ResizeObserver),
     };
   }),
   Z.map((c) => pipe(
