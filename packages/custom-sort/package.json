@@ -3,7 +3,7 @@
   "description": "custom-sort",
   "version": "1.1.1",
   "dependencies": {
-    "zod": "^3.23.4",
+    "zod": "^3.23.5",
     "@userscript/forward-to": "workspace:^1.0.3",
     "@userscript/tap-non-null": "workspace:^1.0.3",
     "broadcast-channel": "^7.0.0",
@@ -14,7 +14,7 @@
     "rxjs": "^7.8.1",
     "sweetalert2": "^11.10.8",
     "ts-toolbelt": "^9.6.0",
-    "type-fest": "^4.17.0"
+    "type-fest": "^4.18.0"
   },
   "devDependencies": {
     "@types/greasemonkey": "^4.0.7",
@@ -22,8 +22,8 @@
     "@types/node": "20.12.7",
     "@types/terser-webpack-plugin": "^5.2.0",
     "@types/webpack-dev-server": "^4.7.2",
-    "@typescript-eslint/eslint-plugin": "^7.7.1",
-    "@typescript-eslint/parser": "^7.7.1",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "^7.8.0",
     "@userscript/cdn-from-dependency": "workspace:^1.0.3",
     "@userscript/eslint-config": "workspace:^1.0.3",
     "@userscript/webpack-config": "workspace:^1.0.4",
@@ -55,6 +55,7 @@
   },
   "license": "AGPL-3.0-or-later",
   "scripts": {
+    "lint": "eslint . --ext .ts --fix",
     "preinstall": "npx only-allow pnpm",
     "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.dev.conf.ts",
     "prod_webpack": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.prod.conf.ts",
