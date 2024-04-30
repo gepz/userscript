@@ -3,16 +3,18 @@ import wrapApp from '@userscript/ui/wrapApp';
 import {
   BroadcastChannel,
 } from 'broadcast-channel';
-import * as A from 'effect/Array';
-import * as Cause from 'effect/Cause';
-import * as D from 'effect/Duration';
-import * as Z from 'effect/Effect';
+import {
+  Array as A,
+  Effect as Z,
+  Cause,
+  Duration as D,
+  String as Str,
+  LogLevel,
+  Schedule,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as LogLevel from 'effect/LogLevel';
-import * as Schedule from 'effect/Schedule';
-import * as Str from 'effect/String';
 import deepEq from 'fast-deep-equal';
 import {
   Dispatch,
@@ -77,10 +79,9 @@ export default ({
   })),
   // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* () {
-    const config = yield* makeConfig(ctx.gmConfig);
     return {
       ...ctx,
-      configValue: config,
+      configValue: yield* makeConfig(ctx.gmConfig),
       configSubject: makeSubject(configKeys),
       setterFromKeysMap: setterFromKeysMap(configKeys),
     };

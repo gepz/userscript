@@ -1,4 +1,6 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 
 import UserConfig from '@/UserConfig';
 
@@ -9,4 +11,3 @@ type UserConfigSetter = {
 };
 
 export default UserConfigSetter;
-

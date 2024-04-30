@@ -1,4 +1,6 @@
-import * as O from 'effect/Option';
+import {
+  Option as O,
+} from 'effect';
 
 import ChatData from '@/ChatData';
 

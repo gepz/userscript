@@ -1,13 +1,21 @@
 import {
   Semigroup,
 } from '@effect/typeclass/Semigroup';
-import * as E from 'effect/Either';
+import {
+  Either as E,
+} from 'effect';
 import {
   flow,
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as A from 'effect/Array';
+import {
+  Option as O,
+} from 'effect';
+
+import {
+  Array as A,
+} from 'effect';
+
 
 import AssignGenericFunction from '@/type/AssignGenericFunction';
 import FunctionType, * as functionType from '@/type/FunctionType';

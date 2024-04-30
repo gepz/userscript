@@ -1,4 +1,6 @@
-import * as E from 'effect/Either';
+import {
+  Either as E,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';

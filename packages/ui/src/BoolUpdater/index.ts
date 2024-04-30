@@ -1,4 +1,4 @@
-﻿import {
+import {
   apply,
   flip,
   pipe,

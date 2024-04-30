@@ -1,7 +1,9 @@
 import RootComponent, {
   makeComponent,
 } from '@userscript/ui/RootComponent';
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';

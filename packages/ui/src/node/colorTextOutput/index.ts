@@ -1,4 +1,4 @@
-﻿import {
+import {
   h,
   VNode,
   StyleProp,

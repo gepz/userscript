@@ -1,4 +1,6 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 import {
   identity,
 } from 'effect/Function';
@@ -10,8 +12,7 @@ export default <T extends GM.Value>(
   defaultValue: T,
 ): GMConfigItem<T> => ({
   gmKey: key,
-  getValue: Z.promise(async () => await GM.getValue(key, defaultValue)),
+  getValue: Z.promise(async () => GM.getValue(key, defaultValue)),
   defaultValue,
   toGm: identity,
 });
-

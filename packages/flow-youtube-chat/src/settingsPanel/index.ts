@@ -2,12 +2,14 @@ import option from '@userscript/ui/node/option';
 import tabContainer from '@userscript/ui/node/tabContainer';
 import setFilteredString from '@userscript/ui/setter/setFilteredString';
 import {
+  Array as A,
+} from 'effect';
+import {
   pipe,
   apply,
   constant,
   flip,
 } from 'effect/Function';
-import * as A from 'effect/Array';
 import {
   h,
   text,

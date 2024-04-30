@@ -1,4 +1,6 @@
-import * as E from 'effect/Either';
+import {
+  Either as E,
+} from 'effect';
 import {
   flow,
   pipe,
@@ -85,4 +87,3 @@ export const fromTypedExp: ExpressionFromTypedExp = processWithEither(flow(
   chainTyped(numberLiteral.fromTypedExp)('typedNumber'),
   chainTyped(stringLiteral.fromTypedExp)('typedString'),
 ));
-

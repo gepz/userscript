@@ -4,8 +4,14 @@ import {
   identity,
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as A from 'effect/Array';
+import {
+  Option as O,
+} from 'effect';
+
+import {
+  Array as A,
+} from 'effect';
+
 import * as expEval from 'expression-eval';
 
 import ArrayExpression from '@/settingUI/editableExpression/ArrayExpression';

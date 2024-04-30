@@ -1,4 +1,7 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
+
 import * as expEval from 'expression-eval';
 
 import type Expression from '@/restrictedExpression/Expression';
@@ -8,4 +11,3 @@ type ExpressionFromJsExp = (
 ) => Z.Effect<Expression, string>;
 
 export default ExpressionFromJsExp;
-

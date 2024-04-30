@@ -1,4 +1,4 @@
-﻿import {
+import {
   constant,
 } from 'effect/Function';
 

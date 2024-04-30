@@ -1,4 +1,6 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
@@ -17,4 +19,3 @@ export default pipe(
     width: '100%',
   }))),
 ) satisfies Z.Effect<HTMLElement>;
-

@@ -1,5 +1,7 @@
-import * as Z from 'effect/Effect';
-import * as Logger from 'effect/Logger';
+import {
+  Effect as Z,
+  Logger,
+} from 'effect';
 import {
   Dispatch,
 } from 'hyperapp';
@@ -23,4 +25,3 @@ export default (
     logLevel.label,
   )(s.eventLog),
 }) : s))));
-

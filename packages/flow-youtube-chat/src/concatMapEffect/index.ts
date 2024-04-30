@@ -1,4 +1,6 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 import {
   OperatorFunction,
   concatMap,
@@ -8,4 +10,3 @@ import {
 export default <T1, T2>(
   f: (x: T1) => Z.Effect<T2>,
 ): OperatorFunction<T1, T2> => concatMap((x) => from(Z.runPromise(f(x))));
-

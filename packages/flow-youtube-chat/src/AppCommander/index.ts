@@ -1,4 +1,6 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 
 import UserConfigSetter from '@/UserConfigSetter';
 
@@ -9,4 +11,3 @@ export default interface AppCommander {
   }
   provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>
 }
-

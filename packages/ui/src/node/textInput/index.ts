@@ -1,8 +1,10 @@
-﻿import {
+import {
+  Option as O,
+} from 'effect';
+import {
   constant,
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
 import {
   h,
   VNode,
@@ -31,4 +33,3 @@ export default <T>(
   ),
   ...action,
 });
-

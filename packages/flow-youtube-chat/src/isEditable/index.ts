@@ -1,4 +1,6 @@
-import * as A from 'effect/Array';
+import {
+  Array as A,
+} from 'effect';
 
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';

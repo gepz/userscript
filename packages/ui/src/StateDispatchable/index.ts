@@ -1,4 +1,4 @@
-﻿import {
+import {
   Effect,
 } from 'hyperapp';
 

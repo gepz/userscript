@@ -1,5 +1,7 @@
 import forwardTo from '@userscript/forward-to';
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 import {
   Subject,
 } from 'rxjs';
@@ -17,4 +19,3 @@ export default <T, T2>(
     observer: new con(forwardTo(subject)),
   };
 });
-

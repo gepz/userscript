@@ -1,6 +1,5 @@
+import { Option as O, Tuple as Tu, } from 'effect';
 import { pipe, constant, } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as Tu from 'effect/Tuple';
 import * as Ed from '../../Editable';
 const setEditNumber = (editing) => (value) => (state) => pipe(value, Number.parseFloat, editing
     ? (x) => (Number.isNaN(x) || value.at(-1) === '.'

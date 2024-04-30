@@ -1,4 +1,6 @@
-import * as I from 'effect/Identity';
+import {
+  Identity as I,
+} from 'effect';
 import {
   flow,
 } from 'effect/Function';
@@ -39,4 +41,3 @@ export default (
   }),
   I.let('typeMap', (x) => updateTypeMap(expectedType)(x.type)(m)),
 );
-

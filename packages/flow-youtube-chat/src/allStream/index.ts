@@ -5,9 +5,13 @@ import {
 import {
   diff,
 } from 'deep-diff';
-import * as A from 'effect/Array';
-import * as D from 'effect/Duration';
-import * as Z from 'effect/Effect';
+import {
+  Array as A,
+  Duration as D,
+  Effect as Z,
+  Option as O,
+  LogLevel,
+} from 'effect';
 import {
   strict,
 } from 'effect/Equivalence';
@@ -16,8 +20,6 @@ import {
   apply,
   identity,
 } from 'effect/Function';
-import * as LogLevel from 'effect/LogLevel';
-import * as O from 'effect/Option';
 import {
   Dispatchable,
 } from 'hyperapp';

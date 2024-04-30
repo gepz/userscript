@@ -3,10 +3,12 @@ import option from '@userscript/ui/node/option';
 import settingRow from '@userscript/ui/node/settingRow';
 import setEditString from '@userscript/ui/setter/setEditString';
 import {
+  Array as A,
+  Option as O,
+} from 'effect';
+import {
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as A from 'effect/Array';
 import {
   h,
   VNode,

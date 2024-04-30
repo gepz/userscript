@@ -1,4 +1,6 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 import {
   flip,
 } from 'effect/Function';
@@ -10,4 +12,3 @@ export default flip((
   ) => Z.Effect<void> => Z.flatMap(
   (x) => Z.sync(() => chat.querySelector('#content #message')?.append(x)),
 ));
-

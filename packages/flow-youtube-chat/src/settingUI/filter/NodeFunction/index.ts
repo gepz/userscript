@@ -1,12 +1,17 @@
 import {
   generate,
 } from 'astring';
-import * as E from 'effect/Either';
+import {
+  Either as E,
+} from 'effect';
 import {
   pipe,
   flow,
 } from 'effect/Function';
-import * as O from 'effect/Option';
+import {
+  Option as O,
+} from 'effect';
+
 import {
   Refinement,
 } from 'fp-ts/Refinement';
@@ -127,4 +132,3 @@ export const expressionNode: NodeFunction = fromSwitcher(flow(
   chainNode(literalArrayNode)('LiteralArray'),
   chainNode(arrayNode)('ArrayExpression'),
 ));
-

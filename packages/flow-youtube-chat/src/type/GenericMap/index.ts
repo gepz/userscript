@@ -2,8 +2,12 @@ import tapNonNull from '@userscript/tap-non-null';
 import {
   pipe,
 } from 'effect/Function';
-import * as SM from 'effect/SortedMap';
-import * as Str from 'effect/String';
+import {
+  SortedMap as SM,
+} from 'effect';
+import {
+  String as Str,
+} from 'effect';
 
 import type GenericType from '@/type/GenericType';
 import type Type from '@/type/Type';
@@ -35,4 +39,3 @@ export const resolveGeneric = ({
     map,
     type,
   }));
-

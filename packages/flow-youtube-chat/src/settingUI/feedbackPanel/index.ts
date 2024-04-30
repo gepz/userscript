@@ -1,10 +1,12 @@
 import tabContainer from '@userscript/ui/node/tabContainer';
 import panelBoxStyle from '@userscript/ui/panelBoxStyle';
 import {
+  Array as A,
+  Option as O,
+} from 'effect';
+import {
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as A from 'effect/Array';
 import {
   h,
   text,

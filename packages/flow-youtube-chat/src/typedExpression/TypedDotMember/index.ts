@@ -1,4 +1,6 @@
-import * as I from 'effect/Identity';
+import {
+  Identity as I,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
@@ -42,4 +44,3 @@ export const fromExp = ({
 );
 
 export default TypedDotMember;
-

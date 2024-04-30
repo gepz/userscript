@@ -1,4 +1,4 @@
-﻿import {
+import {
   StyleProp,
 } from 'hyperapp';
 

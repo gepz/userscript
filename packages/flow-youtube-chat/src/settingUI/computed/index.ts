@@ -1,4 +1,6 @@
-import * as P from 'effect/Predicate';
+import {
+  Predicate as P,
+} from 'effect';
 
 import SettingState from '@/SettingState';
 

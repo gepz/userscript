@@ -1,7 +1,10 @@
 // import {
 //   pipe,
 // } from 'effect/Function';
-// import * as O from 'effect/Option';
+// import {
+//   Option as O,
+// } from 'effect';
+
 // import * as expEval from 'expression-eval';
 
 import Editable, * as Ed from '@userscript/ui/Editable';
@@ -37,4 +40,3 @@ export default <T extends keyof UserConfig & keyof SettingState>(
   // )
   : value,
 });
-

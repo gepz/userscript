@@ -5,7 +5,10 @@ import {
   flow,
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
+import {
+  Option as O,
+} from 'effect';
+
 
 import AssignGenericFunction from '@/type/AssignGenericFunction';
 import GenericMap, {
@@ -49,4 +52,3 @@ export const checkAssignability = (
     O.map((s) => `Type ${s.tag} is not assignable to type ${target.tag}`),
   )),
 );
-

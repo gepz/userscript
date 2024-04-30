@@ -1,9 +1,11 @@
-﻿import * as A from 'effect/Array';
+import {
+  Array as A,
+  Option as O,
+  String as Str,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as Str from 'effect/String';
 
 import Setter from '@/setter/Setter';
 

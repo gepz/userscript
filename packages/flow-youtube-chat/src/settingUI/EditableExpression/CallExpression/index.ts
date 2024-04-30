@@ -1,4 +1,7 @@
-import * as O from 'effect/Option';
+import {
+  Option as O,
+} from 'effect';
+
 
 import type Expression from '@/settingUI/editableExpression/Expression';
 
@@ -7,4 +10,3 @@ export default interface CallExpression {
   argument: O.Option<Expression>;
   callee: Expression;
 }
-

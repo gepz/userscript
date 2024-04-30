@@ -1,6 +1,5 @@
+import { Option as O, Tuple as Tu, } from 'effect';
 import { constant, } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as Tu from 'effect/Tuple';
 import validateColor from 'validate-color';
 import * as Ed from '../../Editable';
 const setEditColor = (editing) => (value) => (editing ? (validateColor(value)

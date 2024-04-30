@@ -1,4 +1,6 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 
 export default interface GMConfigItem<T1> {
   gmKey: string,
@@ -6,4 +8,3 @@ export default interface GMConfigItem<T1> {
   defaultValue: T1,
   toGm: (x: T1) => GM.Value,
 }
-

@@ -47,7 +47,7 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
     namespace: 'https://greasyfork.org/users/245195',
   }),
   i18n: {
-    'ja': {
+    ja: {
       name: 'Iwara Custom ソート',
       description: '/videos、/images、/subscriptions、/users、/playlist'
       + 'とサイドバーのサムネイルを自動的にソートします。'

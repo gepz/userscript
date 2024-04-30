@@ -1,13 +1,15 @@
-import * as Console from 'effect/Console';
-import * as Z from 'effect/Effect';
-import * as FiberRefs from 'effect/FiberRefs';
+import {
+  Effect as Z,
+  Option as O,
+  Logger,
+  LogLevel,
+  Console,
+  FiberRefs,
+  HashMap as HM,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as HM from 'effect/HashMap';
-import * as LogLevel from 'effect/LogLevel';
-import * as Logger from 'effect/Logger';
-import * as O from 'effect/Option';
 
 import LogAnnotationKeys from '@/LogAnnotationKeys';
 import {

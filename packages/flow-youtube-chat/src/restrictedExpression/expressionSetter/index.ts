@@ -4,7 +4,10 @@ import {
   pipe,
   apply,
 } from 'effect/Function';
-import * as O from 'effect/Option';
+import {
+  Option as O,
+} from 'effect';
+
 
 import Expression from '@/restrictedExpression/Expression';
 
@@ -27,4 +30,3 @@ export default <T>(
   Op.replace(opt),
   apply(exp),
 );
-

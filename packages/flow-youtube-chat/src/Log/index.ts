@@ -1,9 +1,11 @@
-import * as Brand from 'effect/Brand';
+import {
+  Array as A,
+  Brand,
+  LogLevel,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as logLevel from 'effect/LogLevel';
-import * as A from 'effect/Array';
 import {
   compressToUTF16,
   decompressFromUTF16,
@@ -14,7 +16,7 @@ import {
 type LogEntry = {
   id: number,
   text: string,
-  level: logLevel.LogLevel['label'],
+  level: LogLevel.LogLevel['label'],
 };
 
 type LogBlock = readonly LogEntry[];
@@ -111,7 +113,7 @@ export const removeBlock = (
 
 export const append = (
   text: string,
-  level: logLevel.LogLevel['label'],
+  level: LogLevel.LogLevel['label'],
 ) => (log: Log): Log => makeLog({
   nextId: log.nextId + 1,
   ...pipe(

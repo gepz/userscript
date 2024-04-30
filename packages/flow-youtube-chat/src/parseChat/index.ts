@@ -1,9 +1,11 @@
 import {
+  Array as A,
+  Option as O,
+  Predicate as P,
+} from 'effect';
+import {
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as P from 'effect/Predicate';
-import * as A from 'effect/Array';
 
 import ChatData from '@/ChatData';
 

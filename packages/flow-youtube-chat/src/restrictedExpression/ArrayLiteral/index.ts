@@ -1,8 +1,14 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
+
 import {
   pipe,
 } from 'effect/Function';
-import * as A from 'effect/Array';
+import {
+  Array as A,
+} from 'effect';
+
 import * as expEval from 'expression-eval';
 
 import TaggedValue, {

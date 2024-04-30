@@ -1,5 +1,10 @@
-import * as I from 'effect/Identity';
-import * as O from 'effect/Option';
+import {
+  Identity as I,
+} from 'effect';
+import {
+  Option as O,
+} from 'effect';
+
 import {
   pipe,
 } from 'effect/Function';

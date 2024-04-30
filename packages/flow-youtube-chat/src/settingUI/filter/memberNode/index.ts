@@ -2,7 +2,10 @@ import {
   pipe,
   flow,
 } from 'effect/Function';
-import * as O from 'effect/Option';
+import {
+  Option as O,
+} from 'effect';
+
 
 import * as EOP from '@/ElementOpticPair';
 import MemberExpression from '@/settingUI/editableExpression/MemberExpression';
@@ -53,4 +56,3 @@ export default (
   ))),
   O.getOrElse(() => errorResult(m)),
 );
-

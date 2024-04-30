@@ -1,4 +1,4 @@
-﻿import {
+import {
   apply,
   pipe,
 } from 'effect/Function';

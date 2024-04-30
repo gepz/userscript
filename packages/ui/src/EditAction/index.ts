@@ -1,4 +1,4 @@
-﻿import InputUpdater from '@/InputUpdater';
+import InputUpdater from '@/InputUpdater';
 import StateDispatchable from '@/StateDispatchable';
 import EditSetter from '@/setter/EditSetter';
 

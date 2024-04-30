@@ -1,7 +1,10 @@
 import {
   pipe,
 } from 'effect/Function';
-import * as A from 'effect/Array';
+import {
+  Array as A,
+} from 'effect';
+
 
 import filterContext from '@/filter/filterContext';
 import filterOperators from '@/filter/filterOperators';

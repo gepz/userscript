@@ -1,7 +1,9 @@
 import {
+  Array as A,
+} from 'effect';
+import {
   pipe,
 } from 'effect/Function';
-import * as A from 'effect/Array';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export default <T1 extends {}, T2 extends {}>(

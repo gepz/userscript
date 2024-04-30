@@ -1,4 +1,7 @@
-// import * as O from 'effect/Option';
+// import {
+//   Option as O,
+// } from 'effect';
+
 // import * as expEval from 'expression-eval';
 import * as Ed from '@userscript/ui/Editable';
 import {

@@ -1,11 +1,13 @@
-﻿import * as A from 'effect/Array';
+import {
+  Array as A,
+  Option as O,
+  Predicate as P,
+  String as Str,
+  Tuple as Tu,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as P from 'effect/Predicate';
-import * as Str from 'effect/String';
-import * as Tu from 'effect/Tuple';
 
 import Editable, * as Ed from '@/Editable';
 import EditSetter from '@/setter/EditSetter';

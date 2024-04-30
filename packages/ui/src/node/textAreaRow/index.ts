@@ -1,9 +1,11 @@
-﻿import * as A from 'effect/Array';
+import {
+  Array as A,
+  Option as O,
+} from 'effect';
 import {
   constant,
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
 import {
   h,
   VNode,

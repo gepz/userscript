@@ -1,4 +1,6 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 import {
   Effect,
 } from 'hyperapp';
@@ -14,4 +16,3 @@ export default <T extends keyof UserConfig>(
   c,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 ) => () => Z.runPromise(c.provideLog(c.setConfig[k](v as never)));
-

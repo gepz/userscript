@@ -1,9 +1,11 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+  Option as O,
+  LogLevel,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as LogLevel from 'effect/LogLevel';
-import * as O from 'effect/Option';
 
 import LogMeta, {
   logMeta,
@@ -20,4 +22,3 @@ export default (
   Z.locally<LogMeta>(logMeta, O.some(data)),
   (x) => LogLevel.locally(level)(x),
 );
-

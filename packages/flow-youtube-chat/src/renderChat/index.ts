@@ -1,4 +1,6 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 import {
   render,
 } from 'lit-html';
@@ -13,4 +15,3 @@ export default (chat: FlowChat) => (
   chatNode(chat, mainState),
   chat.element,
 ));
-

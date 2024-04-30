@@ -1,4 +1,4 @@
-﻿import numericNode from '@/appNode/numericNode';
+import numericNode from '@/appNode/numericNode';
 import {
   setEditNumber,
 } from '@/setter';

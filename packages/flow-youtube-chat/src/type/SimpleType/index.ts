@@ -5,7 +5,10 @@ import {
   pipe,
   flow,
 } from 'effect/Function';
-import * as O from 'effect/Option';
+import {
+  Option as O,
+} from 'effect';
+
 
 import TaggedValue, {
   makeType,
@@ -61,4 +64,3 @@ export const checkAssignability = (
       : O.some('The types of the two primitives are different.')
     : O.some(`Type ${s.tag} is not assignable to type ${target.tag}`))),
 );
-

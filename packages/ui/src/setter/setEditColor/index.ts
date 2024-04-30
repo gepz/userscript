@@ -1,8 +1,10 @@
-﻿import {
+import {
+  Option as O,
+  Tuple as Tu,
+} from 'effect';
+import {
   constant,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as Tu from 'effect/Tuple';
 import validateColor from 'validate-color';
 
 import Editable, * as Ed from '@/Editable';
@@ -20,4 +22,3 @@ const setEditColor: EditSetter<Editable<string>> = (
   : Tu.mapSecond(constant(O.some([value, O.some('')])))));
 
 export default setEditColor;
-
