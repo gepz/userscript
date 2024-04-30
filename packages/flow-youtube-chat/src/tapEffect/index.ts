@@ -1,4 +1,6 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 import {
   OperatorFunction,
   concatMap,
@@ -11,4 +13,3 @@ export default <T1>(
 ): OperatorFunction<T1, T1> => concatMap((x) => from(Z.runPromise(f(x))).pipe(
   map(() => x),
 ));
-

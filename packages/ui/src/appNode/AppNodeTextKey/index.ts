@@ -1,4 +1,4 @@
-﻿type AppNodeTextKey = 'inputNonNumberic'
+type AppNodeTextKey = 'inputNonNumberic'
 | 'invalidSetting'
 | 'invalidColor';
 

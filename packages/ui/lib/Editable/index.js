@@ -1,6 +1,5 @@
+import { Option as O, Tuple as Tu, } from 'effect';
 import { constant, pipe, } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as Tu from 'effect/Tuple';
 export const of = (x) => [x, O.none()];
 export const fromValueText = (v) => (t) => [v, O.some([t, O.none()])];
 export const value = Tu.getFirst;

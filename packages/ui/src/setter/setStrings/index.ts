@@ -1,10 +1,12 @@
-﻿import * as A from 'effect/Array';
+import {
+  Array as A,
+  Predicate as P,
+  String as Str,
+} from 'effect';
 import {
   pipe,
   constant,
 } from 'effect/Function';
-import * as P from 'effect/Predicate';
-import * as Str from 'effect/String';
 
 import Setter from '@/setter/Setter';
 

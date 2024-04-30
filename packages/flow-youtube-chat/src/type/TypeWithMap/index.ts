@@ -1,7 +1,10 @@
 import {
   Semigroup,
 } from '@effect/typeclass/Semigroup';
-import * as O from 'effect/Option';
+import {
+  Option as O,
+} from 'effect';
+
 
 import GenericMap from '@/type/GenericMap';
 import type Type from '@/type/Type';
@@ -17,4 +20,3 @@ export const of = <T extends Type>(x: T) => ({
   type: x,
   map: {},
 });
-

@@ -4,7 +4,10 @@ import {
   apply,
   constant,
 } from 'effect/Function';
-import * as O from 'effect/Option';
+import {
+  Option as O,
+} from 'effect';
+
 import * as Op from 'monocle-ts/Optional';
 
 import Expression from '@/settingUI/editableExpression/Expression';
@@ -27,4 +30,3 @@ export default <T>(
     ),
   )),
 );
-

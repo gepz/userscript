@@ -1,9 +1,11 @@
-﻿import {
+import {
+  Option as O,
+  Tuple as Tu,
+} from 'effect';
+import {
   constant,
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as Tu from 'effect/Tuple';
 
 type Editable<T> = readonly [
   T,
@@ -45,4 +47,3 @@ export const setText: <T>(x: string) => (e: Editable<T>) => Editable<T> = (
 ));
 
 export const hasError = <T>(x: Editable<T>) => O.isSome(error(x));
-

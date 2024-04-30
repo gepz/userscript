@@ -5,7 +5,10 @@ import * as I from '@effect/typeclass/data/Identity';
 import {
   pipe,
 } from 'effect/Function';
-import * as A from 'effect/Array';
+import {
+  Array as A,
+} from 'effect';
+
 
 import TaggedValue, {
   makeType,

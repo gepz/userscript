@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/setter/setEditInt/index.ts"],"names":[],"mappings":"AAOA,OAAO,QAAiB,MAAM,YAAY,CAAC;AAC3C,OAAO,UAAU,MAAM,qBAAqB,CAAC;AAE7C,QAAA,MAAM,UAAU,EAAE,UAAU,CAAC,QAAQ,CAAC,MAAM,CAAC,CAoB5C,CAAC;AAEF,eAAe,UAAU,CAAC"}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/setter/setEditInt/index.ts"],"names":[],"mappings":"AASA,OAAO,QAAiB,MAAM,YAAY,CAAC;AAC3C,OAAO,UAAU,MAAM,qBAAqB,CAAC;AAE7C,QAAA,MAAM,UAAU,EAAE,UAAU,CAAC,QAAQ,CAAC,MAAM,CAAC,CAoB5C,CAAC;AAEF,eAAe,UAAU,CAAC"}

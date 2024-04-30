@@ -1,5 +1,7 @@
-import * as Cause from 'effect/Cause';
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+  Cause,
+} from 'effect';
 
 export default interface LivePage {
   chatField: Z.Effect<HTMLElement, Cause.NoSuchElementException>,
@@ -12,4 +14,3 @@ export default interface LivePage {
   settingsContainer: Z.Effect<Element, Cause.NoSuchElementException>,
   offlineSlate : Z.Effect<Element, Cause.NoSuchElementException>,
 }
-

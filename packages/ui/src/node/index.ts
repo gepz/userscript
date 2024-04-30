@@ -1,4 +1,4 @@
-﻿import checkboxRow from '@/node/checkboxRow';
+import checkboxRow from '@/node/checkboxRow';
 import colorPicker from '@/node/colorPicker';
 import colorTextOutput from '@/node/colorTextOutput';
 import option from '@/node/option';

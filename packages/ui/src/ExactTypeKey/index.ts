@@ -1,4 +1,4 @@
-﻿import {
+import {
   IsEqual,
 } from 'type-fest';
 

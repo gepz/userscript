@@ -3,13 +3,15 @@ import {
   MonoidSome,
 } from '@effect/typeclass/data/Boolean';
 import {
+  Option as O,
+  Array as A,
+  Predicate as P,
+  String as Str,
+} from 'effect';
+import {
   flip,
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as P from 'effect/Predicate';
-import * as A from 'effect/Array';
-import * as Str from 'effect/String';
 import {
   Tail,
 } from 'ts-toolbelt/out/List/Tail';

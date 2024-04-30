@@ -1,4 +1,6 @@
-import * as E from 'effect/Either';
+import {
+  Either as E,
+} from 'effect';
 
 import type GenericMap from '@/type/GenericMap';
 import type Type from '@/type/Type';
@@ -11,4 +13,3 @@ type TargetLowerBoundFunc<T extends Type> = (
 ) => E.Either<string, GenericMap>;
 
 export default TargetLowerBoundFunc;
-

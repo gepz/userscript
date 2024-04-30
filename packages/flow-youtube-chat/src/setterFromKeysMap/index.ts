@@ -1,8 +1,10 @@
-import * as Z from 'effect/Effect';
+import {
+  Array as A,
+  Effect as Z,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as A from 'effect/Array';
 
 import UserConfig from '@/UserConfig';
 import UserConfigSetter from '@/UserConfigSetter';

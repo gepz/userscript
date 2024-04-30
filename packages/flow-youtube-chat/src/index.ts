@@ -1,4 +1,6 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
@@ -23,4 +25,3 @@ Z.runPromise(pipe(
   Z.flatMap(initialize),
   Z.withConcurrency(30),
 ));
-

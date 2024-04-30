@@ -1,12 +1,14 @@
-import * as B from 'effect/Boolean';
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+  Array as A,
+  Boolean as B,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
 import {
   mapInput,
 } from 'effect/Order';
-import * as A from 'effect/Array';
 import {
   BehaviorSubject,
 } from 'rxjs';

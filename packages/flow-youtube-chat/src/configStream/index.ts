@@ -1,10 +1,12 @@
-import * as Cause from 'effect/Cause';
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+  Array as A,
+  Cause,
+} from 'effect';
 import {
   pipe,
   apply,
 } from 'effect/Function';
-import * as A from 'effect/Array';
 import {
   merge,
   map,

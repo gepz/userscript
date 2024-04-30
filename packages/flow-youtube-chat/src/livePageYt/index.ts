@@ -1,10 +1,12 @@
-import * as Cause from 'effect/Cause';
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+  Option as O,
+  Array as A,
+  Cause,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as A from 'effect/Array';
 
 import LivePage from '@/LivePage';
 

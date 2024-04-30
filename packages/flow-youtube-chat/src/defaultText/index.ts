@@ -1,4 +1,4 @@
-﻿import TextKey from '@/TextKey';
+import TextKey from '@/TextKey';
 
 export default {
   setting: ['Settings', '設定'],

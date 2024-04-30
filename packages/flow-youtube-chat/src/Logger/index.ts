@@ -1,5 +1,7 @@
-import * as Z from 'effect/Effect';
-import * as A from 'effect/Array';
+import {
+  Effect as Z,
+  Array as A,
+} from 'effect';
 
 export default interface Logger {
   (as: A.NonEmptyReadonlyArray<unknown>): Z.Effect<void>,

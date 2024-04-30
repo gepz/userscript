@@ -1,12 +1,14 @@
 import {
+  Option as O,
+  Array as A,
+  Number as N,
+} from 'effect';
+import {
   pipe,
 } from 'effect/Function';
-import * as N from 'effect/Number';
-import * as O from 'effect/Option';
 import {
   mapInput,
 } from 'effect/Order';
-import * as A from 'effect/Array';
 import memoize from 'micro-memoize';
 
 import FlowChat from '@/FlowChat';

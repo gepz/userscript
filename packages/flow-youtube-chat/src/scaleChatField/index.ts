@@ -1,9 +1,11 @@
-import * as Z from 'effect/Effect';
+import {
+  Array as A,
+  Effect as Z,
+  Option as O,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as A from 'effect/Array';
 
 import LivePageState from '@/LivePageState';
 

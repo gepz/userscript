@@ -1,4 +1,6 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
@@ -16,4 +18,3 @@ export const makeGetter = (c: UserConfig): UserConfigGetter => pipe(
   c,
   mapObject(([x]) => [x, Z.sync(() => c[x])]),
 );
-

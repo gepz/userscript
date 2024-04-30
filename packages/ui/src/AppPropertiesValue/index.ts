@@ -1,4 +1,4 @@
-﻿import AppPropertiesKey from '@/AppPropertiesKey';
+import AppPropertiesKey from '@/AppPropertiesKey';
 import ComputedProperties from '@/ComputedProperties';
 
 type AppPropertiesValue<

@@ -5,7 +5,10 @@ import * as I from '@effect/typeclass/data/Identity';
 import {
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
+import {
+  Option as O,
+} from 'effect';
+
 
 import TaggedValue, {
   makeType,
@@ -56,4 +59,3 @@ export const fromExp = ({
 );
 
 export default TypedCall;
-

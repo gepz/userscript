@@ -1,6 +1,5 @@
-import * as A from 'effect/Array';
+import { Array as A, Option as O, } from 'effect';
 import { pipe, } from 'effect/Function';
-import * as O from 'effect/Option';
 import { h, text, } from 'hyperapp';
 export default (style) => (ontabSelect) => (labels) => (tabs) => (mainTab) => h('div', {
     style: style.container,

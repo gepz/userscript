@@ -2,8 +2,13 @@ import {
   pipe,
   flow,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as I from 'effect/Identity';
+import {
+  Option as O,
+} from 'effect';
+
+import {
+  Identity as I,
+} from 'effect';
 
 import * as EOP from '@/ElementOpticPair';
 import LiteralArray from '@/settingUI/editableExpression/LiteralArray';
@@ -55,4 +60,3 @@ export default (
   }),
   I.let('typeMap', (x) => updateTypeMap(expectedType)(x.type)(m)),
 );
-

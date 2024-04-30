@@ -1,4 +1,4 @@
-﻿import {
+import {
   VNode,
 } from 'hyperapp';
 

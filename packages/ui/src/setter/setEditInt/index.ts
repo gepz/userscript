@@ -1,9 +1,11 @@
-﻿import {
+import {
+  Option as O,
+  Tuple as Tu,
+} from 'effect';
+import {
   pipe,
   constant,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as Tu from 'effect/Tuple';
 
 import Editable, * as Ed from '@/Editable';
 import EditSetter from '@/setter/EditSetter';
@@ -31,4 +33,3 @@ const setEditInt: EditSetter<Editable<number>> = (
 );
 
 export default setEditInt;
-

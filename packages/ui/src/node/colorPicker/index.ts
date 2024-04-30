@@ -1,4 +1,4 @@
-﻿import {
+import {
   identity,
 } from 'effect/Function';
 import {

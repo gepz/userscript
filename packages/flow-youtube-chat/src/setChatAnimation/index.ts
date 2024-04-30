@@ -1,10 +1,12 @@
-import * as A from 'effect/Array';
-import * as Cause from 'effect/Cause';
-import * as Z from 'effect/Effect';
+import {
+  Array as A,
+  Effect as Z,
+  Option as O,
+  Cause,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
 import hash from 'hash-it';
 import memoize from 'micro-memoize';
 

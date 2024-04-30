@@ -8,13 +8,20 @@ import {
 import {
   Semigroup,
 } from '@effect/typeclass/Semigroup';
-import * as E from 'effect/Either';
+import {
+  Either as E,
+} from 'effect';
 import {
   pipe,
   flow,
 } from 'effect/Function';
-import * as A from 'effect/Array';
-import * as RR from 'effect/ReadonlyRecord';
+import {
+  Array as A,
+} from 'effect';
+
+import {
+  ReadonlyRecord as RR,
+} from 'effect';
 
 import TaggedValue, {
   makeType,

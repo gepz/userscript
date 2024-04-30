@@ -2,11 +2,13 @@ import {
   generate,
 } from 'astring';
 import {
+  Array as A,
+  Predicate as P,
+  String as Str,
+} from 'effect';
+import {
   pipe,
 } from 'effect/Function';
-import * as P from 'effect/Predicate';
-import * as A from 'effect/Array';
-import * as Str from 'effect/String';
 import * as expEval from 'expression-eval';
 
 import GMConfig from '@/GMConfig';

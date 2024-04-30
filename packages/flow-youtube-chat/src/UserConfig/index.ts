@@ -1,8 +1,10 @@
-import * as Z from 'effect/Effect';
+import {
+  Array as A,
+  Effect as Z,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as A from 'effect/Array';
 
 import GMConfig from '@/GMConfig';
 import GMConfigItem from '@/GMConfigItem';

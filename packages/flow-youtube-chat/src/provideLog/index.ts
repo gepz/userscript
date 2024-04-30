@@ -1,10 +1,12 @@
-import * as Cause from 'effect/Cause';
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+  Cause,
+  Logger,
+  LogLevel,
+} from 'effect';
 import {
   pipe,
 } from 'effect/Function';
-import * as LogLevel from 'effect/LogLevel';
-import * as Logger from 'effect/Logger';
 import {
   withMinimumLogLevel,
 } from 'effect/Logger';
@@ -37,4 +39,3 @@ export default (
   Z.annotateLogs(LogAnnotationKeys.name, 'FYC'),
   withMinimumLogLevel(LogLevel.Debug),
 );
-

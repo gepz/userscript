@@ -1,12 +1,14 @@
-import * as Z from 'effect/Effect';
+import {
+  Effect as Z,
+  Option as O,
+  Array as A,
+} from 'effect';
 import {
   strict,
 } from 'effect/Equivalence';
 import {
   pipe,
 } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as A from 'effect/Array';
 
 import MainState from '@/MainState';
 import addFlowChat from '@/addFlowChat';

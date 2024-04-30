@@ -1,9 +1,5 @@
-import * as A from 'effect/Array';
+import { Array as A, Option as O, Predicate as P, String as Str, Tuple as Tu, } from 'effect';
 import { pipe, } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as P from 'effect/Predicate';
-import * as Str from 'effect/String';
-import * as Tu from 'effect/Tuple';
 import * as Ed from '../../Editable';
 const setEditRegexes = (editing) => (value) => pipe(value, Str.split(/\r\n|\n/), A.filter(P.not(Str.isEmpty)), (regexes) => ({
     regexes,
