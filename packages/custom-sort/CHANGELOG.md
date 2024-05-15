@@ -1,5 +1,14 @@
 # @userscript/custom-sort
 
+## 1.1.2
+
+### Patch Changes
+
+- 5c48122: update dependencies
+- Updated dependencies [5c48122]
+  - @userscript/forward-to@1.0.4
+  - @userscript/tap-non-null@1.0.4
+
 ## 1.1.1
 
 ### Patch Changes
