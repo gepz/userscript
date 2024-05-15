@@ -6,10 +6,8 @@ import {
   Console,
   FiberRefs,
   HashMap as HM,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import LogAnnotationKeys from '@/LogAnnotationKeys';
 import {

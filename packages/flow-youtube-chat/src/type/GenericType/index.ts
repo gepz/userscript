@@ -1,9 +1,7 @@
 import {
   Either as E,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import TaggedValue, {
   makeType,

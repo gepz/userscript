@@ -1,6 +1,6 @@
 import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import * as expEval from 'expression-eval';
 
 import BooleanLiteral from '@/restrictedExpression/BooleanLiteral';
@@ -34,4 +34,3 @@ export const toJsep = ({
 });
 
 export default PrimitiveLiteral;
-

@@ -3,10 +3,8 @@ import {
   Effect as Z,
   Option as O,
   Cause,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import hash from 'hash-it';
 import memoize from 'micro-memoize';
 
@@ -69,8 +67,8 @@ export default (
           })),
           Z.orElse(() => Z.succeed<FlowChat>(ctx.newChat)),
         ) : setNewChatAnimation(ctx.newChat)(lane)(ctx.progress)(mainState),
-      Z.map((x): typeof ctx => ({
-        ...ctx,
+      Z.map((x) => ({
+        oldChatIndex: ctx.oldChatIndex,
         newChat: x,
       })),
     ),

@@ -1,6 +1,6 @@
 import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import * as expEval from 'expression-eval';
 
 import TaggedValue, {
@@ -35,4 +35,3 @@ export const fromTypedExp = ({
 );
 
 export default Identifier;
-

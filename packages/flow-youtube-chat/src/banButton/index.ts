@@ -2,10 +2,8 @@ import {
   Effect as Z,
   Array as A,
   String as Str,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';

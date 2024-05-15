@@ -2,10 +2,8 @@ import {
   Array as A,
   Effect as Z,
   Option as O,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import ChatData from '@/ChatData';
 import FlowChat from '@/FlowChat';

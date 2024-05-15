@@ -3,10 +3,8 @@ import {
   Cause,
   Logger,
   LogLevel,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import {
   withMinimumLogLevel,
 } from 'effect/Logger';

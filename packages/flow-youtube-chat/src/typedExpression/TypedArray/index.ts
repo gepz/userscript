@@ -4,8 +4,6 @@ import {
 import * as I from '@effect/typeclass/data/Identity';
 import {
   pipe,
-} from 'effect/Function';
-import {
   Array as A,
 } from 'effect';
 

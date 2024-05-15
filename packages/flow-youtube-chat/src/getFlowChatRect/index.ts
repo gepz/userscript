@@ -1,6 +1,6 @@
 import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import FlowChat from '@/FlowChat';
 import UserConfig from '@/UserConfig';
@@ -18,4 +18,3 @@ export default (
   ))) * getFlowChatProgress(chat.animation)),
   (x) => new DOMRectReadOnly(x, chat.y, chat.width, chat.height),
 );
-

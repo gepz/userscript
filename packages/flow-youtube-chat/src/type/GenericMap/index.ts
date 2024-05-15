@@ -1,7 +1,7 @@
 import tapNonNull from '@userscript/tap-non-null';
 import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import {
   SortedMap as SM,
 } from 'effect';

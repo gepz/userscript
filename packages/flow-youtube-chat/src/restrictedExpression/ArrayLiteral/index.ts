@@ -1,10 +1,8 @@
 import {
   Effect as Z,
+  pipe,
 } from 'effect';
 
-import {
-  pipe,
-} from 'effect/Function';
 import {
   Array as A,
 } from 'effect';

@@ -2,10 +2,8 @@ import {
   Option as O,
   Array as A,
   String as Str,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import {
   html,
   HTMLTemplateResult,

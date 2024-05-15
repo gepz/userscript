@@ -1,7 +1,7 @@
 import * as Ed from '@userscript/ui/Editable';
 import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
@@ -33,4 +33,3 @@ const setState: Partial<{
 };
 
 export default setState;
-

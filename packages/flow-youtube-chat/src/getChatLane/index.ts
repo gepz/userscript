@@ -2,10 +2,8 @@ import {
   Option as O,
   Array as A,
   Number as N,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import {
   mapInput,
 } from 'effect/Order';

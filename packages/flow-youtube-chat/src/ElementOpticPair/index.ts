@@ -2,10 +2,8 @@ import * as Op from '@fp-ts/optic';
 import {
   Option as O,
   Array as A,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import {
   Refinement,
 } from 'effect/Predicate';

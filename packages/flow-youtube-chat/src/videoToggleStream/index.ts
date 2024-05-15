@@ -1,9 +1,7 @@
 import {
   Array as A,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import {
   fromEvent,
   merge,

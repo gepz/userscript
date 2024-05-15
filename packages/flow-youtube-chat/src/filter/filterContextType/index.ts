@@ -1,8 +1,6 @@
 import {
-  pipe,
-} from 'effect/Function';
-import {
   Array as A,
+  pipe,
 } from 'effect';
 
 

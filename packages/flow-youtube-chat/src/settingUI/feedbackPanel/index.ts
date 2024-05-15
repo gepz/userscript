@@ -3,10 +3,8 @@ import panelBoxStyle from '@userscript/ui/panelBoxStyle';
 import {
   Array as A,
   Option as O,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import {
   h,
   text,

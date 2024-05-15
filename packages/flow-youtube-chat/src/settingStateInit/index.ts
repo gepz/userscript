@@ -6,7 +6,7 @@
 import * as Ed from '@userscript/ui/Editable';
 import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import * as log from '@/Log';
 import MappedConfigState from '@/MappedConfigState';

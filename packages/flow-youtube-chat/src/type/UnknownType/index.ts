@@ -1,6 +1,6 @@
 import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import AssignGenericFunction from '@/type/AssignGenericFunction';
 import type Type from '@/type/Type';
@@ -24,4 +24,3 @@ export const assignGeneric = (
 ) => (
   synthed,
 ) => pipe();
-

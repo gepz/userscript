@@ -5,10 +5,8 @@ import setEditString from '@userscript/ui/setter/setEditString';
 import {
   Array as A,
   Option as O,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import {
   h,
   VNode,

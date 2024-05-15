@@ -2,10 +2,8 @@ import {
   Array as A,
   Brand,
   LogLevel,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import {
   compressToUTF16,
   decompressFromUTF16,

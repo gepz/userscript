@@ -1,9 +1,6 @@
 import {
-  Identity as I,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import type DotMemberAccess from '@/restrictedExpression/DotMemberAccess';
 import TaggedValue, {
