@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Nothing
 
+## [1.19.0] - 2023-05-15
+
+### Changed
+
+- Add support for Simplified Chinese display language
+
 ## [1.18.1] - 2023-03-18
 
 ### Fixed
