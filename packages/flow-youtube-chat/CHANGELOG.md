@@ -1,5 +1,19 @@
 # @userscript/flow-youtube-chat
 
+## 1.19.0
+
+### Minor Changes
+
+- add support for Simplified Chinese display language
+
+### Patch Changes
+
+- 5c48122: update dependencies
+- Updated dependencies [5c48122]
+  - @userscript/forward-to@1.0.4
+  - @userscript/tap-non-null@1.0.4
+  - @userscript/ui@1.1.3
+
 ## 1.18.1
 
 ### Patch Changes

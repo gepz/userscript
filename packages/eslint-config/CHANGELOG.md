@@ -1,5 +1,11 @@
 # @userscript/eslint-config
 
+## 1.0.4
+
+### Patch Changes
+
+- 5c48122: update dependencies
+
 ## 1.0.3
 
 ### Patch Changes
