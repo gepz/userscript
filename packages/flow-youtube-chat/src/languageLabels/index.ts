@@ -1,7 +1,7 @@
 import languages from '@/languages';
 
 export default [
-  'English',
+  'English(US)',
   '日本語',
   '简体中文',
 ] as const satisfies {
