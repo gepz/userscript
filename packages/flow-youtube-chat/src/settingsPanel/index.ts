@@ -64,7 +64,7 @@ export default (
     text('🌐'),
     h('select', {
       onchange: updateInput('lang')(
-        setFilteredString(['FYC_EN', 'FYC_JA']),
+        setFilteredString(languages),
       )(c),
     }, pipe(
       languages,

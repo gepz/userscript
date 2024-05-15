@@ -1,6 +1,6 @@
 import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import TaggedValue, {
   makeType,
@@ -23,4 +23,3 @@ export const fromTypedExp = ({
 );
 
 export default NumberLiteral;
-

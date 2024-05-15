@@ -1,9 +1,7 @@
 import {
   Either as E,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 export default <T1, T2>(
   f: (

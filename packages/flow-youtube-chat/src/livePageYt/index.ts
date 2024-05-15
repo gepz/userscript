@@ -3,10 +3,8 @@ import {
   Option as O,
   Array as A,
   Cause,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import LivePage from '@/LivePage';
 

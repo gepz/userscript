@@ -1,7 +1,7 @@
 import Editable, * as Ed from '@userscript/ui/Editable';
 import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
@@ -59,4 +59,3 @@ export default <K extends SettingKey<unknown>>(k: K) => (
     ] : []),
   ],
 );
-

@@ -3,7 +3,7 @@ import RootComponent, {
 } from '@userscript/ui/RootComponent';
 import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import {
   h,
 } from 'hyperapp';
@@ -22,4 +22,3 @@ export default (
     },
   }, panel(s)))('span'),
 );
-

@@ -1,9 +1,7 @@
 import {
   Effect as Z,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 export default pipe(
   Z.sync(() => document.createElement('div')),

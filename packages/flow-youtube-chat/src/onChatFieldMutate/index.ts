@@ -2,13 +2,11 @@ import {
   Effect as Z,
   Option as O,
   Array as A,
+  pipe,
 } from 'effect';
 import {
   strict,
 } from 'effect/Equivalence';
-import {
-  pipe,
-} from 'effect/Function';
 
 import MainState from '@/MainState';
 import addFlowChat from '@/addFlowChat';

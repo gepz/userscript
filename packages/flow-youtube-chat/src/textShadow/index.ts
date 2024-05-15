@@ -1,9 +1,7 @@
 import {
   Array as A,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 export default (shadowColor: string) => (offset: number): string => pipe(
   offset,

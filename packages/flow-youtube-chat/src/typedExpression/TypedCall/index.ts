@@ -4,11 +4,8 @@ import {
 import * as I from '@effect/typeclass/data/Identity';
 import {
   pipe,
-} from 'effect/Function';
-import {
   Option as O,
 } from 'effect';
-
 
 import TaggedValue, {
   makeType,

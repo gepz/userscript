@@ -2,10 +2,8 @@ import {
   Effect as Z,
   Option as O,
   LogLevel,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import LogMeta, {
   logMeta,

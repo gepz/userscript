@@ -5,10 +5,8 @@ import {
   Array as A,
   Predicate as P,
   String as Str,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import * as expEval from 'expression-eval';
 
 import GMConfig from '@/GMConfig';

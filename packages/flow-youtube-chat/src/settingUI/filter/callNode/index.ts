@@ -1,13 +1,7 @@
 import {
-  Identity as I,
-} from 'effect';
-import {
   Option as O,
-} from 'effect';
-
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import * as EOP from '@/ElementOpticPair';
 import CallExpression from '@/settingUI/editableExpression/CallExpression';

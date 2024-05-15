@@ -1,9 +1,7 @@
 import {
   LogLevel,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import Log, * as log from '@/Log';
 import maxEventLogBlockCount from '@/maxEventLogBlockCount';

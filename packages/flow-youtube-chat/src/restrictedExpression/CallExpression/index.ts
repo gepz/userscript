@@ -1,15 +1,7 @@
 import {
   Effect as Z,
-} from 'effect';
-
-import {
   pipe,
-} from 'effect/Function';
-import {
   Option as O,
-} from 'effect';
-
-import {
   Array as A,
 } from 'effect';
 

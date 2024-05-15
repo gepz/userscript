@@ -3,10 +3,8 @@ import {
   Effect as Z,
   Option as O,
   Tuple as tuple,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';

@@ -3,7 +3,7 @@ import {
 } from 'astring';
 import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import {
   h,
   text,
@@ -37,4 +37,3 @@ export default (
     typeMap: updateTypeMap(expectedType)(type)(typeMap),
   }),
 ) : errorResult(typeMap));
-

@@ -2,10 +2,8 @@ import {
   Effect as Z,
   Array as A,
   Boolean as B,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import {
   mapInput,
 } from 'effect/Order';

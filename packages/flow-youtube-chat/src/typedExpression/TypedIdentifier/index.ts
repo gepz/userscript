@@ -1,6 +1,6 @@
 import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import type Identifier from '@/restrictedExpression/Identifier';
 import TaggedValue, {
@@ -35,4 +35,3 @@ export const fromExp = ({
 );
 
 export default TypedIdentifier;
-

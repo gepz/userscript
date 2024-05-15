@@ -11,10 +11,8 @@ import {
   String as Str,
   LogLevel,
   Schedule,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import deepEq from 'fast-deep-equal';
 import {
   Dispatch,
@@ -76,21 +74,18 @@ export default ({
       Z.succeed(settingUpdateApps.value),
       Z.flatMap(Z.forEach((x) => Z.sync(() => x(dispatchable)))),
     )),
+    configSubject: makeSubject(configKeys),
+    setterFromKeysMap: setterFromKeysMap(configKeys),
+    channel: new BroadcastChannel<
+    [keyof UserConfig, UserConfig[keyof UserConfig]]
+    >(scriptIdentifier),
   })),
   // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* () {
-    return {
-      ...ctx,
-      configValue: yield* makeConfig(ctx.gmConfig),
-      configSubject: makeSubject(configKeys),
-      setterFromKeysMap: setterFromKeysMap(configKeys),
-    };
-  })),
-  // eslint-disable-next-line func-names
-  Z.flatMap((ctx) => Z.gen(function* () {
+    const configValue = yield* makeConfig(ctx.gmConfig);
     const setConfigPlain = ctx.setterFromKeysMap(
       (key) => (val) => Z.promise(async () => {
-        Object.assign(ctx.configValue, {
+        Object.assign(configValue, {
           [key]: val,
         });
 
@@ -98,42 +93,32 @@ export default ({
       }),
     );
 
+    yield* setConfigPlain.filterExp(defaultFilter(configValue));
+
     const changedConfigMap = (
       key: keyof UserConfig,
     ) => (val: never): Z.Effect<unknown, Cause.NoSuchElementException> => pipe(
-      Z.promise(async () => ctx.configValue[key]),
+      Z.promise(async () => configValue[key]),
       Z.filterOrFail((x) => !deepEq(x, val)),
       Z.flatMap(() => setConfigPlain[key](val)),
     );
 
-    yield* setConfigPlain.filterExp(defaultFilter(ctx.configValue));
-
-    const channel = new BroadcastChannel<
-    [keyof UserConfig, UserConfig[keyof UserConfig]]
-    >(scriptIdentifier);
-
-    const {
-      configValue,
-      ...rest
-    } = ctx;
-
     return {
-      ...rest,
+      ...ctx,
       setChangedConfig: ctx.setterFromKeysMap(
         (key) => (val) => changedConfigMap(key)(val).pipe(Z.ignore),
       ),
-      channel,
       mainState: {
         chatPlaying: new BehaviorSubject(true),
         playerRect: new BehaviorSubject(new DOMRectReadOnly(0, 0, 600, 400)),
         flowChats: new BehaviorSubject<readonly FlowChat[]>([]),
         config: {
-          value: ctx.configValue,
-          getConfig: makeGetter(ctx.configValue),
+          value: configValue,
+          getConfig: makeGetter(configValue),
           setConfig: ctx.setterFromKeysMap(
             (key) => (val) => pipe(
               changedConfigMap(key)(val),
-              Z.zipRight(Z.promise(() => channel.postMessage([key, val]))),
+              Z.zipRight(Z.promise(() => ctx.channel.postMessage([key, val]))),
               Z.zipRight(Z.promise(() => pipe(
                 ctx.gmConfig[key],
                 (x) => GM.setValue(x.gmKey, x.toGm(val)),

@@ -1,10 +1,8 @@
 import {
   Array as A,
   Effect as Z,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 
 import UserConfig from '@/UserConfig';
 import UserConfigSetter from '@/UserConfigSetter';

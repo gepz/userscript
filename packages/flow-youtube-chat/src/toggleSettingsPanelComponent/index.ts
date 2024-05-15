@@ -9,10 +9,8 @@ import RootComponent, {
 } from '@userscript/ui/RootComponent';
 import {
   Effect as Z,
-} from 'effect';
-import {
   pipe,
-} from 'effect/Function';
+} from 'effect';
 import {
   h,
   VNode,
