@@ -33,7 +33,7 @@ const filterOperators = {
   flow: (fns: Tail<Parameters<typeof pipe>>) => (x: unknown) => pipe(x, ...fns),
   and: MonoidEvery.combineAll,
   or: MonoidSome.combineAll,
-  RA: {
+  A: {
     some: A.some,
     getSomes: A.getSomes,
   },
