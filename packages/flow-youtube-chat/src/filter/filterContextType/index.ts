@@ -77,7 +77,7 @@ export default recordType.of({
       genericType.of(0),
     ],
   )(genericType.of(2)),
-  RA: recordType.of({
+  A: recordType.of({
     some: makeFunc(
       [
         withUnknowns(1)(makeFunc(
