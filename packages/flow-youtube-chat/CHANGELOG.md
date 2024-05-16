@@ -1,5 +1,11 @@
 # @userscript/flow-youtube-chat
 
+## 1.19.1
+
+### Patch Changes
+
+- Fix filter bug
+
 ## 1.19.0
 
 ### Minor Changes
