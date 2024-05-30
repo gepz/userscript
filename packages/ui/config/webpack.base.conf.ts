@@ -1,5 +1,5 @@
 import tsbaseConfig from '@userscript/webpack-config/tsbaseConfig';
-import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+// import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import path from 'path';
 import {
   Configuration,

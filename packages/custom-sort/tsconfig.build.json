@@ -14,7 +14,13 @@
       "@/*": ["./src/*"]
     },
     "esModuleInterop": true,
-    "strict": true
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
   },
   "include": [
     "./src/**/*.ts"
