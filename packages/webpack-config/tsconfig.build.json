@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "moduleResolution": "Node10",
-    "noImplicitAny": true,
     "resolveJsonModule": true,
     "module": "es2020",
     "target": "es2020",
@@ -16,8 +15,6 @@
       "@/*": ["src/*"]
     },
     "esModuleInterop": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
     "noUncheckedIndexedAccess": true,
     "strict": true,
     "exactOptionalPropertyTypes": true,
