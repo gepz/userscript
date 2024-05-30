@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "noImplicitAny": true,
     "resolveJsonModule": true,
     "module": "es6",
     "target": "es2020",
@@ -15,8 +14,6 @@
       "@/*": ["./src/*"]
     },
     "esModuleInterop": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
     "strict": true
   },
   "include": [
