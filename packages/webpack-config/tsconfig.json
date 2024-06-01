@@ -1,12 +1,11 @@
 {
-  "extends": "./tsconfig.build.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   },
-  "include": [
-    "**/*.ts",
-  ],
+  "include": ["**/*.ts"],
+  "references": [{ "path": "tsconfig.src.json" }]
 }
