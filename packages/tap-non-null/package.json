@@ -50,10 +50,10 @@
   "scripts": {
     "lint": "eslint . --ext .ts --fix",
     "preinstall": "npx only-allow pnpm",
-    "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.dev.conf.ts",
+    "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.config.dev.ts",
     "prod": "run-s prod_lib prod_umd",
     "prod_lib": "tsc --project tsconfig.lib.json && tsc-alias -p tsconfig.lib.json",
-    "prod_umd": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.prod.conf.ts",
+    "prod_umd": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.config.prod.ts",
     "start": "pnpm dev"
   },
   "sideEffects": false

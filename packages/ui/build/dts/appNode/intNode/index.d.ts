@@ -1,0 +1,3 @@
+/// <reference types="hyperapp" />
+declare const _default: <State, Props, AppCommander, Key extends import("../../ExactTypeKey").default<Props, import("../..").Editable<number>>>(editAction: import("../..").EditAction<State, Props, AppCommander>, getText: import("..").AppTextGetter<Key, State>, getState: <K extends import("../../ExactTypeKey").default<Props, import("../..").Editable<number>>>(k: K) => (s: State) => import("../..").Editable<number>) => (label: Key, min: number, max: number, step: number) => (c: AppCommander) => (s: State) => import("hyperapp").VNode<State>;
+export default _default;
