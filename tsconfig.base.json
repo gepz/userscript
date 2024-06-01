@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "Node10",
+    "resolveJsonModule": true,
+    "module": "es2020",
+    "target": "es2021",
+    "jsx": "react",
+    "allowJs": true,
+    "lib": [
+      "esnext",
+      "dom",
+    ],
+    "esModuleInterop": true,
+    "sourceMap": true,  
+    "composite": true,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "lib",
+    "**/*.spec.ts",
+  ],
+}

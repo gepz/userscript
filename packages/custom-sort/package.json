@@ -57,8 +57,8 @@
   "scripts": {
     "lint": "eslint . --ext .ts --fix",
     "preinstall": "npx only-allow pnpm",
-    "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.dev.conf.ts",
-    "prod_webpack": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.prod.conf.ts",
+    "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.config.dev.ts",
+    "prod_webpack": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.config.prod.ts",
     "prod_prettify": "prettier --config ./config/prettier.config.js --write ./dist/main/index.user.js",
     "prod": "run-s prod_webpack prod_prettify",
     "start": "pnpm dev"

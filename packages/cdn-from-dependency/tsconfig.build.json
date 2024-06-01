@@ -1,38 +1,6 @@
 {
+  "extends": "./tsconfig.src.json",
   "compilerOptions": {
-    "moduleResolution": "Node10",
-    "resolveJsonModule": true,
-    "module": "es2020",
-    "target": "es2020",
-    "jsx": "react",
-    "allowJs": true,
-    "lib": [
-      "esnext",
-      "dom",
-    ],
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "esModuleInterop": true,
-    "sourceMap": true,
-    "exactOptionalPropertyTypes": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "strict": true,
-  },
-  "include": [
-    "./src/**/*.ts",
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "lib",
-    "**/*.spec.ts",
-  ],
+    "declarationDir": "build/dts",
+  }
 }

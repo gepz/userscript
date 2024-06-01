@@ -13,7 +13,7 @@ module.exports = {
     'import/resolver': {
       node: {},
       webpack: {
-        config: path.join(__dirname, './config/webpack.dev.conf.ts'),
+        config: path.join(__dirname, './config/webpack.config.dev.ts'),
       },
     },
   },

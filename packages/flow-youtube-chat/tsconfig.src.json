@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+  },
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "lib",
+    "**/*.spec.ts",
+    "./src/filter/filterContextType",
+    "./src/restrictedExpression",
+    "./src/settingUI/editableExpression",
+    "./src/settingUI/filter",
+    "./src/settingUI/filterPanel",
+    "./src/type",
+    "./src/typedExpression",
+  ]
+}

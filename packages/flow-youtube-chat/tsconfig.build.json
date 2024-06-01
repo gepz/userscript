@@ -1,43 +1,7 @@
 {
+  "extends": "./tsconfig.src.json",
   "compilerOptions": {
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "module": "es6",
-    "target": "es2021",
-    "jsx": "react",
-    "allowJs": true,
-    "lib": [
-      "esnext",
-      "dom",
-    ],
-    "paths": {
-      "@/*": ["./src/*"],
-    },
-    "esModuleInterop": true,
-    "exactOptionalPropertyTypes": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "strict": true,
-  },
-  "include": [
-    "./src/**/*.ts",
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "lib",
-    "**/*.spec.ts",
-    "./src/filter/filterContextType",
-    "./src/restrictedExpression",
-    "./src/settingUI/editableExpression",
-    "./src/settingUI/filter",
-    "./src/settingUI/filterPanel",
-    "./src/type",
-    "./src/typedExpression",
-  ]
+    "composite": false,
+    "incremental": true,
+  }
 }
