@@ -8,6 +8,7 @@ export default (libraryName: string): Configuration => ({
     library: {
       name: libraryName,
       type: 'umd',
+      export:  'default',
     },
   },
   devtool: 'source-map',

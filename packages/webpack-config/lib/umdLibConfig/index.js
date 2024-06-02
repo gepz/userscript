@@ -3,6 +3,7 @@ export default (libraryName) => ({
         library: {
             name: libraryName,
             type: 'umd',
+            export: 'default',
         },
     },
     devtool: 'source-map',

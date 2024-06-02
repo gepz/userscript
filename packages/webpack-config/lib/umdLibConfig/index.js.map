@@ -1,1 +1,1 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../src/umdLibConfig/index.ts"],"names":[],"mappings":"AAKA,eAAe,CAAC,WAAmB,EAAiB,EAAE,CAAC,CAAC;IACtD,MAAM,EAAE;QACN,OAAO,EAAE;YACP,IAAI,EAAE,WAAW;YACjB,IAAI,EAAE,KAAK;SACZ;KACF;IACD,OAAO,EAAE,YAAY;CACtB,CAAC,CAAC"}
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../src/umdLibConfig/index.ts"],"names":[],"mappings":"AAKA,eAAe,CAAC,WAAmB,EAAiB,EAAE,CAAC,CAAC;IACtD,MAAM,EAAE;QACN,OAAO,EAAE;YACP,IAAI,EAAE,WAAW;YACjB,IAAI,EAAE,KAAK;YACX,MAAM,EAAG,SAAS;SACnB;KACF;IACD,OAAO,EAAE,YAAY;CACtB,CAAC,CAAC"}
