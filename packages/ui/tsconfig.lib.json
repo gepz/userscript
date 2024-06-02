@@ -1,8 +1,6 @@
 {
-  "extends": "../../tsconfig.src.json",
+  "extends": "../../tsconfig.lib.json",
   "compilerOptions": {
-    "declarationMap": true,
-    "outDir": "lib",
     "declarationDir": "lib",
   },
 }
