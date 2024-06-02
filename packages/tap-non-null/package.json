@@ -7,10 +7,10 @@
     "typed-assert": "^1.0.9"
   },
   "devDependencies": {
-    "@types/node": "20.12.12",
+    "@types/node": "20.14.0",
     "@types/webpack-bundle-analyzer": "^4.7.0",
-    "@typescript-eslint/eslint-plugin": "^7.10.0",
-    "@typescript-eslint/parser": "^7.10.0",
+    "@typescript-eslint/eslint-plugin": "^7.11.0",
+    "@typescript-eslint/parser": "^7.11.0",
     "@userscript/eslint-config": "workspace:^1.0.4",
     "@userscript/webpack-config": "workspace:^1.0.5",
     "cross-env": "^7.0.3",
