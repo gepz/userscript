@@ -4,7 +4,7 @@
   "version": "1.0.5",
   "author": "",
   "dependencies": {
-    "@types/node": "20.12.12",
+    "@types/node": "20.14.0",
     "webpack": "^5.91.0",
     "webpack-dev-server": "^5.0.4",
     "webpack-merge": "^5.10.0"
