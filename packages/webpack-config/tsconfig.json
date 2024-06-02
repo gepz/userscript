@@ -7,5 +7,5 @@
     "resolveJsonModule": true
   },
   "include": ["**/*.ts"],
-  "references": [{ "path": "tsconfig.src.json" }]
+  "references": [{ "path": "../../tsconfig.src.json" }]
 }
