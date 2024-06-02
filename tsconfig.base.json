@@ -1,17 +1,18 @@
 {
   "compilerOptions": {
-    "moduleResolution": "Node10",
-    "resolveJsonModule": true,
-    "module": "es2020",
     "target": "es2021",
-    "jsx": "react",
+    "module": "es2020",
+    "useDefineForClassFields": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
     "allowJs": true,
     "lib": [
-      "esnext",
-      "dom",
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
     ],
-    "esModuleInterop": true,
-    "sourceMap": true,  
+    "isolatedModules": true,
+    "sourceMap": true,
     "composite": true,
     "exactOptionalPropertyTypes": true,
     "noFallthroughCasesInSwitch": true,
@@ -24,9 +25,9 @@
     "strict": true,
   },
   "exclude": [
-    "node_modules",
-    "dist",
-    "lib",
-    "**/*.spec.ts",
+    "${configDir}/node_modules",
+    "${configDir}/dist",
+    "${configDir}/lib",
+    "${configDir}/**/*.spec.ts",
   ],
 }
