@@ -1,10 +1,4 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "module": "Node16",
-    "moduleResolution": "Node16",
-    "resolveJsonModule": true,
-  },
-  "include": ["**/*.ts"],
+  "extends": "../../tsconfig.package.json",
   "references": [{ "path": "./tsconfig.src.json" }]
 }
