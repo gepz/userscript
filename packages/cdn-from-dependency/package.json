@@ -1,34 +1,11 @@
 {
   "name": "@userscript/cdn-from-dependency",
-  "description": "",
   "version": "1.0.4",
-  "author": "",
-  "devDependencies": {
-    "@types/node": "20.14.0",
-    "@types/webpack-bundle-analyzer": "^4.7.0",
-    "@typescript-eslint/eslint-plugin": "^7.11.0",
-    "@typescript-eslint/parser": "^7.11.0",
-    "@userscript/eslint-config": "workspace:^1.0.4",
-    "@userscript/webpack-config": "workspace:^1.0.5",
-    "cross-env": "^7.0.3",
-    "eslint": "^8.57.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-airbnb-typescript": "^18.0.0",
-    "fork-ts-checker-webpack-plugin": "^9.0.2",
-    "npm-run-all": "^4.1.5",
-    "ts-loader": "^9.5.1",
-    "ts-node": "^10.9.2",
-    "tsc-alias": "^1.8.10",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.5.0-dev.20240601",
-    "webpack": "^5.91.0",
-    "webpack-bundle-analyzer": "^4.10.2",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.4",
-    "webpack-merge": "^5.10.0"
-  },
+  "description": "",
   "keywords": [],
   "license": "AGPL-3.0-or-later",
+  "author": "",
+  "sideEffects": false,
   "exports": {
     ".": {
       "import": "./lib/index.js",
@@ -53,5 +30,28 @@
     "prod_umd": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.config.prod.ts",
     "start": "pnpm dev"
   },
-  "sideEffects": false
+  "devDependencies": {
+    "@types/node": "20.14.0",
+    "@types/webpack-bundle-analyzer": "^4.7.0",
+    "@typescript-eslint/eslint-plugin": "^7.11.0",
+    "@typescript-eslint/parser": "^7.11.0",
+    "@userscript/eslint-config": "workspace:^1.0.4",
+    "@userscript/webpack-config": "workspace:^1.0.5",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "fork-ts-checker-webpack-plugin": "^9.0.2",
+    "npm-run-all": "^4.1.5",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.5.0-dev.20240601",
+    "webpack": "^5.91.0",
+    "webpack-bundle-analyzer": "^4.10.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4",
+    "webpack-merge": "^5.10.0"
+  }
 }
