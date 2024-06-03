@@ -1,7 +1,3 @@
 {
-  "extends": "./tsconfig.src.json",
-  "compilerOptions": {
-    "composite": false,
-    "incremental": true,
-  }
+  "extends": ["../../tsconfig.bundle.json", "./tsconfig.exclude.json"]
 }

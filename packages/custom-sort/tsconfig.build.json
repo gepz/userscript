@@ -1,8 +1,6 @@
 {
-  "extends": "../../tsconfig.src.json",
+  "extends": "../../tsconfig.bundle.json",
   "compilerOptions": {
-    "composite": false,
-    "incremental": true,
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": false,
   }
