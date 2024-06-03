@@ -1,4 +1,4 @@
-export default (configFile, sourceMap = false) => ({
+export default (configFile) => ({
     module: {
         rules: [
             {
@@ -7,9 +7,6 @@ export default (configFile, sourceMap = false) => ({
                     loader: 'ts-loader',
                     options: {
                         configFile,
-                        compilerOptions: {
-                            sourceMap,
-                        },
                     },
                 },
                 exclude: /node_modules/,

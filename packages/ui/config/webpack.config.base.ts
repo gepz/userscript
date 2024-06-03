@@ -9,7 +9,7 @@ import {
 } from 'webpack-merge';
 
 export default merge<Configuration>(
-  tsbaseConfig(path.resolve(__dirname, '../'), true),
+  tsbaseConfig(path.resolve(__dirname, '../')),
   {
     plugins: [
       // new ForkTsCheckerWebpackPlugin({
