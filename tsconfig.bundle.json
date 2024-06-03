@@ -3,5 +3,6 @@
   "compilerOptions": {
     "composite": false,
     "incremental": true,
+    "sourceMap": false
   }
 }

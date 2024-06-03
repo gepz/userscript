@@ -2,7 +2,7 @@ import {
   Configuration,
 } from 'webpack';
 
-export default (configFile: string, sourceMap: boolean = false): Configuration => ({
+export default (configFile: string): Configuration => ({
   module: {
     rules: [
       {
@@ -11,9 +11,6 @@ export default (configFile: string, sourceMap: boolean = false): Configuration =
           loader: 'ts-loader',
           options: { 
             configFile,
-            compilerOptions: {
-              sourceMap,
-            },
           },
         },
         exclude: /node_modules/,

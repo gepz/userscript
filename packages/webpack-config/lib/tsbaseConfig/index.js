@@ -2,7 +2,7 @@ import path from 'path';
 import baseConfig from '../baseConfig';
 import tsLoaderConfig from '../tsLoaderConfig';
 import { merge, } from 'webpack-merge';
-export default (rootDir, mapping = false) => merge(baseConfig(rootDir), tsLoaderConfig('tsconfig.build.json', mapping), {
+export default (rootDir) => merge(baseConfig(rootDir), tsLoaderConfig('tsconfig.build.json'), {
     resolve: {
         extensions: ['.tsx', '.ts'],
     },
