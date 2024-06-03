@@ -1,9 +1,18 @@
 {
   "name": "@userscript/custom-sort",
-  "description": "custom-sort",
   "version": "1.1.2",
+  "description": "custom-sort",
+  "license": "AGPL-3.0-or-later",
+  "scripts": {
+    "lint": "eslint . --ext .ts --fix",
+    "preinstall": "npx only-allow pnpm",
+    "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.config.dev.ts",
+    "prod_webpack": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.config.prod.ts",
+    "prod_prettify": "prettier --config ./config/prettier.config.js --write ./dist/main/index.user.js",
+    "prod": "run-s prod_webpack prod_prettify",
+    "start": "pnpm dev"
+  },
   "dependencies": {
-    "zod": "^3.23.8",
     "@userscript/forward-to": "workspace:^1.0.4",
     "@userscript/tap-non-null": "workspace:^1.0.4",
     "broadcast-channel": "^7.0.0",
@@ -14,7 +23,8 @@
     "rxjs": "^7.8.1",
     "sweetalert2": "^11.11.0",
     "ts-toolbelt": "^9.6.0",
-    "type-fest": "^4.18.3"
+    "type-fest": "^4.18.3",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/greasemonkey": "^4.0.7",
@@ -52,15 +62,5 @@
     "webpack-dev-server": "^5.0.4",
     "webpack-merge": "^5.10.0",
     "webpack-userscript": "^3.2.2"
-  },
-  "license": "AGPL-3.0-or-later",
-  "scripts": {
-    "lint": "eslint . --ext .ts --fix",
-    "preinstall": "npx only-allow pnpm",
-    "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.config.dev.ts",
-    "prod_webpack": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.config.prod.ts",
-    "prod_prettify": "prettier --config ./config/prettier.config.js --write ./dist/main/index.user.js",
-    "prod": "run-s prod_webpack prod_prettify",
-    "start": "pnpm dev"
   }
 }

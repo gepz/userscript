@@ -1,10 +1,14 @@
 {
   "name": "@userscript/eslint-config",
-  "description": "",
   "version": "1.0.4",
-  "author": "",
+  "description": "",
   "keywords": [],
   "license": "AGPL-3.0-or-later",
+  "author": "",
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "peerDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
@@ -14,9 +18,5 @@
     "eslint-plugin-consistent-default-export-name": "^0.0.15",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-import-newlines": "^1.2.3"
-  },
-  "scripts": {
-    "preinstall": "npx only-allow pnpm",
-    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
