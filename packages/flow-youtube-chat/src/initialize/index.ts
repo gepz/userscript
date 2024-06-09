@@ -65,27 +65,26 @@ export default ({
   settingUpdateApps: BehaviorSubject<Dispatch<SettingState>[]>,
   provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>
 }): Z.Effect<unknown> => provideLog(pipe(
-  Z.succeed(defaultGMConfig),
-  Z.map((gmConfig) => ({
-    gmConfig,
-    updateSettingState: (
-      dispatchable: Dispatchable<SettingState>,
-    ): Z.Effect<void> => provideLog(pipe(
-      Z.succeed(settingUpdateApps.value),
-      Z.flatMap(Z.forEach((x) => Z.sync(() => x(dispatchable)))),
-    )),
-    configSubject: makeSubject(configKeys),
-    setterFromKeysMap: setterFromKeysMap(configKeys),
-    channel: new BroadcastChannel<
-    [keyof UserConfig, UserConfig[keyof UserConfig]]
-    >(scriptIdentifier),
-  })),
   // eslint-disable-next-line func-names
-  Z.flatMap((ctx) => Z.gen(function* () {
-    const configValue = yield* makeConfig(ctx.gmConfig);
+  Z.gen(function* () {
+    const ctx = {
+      updateSettingState: (
+        dispatchable: Dispatchable<SettingState>,
+      ): Z.Effect<void> => provideLog(pipe(
+        Z.succeed(settingUpdateApps.value),
+        Z.flatMap(Z.forEach((x) => Z.sync(() => x(dispatchable)))),
+      )),
+      configSubject: makeSubject(configKeys),
+      setterFromKeysMap: setterFromKeysMap(configKeys),
+      channel: new BroadcastChannel<
+      [keyof UserConfig, UserConfig[keyof UserConfig]]
+      >(scriptIdentifier),
+      configValue: yield* makeConfig(defaultGMConfig),
+    };
+
     const setConfigPlain = ctx.setterFromKeysMap(
       (key) => (val) => Z.promise(async () => {
-        Object.assign(configValue, {
+        Object.assign(ctx.configValue, {
           [key]: val,
         });
 
@@ -93,12 +92,12 @@ export default ({
       }),
     );
 
-    yield* setConfigPlain.filterExp(defaultFilter(configValue));
+    yield* setConfigPlain.filterExp(defaultFilter(ctx.configValue));
 
     const changedConfigMap = (
       key: keyof UserConfig,
     ) => (val: never): Z.Effect<unknown, Cause.NoSuchElementException> => pipe(
-      Z.promise(async () => configValue[key]),
+      Z.promise(async () => ctx.configValue[key]),
       Z.filterOrFail((x) => !deepEq(x, val)),
       Z.flatMap(() => setConfigPlain[key](val)),
     );
@@ -113,14 +112,14 @@ export default ({
         playerRect: new BehaviorSubject(new DOMRectReadOnly(0, 0, 600, 400)),
         flowChats: new BehaviorSubject<readonly FlowChat[]>([]),
         config: {
-          value: configValue,
-          getConfig: makeGetter(configValue),
+          value: ctx.configValue,
+          getConfig: makeGetter(ctx.configValue),
           setConfig: ctx.setterFromKeysMap(
             (key) => (val) => pipe(
               changedConfigMap(key)(val),
               Z.zipRight(Z.promise(() => ctx.channel.postMessage([key, val]))),
               Z.zipRight(Z.promise(() => pipe(
-                ctx.gmConfig[key],
+                defaultGMConfig[key],
                 (x) => GM.setValue(x.gmKey, x.toGm(val)),
               ))),
               Z.ignore,
@@ -129,7 +128,7 @@ export default ({
         },
       } satisfies MainState,
     };
-  })),
+  }),
   // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* () {
     const reinitSubject = new Subject<void>();
@@ -227,12 +226,7 @@ export default ({
   // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* () {
     (yield* allStream(
-      {
-        ...ctx,
-        // eslint-disable-next-line max-len
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        liveElementKeys: Object.keys(ctx.live) as (keyof typeof ctx.live)[],
-      },
+      ctx,
       provideLog,
     )).subscribe({
       error: (x) => Z.runPromise(
