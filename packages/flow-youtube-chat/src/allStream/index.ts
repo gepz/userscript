@@ -50,7 +50,6 @@ import {
 } from 'rxjs';
 
 import ConfigObservable from '@/ConfigObservable';
-import LivePage from '@/LivePage';
 import LivePageState from '@/LivePageState';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
@@ -86,7 +85,6 @@ type Ctx = {
     settingsApp: WrappedApp<SettingState>,
     toggleSettingsPanelApp: WrappedApp<SettingState>,
   },
-  liveElementKeys: (keyof LivePage)[],
   live: LivePageState,
   chatScreen: HTMLDivElement,
 };
@@ -105,7 +103,6 @@ export default (
       settingsApp,
       toggleSettingsPanelApp,
     },
-    liveElementKeys,
     live,
     chatScreen,
   }: Ctx,
@@ -148,6 +145,8 @@ export default (
       chatMutationPair: yield* observePair(MutationObserver),
       playerResizePair: yield* observePair(ResizeObserver),
       bodyResizePair: yield* observePair(ResizeObserver),
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      liveElementKeys: Object.keys(live) as (keyof typeof live)[],
     };
   }),
   Z.map((c) => pipe(
@@ -160,7 +159,7 @@ export default (
       c.tapUpdateSettingsRect,
       concatMap((index) => pipe(
         from(Z.runPromise(provideLog(pipe(
-          Z.succeed(liveElementKeys),
+          Z.succeed(c.liveElementKeys),
           Z.flatMap(Z.forEach((key) => live[key].read.pipe(
             Z.option,
             Z.flatMap(O.liftPredicate(
