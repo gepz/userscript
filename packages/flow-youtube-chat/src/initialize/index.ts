@@ -182,7 +182,9 @@ export default ({
   )),
   // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* () {
-    return {
+    (yield* allStream(
+      provideLog,
+    )({
       ...ctx,
       live: makePageState(livePageYt),
       chatScreen: yield* makeChatScreen,
@@ -221,13 +223,7 @@ export default ({
           ),
         ]),
       ),
-    };
-  })),
-  // eslint-disable-next-line func-names
-  Z.flatMap((ctx) => Z.gen(function* () {
-    (yield* allStream(
-      provideLog,
-    )(ctx)).subscribe({
+    })).subscribe({
       error: (x) => Z.runPromise(
         // eslint-disable-next-line max-len
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
