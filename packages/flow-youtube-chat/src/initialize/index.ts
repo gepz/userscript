@@ -226,9 +226,8 @@ export default ({
   // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* () {
     (yield* allStream(
-      ctx,
       provideLog,
-    )).subscribe({
+    )(ctx)).subscribe({
       error: (x) => Z.runPromise(
         // eslint-disable-next-line max-len
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
