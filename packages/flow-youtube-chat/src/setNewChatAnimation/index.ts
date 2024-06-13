@@ -1,7 +1,7 @@
 import {
   Array as A,
   Effect as Z,
-  Option as O,
+  Either as E,
   Tuple as tuple,
   pipe,
 } from 'effect';
@@ -26,10 +26,10 @@ export default (
     y: getLaneY(lane, mainState),
   })),
   Z.tap((newChat) => pipe(
-    newChat.animation,
-    O.match(({
-      onNone: () => Z.void,
-      onSome: (x) => Z.sync(() => x.cancel()),
+    newChat.animationState,
+    E.match(({
+      onLeft: () => Z.void,
+      onRight: (x) => Z.sync(() => x.cancel()),
     })),
   )),
   Z.flatMap((newChat) => pipe(
@@ -61,12 +61,12 @@ export default (
     Z.flatMap((animation) => Z.sync((): FlowChat => {
       const newNewChat = {
         ...newChat,
-        animation: O.some(animation),
-      };
+        animationState: E.right(animation),
+      } satisfies Partial<FlowChat>;
 
       Object.assign(animation, {
         onfinish: () => Object.assign(newNewChat, {
-          animationEnded: true,
+          animationState: E.left('Ended'),
         } satisfies Partial<FlowChat>),
         currentTime: progress * flowDuration,
       } satisfies Partial<Animation>);

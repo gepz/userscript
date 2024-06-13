@@ -1,6 +1,7 @@
 import {
   Option as O,
   Array as A,
+  Either as E,
   Number as N,
   pipe,
 } from 'effect';
@@ -44,7 +45,7 @@ export default (
   const movingChats = pipe(
     flowChats,
     A.take(O.getOrElse(chatIndex, () => flowChats.length)),
-    A.filter((chat) => !chat.animationEnded && chat.width > 0),
+    A.filter((chat) => E.isRight(chat.animationState) && chat.width > 0),
     A.sort(mapInput((x: FlowChat) => x.lane)(N.Order)),
   );
 

@@ -1,5 +1,6 @@
 import {
   Effect as Z,
+  Either as E,
   Array as A,
   Boolean as B,
   pipe,
@@ -19,7 +20,9 @@ export default (
   maxChatCount: number,
 ): Z.Effect<void> => pipe(
   Z.sync(() => flowChats.value),
-  Z.map(A.sort(mapInput((x: FlowChat) => !x.animationEnded)(B.Order))),
+  Z.map(A.sort(mapInput(
+    (x: FlowChat) => E.isRight(x.animationState),
+  )(B.Order))),
   Z.map((x) => A.splitAt(x, x.length - maxChatCount)),
   Z.flatMap(([oldChats, newChats]) => pipe(
     oldChats,

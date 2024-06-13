@@ -1,6 +1,4 @@
-import {
-  Option as O,
-} from 'effect';
+import AnimatingState from 'src/AnimatingState';
 
 import ChatData from '@/ChatData';
 
@@ -8,8 +6,7 @@ export default interface FlowChat {
   data: ChatData,
   element: HTMLElement,
   lane: number,
-  animation: O.Option<Animation>,
-  animationEnded: boolean,
+  animationState: AnimatingState,
   width: number,
   height: number,
   y: number,
