@@ -22,8 +22,8 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "prod": "run-s prod_lib",
-    "prod_lib": "tsc --project tsconfig.lib.json && tsc-alias -p tsconfig.lib.json",
+    "build": "run-s build-lib",
+    "build-lib": "tsc --project tsconfig.lib.json && tsc-alias -p tsconfig.lib.json",
     "start": "pnpm dev"
   },
   "dependencies": {

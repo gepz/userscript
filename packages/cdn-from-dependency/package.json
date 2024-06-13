@@ -25,9 +25,9 @@
     "lint": "eslint . --ext .ts --fix",
     "preinstall": "npx only-allow pnpm",
     "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.config.dev.ts",
-    "prod": "run-s prod_lib prod_umd",
-    "prod_lib": "tsc --project tsconfig.lib.json && tsc-alias -p tsconfig.lib.json",
-    "prod_umd": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.config.prod.ts",
+    "build": "run-s build-lib build-umd",
+    "build-lib": "tsc --project tsconfig.lib.json && tsc-alias -p tsconfig.lib.json",
+    "build-umd": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.config.prod.ts",
     "start": "pnpm dev"
   },
   "devDependencies": {
