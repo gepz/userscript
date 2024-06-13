@@ -26,47 +26,47 @@ export default (
   Z.map(A.flatMap((e) => (Array.from(e.addedNodes) as HTMLElement[]))),
   Z.map(A.filter((x) => x.children.length > 0)),
   Z.map(A.reverse),
-  Z.flatMap(Z.forEach((chat) => pipe(
-    Z.succeed({
-      data: parseChat(chat),
-      eq: O.getEquivalence(strict()),
-    }),
-    Z.zipLeft(Z.logDebug('Chat detected')),
-    Z.bind('banned', (x) => checkBannedWords(x.data, mainState.config.value)),
-    Z.flatMap((ctx) => (ctx.banned ? Z.sync(() => {
+  // eslint-disable-next-line func-names
+  Z.flatMap(Z.forEach((chat) => Z.gen(function* () {
+    yield* Z.logDebug('Chat detected');
+    const data = parseChat(chat);
+    if (yield* checkBannedWords(data, mainState.config.value)) {
       // eslint-disable-next-line no-param-reassign
       chat.style.display = 'none';
-    }) : Z.all([
-      pipe(
-        Z.sync(() => addFlowChat(ctx.data, chatScrn, mainState)),
-        Z.when(() => mainState.config.value.createChats
-        && ctx.data.chatType === 'normal' && !pipe(
-          mainState.flowChats.value,
-          A.some((x) => E.isRight(x.animationState)
-          && ctx.eq(x.data.authorID, ctx.data.authorID)
-          && ctx.eq(x.data.messageText, ctx.data.messageText)
-          && ctx.eq(x.data.timestamp, ctx.data.timestamp)),
-        )),
-        Z.flatMap(Z.flatten),
-      ),
-      ctx.data.authorID.pipe(
-        O.filter(() => mainState.config.value.createBanButton
-         && !chat.children.namedItem('card')),
-        Z.flatMap((x: string) => appendChatMessage(
-          banButton(x)(mainState.config.getConfig)(
-            mainState.config.setConfig,
-          )(chat),
-        )(chat)),
-        Z.zipLeft(Z.logDebug('Ban button added')),
-      ),
-      pipe(
-        Z.sync(() => setChatFieldSimplifyStyle(chat)),
-        Z.when(() => mainState.config.value.simplifyChatField),
-        Z.flatMap(Z.flatten),
-        Z.zipLeft(Z.logDebug('Chat simplified')),
-      ),
-    ], {
-      mode: 'either',
-    }))),
-  ))),
+    } else {
+      const eq = O.getEquivalence(strict());
+      yield* Z.all([
+        pipe(
+          Z.sync(() => addFlowChat(data, chatScrn, mainState)),
+          Z.when(() => mainState.config.value.createChats
+            && data.chatType === 'normal' && !pipe(
+            mainState.flowChats.value,
+            A.some((x) => E.isRight(x.animationState)
+            && eq(x.data.authorID, data.authorID)
+            && eq(x.data.messageText, data.messageText)
+            && eq(x.data.timestamp, data.timestamp)),
+          )),
+          Z.flatMap(Z.flatten),
+        ),
+        data.authorID.pipe(
+          O.filter(() => mainState.config.value.createBanButton
+             && !chat.children.namedItem('card')),
+          Z.flatMap((x: string) => appendChatMessage(
+            banButton(x)(mainState.config.getConfig)(
+              mainState.config.setConfig,
+            )(chat),
+          )(chat)),
+          Z.zipLeft(Z.logDebug('Ban button added')),
+        ),
+        pipe(
+          Z.sync(() => setChatFieldSimplifyStyle(chat)),
+          Z.when(() => mainState.config.value.simplifyChatField),
+          Z.flatMap(Z.flatten),
+          Z.zipLeft(Z.logDebug('Chat simplified')),
+        ),
+      ], {
+        mode: 'either',
+      });
+    }
+  }))),
 );

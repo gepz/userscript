@@ -96,11 +96,6 @@ export default (
     return {
       ...ctx,
       eq: O.getEquivalence(strict()),
-      initDelay: D.millis(100),
-      urlDelay: D.millis(1700),
-      changeDetectInterval: D.millis(700),
-      bodyResizeDetectInterval: D.millis(300),
-      errorRetryInterval: D.millis(5000),
       ...pipe(
         new BehaviorSubject(new DOMRectReadOnly(
           0,
@@ -142,10 +137,14 @@ export default (
   Z.map((c) => pipe(
     c.reinitSubject,
     observeOn(asyncScheduler),
-    delay(D.toMillis(c.initDelay)),
+    pipe(
+      D.millis(100),
+      (initDelay) => delay(D.toMillis(initDelay)),
+    ),
     tapEffect(() => provideLog(Z.logInfo('Init'))),
     switchMap(() => pipe(
-      interval(D.toMillis(c.changeDetectInterval)),
+      D.millis(700),
+      (changeDetectInterval) => interval(D.toMillis(changeDetectInterval)),
       c.tapUpdateSettingsRect,
       concatMap((index) => pipe(
         from(Z.runPromise(provideLog(pipe(
@@ -305,10 +304,12 @@ export default (
         map((x) => Z.all([
           Z.logDebug(`URL Changed: ${x}`),
           removeOldChats(c.mainState.flowChats)(0),
-          Z.logDebug(`Wait for ${D.toMillis(c.urlDelay)}ms...`),
         ])),
         tapEffect(provideLog),
-        delay(D.toMillis(c.urlDelay)),
+        pipe(
+          D.millis(1700),
+          (urlDelay) => delay(D.toMillis(urlDelay)),
+        ),
         tapEffect(() => c.reinitialize),
       ),
       pipe(
@@ -329,10 +330,17 @@ export default (
       ),
       pipe(
         c.bodyResizePair.subject,
-        throttleTime(D.toMillis(c.bodyResizeDetectInterval), undefined, {
-          leading: true,
-          trailing: true,
-        }),
+        pipe(
+          D.millis(300),
+          (bodyResizeDetectInterval) => throttleTime(
+            D.toMillis(bodyResizeDetectInterval),
+            undefined,
+            {
+              leading: true,
+              trailing: true,
+            },
+          ),
+        ),
         startWith([]),
         c.tapUpdateSettingsRect,
       ),
@@ -352,7 +360,10 @@ export default (
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           logWithMeta(LogLevel.Error)(`Errored: ${e}`)(e),
         )),
-        delay(D.toMillis(c.errorRetryInterval)),
+        pipe(
+          D.millis(5000),
+          (errorRetryInterval) => delay(D.toMillis(errorRetryInterval)),
+        ),
         tapEffect(() => c.reinitialize),
       ),
     }),
