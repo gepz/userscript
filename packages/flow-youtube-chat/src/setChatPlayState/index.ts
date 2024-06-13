@@ -1,6 +1,5 @@
 import {
   Effect as Z,
-  Option as O,
   pipe,
 } from 'effect';
 
@@ -10,9 +9,7 @@ import MainState from '@/MainState';
 export default (
   chat: FlowChat,
 ) => (mainState: MainState): Z.Effect<void> => pipe(
-  chat,
-  O.liftPredicate((x) => !x.animationEnded),
-  Z.flatMap((x: FlowChat) => x.animation),
+  chat.animationState,
   Z.tap((x) => Z.sync(mainState.chatPlaying.value ? () => x.play()
   : () => x.pause())),
   Z.flatMap((x) => Z.sync(() => {

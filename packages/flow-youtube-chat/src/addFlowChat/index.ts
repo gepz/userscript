@@ -1,6 +1,7 @@
 import {
   Array as A,
   Effect as Z,
+  Either as E,
   Option as O,
   pipe,
 } from 'effect';
@@ -25,20 +26,20 @@ export default (
     data,
     element: emptyElement,
     lane: -1,
-    animation: O.none(),
-    animationEnded: false,
+    animationState: E.left('NotStarted'),
     width: 2,
     height: getChatFontSize(mainState),
     y: 0,
   } satisfies FlowChat,
   (x: FlowChat) => getChatLane(x, O.none(), 0)(mainState).interval,
-  intervalTooSmall,
-  (x) => x(mainState.config.value),
+  (x) => intervalTooSmall(x)(mainState.config.value),
 ) ? Z.void
 : pipe(
   mainState.flowChats.value,
-  A.findFirstIndex((chat) => chat.animationEnded
-    || mainState.flowChats.value.length
+  A.findFirstIndex((chat) => E.match(chat.animationState, {
+    onLeft: (x) => x === 'Ended',
+    onRight: () => false,
+  }) || mainState.flowChats.value.length
     >= mainState.config.value.maxChatCount),
   O.match({
     onNone: (): Z.Effect<HTMLElement> => pipe(
@@ -53,7 +54,7 @@ export default (
         const chats = mainState.flowChats;
         const chat = A.unsafeGet(chats.value, index);
 
-        yield* chat.animation.pipe(
+        yield* chat.animationState.pipe(
           Z.flatMap((animation) => Z.sync(() => animation.cancel())),
           Z.ignore,
         );
@@ -67,8 +68,7 @@ export default (
     data,
     element,
     lane: -1,
-    animation: O.none(),
-    animationEnded: false,
+    animationState: E.left('NotStarted'),
     width: 2,
     height: getChatFontSize(mainState),
     y: 0,

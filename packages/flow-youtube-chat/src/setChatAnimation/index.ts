@@ -2,6 +2,7 @@ import {
   Array as A,
   Effect as Z,
   Option as O,
+  Either as E,
   Cause,
   pipe,
 } from 'effect';
@@ -40,7 +41,10 @@ export default (
          * (mainState.config.value.flowX2 - mainState.config.value.flowX1)
     }px, -${height * 2}px)`;
   })),
-  Z.filterOrFail(() => !chat.animationEnded),
+  Z.filterOrFail(() => E.match(chat.animationState, {
+    onLeft: (x) => x === 'NotStarted',
+    onRight: () => true,
+  })),
   Z.map((height) => ({
     newChat: {
       ...chat,
@@ -51,7 +55,7 @@ export default (
       mainState.flowChats.value,
       A.findFirstIndex((x) => x === chat),
     ),
-    progress: getFlowChatProgress(chat.animation),
+    progress: getFlowChatProgress(chat.animationState),
   })),
   Z.flatMap((ctx) => pipe(
     getChatLane(ctx.newChat, ctx.oldChatIndex, ctx.progress)(mainState),
@@ -59,11 +63,11 @@ export default (
       lane, interval,
     }) => pipe(
       intervalTooSmall(interval)(mainState.config.value)
-        ? ctx.newChat.animation.pipe(
+        ? ctx.newChat.animationState.pipe(
           Z.tap((x) => Z.sync(() => x.finish())),
           Z.map((): FlowChat => ({
             ...ctx.newChat,
-            animation: O.none(),
+            animationState: E.left('Ended'),
           })),
           Z.orElse(() => Z.succeed<FlowChat>(ctx.newChat)),
         ) : setNewChatAnimation(ctx.newChat)(lane)(ctx.progress)(mainState),

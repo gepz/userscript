@@ -1,6 +1,7 @@
 import {
   Effect as Z,
   Array as A,
+  Either as E,
   Cause,
 } from 'effect';
 import {
@@ -133,7 +134,7 @@ export default (
     }) satisfies ChatUpdateConfig),
     tapEffect((c) => provideLog(pipe(
       Z.succeed(mainState.flowChats.value),
-      Z.map(A.filter((x) => !x.animationEnded)),
+      Z.map(A.filter((x) => E.isRight(x.animationState))),
       Z.flatMap(Z.forEach((chat) => pipe(
         Z.allSuccesses([
           c.render ? Z.succeed(renderChat(chat))
