@@ -37,7 +37,7 @@ export default (
       const eq = O.getEquivalence(strict());
       yield* Z.all([
         pipe(
-          Z.sync(() => addFlowChat(data, chatScrn, mainState)),
+          addFlowChat(data, chatScrn, mainState),
           Z.when(() => mainState.config.value.createChats
             && data.chatType === 'normal' && !pipe(
             mainState.flowChats.value,
@@ -46,7 +46,6 @@ export default (
             && eq(x.data.messageText, data.messageText)
             && eq(x.data.timestamp, data.timestamp)),
           )),
-          Z.flatMap(Z.flatten),
         ),
         data.authorID.pipe(
           O.filter(() => mainState.config.value.createBanButton
@@ -59,9 +58,8 @@ export default (
           Z.zipLeft(Z.logDebug('Ban button added')),
         ),
         pipe(
-          Z.sync(() => setChatFieldSimplifyStyle(chat)),
+          setChatFieldSimplifyStyle(chat),
           Z.when(() => mainState.config.value.simplifyChatField),
-          Z.flatMap(Z.flatten),
           Z.zipLeft(Z.logDebug('Chat simplified')),
         ),
       ], {
