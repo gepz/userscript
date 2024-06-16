@@ -6,6 +6,7 @@ import {
   diff,
 } from 'deep-diff';
 import {
+  SynchronizedRef,
   Array as A,
   Duration as D,
   Effect as Z,
@@ -14,9 +15,6 @@ import {
   pipe,
   flow,
 } from 'effect';
-import {
-  strict,
-} from 'effect/Equivalence';
 import {
   apply,
   identity,
@@ -51,7 +49,9 @@ import {
 } from 'rxjs';
 
 import ConfigObservable from '@/ConfigObservable';
-import LivePageState from '@/LivePageState';
+import {
+  makePageState,
+} from '@/LivePageState';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
@@ -59,6 +59,7 @@ import UserConfigSetter from '@/UserConfigSetter';
 import configKeys from '@/configKeys';
 import configStream from '@/configStream';
 import listeningBroadcastConfigKeys from '@/listeningBroadcastConfigKeys';
+import livePageYt from '@/livePageYt';
 import logWithMeta from '@/logWithMeta';
 import mainCss from '@/mainCss';
 import observePair from '@/observePair';
@@ -67,6 +68,7 @@ import onPlayerResize from '@/onPlayerResize';
 import removeOldChats from '@/removeOldChats';
 import setChatPlayState from '@/setChatPlayState';
 import settingsPanelSize from '@/settingsPanelSize';
+import strictOptionEquivalence from '@/strictOptionEquivalence';
 import tapEffect from '@/tapEffect';
 import updateSettingsRect from '@/updateSettingsRect';
 import videoToggleStream from '@/videoToggleStream';
@@ -88,14 +90,14 @@ export default (
       settingsApp: WrappedApp<SettingState>,
       toggleSettingsPanelApp: WrappedApp<SettingState>,
     },
-    live: LivePageState,
     chatScreen: HTMLDivElement,
   }) => Z.Effect<Observable<unknown>> => flow(
   // eslint-disable-next-line func-names
   (ctx) => Z.gen(function* () {
+    const live = makePageState(livePageYt);
     return {
       ...ctx,
-      eq: O.getEquivalence(strict()),
+      live,
       ...pipe(
         new BehaviorSubject(new DOMRectReadOnly(
           0,
@@ -123,7 +125,7 @@ export default (
         ctx.mainState,
         ctx.co,
         ctx.chatScreen,
-        ctx.live,
+        live,
       ),
       css: yield* mainCss,
       documentMutationPair: yield* observePair(MutationObserver),
@@ -131,7 +133,7 @@ export default (
       playerResizePair: yield* observePair(ResizeObserver),
       bodyResizePair: yield* observePair(ResizeObserver),
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      liveElementKeys: Object.keys(ctx.live) as (keyof typeof ctx.live)[],
+      liveElementKeys: Object.keys(live) as (keyof typeof live)[],
     };
   }),
   Z.map((c) => pipe(
@@ -152,7 +154,7 @@ export default (
           Z.flatMap(Z.forEach((key) => c.live[key].read.pipe(
             Z.option,
             Z.flatMap(O.liftPredicate(
-              (newEle) => !c.eq(c.live[key].ele, newEle),
+              (newEle) => !strictOptionEquivalence(c.live[key].ele, newEle),
             )),
             Z.tap((x) => Z.sync(() => {
               // eslint-disable-next-line no-param-reassign
@@ -174,28 +176,31 @@ export default (
       Z.logDebug('Loading...'),
       Z.zipRight(
         Z.sync(() => {
-          c.documentMutationPair.observer.disconnect();
+          [
+            c.documentMutationPair,
+            c.chatMutationPair,
+            c.playerResizePair,
+            c.bodyResizePair,
+          ].forEach((pair) => {
+            pair.observer.disconnect();
+          });
+
           c.documentMutationPair.observer.observe(document, {
             childList: true,
             subtree: true,
           });
 
-          c.chatMutationPair.observer.disconnect();
-          c.playerResizePair.observer.disconnect();
-          c.bodyResizePair.observer.disconnect();
           document.head.append(c.css);
         }),
       ),
       Z.zipRight(Z.allSuccesses([
-        c.live.chatField.ele.pipe(
-          Z.flatMap((x) => Z.sync(() => c.chatMutationPair.observer.observe(x, {
-            childList: true,
-          }))),
-        ),
-        c.live.chatTicker.ele.pipe(
-          Z.flatMap((x) => Z.sync(() => c.chatMutationPair.observer.observe(x, {
-            childList: true,
-          }))),
+        ...A.map(
+          [c.live.chatField.ele, c.live.chatTicker.ele],
+          Z.flatMap((x) => Z.sync(
+            () => c.chatMutationPair.observer.observe(x, {
+              childList: true,
+            }),
+          )),
         ),
         c.live.player.ele.pipe(
           Z.flatMap((element) => pipe(
@@ -235,7 +240,7 @@ export default (
             () => c.live.offlineSlate.ele,
           ),
           Z.isSuccess,
-          Z.flatMap((x) => Z.sync(() => c.mainState.chatPlaying.next(x))),
+          Z.flatMap((x) => SynchronizedRef.set(c.mainState.chatPlaying, x)),
         ),
       ])),
     ))),
@@ -279,7 +284,7 @@ export default (
             videoToggleStream(element),
             map((playing) => playing || O.isSome(c.live.offlineSlate.ele)),
             map((chatPlaying) => pipe(
-              Z.sync(() => c.mainState.chatPlaying.next(chatPlaying)),
+              SynchronizedRef.set(c.mainState.chatPlaying, chatPlaying),
               Z.zipRight(pipe(
                 Z.succeed(c.mainState.flowChats.value),
                 Z.map(A.map(setChatPlayState)),

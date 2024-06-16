@@ -4,6 +4,7 @@ import {
   BroadcastChannel,
 } from 'broadcast-channel';
 import {
+  SynchronizedRef,
   Array as A,
   Effect as Z,
   Cause,
@@ -29,9 +30,6 @@ import {
   makeSubject,
 } from '@/ConfigSubject';
 import FlowChat from '@/FlowChat';
-import {
-  makePageState,
-} from '@/LivePageState';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
 import UserConfig, {
@@ -44,14 +42,13 @@ import allStream from '@/allStream';
 import configKeys from '@/configKeys';
 import defaultFilter from '@/defaultFilter';
 import defaultGMConfig from '@/defaultGMConfig';
-import livePageYt from '@/livePageYt';
 import logWithMeta from '@/logWithMeta';
 import makeChatScreen from '@/makeChatScreen';
 import mapObject from '@/mapObject';
 import removeOldChats from '@/removeOldChats';
 import scriptIdentifier from '@/scriptIdentifier';
 import setSettingFromConfig from '@/setSettingFromConfig';
-import setterFromKeysMap from '@/setterFromKeysMap';
+import setterFromKeysAndMap from '@/setterFromKeysAndMap';
 import settingStateInit from '@/settingStateInit';
 import settingsComponent from '@/settingsComponent';
 import tapEffect from '@/tapEffect';
@@ -75,15 +72,15 @@ export default ({
         Z.flatMap(Z.forEach((x) => Z.sync(() => x(dispatchable)))),
       )),
       configSubject: makeSubject(configKeys),
-      setterFromKeysMap: setterFromKeysMap(configKeys),
       channel: new BroadcastChannel<
       [keyof UserConfig, UserConfig[keyof UserConfig]]
       >(scriptIdentifier),
       configValue: yield* makeConfig(defaultGMConfig),
     };
 
-    const setConfigPlain = ctx.setterFromKeysMap(
-      (key) => (val) => Z.promise(async () => {
+    const setterFromMap = setterFromKeysAndMap(configKeys);
+    const setConfigPlain = setterFromMap(
+      (key) => (val) => Z.sync(() => {
         Object.assign(ctx.configValue, {
           [key]: val,
         });
@@ -97,26 +94,27 @@ export default ({
     const changedConfigMap = (
       key: keyof UserConfig,
     ) => (val: never): Z.Effect<unknown, Cause.NoSuchElementException> => pipe(
-      Z.promise(async () => ctx.configValue[key]),
+      Z.sync(() => ctx.configValue[key]),
       Z.filterOrFail((x) => !deepEq(x, val)),
       Z.flatMap(() => setConfigPlain[key](val)),
     );
 
     return {
       ...ctx,
-      setChangedConfig: ctx.setterFromKeysMap(
+      setChangedConfig: setterFromMap(
         (key) => (val) => changedConfigMap(key)(val).pipe(Z.ignore),
       ),
       mainState: {
-        chatPlaying: new BehaviorSubject(true),
-        playerRect: new BehaviorSubject(new DOMRectReadOnly(0, 0, 600, 400)),
+        chatPlaying: yield* SynchronizedRef.make(true),
+        playerRect: yield* SynchronizedRef.make(
+          new DOMRectReadOnly(0, 0, 600, 400),
+        ),
         flowChats: new BehaviorSubject<readonly FlowChat[]>([]),
         config: {
           value: ctx.configValue,
           getConfig: makeGetter(ctx.configValue),
-          setConfig: ctx.setterFromKeysMap(
-            (key) => (val) => pipe(
-              changedConfigMap(key)(val),
+          setConfig: setterFromMap(
+            (key) => (val) => changedConfigMap(key)(val).pipe(
               Z.zipRight(Z.promise(() => ctx.channel.postMessage([key, val]))),
               Z.zipRight(Z.promise(() => pipe(
                 defaultGMConfig[key],
@@ -162,11 +160,11 @@ export default ({
       },
     };
   })),
-  Z.tap((ctx) => Z.sync(() => settingUpdateApps.next([
-    ctx.apps.settingsApp.dispatch,
-    ctx.apps.toggleSettingsPanelApp.dispatch,
-    ctx.apps.toggleChatButtonApp.dispatch,
-  ]))),
+  Z.tap((ctx) => Z.sync(() => settingUpdateApps.next(A.map([
+    ctx.apps.settingsApp,
+    ctx.apps.toggleSettingsPanelApp,
+    ctx.apps.toggleChatButtonApp,
+  ], (x) => x.dispatch)))),
   Z.tap((ctx) => pipe(
     Z.succeed([
       `Version: ${packageJson.version}`,
@@ -186,7 +184,6 @@ export default ({
       provideLog,
     )({
       ...ctx,
-      live: makePageState(livePageYt),
       chatScreen: yield* makeChatScreen,
       co: pipe(
         ctx.configSubject,

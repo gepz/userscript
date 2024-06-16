@@ -23,18 +23,21 @@ export default (
   mainState: MainState,
 // eslint-disable-next-line func-names
 ): Z.Effect<void> => Z.gen(function* () {
-  if (pipe(
-    {
+  const chatFontSize = yield* getChatFontSize(mainState);
+  if (yield* pipe(
+    Z.succeed({
       data,
       element: emptyElement,
       lane: -1,
       animationState: E.left('NotStarted'),
       width: 2,
-      height: getChatFontSize(mainState),
+      height: chatFontSize,
       y: 0,
-    } satisfies FlowChat,
-    (x: FlowChat) => getChatLane(x, O.none(), 0)(mainState).interval,
-    (x) => !intervalTooSmall(x)(mainState.config.value),
+    } satisfies FlowChat),
+    Z.flatMap((x: FlowChat) => getChatLane(x, O.none(), 0)(mainState)),
+    Z.map(({
+      interval,
+    }) => !intervalTooSmall(interval)(mainState.config.value)),
   )) {
     yield* pipe(
       mainState.flowChats.value,
@@ -72,7 +75,7 @@ export default (
         lane: -1,
         animationState: E.left('NotStarted'),
         width: 2,
-        height: getChatFontSize(mainState),
+        height: chatFontSize,
         y: 0,
       })),
       Z.flatMap((flowChat) => pipe(

@@ -5,6 +5,7 @@ import {
   Either as E,
   Cause,
   pipe,
+  SynchronizedRef,
 } from 'effect';
 import hash from 'hash-it';
 import memoize from 'micro-memoize';
@@ -33,11 +34,12 @@ export default (
 ): Z.Effect<{
   newChat: FlowChat,
 }, Cause.NoSuchElementException> => pipe(
-  Z.succeed(getChatFontSize(mainState)),
-  Z.tap((height) => Z.sync(() => {
+  getChatFontSize(mainState),
+  // eslint-disable-next-line func-names
+  Z.tap((height) => Z.gen(function* () {
     // eslint-disable-next-line no-param-reassign
     chat.element.style.transform = `translate(${
-      mainState.playerRect.value.width
+      (yield* SynchronizedRef.get(mainState.playerRect)).width
          * (mainState.config.value.flowX2 - mainState.config.value.flowX1)
     }px, -${height * 2}px)`;
   })),
@@ -57,25 +59,26 @@ export default (
     ),
     progress: getFlowChatProgress(chat.animationState),
   })),
-  Z.flatMap((ctx) => pipe(
-    getChatLane(ctx.newChat, ctx.oldChatIndex, ctx.progress)(mainState),
-    ({
+  Z.flatMap((ctx) => getChatLane(
+    ctx.newChat,
+    ctx.oldChatIndex,
+    ctx.progress,
+  )(mainState).pipe(
+    Z.flatMap(({
       lane, interval,
-    }) => pipe(
-      intervalTooSmall(interval)(mainState.config.value)
-        ? ctx.newChat.animationState.pipe(
-          Z.tap((x) => Z.sync(() => x.finish())),
-          Z.map((): FlowChat => ({
-            ...ctx.newChat,
-            animationState: E.left('Ended'),
-          })),
-          Z.orElse(() => Z.succeed<FlowChat>(ctx.newChat)),
-        ) : setNewChatAnimation(ctx.newChat)(lane)(ctx.progress)(mainState),
-      Z.map((x) => ({
-        oldChatIndex: ctx.oldChatIndex,
-        newChat: x,
-      })),
-    ),
+    }) => (intervalTooSmall(interval)(mainState.config.value)
+      ? ctx.newChat.animationState.pipe(
+        Z.tap((x) => Z.sync(() => x.finish())),
+        Z.map((): FlowChat => ({
+          ...ctx.newChat,
+          animationState: E.left('Ended'),
+        })),
+        Z.orElse(() => Z.succeed<FlowChat>(ctx.newChat)),
+      ) : setNewChatAnimation(ctx.newChat)(lane)(ctx.progress)(mainState))),
+    Z.map((x) => ({
+      oldChatIndex: ctx.oldChatIndex,
+      newChat: x,
+    })),
   )),
   Z.tap((x) => setChatPlayState(x.newChat)(mainState)),
   Z.flatMap((x) => O.match(x.oldChatIndex, {

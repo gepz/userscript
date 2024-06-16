@@ -2,8 +2,10 @@ import {
   Option as O,
   Array as A,
   Either as E,
+  Effect as Z,
   Number as N,
   pipe,
+  SynchronizedRef,
 } from 'effect';
 import {
   mapInput,
@@ -25,14 +27,14 @@ export default (
   flowChats: {
     value: flowChats,
   },
-  playerRect: {
-    value: playerRect,
-  },
-} : MainState): {
+  playerRect,
+} : MainState): Z.Effect<{
   lane: number,
   interval: number,
-} => {
-  const flowWidth = playerRect.width * (
+// eslint-disable-next-line func-names
+}> => Z.gen(function* () {
+  const rect = yield* SynchronizedRef.get(playerRect);
+  const flowWidth = rect.width * (
     config.flowX2 - config.flowX1
   );
 
@@ -40,7 +42,7 @@ export default (
     width: chatWidth,
     height: chatHeight,
     x: chatX,
-  } = getFlowChatRect(flowChat, config, playerRect);
+  } = getFlowChatRect(flowChat, config, rect);
 
   const movingChats = pipe(
     flowChats,
@@ -53,7 +55,7 @@ export default (
     const {
       width: otherWidth,
       x: otherX,
-    } = getFlowChatRect(x, config, playerRect);
+    } = getFlowChatRect(x, config, rect);
 
     const gap = ((chatHeight * otherWidth * chatWidth) ** 0.333)
       * config.minSpacing;
@@ -152,4 +154,4 @@ export default (
       interval: x.maxInterval,
     }),
   );
-};
+});

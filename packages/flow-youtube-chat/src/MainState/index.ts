@@ -1,4 +1,7 @@
 import {
+  SynchronizedRef,
+} from 'effect';
+import {
   BehaviorSubject,
 } from 'rxjs';
 
@@ -8,8 +11,8 @@ import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';
 
 export default interface MainState {
-  chatPlaying: BehaviorSubject<boolean>;
-  playerRect: BehaviorSubject<DOMRectReadOnly>;
+  chatPlaying: SynchronizedRef.SynchronizedRef<boolean>;
+  playerRect: SynchronizedRef.SynchronizedRef<DOMRectReadOnly>;
   config: {
     value: UserConfig,
     getConfig: UserConfigGetter,
@@ -17,4 +20,3 @@ export default interface MainState {
   },
   flowChats: BehaviorSubject<readonly FlowChat[]>;
 }
-
