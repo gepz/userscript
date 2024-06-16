@@ -5,9 +5,6 @@ import {
   Array as A,
   pipe,
 } from 'effect';
-import {
-  strict,
-} from 'effect/Equivalence';
 
 import MainState from '@/MainState';
 import addFlowChat from '@/addFlowChat';
@@ -16,6 +13,7 @@ import banButton from '@/banButton';
 import checkBannedWords from '@/checkBannedWords';
 import parseChat from '@/parseChat';
 import setChatFieldSimplifyStyle from '@/setChatFieldSimplifyStyle';
+import strictOptionEquivalence from '@/strictOptionEquivalence';
 
 export default (
   chatScrn: HTMLElement,
@@ -34,7 +32,6 @@ export default (
       // eslint-disable-next-line no-param-reassign
       chat.style.display = 'none';
     } else {
-      const eq = O.getEquivalence(strict());
       yield* Z.all([
         pipe(
           addFlowChat(data, chatScrn, mainState),
@@ -42,9 +39,9 @@ export default (
             && data.chatType === 'normal' && !pipe(
             mainState.flowChats.value,
             A.some((x) => E.isRight(x.animationState)
-            && eq(x.data.authorID, data.authorID)
-            && eq(x.data.messageText, data.messageText)
-            && eq(x.data.timestamp, data.timestamp)),
+            && strictOptionEquivalence(x.data.authorID, data.authorID)
+            && strictOptionEquivalence(x.data.messageText, data.messageText)
+            && strictOptionEquivalence(x.data.timestamp, data.timestamp)),
           )),
         ),
         data.authorID.pipe(

@@ -4,6 +4,7 @@ import {
   Either as E,
   Tuple as tuple,
   pipe,
+  SynchronizedRef,
 } from 'effect';
 
 import FlowChat from '@/FlowChat';
@@ -20,10 +21,11 @@ export default (
 ) => (
   mainState: MainState,
 ): Z.Effect<FlowChat> => pipe(
-  Z.sync((): FlowChat => ({
+  getLaneY(lane, mainState),
+  Z.map((y): FlowChat => ({
     ...chat,
     lane,
-    y: getLaneY(lane, mainState),
+    y,
   })),
   Z.tap((newChat) => pipe(
     newChat.animationState,
@@ -32,10 +34,10 @@ export default (
       onRight: (x) => Z.sync(() => x.cancel()),
     })),
   )),
-  Z.flatMap((newChat) => pipe(
-    Z.succeed([
+  Z.flatMap((newChat) => SynchronizedRef.get(mainState.playerRect).pipe(
+    Z.map((rect) => [
       [
-        mainState.playerRect.value.width
+        rect.width
           * (mainState.config.value.flowX2 - mainState.config.value.flowX1),
         newChat.y,
       ],

@@ -1,6 +1,7 @@
 import {
   Option as O,
   Array as A,
+  Effect as Z,
   String as Str,
   pipe,
 } from 'effect';
@@ -91,16 +92,21 @@ const parseMessage = (
 export default (
   chat: FlowChat,
   mainState: MainState,
-): HTMLTemplateResult => pipe(
-  {
-    data: chat.data,
-    config: mainState.config.value,
-  },
-  ({
+): Z.Effect<HTMLTemplateResult> => pipe(
+  // eslint-disable-next-line func-names
+  Z.gen(function* () {
+    return {
+      data: chat.data,
+      config: mainState.config.value,
+      fontSize: yield* getChatFontSize(mainState),
+    };
+  }),
+  Z.map(({
     data,
     config,
+    fontSize,
   }) => html`<span style=${styleMap({
-    fontSize: `${getChatFontSize(mainState)}px`,
+    fontSize: `${fontSize}px`,
     visibility: config.displayChats ? 'visible' : 'hidden',
     color: data.authorType === 'owner' ? config.ownerColor
     : data.authorType === 'moderator' ? config.moderatorColor
@@ -165,5 +171,5 @@ export default (
       ),
     ],
     A.getSomes,
-  )}</span>`,
+  )}</span>`),
 );

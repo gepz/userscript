@@ -11,7 +11,6 @@ import chatNode from '@/chatNode';
 
 export default (chat: FlowChat) => (
   mainState: MainState,
-): Z.Effect<void> => Z.sync(() => render(
-  chatNode(chat, mainState),
-  chat.element,
-));
+): Z.Effect<void> => chatNode(chat, mainState).pipe(
+  Z.flatMap((node) => Z.sync(() => render(node, chat.element))),
+);
