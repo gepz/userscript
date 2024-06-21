@@ -31,10 +31,10 @@
     "start": "pnpm dev"
   },
   "devDependencies": {
-    "@types/node": "20.14.2",
+    "@types/node": "20.14.7",
     "@types/webpack-bundle-analyzer": "^4.7.0",
-    "@typescript-eslint/eslint-plugin": "^7.12.0",
-    "@typescript-eslint/parser": "^7.12.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
+    "@typescript-eslint/parser": "^7.13.1",
     "@userscript/eslint-config": "workspace:^1.0.4",
     "@userscript/webpack-config": "workspace:^1.0.5",
     "cross-env": "^7.0.3",
@@ -49,7 +49,7 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.0-dev.20240614"
 ,
-    "webpack": "^5.91.0",
+    "webpack": "^5.92.1",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4",

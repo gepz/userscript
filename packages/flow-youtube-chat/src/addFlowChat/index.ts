@@ -4,6 +4,7 @@ import {
   Either as E,
   Option as O,
   pipe,
+  SynchronizedRef,
 } from 'effect';
 
 import ChatData from '@/ChatData';
@@ -40,31 +41,39 @@ export default (
     }) => !intervalTooSmall(interval)(mainState.config.value)),
   )) {
     yield* pipe(
-      mainState.flowChats.value,
-      A.findFirstIndex((chat) => E.match(chat.animationState, {
-        onLeft: (x) => x === 'Ended',
-        onRight: () => false,
-      }) || mainState.flowChats.value.length
-    >= mainState.config.value.maxChatCount),
-      O.match({
-        onNone: (): Z.Effect<HTMLElement> => pipe(
+      SynchronizedRef.get(mainState.flowChats),
+      Z.flatMap((chats) => A.findFirstIndex(
+        chats,
+        (chat) => E.match(chat.animationState, {
+          onLeft: (x) => x === 'Ended',
+          onRight: () => false,
+        }) || chats.length >= mainState.config.value.maxChatCount,
+      )),
+      Z.matchEffect({
+        onFailure: (): Z.Effect<HTMLElement> => pipe(
           Z.sync(() => document.createElement('span')),
           Z.tap((element) => Z.sync(() => chatScrn.append(element))),
           Z.tap((element) => Z.sync(() => element.classList.add('fyc_chat'))),
           Z.zipLeft(Z.logDebug('Flow chat element added')),
         ),
-        onSome: (index): Z.Effect<HTMLElement> => pipe(
+        onSuccess: (index): Z.Effect<HTMLElement> => pipe(
           // eslint-disable-next-line func-names
           Z.gen(function* () {
-            const chats = mainState.flowChats;
-            const chat = A.unsafeGet(chats.value, index);
+            const chat = pipe(
+              yield* SynchronizedRef.get(mainState.flowChats),
+              A.unsafeGet(index),
+            );
+
+            yield* SynchronizedRef.update(
+              mainState.flowChats,
+              A.remove(index),
+            );
 
             yield* chat.animationState.pipe(
-              Z.flatMap((animation) => Z.sync(() => animation.cancel())),
+              Z.tap((animation) => Z.sync(() => animation.cancel())),
               Z.ignore,
             );
 
-            chats.next(A.remove(chats.value, index));
             return chat.element;
           }),
         ),
@@ -87,9 +96,10 @@ export default (
             Z.sync(() => flowChat.element.remove()),
             Z.zipLeft(Z.logDebug('Flow chat element removed')),
           ),
-          onSuccess: (x) => Z.sync(() => mainState.flowChats.next(
-            A.append(mainState.flowChats.value, x.newChat),
-          )),
+          onSuccess: (x) => SynchronizedRef.update(
+            mainState.flowChats,
+            A.append(x.newChat),
+          ),
         }),
       )),
     );

@@ -246,11 +246,6 @@ export default (
     ))),
     switchMap(() => merge(
       pipe(
-        c.mainState.flowChats,
-        map((x) => Z.logDebug(`flowChats length: ${x.length}`)),
-        tapEffect(provideLog),
-      ),
-      pipe(
         fromEvent(c.channel, 'message'),
         map(([key, val]) => pipe(
           listeningBroadcastConfigKeys.includes(key),
@@ -286,7 +281,7 @@ export default (
             map((chatPlaying) => pipe(
               SynchronizedRef.set(c.mainState.chatPlaying, chatPlaying),
               Z.zipRight(pipe(
-                Z.succeed(c.mainState.flowChats.value),
+                SynchronizedRef.get(c.mainState.flowChats),
                 Z.map(A.map(setChatPlayState)),
                 Z.flatMap(Z.forEach(apply(c.mainState))),
               )),

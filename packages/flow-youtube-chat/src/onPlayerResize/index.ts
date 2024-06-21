@@ -17,7 +17,7 @@ export default (
     `Resize [${x.width.toFixed(1)}, ${x.height.toFixed(1)}]`,
   )),
   Z.flatMap((r) => SynchronizedRef.set(mainState.playerRect, r)),
-  Z.zipRight(Z.sync(() => mainState.flowChats.value)),
+  Z.zipRight(SynchronizedRef.get(mainState.flowChats)),
   Z.flatMap(Z.forEach((x) => Z.all([
     renderChat(x)(mainState),
     Z.ignore(setChatAnimation(x)(mainState)),

@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "prepare": "husky install"
+    "prepare": "husky",
+    "test": "echo \"No test\""
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.5",
