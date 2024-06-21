@@ -3,6 +3,7 @@ import {
   Array as A,
   Either as E,
   Cause,
+  SynchronizedRef,
 } from 'effect';
 import {
   pipe,
@@ -133,7 +134,7 @@ export default (
       ...x,
     }) satisfies ChatUpdateConfig),
     tapEffect((c) => provideLog(pipe(
-      Z.succeed(mainState.flowChats.value),
+      SynchronizedRef.get(mainState.flowChats),
       Z.map(A.filter((x) => E.isRight(x.animationState))),
       Z.flatMap(Z.forEach((chat) => pipe(
         Z.allSuccesses([

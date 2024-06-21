@@ -24,9 +24,7 @@ export default (
   config: {
     value: config,
   },
-  flowChats: {
-    value: flowChats,
-  },
+  flowChats,
   playerRect,
 } : MainState): Z.Effect<{
   lane: number,
@@ -45,8 +43,8 @@ export default (
   } = getFlowChatRect(flowChat, config, rect);
 
   const movingChats = pipe(
-    flowChats,
-    A.take(O.getOrElse(chatIndex, () => flowChats.length)),
+    yield* SynchronizedRef.get(flowChats),
+    (chats) => A.take(chats, O.getOrElse(chatIndex, () => chats.length)),
     A.filter((chat) => E.isRight(chat.animationState) && chat.width > 0),
     A.sort(mapInput((x: FlowChat) => x.lane)(N.Order)),
   );

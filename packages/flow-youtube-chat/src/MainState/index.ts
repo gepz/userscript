@@ -1,9 +1,6 @@
 import {
   SynchronizedRef,
 } from 'effect';
-import {
-  BehaviorSubject,
-} from 'rxjs';
 
 import FlowChat from '@/FlowChat';
 import UserConfig from '@/UserConfig';
@@ -18,5 +15,5 @@ export default interface MainState {
     getConfig: UserConfigGetter,
     setConfig: UserConfigSetter,
   },
-  flowChats: BehaviorSubject<readonly FlowChat[]>;
+  flowChats: SynchronizedRef.SynchronizedRef<readonly FlowChat[]>;
 }

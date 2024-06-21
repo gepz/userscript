@@ -109,7 +109,7 @@ export default ({
         playerRect: yield* SynchronizedRef.make(
           new DOMRectReadOnly(0, 0, 600, 400),
         ),
-        flowChats: new BehaviorSubject<readonly FlowChat[]>([]),
+        flowChats: yield* SynchronizedRef.make<readonly FlowChat[]>([]),
         config: {
           value: ctx.configValue,
           getConfig: makeGetter(ctx.configValue),
@@ -129,15 +129,9 @@ export default ({
   }),
   // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* () {
-    const reinitSubject = new Subject<void>();
     const stateInit = settingStateInit(ctx.mainState.config.value);
     return {
       ...ctx,
-      reinitSubject,
-      reinitialize: provideLog(Z.sync(() => {
-        // eslint-disable-next-line compat/compat
-        requestAnimationFrame(() => forwardTo(reinitSubject)());
-      })),
       apps: {
         toggleChatButtonApp: yield* wrapApp(
           toggleChatButton(ctx.mainState.config.setConfig),
@@ -180,10 +174,18 @@ export default ({
   )),
   // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* () {
+    const reinitSubject = new Subject<void>();
+    const reinitialize = provideLog(Z.sync(() => {
+      // eslint-disable-next-line compat/compat
+      requestAnimationFrame(() => forwardTo(reinitSubject)());
+    }));
+
     (yield* allStream(
       provideLog,
     )({
       ...ctx,
+      reinitSubject,
+      reinitialize,
       chatScreen: yield* makeChatScreen,
       co: pipe(
         ctx.configSubject,
@@ -229,6 +231,6 @@ export default ({
       complete: () => Z.runPromise(Z.logWarning('Stream complete')),
     });
 
-    yield* ctx.reinitialize;
+    yield* reinitialize;
   })),
 ));

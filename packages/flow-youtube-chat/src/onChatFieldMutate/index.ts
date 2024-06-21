@@ -4,6 +4,7 @@ import {
   Option as O,
   Array as A,
   pipe,
+  SynchronizedRef,
 } from 'effect';
 
 import MainState from '@/MainState';
@@ -35,13 +36,16 @@ export default (
       yield* Z.all([
         pipe(
           addFlowChat(data, chatScrn, mainState),
-          Z.when(() => mainState.config.value.createChats
-            && data.chatType === 'normal' && !pipe(
-            mainState.flowChats.value,
-            A.some((x) => E.isRight(x.animationState)
-            && strictOptionEquivalence(x.data.authorID, data.authorID)
-            && strictOptionEquivalence(x.data.messageText, data.messageText)
-            && strictOptionEquivalence(x.data.timestamp, data.timestamp)),
+          Z.when(pipe(
+            yield* SynchronizedRef.get(mainState.flowChats),
+            (flowChats) => () => mainState.config.value.createChats
+            && data.chatType === 'normal' && !A.some(
+              flowChats,
+              (x) => E.isRight(x.animationState)
+              && strictOptionEquivalence(x.data.authorID, data.authorID)
+              && strictOptionEquivalence(x.data.messageText, data.messageText)
+              && strictOptionEquivalence(x.data.timestamp, data.timestamp),
+            ),
           )),
         ),
         data.authorID.pipe(

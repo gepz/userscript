@@ -47,17 +47,20 @@ export default (
     onLeft: (x) => x === 'NotStarted',
     onRight: () => true,
   })),
-  Z.map((height) => ({
-    newChat: {
-      ...chat,
-      width: getWidth(chat.element.firstElementChild),
-      height,
-    } satisfies FlowChat,
-    oldChatIndex: pipe(
-      mainState.flowChats.value,
-      A.findFirstIndex((x) => x === chat),
-    ),
-    progress: getFlowChatProgress(chat.animationState),
+  // eslint-disable-next-line func-names
+  Z.flatMap((height) => Z.gen(function* () {
+    return {
+      newChat: {
+        ...chat,
+        width: getWidth(chat.element.firstElementChild),
+        height,
+      } satisfies FlowChat,
+      oldChatIndex: pipe(
+        yield* SynchronizedRef.get(mainState.flowChats),
+        A.findFirstIndex((x) => x === chat),
+      ),
+      progress: getFlowChatProgress(chat.animationState),
+    };
   })),
   Z.flatMap((ctx) => getChatLane(
     ctx.newChat,
@@ -86,9 +89,7 @@ export default (
       newChat: x.newChat,
     }),
     onSome: (index) => pipe(
-      Z.sync(() => mainState.flowChats.next(
-        A.replace(mainState.flowChats.value, index, x.newChat),
-      )),
+      SynchronizedRef.update(mainState.flowChats, A.replace(index, x.newChat)),
       Z.zipRight(Z.fail(new Cause.NoSuchElementException())),
     ),
   })),
