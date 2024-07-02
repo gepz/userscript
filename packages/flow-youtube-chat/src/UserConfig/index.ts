@@ -1,5 +1,4 @@
 import {
-  Array as A,
   Effect as Z,
   pipe,
 } from 'effect';
@@ -18,10 +17,9 @@ export const makeConfig = (
 ): Z.Effect<UserConfig> => pipe(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   Object.entries(config) as [(keyof GMConfig), GMConfig[keyof GMConfig]][],
-  A.map(([k, c]) => c.getValue.pipe(
+  Z.forEach(([k, c]) => c.getValue.pipe(
     Z.map((x: UserConfig[keyof GMConfig]) => [k, x] as const),
   )),
-  Z.all,
   Z.map<
   readonly(readonly [keyof UserConfig, UserConfig[keyof UserConfig]])[],
   UserConfig

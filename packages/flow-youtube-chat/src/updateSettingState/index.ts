@@ -1,5 +1,4 @@
 import {
-  Array as A,
   Effect as Z,
   pipe,
 } from 'effect';
@@ -16,6 +15,5 @@ export default (
   dispatchable: Dispatchable<SettingState>,
 ): Z.Effect<void> => pipe(
   apps,
-  A.map((x) => Z.sync(() => x(dispatchable))),
-  Z.all,
+  Z.forEach((x) => Z.sync(() => x(dispatchable))),
 );
