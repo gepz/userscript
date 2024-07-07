@@ -1,6 +1,6 @@
 {
   "name": "@userscript/flow-youtube-chat",
-  "version": "1.19.1",
+  "version": "1.19.2",
   "description": "flow-youtube-chat",
   "license": "AGPL-3.0-or-later",
   "scripts": {
