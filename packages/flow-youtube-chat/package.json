@@ -13,7 +13,7 @@
     "start": "pnpm dev"
   },
   "browserslist": [
-    "0.15% and defaults"
+    "> 0.15% and defaults"
   ],
   "dependencies": {
     "@effect/schema": "^0.68.4",
