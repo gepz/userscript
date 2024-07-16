@@ -12,6 +12,9 @@
     "build": "run-s build-webpack build-prettify",
     "start": "pnpm dev"
   },
+  "browserslist": [
+    "0.15% and defaults"
+  ],
   "dependencies": {
     "@effect/schema": "^0.68.4",
     "@effect/typeclass": "^0.24.32",
@@ -69,8 +72,7 @@
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.6.0-dev.20240614"
-,
+    "typescript": "^5.6.0-dev.20240614",
     "webpack": "^5.92.1",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",

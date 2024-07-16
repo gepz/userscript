@@ -176,7 +176,6 @@ export default ({
   Z.flatMap((ctx) => Z.gen(function* () {
     const reinitSubject = new Subject<void>();
     const reinitialize = provideLog(Z.sync(() => {
-      // eslint-disable-next-line compat/compat
       requestAnimationFrame(() => forwardTo(reinitSubject)());
     }));
 
