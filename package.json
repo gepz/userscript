@@ -10,6 +10,6 @@
     "@changesets/cli": "^2.27.7",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
-    "husky": "^9.1.1"
+    "husky": "^9.1.2"
   }
 }
