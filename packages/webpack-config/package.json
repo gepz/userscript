@@ -27,7 +27,7 @@
     "start": "pnpm dev"
   },
   "dependencies": {
-    "@types/node": "20.14.11",
+    "@types/node": "20.14.12",
     "webpack": "^5.93.0",
     "webpack-dev-server": "^5.0.4",
     "webpack-merge": "^6.0.1"
