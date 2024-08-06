@@ -7,7 +7,7 @@ export default pipe(
   Z.sync(() => document.createElement('style')),
   Z.tap((x) => Z.sync(() => {
     // eslint-disable-next-line no-param-reassign
-    x.innerHTML = `.fyc_chat {
+    x.textContent = `.fyc_chat {
   line-height: 1;
   z-index: 30;
   position: absolute;

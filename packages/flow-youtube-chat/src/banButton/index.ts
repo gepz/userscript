@@ -7,7 +7,7 @@ import {
 
 import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';
-import defaultToast from '@/defaultToast';
+// import defaultToast from '@/defaultToast';
 
 const template = Z.runPromise(pipe(
   Z.succeed(document.createElement('button')),
@@ -30,12 +30,27 @@ const template = Z.runPromise(pipe(
     'NGに入れる(Ban this user)',
   ))),
   Z.tap((x) => Z.sync(() => {
-    // eslint-disable-next-line no-param-reassign
-    x.innerHTML = '<svg class="style-scope yt-icon" style="width: 100%;'
-  + ' height: 75%; fill: var(--yt-spec-text-secondary);" viewBox="0 0 512 512">'
-  // eslint-disable-next-line max-len
-  + '<path d="M440 78A256 256 0 1 0 73 435 256 256 0 0 0 440 78zm-99 35L113 341C37 179 212 44 341 113zM177 405l228-228c76 162-99 297-228 228z" fill-rule="evenodd"/>'
-  + '</svg>';
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'style-scope yt-icon');
+    Object.assign(svg.style, {
+      width: '100%',
+      height: '75%',
+      fill: 'var(--yt-spec-text-secondary)',
+    });
+
+    svg.setAttribute('viewBox', '0 0 512 512');
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute(
+      'd',
+      'M440 78A256 256 0 1 0 73 435 256 256 0 0 0 440 78zm-99 35L113'
+      + ' 341C37 179 212 44 341 113zM177 405l228-228c76 162-99 297-228 228z',
+    );
+
+    path.setAttribute('fill-rule', 'evenodd');
+
+    svg.appendChild(path);
+    x.appendChild(svg);
   })),
 ));
 
@@ -56,10 +71,10 @@ export default (
   )),
   Z.flatMap((x) => pipe(
     setConfig.bannedUsers(x),
-    Z.zipRight(Z.sync(() => defaultToast.fire({
-      title: `Added Banned User: ${id}`,
-      icon: 'success',
-    }))),
+    // Z.zipRight(Z.sync(() => defaultToast.fire({
+    //   title: `Added Banned User: ${id}`,
+    //   icon: 'success',
+    // }))),
   )),
   Z.ignore,
   Z.zipRight(Z.sync(() => {

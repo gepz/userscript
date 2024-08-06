@@ -19,7 +19,7 @@ export default merge<Configuration>(
   {
     externals: [
       {
-        sweetalert2: 'Swal',
+        // sweetalert2: 'Swal',
         rxjs: 'rxjs',
         'deep-diff': 'DeepDiff',
         astring: 'astring',
