@@ -1,5 +1,11 @@
 # @userscript/flow-youtube-chat
 
+## 1.19.2
+
+### Patch Changes
+
+- fix problems caused by TrustedHTML assignment requirement on some browsers
+
 ## 1.19.1
 
 ### Patch Changes
