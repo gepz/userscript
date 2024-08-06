@@ -8,6 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Nothing
 
+
+## [1.19.2] - 2023-08-06
+
+### Fixed
+
+- Fixed script failure caused by noncompliance with "TrustedHTML" assignment requirement.
+
+### Changed
+
+- Removed swal package usage due to noncompliance with "TrustedHTML" assignment requirement.
+    - Minor regression in UI.
+
 ## [1.19.1] - 2023-05-16
 
 ### Fixed
