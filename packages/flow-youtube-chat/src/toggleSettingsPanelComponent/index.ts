@@ -6,10 +6,8 @@ import {
   pipe,
 } from 'effect';
 import {
-  decodeUnknownSync,
-} from 'effect/ParseResult';
-import {
   instanceOf,
+  decodeUnknownSync,
 } from 'effect/Schema';
 import {
   h,
