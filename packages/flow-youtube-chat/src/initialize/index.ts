@@ -73,8 +73,9 @@ export default ({
       )),
       configSubject: makeSubject(configKeys),
       channel: new BroadcastChannel<
-      [keyof UserConfig, UserConfig[keyof UserConfig]]
-      >(scriptIdentifier),
+      { [K in keyof UserConfig]: [K, UserConfig[K]] }[keyof UserConfig]>(
+        scriptIdentifier,
+      ),
       configValue: yield* makeConfig(defaultGMConfig),
     };
 
@@ -91,9 +92,11 @@ export default ({
 
     yield* setConfigPlain.filterExp(defaultFilter(ctx.configValue));
 
-    const changedConfigMap = (
-      key: keyof UserConfig,
-    ) => (val: never): Z.Effect<unknown, Cause.NoSuchElementException> => pipe(
+    const changedConfigMap = <K extends keyof UserConfig>(
+      key: K,
+    ) => (
+      val: UserConfig[K],
+    ): Z.Effect<unknown, Cause.NoSuchElementException> => pipe(
       Z.sync(() => ctx.configValue[key]),
       Z.filterOrFail((x) => !deepEq(x, val)),
       Z.flatMap(() => setConfigPlain[key](val)),
@@ -115,10 +118,18 @@ export default ({
           getConfig: makeGetter(ctx.configValue),
           setConfig: setterFromMap(
             (key) => (val) => changedConfigMap(key)(val).pipe(
-              Z.zipRight(Z.promise(() => ctx.channel.postMessage([key, val]))),
+              Z.zipRight(Z.promise(() => ctx.channel.postMessage(
+                // eslint-disable-next-line max-len
+                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                [key, val] as {
+                  [K in keyof UserConfig]: [K, UserConfig[K]]
+                }[keyof UserConfig],
+              ))),
               Z.zipRight(Z.promise(() => pipe(
                 defaultGMConfig[key],
-                (x) => GM.setValue(x.gmKey, x.toGm(val)),
+                // eslint-disable-next-line max-len
+                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                (x) => GM.setValue(x.gmKey, x.toGm(val as never)),
               ))),
               Z.ignore,
             ),
