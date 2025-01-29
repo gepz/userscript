@@ -31,7 +31,7 @@
     "start": "pnpm dev"
   },
   "devDependencies": {
-    "@types/node": "20.14.12",
+    "@types/node": "22.7.5",
     "@types/webpack-bundle-analyzer": "^4.7.0",
     "@typescript-eslint/eslint-plugin": "^7.17.0",
     "@typescript-eslint/parser": "^7.17.0",
@@ -47,11 +47,11 @@
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.6.0-dev.20240614",
-    "webpack": "^5.93.0",
+    "typescript": "^5.8.0-dev.20250128",
+    "webpack": "^5.95.0",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.4",
+    "webpack-dev-server": "^5.1.0",
     "webpack-merge": "^6.0.1"
   }
 }
