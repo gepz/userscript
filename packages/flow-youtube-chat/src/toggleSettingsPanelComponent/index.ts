@@ -1,9 +1,3 @@
-import {
-  decodeUnknownSync,
-} from '@effect/schema/ParseResult';
-import {
-  instanceOf,
-} from '@effect/schema/Schema';
 import RootComponent, {
   makeComponent,
 } from '@userscript/ui/RootComponent';
@@ -11,6 +5,12 @@ import {
   Effect as Z,
   pipe,
 } from 'effect';
+import {
+  decodeUnknownSync,
+} from 'effect/ParseResult';
+import {
+  instanceOf,
+} from 'effect/Schema';
 import {
   h,
   VNode,

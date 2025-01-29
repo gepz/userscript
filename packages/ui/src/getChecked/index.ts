@@ -1,9 +1,9 @@
 import {
   decodeUnknownSync,
-} from '@effect/schema/ParseResult';
+} from 'effect/ParseResult';
 import {
   instanceOf,
-} from '@effect/schema/Schema';
+} from 'effect/Schema';
 
 export default (e: Event): boolean => decodeUnknownSync(
   instanceOf(HTMLInputElement),

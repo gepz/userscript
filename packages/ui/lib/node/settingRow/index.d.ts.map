@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/node/settingRow/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAEL,KAAK,EAEN,MAAM,UAAU,CAAC;yBAEF,CAAC,SACR,MAAM,SACN,MAAM,WACJ,KAAK,CAAC,CAAC,CAAC,EAAE,KAClB,KAAK,CAAC,CAAC,CAAC;AAJX,wBAcG"}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/node/settingRow/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAEL,KAAK,EAEN,MAAM,UAAU,CAAC;yBAEF,CAAC,EACf,OAAO,MAAM,EACb,OAAO,MAAM,EACb,SAAS,KAAK,CAAC,CAAC,CAAC,EAAE,KAClB,KAAK,CAAC,CAAC,CAAC;AAJX,wBAcG"}

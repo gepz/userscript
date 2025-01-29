@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../src/panelBoxStyle/index.ts"],"names":[],"mappings":"AAAA,OAAO,EACL,SAAS,EACV,MAAM,UAAU,CAAC;gCAEK,MAAM,KAAG,SAAS;AAAzC,wBAIG"}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../src/panelBoxStyle/index.ts"],"names":[],"mappings":"AAAA,OAAO,EACL,SAAS,EACV,MAAM,UAAU,CAAC;yBAEF,OAAO,MAAM,KAAG,SAAS;AAAzC,wBAIG"}
