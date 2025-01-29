@@ -82,7 +82,9 @@ export default (
     setChangedConfig: UserConfigSetter,
     co: ConfigObservable,
     mainState: MainState,
-    channel: BroadcastChannel<[keyof UserConfig, UserConfig[keyof UserConfig]]>,
+    channel: BroadcastChannel<{ [K in keyof UserConfig]: [K, UserConfig[K]] }[
+      keyof UserConfig
+    ]>,
     reinitSubject: Subject<void>,
     reinitialize: Z.Effect<void>,
     apps: {

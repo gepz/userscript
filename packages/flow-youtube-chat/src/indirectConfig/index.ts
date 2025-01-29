@@ -20,7 +20,7 @@ export default <T1 extends GM.Value, T2>(
     ...ctx,
     getValue: pipe(
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      Z.promise(() => GM.getValue(key) as Promise<T1>),
+      Z.promise(() => GM.getValue(key) as Promise<T1 | undefined>),
       Z.map((x) => (x !== undefined ? toConfig(x) : defaultValue)),
     ),
   }),

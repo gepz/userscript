@@ -14,8 +14,7 @@ export default (
 ): Z.Effect<boolean> => pipe(
   Z.succeed(data),
   Z.filterOrFail(
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    (x) => expEval.eval(config.filterExp, filterContext(x)) as boolean,
+    (x) => Boolean(expEval.eval(config.filterExp, filterContext(x))),
   ),
   Z.map((x) => [
     x.message,
