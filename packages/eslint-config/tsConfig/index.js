@@ -9,13 +9,6 @@ module.exports = {
   ],
   rules: {
     'no-spaced-func': 'off',
-    '@typescript-eslint/indent': [
-      'error',
-      2,
-      {
-        flatTernaryExpressions: true,
-      },
-    ],
     '@typescript-eslint/naming-convention': [
       'error',
       {
@@ -37,7 +30,6 @@ module.exports = {
         assertionStyle: 'never',
       },
     ],
-    semi: 'off',
     '@typescript-eslint/strict-boolean-expressions': 'error',
     '@typescript-eslint/restrict-template-expressions': 'error',
     ...sharedRules,

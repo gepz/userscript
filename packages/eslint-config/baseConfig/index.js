@@ -12,6 +12,7 @@ module.exports = {
   plugins: [
     '@typescript-eslint',
     'import-newlines',
+    '@stylistic',
   ],
   rules: {
     'import/no-extraneous-dependencies': [
@@ -25,11 +26,6 @@ module.exports = {
         allow: ['_'],
       },
     ],
-    indent: [
-      'error', 2, {
-        flatTernaryExpressions: true,
-      },
-    ],
     'no-multiple-empty-lines': [
       'error', {
         max: 1,
@@ -37,7 +33,6 @@ module.exports = {
       },
     ],
     'func-names': ['error', 'as-needed'],
-    semi: ['warn', 'always'],
     ...sharedRules,
   },
 };
