@@ -3,7 +3,7 @@ const sharedRules = require('../sharedRules');
 module.exports = {
   parser: '@typescript-eslint/parser',
   extends: [
-    'airbnb-typescript/base',
+    '@kesills/airbnb-typescript/base',
     'plugin:@typescript-eslint/recommended',
     'plugin:import/typescript',
   ],
