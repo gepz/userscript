@@ -83,4 +83,12 @@ module.exports = {
     'error',
     0,
   ],
+  '@stylistic/indent': [
+    'error',
+    2,
+    {
+      flatTernaryExpressions: true,
+    },
+  ],
+  '@stylistic/semi': ['warn', 'always'],
 };
