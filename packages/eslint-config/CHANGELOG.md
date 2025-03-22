@@ -1,5 +1,11 @@
 # @userscript/eslint-config
 
+## 1.1.0
+
+### Minor Changes
+
+- 37898bc: Update eslint configs for new dependencies
+
 ## 1.0.4
 
 ### Patch Changes

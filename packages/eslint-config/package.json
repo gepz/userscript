@@ -1,6 +1,6 @@
 {
   "name": "@userscript/eslint-config",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "",
   "keywords": [],
   "license": "AGPL-3.0-or-later",
@@ -20,6 +20,5 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-import-newlines": "^1.4.0"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
