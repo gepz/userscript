@@ -4,15 +4,16 @@ module.exports = {
   env: {
     browser: true,
   },
-  extends: [
-    'eslint:recommended',
-    'airbnb-base',
-    'plugin:consistent-default-export-name/fixed',
-  ],
   plugins: [
     '@typescript-eslint',
     'import-newlines',
     '@stylistic',
+  ],
+  extends: [
+    'eslint:recommended',
+    'plugin:eslint/stylistic',
+    'airbnb-base',
+    'plugin:consistent-default-export-name/fixed',
   ],
   rules: {
     'import/no-extraneous-dependencies': [

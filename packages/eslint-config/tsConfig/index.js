@@ -5,6 +5,7 @@ module.exports = {
   extends: [
     '@kesills/airbnb-typescript/base',
     'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/stylistic',
     'plugin:import/typescript',
   ],
   rules: {
