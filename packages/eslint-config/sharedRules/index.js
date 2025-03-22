@@ -91,4 +91,6 @@ module.exports = {
     },
   ],
   '@stylistic/semi': ['warn', 'always'],
+  '@stylistic/quote-props': ['error', 'as-needed'],
+  '@stylistic/arrow-parens': ['error', 'always'],
 };
