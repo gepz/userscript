@@ -1,7 +1,7 @@
 import {
   apply,
-  flip,
   pipe,
+  flip,
 } from 'effect/Function';
 
 import ExactTypeKey from '@/ExactTypeKey';
@@ -30,9 +30,9 @@ export const make = <
     v: Props[K],
   ) => (c: AppCommander) => (s: State) => StateDispatchable<State>,
 ): BoolUpdater<
-State,
-Props,
-AppCommander
+  State,
+  Props,
+  AppCommander
 > => (
   key: ExactTypeKey<Props, boolean>,
 ) => flip((s, e) => pipe(
