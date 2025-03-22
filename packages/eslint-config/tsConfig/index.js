@@ -2,6 +2,11 @@ const sharedRules = require('../sharedRules');
 
 module.exports = {
   parser: '@typescript-eslint/parser',
+  plugins: [
+    '@typescript-eslint',
+    'import-newlines',
+    '@stylistic',
+  ],
   extends: [
     '@kesills/airbnb-typescript/base',
     'plugin:@typescript-eslint/recommended',

@@ -5,13 +5,12 @@ module.exports = {
     browser: true,
   },
   plugins: [
-    '@typescript-eslint',
     'import-newlines',
     '@stylistic',
   ],
   extends: [
     'eslint:recommended',
-    'plugin:eslint/stylistic',
+    'plugin:@stylistic/recommended-extends',
     'airbnb-base',
     'plugin:consistent-default-export-name/fixed',
   ],
