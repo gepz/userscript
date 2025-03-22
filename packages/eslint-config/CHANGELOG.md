@@ -1,5 +1,11 @@
 # @userscript/eslint-config
 
+## 1.1.2
+
+### Patch Changes
+
+- 37bfabe: fix
+
 ## 1.1.1
 
 ### Patch Changes
