@@ -13,6 +13,7 @@ module.exports = {
     'plugin:@stylistic/recommended-extends',
     'airbnb-base',
     'plugin:consistent-default-export-name/fixed',
+    'plugin:@stylistic/disable-legacy',
   ],
   rules: {
     'import/no-extraneous-dependencies': [

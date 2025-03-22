@@ -12,6 +12,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/stylistic',
     'plugin:import/typescript',
+    'plugin:@stylistic/disable-legacy',
   ],
   rules: {
     'no-spaced-func': 'off',
