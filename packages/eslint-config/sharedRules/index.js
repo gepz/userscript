@@ -1,5 +1,5 @@
 module.exports = {
-  'padding-line-between-statements': [
+  '@stylistic/padding-line-between-statements': [
     'error',
     {
       blankLine: 'always',
@@ -15,6 +15,9 @@ module.exports = {
         'multiline-expression',
         'multiline-let',
         'multiline-var',
+        'interface',
+        'type',
+        'enum',
       ],
       next: '*',
     },
