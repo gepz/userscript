@@ -29,28 +29,31 @@ export default (devMode: boolean): WebpackUserscript => new WebpackUserscript({
     license: 'AGPL-3.0-or-later',
     // eslint-disable-next-line max-len
     description: 'Youtubeのチャットをニコニコ風に画面上へ流す(再アップ) Make youtube chats move in danmaku-style.',
-    ...devMode ? {}
-    : {
-      require: [
+    ...devMode
+      ? {}
+      : {
+        require: [
         // (x = cdnSegment('sweetalert2')) => `${x.begin}cdn.jsdelivr.net/npm/${
         //   x.nameVer}/dist/${x.name}.js`,
         // x.nameVer}/dist/${x.name}${x.end}`,
-        (x = cdnSegment('rxjs')) => `${x.begin}unpkg.com/${
-          x.nameVer}/dist/bundles/${x.name}.umd${x.end}`,
-        (x = cdnSegment('deep-diff')) => `${x.begin}cdn.jsdelivr.net/npm/${
-          x.nameVer}/dist/${x.name}${x.end}`,
-        (x = cdnSegment('astring')) => `${x.begin}cdn.jsdelivr.net/npm/${
-          x.nameVer}/dist/${x.name}${x.end}`,
-        (x = cdnSegment('jsep')) => `${x.begin}cdn.jsdelivr.net/npm/${
-          x.nameVer}/dist/iife/${x.name}.iife${x.end}`,
-        (x = cdnSegment('hash-it')) => `${x.begin}cdn.jsdelivr.net/npm/${
-          x.nameVer}/dist/min/index.js`,
-        (x = cdnSegment('micro-memoize')) => `${x.begin}cdn.jsdelivr.net/npm/${
-          x.nameVer}/dist/${x.name}${x.end}`,
-        (x = cdnSegment('lz-string')) => `${x.begin}cdn.jsdelivr.net/npm/${
-          x.nameVer}/libs/${x.name}${x.end}`,
-      ].map((x) => x()),
-    },
+          (x = cdnSegment('rxjs')) => `${x.begin}unpkg.com/${
+            x.nameVer}/dist/bundles/${x.name}.umd${x.end}`,
+          (x = cdnSegment('deep-diff')) => `${x.begin}cdn.jsdelivr.net/npm/${
+            x.nameVer}/dist/${x.name}${x.end}`,
+          (x = cdnSegment('astring')) => `${x.begin}cdn.jsdelivr.net/npm/${
+            x.nameVer}/dist/${x.name}${x.end}`,
+          (x = cdnSegment('jsep')) => `${x.begin}cdn.jsdelivr.net/npm/${
+            x.nameVer}/dist/iife/${x.name}.iife${x.end}`,
+          (x = cdnSegment('hash-it')) => `${x.begin}cdn.jsdelivr.net/npm/${
+            x.nameVer}/dist/min/index.js`,
+          (x = cdnSegment('micro-memoize')) => `${
+            x.begin
+          }cdn.jsdelivr.net/npm/${
+            x.nameVer}/dist/${x.name}${x.end}`,
+          (x = cdnSegment('lz-string')) => `${x.begin}cdn.jsdelivr.net/npm/${
+            x.nameVer}/libs/${x.name}${x.end}`,
+        ].map((x) => x()),
+      },
   }),
   ssri: {
     algorithms: ['sha384'],
