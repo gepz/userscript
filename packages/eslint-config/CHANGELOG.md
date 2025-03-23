@@ -1,5 +1,11 @@
 # @userscript/eslint-config
 
+## 1.1.4
+
+### Patch Changes
+
+- 77e9141: Update padding line between statements config
+
 ## 1.1.3
 
 ### Patch Changes
