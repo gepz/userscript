@@ -1,5 +1,11 @@
 # @userscript/eslint-config
 
+## 1.1.3
+
+### Patch Changes
+
+- 5d67145: update
+
 ## 1.1.2
 
 ### Patch Changes
