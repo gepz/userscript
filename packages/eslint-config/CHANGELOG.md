@@ -1,5 +1,11 @@
 # @userscript/eslint-config
 
+## 1.1.5
+
+### Patch Changes
+
+- 6f3b87f: modify max len config
+
 ## 1.1.4
 
 ### Patch Changes
