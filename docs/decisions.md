@@ -66,3 +66,15 @@ packages.
   v5 ships no typings at all and DefinitelyTyped has none for it. If its
   types ever mismatch webpack's, check for duplicate webpack instances in the
   lockfile first (`pnpm dedupe` fixed exactly that once).
+
+## micro-memoize is bundled, not CDN-required (2026-07)
+
+flow-youtube-chat loads most runtime deps as userscript `@require`s (UMD
+globals + webpack externals). micro-memoize left that pattern at v5: its UMD
+build reads `global.fastEquals` and `global.fastStringify`, but fast-equals'
+own UMD registers `global["fast-equals"]` (and fast-stringify's global
+doesn't match either), so the three CDN files cannot see each other without
+a shim script. Bundling it (plus those two small deps) costs ~18 KiB and
+removes the coordination problem. hash-it stayed a `@require`; its v7 moved
+the browser file to `dist/umd/index.js` and dropped the default export
+(`import { hash }`).

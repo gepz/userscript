@@ -37,7 +37,7 @@
     "hyperapp": "^2.0.22",
     "preact": "^10.29.4",
     "ts-toolbelt": "^9.6.0",
-    "type-fest": "^4.41.0",
+    "type-fest": "^5.8.0",
     "validate-color": "^2.2.4"
   },
   "devDependencies": {

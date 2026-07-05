@@ -7,8 +7,12 @@ import {
   pipe,
   SynchronizedRef,
 } from 'effect';
-import hash from 'hash-it';
-import memoize from 'micro-memoize';
+import {
+  hash,
+} from 'hash-it';
+import {
+  memoize,
+} from 'micro-memoize';
 
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';

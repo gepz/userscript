@@ -17,15 +17,15 @@
     "@userscript/forward-to": "workspace:^1.0.4",
     "@userscript/tap-non-null": "workspace:^1.0.4",
     "broadcast-channel": "^7.3.0",
-    "delay": "^6.0.0",
+    "delay": "^7.0.0",
     "fp-ts": "^2.16.11",
     "loglevel": "^1.9.2",
     "mithril": "^2.3.8",
     "rxjs": "^7.8.2",
     "sweetalert2": "^11.26.25",
     "ts-toolbelt": "^9.6.0",
-    "type-fest": "^4.41.0",
-    "zod": "^3.25.76"
+    "type-fest": "^5.8.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/compat": "^2.1.0",

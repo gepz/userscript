@@ -25,7 +25,9 @@ export default merge<Configuration>(
         astring: 'astring',
         jsep: 'jsep',
         'hash-it': 'window[\'hash-it\']',
-        'micro-memoize': 'window[\'micro-memoize\']',
+        // micro-memoize is bundled: its v5 UMD build expects fast-equals and
+        // fast-stringify as globals under names their own UMD builds don't
+        // register, so it cannot work as a CDN require.
         'lz-string': 'LZString',
       },
     ],

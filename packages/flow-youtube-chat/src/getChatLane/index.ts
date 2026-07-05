@@ -10,7 +10,9 @@ import {
 import {
   mapInput,
 } from 'effect/Order';
-import memoize from 'micro-memoize';
+import {
+  memoize,
+} from 'micro-memoize';
 
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';

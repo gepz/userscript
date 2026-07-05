@@ -5,3 +5,4 @@ allowBuilds:
   unrs-resolver: true
 minimumReleaseAgeExclude:
   - webpack@5.108.4
+  - type-fest@5.8.0
