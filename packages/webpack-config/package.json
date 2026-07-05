@@ -28,10 +28,10 @@
     "start": "pnpm dev"
   },
   "dependencies": {
-    "@types/node": "22.20.0",
+    "@types/node": "26.1.0",
     "fork-ts-checker-webpack-plugin": "^9.1.0",
     "webpack": "^5.108.4",
-    "webpack-dev-server": "^5.2.6",
+    "webpack-dev-server": "^6.0.0",
     "webpack-merge": "^6.0.1"
   },
   "devDependencies": {
