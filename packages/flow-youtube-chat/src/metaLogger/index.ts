@@ -16,7 +16,7 @@ import {
 
 const getConsoleLog = (
   x: LogLevel.LogLevel,
-  // eslint-disable-next-line no-console
+
 ) => (x === LogLevel.Trace
   ? Console.trace
   : x === LogLevel.Debug
@@ -40,7 +40,7 @@ export default Logger.make<unknown, void>(({
     HM.get(LogAnnotationKeys.name),
     O.match({
       onNone: () => '',
-      // eslint-disable-next-line max-len
+
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       onSome: (x) => `[${x}] `,
     }),

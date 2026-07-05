@@ -1,5 +1,5 @@
 export default (currentFont: string): readonly (
-readonly [string, string, string, string]
+  readonly [string, string, string, string]
 )[] => [
   ['', 'Default', 'デフォルト', 'Default'],
   ['arial', 'Arial', 'Arial', 'Arial'],

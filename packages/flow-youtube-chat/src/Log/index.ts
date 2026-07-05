@@ -77,7 +77,7 @@ export const importLog = (s: string): Log => makeLog(pipe(
               makeCompressedLogBlock,
             ),
           ),
-          // eslint-disable-next-line max-len
+
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           lastBlock: JSON.parse(last) as LogBlock,
         }),

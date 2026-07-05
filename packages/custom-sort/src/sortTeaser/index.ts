@@ -21,7 +21,6 @@ const getTeaserValue = (info: TeaserInfo, condition: string) => {
     ['private', info.privateFactor],
   ] as const;
 
-  // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
   return new Function(
     ...sortParamPairs.map(([name]) => name),
     `return (${condition})`,

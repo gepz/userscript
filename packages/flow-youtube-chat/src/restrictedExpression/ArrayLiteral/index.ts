@@ -14,7 +14,7 @@ import TaggedValue, {
 } from '@/TaggedValue';
 import type Expression from '@/restrictedExpression/Expression';
 import ExpressionFromJsExp from '@/restrictedExpression/ExpressionFromJsExp';
-// eslint-disable-next-line max-len
+// eslint-disable-next-line @stylistic/max-len
 import ExpressionFromTypedExp from '@/restrictedExpression/ExpressionFromTypedExp';
 import JsExpFromExpression from '@/restrictedExpression/JsExpFromExpression';
 import TypedArray from '@/typedExpression/TypedArray';

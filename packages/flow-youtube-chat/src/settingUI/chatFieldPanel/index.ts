@@ -15,9 +15,9 @@ import mapSettingNodes from '@/settingUI/mapSettingNodes';
 import numberNode from '@/settingUI/numberNode';
 
 const chatFieldPanel: (
-  c: AppCommander
+  c: AppCommander,
 ) => (
-  s: SettingState
+  s: SettingState,
 ) => readonly VNode<SettingState>[] = pipe(
   [
     pipe(

@@ -9,14 +9,14 @@ import {
 } from 'effect/Function';
 import * as expEval from 'expression-eval';
 
-// eslint-disable-next-line max-len
+// eslint-disable-next-line @stylistic/max-len
 import type ArrayExpression from '@/settingUI/editableExpression/ArrayExpression';
 import CallExpression from '@/settingUI/editableExpression/CallExpression';
 import type Compound from '@/settingUI/editableExpression/Compound';
 import type Identifier from '@/settingUI/editableExpression/Identifier';
 import type Literal from '@/settingUI/editableExpression/Literal';
 import LiteralArray from '@/settingUI/editableExpression/LiteralArray';
-// eslint-disable-next-line max-len
+// eslint-disable-next-line @stylistic/max-len
 import type MemberExpression from '@/settingUI/editableExpression/MemberExpression';
 
 type Expression = ArrayExpression

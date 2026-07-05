@@ -119,7 +119,7 @@ export default ({
           setConfig: setterFromMap(
             (key) => (val) => changedConfigMap(key)(val).pipe(
               Z.zipRight(Z.promise(() => ctx.channel.postMessage(
-                // eslint-disable-next-line max-len
+                // eslint-disable-next-line @stylistic/max-len
                 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                 [key, val] as {
                   [K in keyof UserConfig]: [K, UserConfig[K]]
@@ -127,7 +127,7 @@ export default ({
               ))),
               Z.zipRight(Z.promise(() => pipe(
                 defaultGMConfig[key],
-                // eslint-disable-next-line max-len
+                // eslint-disable-next-line @stylistic/max-len
                 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                 (x) => GM.setValue(x.gmKey, x.toGm(val as never)),
               ))),
@@ -209,7 +209,7 @@ export default ({
                 [k]: v,
               })),
               Z.zipLeft(ctx.updateSettingState(
-                // eslint-disable-next-line max-len
+                // eslint-disable-next-line @stylistic/max-len
                 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                 setSettingFromConfig(k)(v as UserConfig[keyof UserConfig]),
               )),
@@ -236,8 +236,7 @@ export default ({
       ),
     })).subscribe({
       error: (x) => Z.runPromise(
-        // eslint-disable-next-line max-len
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+
         logWithMeta(LogLevel.Error)(`Stream Errored: ${x}`)(x),
       ),
       complete: () => Z.runPromise(Z.logWarning('Stream complete')),

@@ -12,7 +12,7 @@ import stepTiming from '@/settingUI/stepTiming';
 
 const setState: Partial<{
   [K in keyof SettingState]: (
-    v: SettingState[K]
+    v: SettingState[K],
   ) => (c: AppCommander) => (s: SettingState) => SettingDispatchable
 }> = {
   flowY1: setRange('flowY1')('flowY2')((a) => (b) => Math.max(b, a + 0.05)),

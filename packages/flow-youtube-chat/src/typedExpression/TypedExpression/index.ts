@@ -10,10 +10,10 @@ import type Expression from '@/restrictedExpression/Expression';
 import TypedArray, * as typedArray from '@/typedExpression/TypedArray';
 import TypedBoolean, * as typedBoolean from '@/typedExpression/TypedBoolean';
 import TypedCall, * as typedCall from '@/typedExpression/TypedCall';
-// eslint-disable-next-line max-len
+// eslint-disable-next-line @stylistic/max-len
 import TypedDotMember, * as typedDotMember from '@/typedExpression/TypedDotMember';
 import TypedExpressionFunction from '@/typedExpression/typedExpressionFunction';
-// eslint-disable-next-line max-len
+// eslint-disable-next-line @stylistic/max-len
 import TypedIdentifier, * as typedIdentifier from '@/typedExpression/TypedIdentifier';
 import TypedNumber, * as typedNumber from '@/typedExpression/TypedNumber';
 import TypedString, * as typedString from '@/typedExpression/TypedString';

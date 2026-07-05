@@ -2,3 +2,4 @@ packages:
   - 'packages/**'
 allowBuilds:
   '@swc/core': true
+  unrs-resolver: true

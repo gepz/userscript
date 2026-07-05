@@ -44,7 +44,7 @@ export default (
         style: {
           color: '#f0f',
         },
-        // eslint-disable-next-line max-len
+
         href: 'https://greasyfork.org/en/scripts/411442-flow-youtube-chat/feedback',
         target: '_blank',
       }, text(getText('giveFeedback')(s))),

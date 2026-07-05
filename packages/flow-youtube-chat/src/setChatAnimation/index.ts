@@ -37,7 +37,6 @@ export default (
   getChatFontSize(mainState),
   // eslint-disable-next-line func-names
   Z.tap((height) => Z.gen(function* () {
-    // eslint-disable-next-line no-param-reassign
     chat.element.style.transform = `translate(${
       (yield * SynchronizedRef.get(mainState.playerRect)).width
       * (mainState.config.value.flowX2 - mainState.config.value.flowX1)

@@ -28,7 +28,7 @@ export default (config: UserConfig): SettingState => pipe(
       : k === 'filterExp'
         ? undefined
       // ? pipe(
-      // eslint-disable-next-line max-len
+
       //   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       //   fromJsepExp(v as expEval.parse.Expression),
       //   O.getOrElse((): Compound => ({

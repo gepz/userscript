@@ -12,7 +12,6 @@ import languages from '@/languages';
 interface State {
   lang: typeof languages[number]
 }
-// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 
 export default ((key: TextKey) => (
   state: State,

@@ -14,7 +14,7 @@ export default ({
     Z.promise(async () => GM.setClipboard(log.exportLog(s.eventLog))),
     () => s,
   ),
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   clearFlowChats: (c) => (s) => Z.map(
     c.act.clearFlowChats,
     () => s,

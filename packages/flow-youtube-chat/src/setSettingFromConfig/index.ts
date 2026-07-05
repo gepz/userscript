@@ -32,7 +32,7 @@ export default <T extends keyof UserConfig & keyof SettingState>(
     : key === 'filterExp'
       ? undefined
     // ? pipe(
-    //   // eslint-disable-next-line max-len
+    //   // eslint-disable-next-line @stylistic/max-len
     //   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     //   fromJsepExp(value as expEval.parse.Expression),
     //   O.getOrElse((): Compound => ({

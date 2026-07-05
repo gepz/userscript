@@ -61,7 +61,7 @@ const groupPageItems = (
 ) => {
   const group = document.createElement('li');
   pageItems[0].before(group);
-  // eslint-disable-next-line no-param-reassign
+
   pageItems[0].style.marginLeft = '0';
   pageItems.forEach((item) => {
     item.classList.replace('pager-item', 'pager-current');
@@ -210,8 +210,7 @@ const trySortTeasers = (condition$: Observable<string>) => condition$.pipe(
     catchError((error) => {
       Swal.fire(
         'Sorting Failed',
-        // eslint-disable-next-line max-len
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+
         `An error accured while sorting: ${error}`,
       );
 
@@ -276,7 +275,6 @@ export default async (): Promise<void> => {
         document.querySelectorAll<HTMLElement>(`.pager:not(.${clonedClass})`),
       ).pipe(
         tap((pager) => {
-          // eslint-disable-next-line no-param-reassign
           pager.style.display = 'none';
         }),
         map((pager) => {

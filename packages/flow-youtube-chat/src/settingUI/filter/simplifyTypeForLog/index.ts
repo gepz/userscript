@@ -34,7 +34,7 @@ const simplifyTypeForLog = (obj: unknown): unknown => pipe(
         Object.entries(o),
         A.findFirst(([k]) => k !== 'tag'),
         O.map(([, v]) => ({
-        // eslint-disable-next-line max-len
+        // eslint-disable-next-line @stylistic/max-len
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           [o.tag as string]: v,
         })),

@@ -78,14 +78,13 @@ export default (
   )),
   Z.ignore,
   Z.zipRight(Z.sync(() => {
-    // eslint-disable-next-line no-param-reassign
     chat.style.display = 'none';
   })),
   (onclick) => pipe(
     Z.promise(() => template),
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     Z.map((x) => x.cloneNode(true) as HTMLElement),
-    // eslint-disable-next-line no-param-reassign
+
     Z.tap((x) => Z.sync(() => { x.onclick = () => Z.runPromise(onclick); })),
   ),
 );

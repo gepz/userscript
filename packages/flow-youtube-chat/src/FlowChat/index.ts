@@ -1,5 +1,4 @@
-import AnimatingState from 'src/AnimatingState';
-
+import AnimatingState from '@/AnimatingState';
 import ChatData from '@/ChatData';
 
 export default interface FlowChat {

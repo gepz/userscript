@@ -21,7 +21,7 @@ export default (
   label: TextKey
     & ConditionalKeys<
   typeof action,
-      (c: AppCommander) => (s: SettingState) => Z.Effect<SettingState>
+  (c: AppCommander) => (s: SettingState) => Z.Effect<SettingState>
     >,
 ): (c: AppCommander) => (s: SettingState) => VNode<SettingState> => (
   c,

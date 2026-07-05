@@ -7,7 +7,7 @@ type ComputedPropertySetters<
   AppCommander,
 > = {
   [K in keyof C]?: (
-    v: ReturnType<C[K]>
+    v: ReturnType<C[K]>,
   ) => (c: AppCommander) => (s: State) => StateDispatchable<State>
 };
 

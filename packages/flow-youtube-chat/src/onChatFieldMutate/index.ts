@@ -30,7 +30,6 @@ export default (
     yield * Z.logDebug('Chat detected');
     const data = parseChat(chat);
     if (yield * checkBannedWords(data, mainState.config.value)) {
-      // eslint-disable-next-line no-param-reassign
       chat.style.display = 'none';
     } else {
       yield * Z.all([

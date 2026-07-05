@@ -76,24 +76,24 @@ import videoToggleStream from '@/videoToggleStream';
 export default (
   provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>,
 ): (ctx: {
-    updateSettingState: (
-      dispatchable: Dispatchable<SettingState>,
-    ) => Z.Effect<void>
-    setChangedConfig: UserConfigSetter
-    co: ConfigObservable
-    mainState: MainState
-    channel: BroadcastChannel<{ [K in keyof UserConfig]: [K, UserConfig[K]] }[
-      keyof UserConfig
-    ]>
-    reinitSubject: Subject<void>
-    reinitialize: Z.Effect<void>
-    apps: {
-      toggleChatButtonApp: WrappedApp<SettingState>
-      settingsApp: WrappedApp<SettingState>
-      toggleSettingsPanelApp: WrappedApp<SettingState>
-    }
-    chatScreen: HTMLDivElement
-  }) => Z.Effect<Observable<unknown>> => flow(
+  updateSettingState: (
+    dispatchable: Dispatchable<SettingState>,
+  ) => Z.Effect<void>
+  setChangedConfig: UserConfigSetter
+  co: ConfigObservable
+  mainState: MainState
+  channel: BroadcastChannel<{ [K in keyof UserConfig]: [K, UserConfig[K]] }[
+    keyof UserConfig
+  ]>
+  reinitSubject: Subject<void>
+  reinitialize: Z.Effect<void>
+  apps: {
+    toggleChatButtonApp: WrappedApp<SettingState>
+    settingsApp: WrappedApp<SettingState>
+    toggleSettingsPanelApp: WrappedApp<SettingState>
+  }
+  chatScreen: HTMLDivElement
+}) => Z.Effect<Observable<unknown>> => flow(
   // eslint-disable-next-line func-names
   (ctx) => Z.gen(function* () {
     const live = makePageState(livePageYt);
@@ -159,7 +159,6 @@ export default (
               (newEle) => !strictOptionEquivalence(c.live[key].ele, newEle),
             )),
             Z.tap((x) => Z.sync(() => {
-              // eslint-disable-next-line no-param-reassign
               c.live[key].ele = x;
             })),
             Z.map(O.isSome),
@@ -261,7 +260,7 @@ export default (
       ...pipe(
         configKeys,
         A.map((key) => pipe(
-          // eslint-disable-next-line max-len
+
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           (c.co[key] as Subject<unknown>),
           startWith(c.mainState.config.value[key]),
@@ -358,8 +357,7 @@ export default (
       delay: (e) => pipe(
         of(e),
         tapEffect(() => provideLog(
-          // eslint-disable-next-line max-len
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+
           logWithMeta(LogLevel.Error)(`Errored: ${e}`)(e),
         )),
         pipe(

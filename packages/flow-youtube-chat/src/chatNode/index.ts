@@ -9,10 +9,8 @@ import {
   html,
   HTMLTemplateResult,
 } from 'lit-html';
-// eslint-disable-next-line import-newlines/enforce
 import {
   styleMap,
-  // eslint-disable-next-line import/extensions
 } from 'lit-html/directives/style-map.js';
 
 import FlowChat from '@/FlowChat';

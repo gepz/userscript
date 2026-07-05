@@ -10,20 +10,20 @@ import * as expEval from 'expression-eval';
 import chainFilterMapElse from '@/chainFilterMapElse';
 import chainTagged from '@/chainTagged';
 import processWithEither from '@/processWithEither';
-// eslint-disable-next-line max-len
+// eslint-disable-next-line @stylistic/max-len
 import ArrayLiteral, * as arrayLiteral from '@/restrictedExpression/ArrayLiteral';
 import * as booleanLiteral from '@/restrictedExpression/BooleanLiteral';
-// eslint-disable-next-line max-len
+// eslint-disable-next-line @stylistic/max-len
 import CallExpression, * as callExpression from '@/restrictedExpression/CallExpression';
-// eslint-disable-next-line max-len
+// eslint-disable-next-line @stylistic/max-len
 import DotMemberAccess, * as dotMemberAccess from '@/restrictedExpression/DotMemberAccess';
 import ExpressionFromJsExp from '@/restrictedExpression/ExpressionFromJsExp';
-// eslint-disable-next-line max-len
+// eslint-disable-next-line @stylistic/max-len
 import ExpressionFromTypedExp from '@/restrictedExpression/ExpressionFromTypedExp';
 import Identifier, * as identifier from '@/restrictedExpression/Identifier';
 import JsExpFromExpression from '@/restrictedExpression/JsExpFromExpression';
 import * as numberLiteral from '@/restrictedExpression/NumberLiteral';
-// eslint-disable-next-line max-len
+// eslint-disable-next-line @stylistic/max-len
 import PrimitiveLiteral, * as primitiveLiteral from '@/restrictedExpression/PrimitiveLiteral';
 import * as stringLiteral from '@/restrictedExpression/StringLiteral';
 import TypedExpression from '@/typedExpression/typedExpression';

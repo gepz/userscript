@@ -17,7 +17,6 @@ export default (
       : () => x.pause())),
   )),
   Z.flatMap((x) => Z.sync(() => {
-    // eslint-disable-next-line no-param-reassign
     x.playbackRate = mainState.config.value.flowSpeed / 15;
   })),
   Z.ignore,

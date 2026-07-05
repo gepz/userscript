@@ -2,8 +2,8 @@ import {
   Either as E,
   Option as O,
 } from 'effect';
-import AnimatingState from 'src/AnimatingState';
 
+import AnimatingState from '@/AnimatingState';
 import flowDuration from '@/flowDuration';
 
 export default (animationState: AnimatingState): number => animationState.pipe(

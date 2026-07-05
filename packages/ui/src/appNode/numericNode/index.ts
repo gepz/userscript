@@ -22,7 +22,7 @@ export default (
   editAction: EditAction<State, Props, AppCommander>,
   getText: AppTextGetter<Key, State>,
   getState: <K extends ExactTypeKey<Props, Editable<number>>>(
-    k: K
+    k: K,
   ) => (s: State) => Editable<number>,
 ) => (
   label: Key,

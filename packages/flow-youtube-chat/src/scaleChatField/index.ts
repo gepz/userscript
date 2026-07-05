@@ -32,7 +32,6 @@ export default (
       pipe(
         live.chatScroller.ele,
         O.map((scroller) => Z.sync(() => {
-          // eslint-disable-next-line no-param-reassign
           scroller.scrollTop = scroller.scrollHeight;
         })),
       ),

@@ -1,6 +1,6 @@
 export default (e: Event): string => {
-  // eslint-disable-next-line max-len
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/consistent-type-assertions, @typescript-eslint/dot-notation
+  // eslint-disable-next-line @stylistic/max-len
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/consistent-type-assertions
   const target = e.currentTarget ?? ((e as any)['__target'] as EventTarget);
   if (target instanceof HTMLSelectElement
     || target instanceof HTMLTextAreaElement

@@ -23,9 +23,9 @@ import stepTimingNode from '@/settingUI/stepTimingNode';
 import textColorNode from '@/settingUI/textColorNode';
 
 const flowChatPanel: (
-  c: AppCommander
+  c: AppCommander,
 ) => (
-  s: SettingState
+  s: SettingState,
 ) => readonly VNode<SettingState>[] = pipe(
   [
     pipe(

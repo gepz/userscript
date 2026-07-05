@@ -30,7 +30,7 @@ const setEditRegexes: EditSetter<Editable<readonly string[]>> = (
           return O.none();
         } catch (e) {
           return O.some(
-            // eslint-disable-next-line max-len
+
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `${e} in regex number ${i}`,
           );

@@ -23,9 +23,9 @@ type UpgradeAlias<
 
 type StoragePairs<
   T extends [(GmStorage | undefined), ...GmStorage[]],
-> = T extends [infer U, ...infer V] ?
-  V extends [GmStorage, ...GmStorage[]] ?
-    [[U, V[0]], ...StoragePairs<V>]
+> = T extends [infer U, ...infer V]
+  ? V extends [GmStorage, ...GmStorage[]]
+    ? [[U, V[0]], ...StoragePairs<V>]
     : []
   : never;
 
@@ -34,11 +34,11 @@ type StoragePair = [GmStorage | undefined, GmStorage];
 type Schema<T extends StoragePair[]> = T extends [
   infer U extends StoragePair,
   ... infer V extends StoragePair[],
-] ?
-  [
+]
+  ? [
     {
-      upgradeAlias?: U[0] extends GmStorage ?
-        UpgradeAlias<GmStorage<U[0]>, GmStorage<U[1]>>
+      upgradeAlias?: U[0] extends GmStorage
+        ? UpgradeAlias<GmStorage<U[0]>, GmStorage<U[1]>>
         : never
       defaultStorage: GmStorage<U[1]>
     },

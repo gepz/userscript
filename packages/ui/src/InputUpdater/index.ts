@@ -14,7 +14,7 @@ type InputUpdater<
   Props,
   AppCommander,
 > = <K extends keyof Props>(key: K) => (
-  setter: Setter<string, Props[K]>
+  setter: Setter<string, Props[K]>,
 ) => (
   c: AppCommander,
 ) => (
@@ -30,7 +30,7 @@ export const make = <
   AppCommander,
 >(
   getState: <K extends keyof Props>(k: K) => (
-    s: State
+    s: State,
   ) => Props[K],
   updateAt: <K extends keyof Props>(k: K) => (
     v: Props[K],

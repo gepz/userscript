@@ -17,7 +17,7 @@ export default <
 >(
   getText: AppTextGetter<Key, State>,
   getState: <K extends ExactTypeKey<Props, boolean>>(
-    k: K
+    k: K,
   ) => (s: State) => boolean,
   updateBool: BoolUpdater<State, Props, AppCommander>,
 ) => (
