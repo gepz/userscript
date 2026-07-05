@@ -28,7 +28,9 @@ restructuring builds, configs, or dependencies.
   `fork-ts-checker-webpack-plugin` (wired in `@userscript/webpack-config`)
   checks the whole `tsconfig.build.json` program on every `dev`/`build`. For a
   check without building, run
-  `npx tsc -p tsconfig.build.json --noEmit` in the package. Don't gate on the
+  `npx tsc -p tsconfig.build.json --noEmit` in the package. Bare tsc is
+  stricter: fork-ts-checker does not report errors located inside dependency
+  declaration files, so after dependency bumps run bare tsc too (CI does). Don't gate on the
   package-root `tsconfig.json` — it also pulls in config files and
   work-in-progress sources that are excluded from real builds.
 - **Lint.** eslint 9 flat config; the shared config is the

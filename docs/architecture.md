@@ -74,6 +74,9 @@ on PRs: `pnpm install --frozen-lockfile`, `pnpm -r run lint`, `pnpm -r run
 build`, with `git diff --exit-code` gates after lint and build. The diff
 gates are load-bearing: lint scripts run `eslint --fix`, so drift means an
 auto-fixable violation; and builds regenerate the committed `lib/` output,
-so drift means a sibling package was consuming stale code. Type checking has
-no separate step — it rides the builds (tsc for `build-lib`,
-fork-ts-checker for the webpack bundles).
+so drift means a sibling package was consuming stale code. Type checking
+mostly rides the builds (tsc for `build-lib`, fork-ts-checker for the
+webpack bundles), with one addition: a bare
+`tsc -p tsconfig.build.json --noEmit` step for the two userscripts, because
+fork-ts-checker does not report errors located inside dependency declaration
+files and the userscripts have no other whole-program tsc pass.

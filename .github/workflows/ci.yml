@@ -39,6 +39,15 @@ jobs:
       - name: Build
         run: pnpm -r run build
 
+      # fork-ts-checker does not report errors located inside dependency
+      # declaration files (bare tsc does; micro-memoize 5's broken d.mts
+      # slipped through the Build step once). The userscripts' only
+      # whole-program check is the webpack one, so give them a real tsc run.
+      - name: Typecheck userscripts with bare tsc
+        run: |
+          pnpm --filter @userscript/flow-youtube-chat exec tsc -p tsconfig.build.json --noEmit
+          pnpm --filter @userscript/custom-sort exec tsc -p tsconfig.build.json --noEmit
+
       # Sibling packages consume the committed lib/ output via workspace
       # symlinks, so a stale lib/ means consumers silently use old code.
       - name: Committed lib/ output is current

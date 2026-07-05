@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  micro-memoize@5.1.1: 0249a28ba2446f8f31f269cb058b16c7b02adbfdff29aafa0648b1bd65182147
+
 importers:
 
   .:
@@ -344,7 +347,7 @@ importers:
         version: 1.5.0
       micro-memoize:
         specifier: ^5.1.1
-        version: 5.1.1
+        version: 5.1.1(patch_hash=0249a28ba2446f8f31f269cb058b16c7b02adbfdff29aafa0648b1bd65182147)
       microdiff:
         specifier: ^1.5.0
         version: 1.5.0
@@ -8005,7 +8008,7 @@ snapshots:
 
   merge2@1.4.1: {}
 
-  micro-memoize@5.1.1:
+  micro-memoize@5.1.1(patch_hash=0249a28ba2446f8f31f269cb058b16c7b02adbfdff29aafa0648b1bd65182147):
     dependencies:
       fast-equals: 5.4.0
       fast-stringify: 4.0.0

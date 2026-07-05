@@ -6,3 +6,5 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - webpack@5.108.4
   - type-fest@5.8.0
+patchedDependencies:
+  micro-memoize@5.1.1: patches/micro-memoize@5.1.1.patch
