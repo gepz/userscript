@@ -1,5 +1,13 @@
 # @userscript/custom-sort
 
+## 1.1.3
+
+### Patch Changes
+
+- 2510d40: Rebuild on modernized toolchain: dependency bumps (within-major updates),
+  TypeScript 5.9, and restored whole-program type checking. Updates the pinned
+  CDN `@require` versions in the userscript header.
+
 ## 1.1.2
 
 ### Patch Changes
