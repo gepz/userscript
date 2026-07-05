@@ -21,6 +21,14 @@ done; re-verify versions before starting, this list ages.
   `webpack-bundle-analyzer` 5 (ships no typings — see `docs/decisions.md`).
 - App-library majors: `zod` 4 (custom-sort), `type-fest` 5, `delay` 7,
   `hash-it` 7, `micro-memoize` 5.
+- Effect v4 (beta since early 2026, will be LTS): single-version ecosystem,
+  much smaller core, and a built-in `Optic` module (standalone
+  `Optic.id<T>().key(...)` chains plus schema-derived lenses) that can
+  replace the frozen `@fp-ts/optic` (v0.25.0, Sep 2024, stale peer floor).
+  The typed filter-expression WIP uses `@fp-ts/optic` via `Op.Optional`;
+  keep that usage behind local helpers (`ElementOpticPair`,
+  `expressionSetter`) so the swap stays mechanical. Migrate when v4 is
+  stable, not during beta.
 - TypeScript 6.x once typescript-eslint supports it.
 - eslint 10: blocked on plugin ecosystem (`eslint-config-airbnb-extended`,
   `eslint-plugin-canonical`, the compat-shimmed
