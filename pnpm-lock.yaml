@@ -730,9 +730,6 @@ importers:
       '@types/webpack-bundle-analyzer':
         specifier: ^4.7.0
         version: 4.7.0(@swc/core@1.10.11)(webpack-cli@6.0.1)
-      '@typescript/lib-dom':
-        specifier: npm:@types/web@^0.0.86
-        version: '@types/web@0.0.86'
       '@userscript/eslint-config':
         specifier: workspace:^1.0.4
         version: link:../eslint-config
@@ -1552,9 +1549,6 @@ packages:
 
   '@types/validator@13.7.15':
     resolution: {integrity: sha512-yeinDVQunb03AEP8luErFcyf/7Lf7AzKCD0NXfgVoGCCQDNpZET8Jgq74oBgqKld3hafLbfzt/3inUdQvaFeXQ==}
-
-  '@types/web@0.0.86':
-    resolution: {integrity: sha512-d8mYKwcKvkMSlxlDovHyRD7GhNpe10ti4GaX4dR0lsQqk+2l9Y72PU2yPpYlRajQrpfuOWlgGqs8jpbSU9udpg==}
 
   '@types/webpack-bundle-analyzer@4.7.0':
     resolution: {integrity: sha512-c5i2ThslSNSG8W891BRvOd/RoCjI2zwph8maD22b1adtSns20j+0azDDMCK06DiVrzTgnwiDl5Ntmu1YRJw8Sg==}
@@ -5731,7 +5725,7 @@ snapshots:
       '@module-federation/runtime-tools': 0.8.4
       '@rspack/binding': 1.2.2
       '@rspack/lite-tapable': 1.0.1
-      caniuse-lite: 1.0.30001695
+      caniuse-lite: 1.0.30001800
     optional: true
 
   '@rspack/lite-tapable@1.0.1':
@@ -5939,8 +5933,6 @@ snapshots:
   '@types/trusted-types@2.0.3': {}
 
   '@types/validator@13.7.15': {}
-
-  '@types/web@0.0.86': {}
 
   '@types/webpack-bundle-analyzer@4.7.0(@swc/core@1.10.11)(webpack-cli@6.0.1)':
     dependencies:
@@ -7293,7 +7285,7 @@ snapshots:
       hasown: 2.0.4
       is-core-module: 2.16.2
       is-glob: 4.0.3
-      minimatch: 3.1.2
+      minimatch: 3.1.5
       object.fromentries: 2.0.8
       object.groupby: 1.0.3
       object.values: 1.2.1

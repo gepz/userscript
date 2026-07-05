@@ -45,7 +45,6 @@
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/node": "22.7.5",
     "@types/webpack-bundle-analyzer": "^4.7.0",
-    "@typescript/lib-dom": "npm:@types/web@^0.0.86",
     "@userscript/eslint-config": "workspace:^1.0.4",
     "@userscript/webpack-config": "workspace:^1.0.5",
     "cross-env": "^7.0.3",
