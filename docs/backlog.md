@@ -31,12 +31,5 @@ done; re-verify versions before starting, this list ages.
 
 ## Housekeeping
 
-- Mark all packages `"private": true` (nothing is published; guards against
-  accidental `changeset publish`/`pnpm publish`). Changesets keeps versioning
-  private packages by default.
-- Changesets config `$schema` still points at `@changesets/config@2.3.1`;
-  the CLI is 2.31+.
-- The modernize branch landed without changesets; if changelogs should record
-  it, add per-package changesets before/at merge.
 - `run-s` occasionally fails with EACCES spawning corepack's `pnpm.cjs`
   (seen in ui's `build`); root-cause or replace `npm-run-all`.

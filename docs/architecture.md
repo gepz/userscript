@@ -64,4 +64,16 @@ changesets, changelog-only: `.changeset/*.md` files travel with the commits
 that earn them, and a later `changeset version` run (committed as
 `build: versioning`) folds them into package `CHANGELOG.md`s and version
 bumps. No publish, no tags. Version numbers have no resolution effect inside
-the workspace (pnpm symlinks regardless); they exist for the changelogs.
+the workspace (pnpm symlinks regardless); they exist for the changelogs and
+for the userscript `@version` headers (Greasy Fork update detection).
+
+## CI
+
+One GitHub Actions job (`.github/workflows/ci.yml`) on pushes to `main` and
+on PRs: `pnpm install --frozen-lockfile`, `pnpm -r run lint`, `pnpm -r run
+build`, with `git diff --exit-code` gates after lint and build. The diff
+gates are load-bearing: lint scripts run `eslint --fix`, so drift means an
+auto-fixable violation; and builds regenerate the committed `lib/` output,
+so drift means a sibling package was consuming stale code. Type checking has
+no separate step — it rides the builds (tsc for `build-lib`,
+fork-ts-checker for the webpack bundles).

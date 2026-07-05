@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # Reads the pnpm version from the root package.json "packageManager" field.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Lint scripts run eslint --fix, so a clean pass can still rewrite
+      # files; the diff check turns any rewrite into a failure instead of
+      # letting auto-fixable violations pass silently.
+      - name: Lint
+        run: |
+          pnpm -r run lint
+          git diff --exit-code || { echo '::error::eslint --fix changed files; run pnpm -r run lint locally and commit'; exit 1; }
+
+      # Type checking rides the builds: build-lib is a full tsc program and
+      # the webpack builds run fork-ts-checker over tsconfig.build.json.
+      # pnpm orders packages topologically, so libs build before consumers.
+      - name: Build
+        run: pnpm -r run build
+
+      # Sibling packages consume the committed lib/ output via workspace
+      # symlinks, so a stale lib/ means consumers silently use old code.
+      - name: Committed lib/ output is current
+        run: git diff --exit-code || { echo '::error::committed lib/ output is stale; run build-lib and commit the result'; exit 1; }
