@@ -1,7 +1,7 @@
 {
   "name": "@userscript/custom-sort",
   "version": "1.1.2",
-  "description": "custom-sort",
+  "description": "Userscript that sorts teaser listings on iwara.tv with a customizable sort function",
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "lint": "eslint . --fix",

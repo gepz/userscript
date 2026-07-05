@@ -1,7 +1,7 @@
 {
   "name": "@userscript/forward-to",
   "version": "1.0.4",
-  "description": "",
+  "description": "Curried helper that forwards a value into an rxjs Observer",
   "keywords": [],
   "license": "AGPL-3.0-or-later",
   "author": "",

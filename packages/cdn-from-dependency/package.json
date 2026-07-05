@@ -1,7 +1,7 @@
 {
   "name": "@userscript/cdn-from-dependency",
   "version": "1.0.4",
-  "description": "",
+  "description": "Turns package.json dependency versions into pinned CDN URL data for userscript @require headers",
   "keywords": [],
   "license": "AGPL-3.0-or-later",
   "author": "",

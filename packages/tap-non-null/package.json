@@ -1,7 +1,7 @@
 {
   "name": "@userscript/tap-non-null",
   "version": "1.0.4",
-  "description": "",
+  "description": "Runtime-checked non-null assertion that returns its input narrowed",
   "keywords": [],
   "license": "AGPL-3.0-or-later",
   "author": "",
