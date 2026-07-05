@@ -5,9 +5,10 @@ this file (or in nested `AGENTS.md` files) win on any conflict.
 
 ## Working in this repo
 
-Deeper background lives in `docs/architecture.md` (how the pieces fit) and
-`docs/decisions.md` (why non-obvious things are the way they are). Read those
-before restructuring builds, configs, or dependencies.
+Deeper background lives in `docs/architecture.md` (how the pieces fit),
+`docs/decisions.md` (why non-obvious things are the way they are), and
+`docs/backlog.md` (known work not yet done). Read the first two before
+restructuring builds, configs, or dependencies.
 
 - **Toolchain.** Node >= 24 via nvm and pnpm >= 11 via corepack. Fresh shells may
   resolve an old Node first; run `nvm use default` if node or pnpm misbehaves.
