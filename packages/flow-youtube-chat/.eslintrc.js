@@ -4,6 +4,20 @@ const path = require(
 
 module.exports = {
   root: true,
+  // The src directories below mirror tsconfig.exclude.json: they are excluded
+  // from every TS project, so type-aware linting cannot parse them. Keep the
+  // two lists in sync; when a directory rejoins the build, unignore it here.
+  ignorePatterns: [
+    '/lib/',
+    '/dist/',
+    '/src/filter/filterContextType/',
+    '/src/restrictedExpression/',
+    '/src/settingUI/EditableExpression/',
+    '/src/settingUI/filter/',
+    '/src/settingUI/filterPanel/',
+    '/src/type/',
+    '/src/typedExpression/',
+  ],
   extends: [
     '@userscript/eslint-config/baseConfig',
     'plugin:compat/recommended',

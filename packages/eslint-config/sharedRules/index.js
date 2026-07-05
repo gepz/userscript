@@ -49,7 +49,10 @@ module.exports = {
       'newlines-between': 'always',
     },
   ],
-  'no-param-reassign': ['error'],
+  // Explicit options: severity-only entries inherit options from extended
+  // configs, so a bare ['error'] here silently kept airbnb's props: true.
+  // Userscripts mutate DOM elements passed as parameters by design.
+  'no-param-reassign': ['error', { props: false }],
   'no-mixed-operators': [
     'error', {
       allowSamePrecedence: true,

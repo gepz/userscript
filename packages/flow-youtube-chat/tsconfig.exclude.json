@@ -6,7 +6,7 @@
     "**/*.spec.ts",
     "./src/filter/filterContextType",
     "./src/restrictedExpression",
-    "./src/settingUI/editableExpression",
+    "./src/settingUI/EditableExpression",
     "./src/settingUI/filter",
     "./src/settingUI/filterPanel",
     "./src/type",

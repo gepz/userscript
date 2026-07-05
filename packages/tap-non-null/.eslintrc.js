@@ -4,6 +4,7 @@ const path = require(
 
 module.exports = {
   root: true,
+  ignorePatterns: ['/lib/', '/dist/'],
   extends: ['@userscript/eslint-config/baseConfig'],
   plugins: ['@typescript-eslint'],
   settings: {
