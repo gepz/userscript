@@ -1,5 +1,6 @@
 {
   "name": "@userscript/cdn-from-dependency",
+  "private": true,
   "version": "1.0.4",
   "description": "Turns package.json dependency versions into pinned CDN URL data for userscript @require headers",
   "keywords": [],

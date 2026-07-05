@@ -1,5 +1,6 @@
 {
   "name": "@userscript/tap-non-null",
+  "private": true,
   "version": "1.0.4",
   "description": "Runtime-checked non-null assertion that returns its input narrowed",
   "keywords": [],

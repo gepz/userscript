@@ -1,5 +1,6 @@
 {
   "name": "@userscript/flow-youtube-chat",
+  "private": true,
   "version": "1.19.2",
   "description": "Userscript that flows YouTube live chat over the video, danmaku-style",
   "license": "AGPL-3.0-or-later",

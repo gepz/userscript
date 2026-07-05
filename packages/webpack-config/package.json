@@ -1,5 +1,6 @@
 {
   "name": "@userscript/webpack-config",
+  "private": true,
   "version": "1.0.5",
   "description": "Shared webpack config fragments: ts-loader, fork-ts-checker, style loaders, dev server, umd output",
   "keywords": [],

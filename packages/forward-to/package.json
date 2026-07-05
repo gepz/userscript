@@ -1,5 +1,6 @@
 {
   "name": "@userscript/forward-to",
+  "private": true,
   "version": "1.0.4",
   "description": "Curried helper that forwards a value into an rxjs Observer",
   "keywords": [],
