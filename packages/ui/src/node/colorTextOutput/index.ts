@@ -13,4 +13,3 @@ export default <T>(
     color,
   },
 }, text('Aa1あア亜'));
-

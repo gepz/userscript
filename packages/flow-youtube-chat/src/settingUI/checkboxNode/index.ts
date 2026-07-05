@@ -10,9 +10,8 @@ import getState from '@/settingUI/getState';
 import updateBool from '@/settingUI/updateBool';
 
 export default checkboxNode<
-SettingState,
-SettingProps,
-AppCommander,
+  SettingState,
+  SettingProps,
+  AppCommander,
 SettingKey<boolean> & TextKey
 >(getText, getState, updateBool);
-

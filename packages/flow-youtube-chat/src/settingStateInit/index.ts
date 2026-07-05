@@ -23,18 +23,20 @@ export default (config: UserConfig): SettingState => pipe(
   config,
   mapObject(([k, v]) => [
     k,
-    isEditable(k)(v) ? Ed.of(v)
-    : k === 'filterExp' ? undefined
-    // : k === 'filterExp' ? pipe(
-    // eslint-disable-next-line max-len
-    //   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    //   fromJsepExp(v as expEval.parse.Expression),
-    //   O.getOrElse((): Compound => ({
-    //     type: 'Compound',
-    //     body: [],
-    //   })),
-    // )
-    : v,
+    isEditable(k)(v)
+      ? Ed.of(v)
+      : k === 'filterExp'
+        ? undefined
+      // ? pipe(
+      // eslint-disable-next-line max-len
+      //   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      //   fromJsepExp(v as expEval.parse.Expression),
+      //   O.getOrElse((): Compound => ({
+      //     type: 'Compound',
+      //     body: [],
+      //   })),
+      // )
+        : v,
   ]),
   (x: MappedConfigState) => ({
     ...x,

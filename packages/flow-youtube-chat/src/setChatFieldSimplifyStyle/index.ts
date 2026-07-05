@@ -12,7 +12,7 @@ export default (
   if (!chat.querySelector(
     '.style-scope.yt-live-chat-paid-message-renderer',
   )) {
-    yield* pipe(
+    yield * pipe(
       [
         '#author-photo',
         // eslint-disable-next-line max-len

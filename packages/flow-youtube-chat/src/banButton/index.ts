@@ -17,8 +17,8 @@ const template = Z.runPromise(pipe(
     'fyc_button',
   ))),
   Z.tap((x) => Z.sync(() => Object.assign<
-  CSSStyleDeclaration,
-  Partial<CSSStyleDeclaration>
+    CSSStyleDeclaration,
+    Partial<CSSStyleDeclaration>
   >(x.style, {
     padding: '0px',
     width: '20px',

@@ -38,7 +38,7 @@ export default (
     Z.map((rect) => [
       [
         rect.width
-          * (mainState.config.value.flowX2 - mainState.config.value.flowX1),
+        * (mainState.config.value.flowX2 - mainState.config.value.flowX1),
         newChat.y,
       ],
       [

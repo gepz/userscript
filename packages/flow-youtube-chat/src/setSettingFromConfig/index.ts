@@ -24,19 +24,21 @@ export default <T extends keyof UserConfig & keyof SettingState>(
   state: SettingState,
 ): SettingState => ({
   ...state,
-  [key]: isEditable(key)(value) ? Ed.setValue(value)(
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    state[key] as Editable<UserConfig[T]>,
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  ) : key === 'filterExp' ? undefined
-  // ) : key === 'filterExp' ? pipe(
-  //   // eslint-disable-next-line max-len
-  //   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  //   fromJsepExp(value as expEval.parse.Expression),
-  //   O.getOrElse((): Compound => ({
-  //     type: 'Compound',
-  //     body: [],
-  //   })),
-  // )
-  : value,
+  [key]: isEditable(key)(value)
+    ? Ed.setValue(value)(
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      state[key] as Editable<UserConfig[T]>,
+    )
+    : key === 'filterExp'
+      ? undefined
+    // ? pipe(
+    //   // eslint-disable-next-line max-len
+    //   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    //   fromJsepExp(value as expEval.parse.Expression),
+    //   O.getOrElse((): Compound => ({
+    //     type: 'Compound',
+    //     body: [],
+    //   })),
+    // )
+      : value,
 });

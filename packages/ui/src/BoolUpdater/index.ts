@@ -8,18 +8,18 @@ import ExactTypeKey from '@/ExactTypeKey';
 import StateDispatchable from '@/StateDispatchable';
 import getChecked from '@/getChecked';
 
-export default interface BoolUpdater<
+type BoolUpdater<
   State,
   Props,
   AppCommander,
-> {
-  (key: ExactTypeKey<Props, boolean>): (
-    c: AppCommander,
-  ) => (
-    s: State,
-    e: Event,
-  ) => StateDispatchable<State>
-}
+> = (key: ExactTypeKey<Props, boolean>) => (
+  c: AppCommander,
+) => (
+  s: State,
+  e: Event,
+) => StateDispatchable<State>;
+
+export default BoolUpdater;
 
 export const make = <
   State,

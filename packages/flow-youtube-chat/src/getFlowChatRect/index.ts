@@ -13,8 +13,8 @@ export default (
 ): DOMRectReadOnly => pipe(
   config,
   (x) => (playerRect.width * x.flowX2)
-  - ((chat.width + (playerRect.width * (
-    x.flowX2 - x.flowX1
-  ))) * getFlowChatProgress(chat.animationState)),
+    - ((chat.width + (playerRect.width * (
+      x.flowX2 - x.flowX1
+    ))) * getFlowChatProgress(chat.animationState)),
   (x) => new DOMRectReadOnly(x, chat.y, chat.width, chat.height),
 );

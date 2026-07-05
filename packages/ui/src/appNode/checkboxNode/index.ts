@@ -31,4 +31,3 @@ export default <
   getState(label)(s),
   updateBool(label)(c),
 );
-

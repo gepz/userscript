@@ -87,7 +87,7 @@ const adjustPager = ({
   container,
   pageCount,
 }: {
-  container: Element,
+  container: Element
   pageCount: number
 }) => {
   const currentPage = getPageParam(new URL(window.location.href));

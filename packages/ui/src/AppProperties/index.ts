@@ -7,4 +7,3 @@ type AppProperties<State, C extends ComputedProperties<State>> = {
 } & State;
 
 export default AppProperties;
-

@@ -9,20 +9,20 @@ import {
   Setter,
 } from '@/setter';
 
-export default interface InputUpdater<
+type InputUpdater<
   State,
   Props,
   AppCommander,
-> {
-  <K extends keyof Props>(key: K): (
-    setter: Setter<string, Props[K]>
-  ) => (
-    c: AppCommander,
-  ) => (
-    s: State,
-    e: Event,
-  ) => StateDispatchable<State>
-}
+> = <K extends keyof Props>(key: K) => (
+  setter: Setter<string, Props[K]>
+) => (
+  c: AppCommander,
+) => (
+  s: State,
+  e: Event,
+) => StateDispatchable<State>;
+
+export default InputUpdater;
 
 export const make = <
   State,
@@ -36,9 +36,9 @@ export const make = <
     v: Props[K],
   ) => (c: AppCommander) => (s: State) => StateDispatchable<State>,
 ): InputUpdater<
-State,
-Props,
-AppCommander
+  State,
+  Props,
+  AppCommander
 > => <K extends keyof Props>(
   key: K,
 ) => (
@@ -50,4 +50,3 @@ AppCommander
   updateAt(key),
   (x) => x(c)(s),
 );
-

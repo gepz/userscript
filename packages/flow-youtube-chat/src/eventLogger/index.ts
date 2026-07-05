@@ -18,10 +18,12 @@ export default (
 ) => Logger.make<unknown, void>(({
   logLevel,
   message,
-}) => Z.runPromise(updateSettingState(apps.getValue())((s) => (s.logEvents ? ({
-  ...s,
-  eventLog: appendEventLog(
-    String(message),
-    logLevel.label,
-  )(s.eventLog),
-}) : s))));
+}) => Z.runPromise(updateSettingState(apps.getValue())((s) => (s.logEvents
+  ? ({
+    ...s,
+    eventLog: appendEventLog(
+      String(message),
+      logLevel.label,
+    )(s.eventLog),
+  })
+  : s))));

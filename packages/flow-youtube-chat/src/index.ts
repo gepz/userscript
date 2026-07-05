@@ -17,7 +17,7 @@ Z.runPromise(pipe(
   // eslint-disable-next-line func-names
   Z.gen(function* () {
     const settingUpdateApps = new BehaviorSubject<Dispatch<SettingState>[]>([]);
-    yield* initialize({
+    yield * initialize({
       settingUpdateApps,
       provideLog: provideLog(settingUpdateApps),
     });

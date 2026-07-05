@@ -3,9 +3,6 @@ import {
   BroadcastChannel,
 } from 'broadcast-channel';
 import delay from 'delay';
-import {
-  pipe,
-} from 'fp-ts/function';
 
 import PageLoadedMessage from '@/PageLoadedMessage';
 import getTeaserContainers from '@/getTeaserContainers';
@@ -46,10 +43,7 @@ export default async (): Promise<void> => {
     await delay(500);
     addContainersToParents(
       teaserContainers,
-      pipe(
-        window.parent?.document,
-        (x) => (x ? getTeaserContainers(x) : []),
-      ),
+      getTeaserContainers(window.parent.document),
     );
   }
 

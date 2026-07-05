@@ -41,13 +41,15 @@ export default (
     teaserElementSelector,
   ));
 
-  const sortedTeaserCount = container.dataset.sortedTeaserCount
-    ? parseInt(container.dataset.sortedTeaserCount, 10)
+  const storedCount = container.dataset.sortedTeaserCount ?? '';
+
+  const sortedTeaserCount = storedCount !== ''
+    ? parseInt(storedCount, 10)
     : 0;
 
   teaserDivs.filter(({
     dataset,
-  }) => !dataset.initialIndex)
+  }) => (dataset.initialIndex ?? '') === '')
     .forEach(({
       dataset,
     }, index) => {

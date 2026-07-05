@@ -12,4 +12,3 @@ type ComputedPropertySetters<
 };
 
 export default ComputedPropertySetters;
-

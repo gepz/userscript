@@ -10,7 +10,7 @@ import defaultText from '@/defaultText';
 import languages from '@/languages';
 
 interface State {
-  lang: typeof languages[number],
+  lang: typeof languages[number]
 }
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 
@@ -22,4 +22,4 @@ export default ((key: TextKey) => (
   O.map((x) => A.unsafeGet(defaultText[key], x)),
   O.getOrElse(() => 'Error'),
 )
-)satisfies AppTextGetter<TextKey, State>;
+) satisfies AppTextGetter<TextKey, State>;

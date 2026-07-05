@@ -12,8 +12,9 @@ import stepTiming from '@/settingUI/stepTiming';
 
 const setComputed = {
   useStepTiming: (v) => (c) => (s) => pipe(
-    v ? stepTiming(Ed.value(s.timingStepCount))
-    : 'linear',
+    v
+      ? stepTiming(Ed.value(s.timingStepCount))
+      : 'linear',
     (timingFunction) => [
       {
         ...s,
@@ -23,7 +24,7 @@ const setComputed = {
     ],
   ),
 } satisfies ComputedPropertySetters<
-SettingState,
+  SettingState,
 typeof computed,
 AppCommander
 >;

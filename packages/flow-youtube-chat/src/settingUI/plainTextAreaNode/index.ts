@@ -5,4 +5,3 @@ import editAction from '@/settingUI/editAction';
 import getState from '@/settingUI/getState';
 
 export default plainTextAreaNode(editAction, getText, getState);
-

@@ -17,9 +17,9 @@ export default (
   checkboxNode('useStepTiming')(c)(s),
   h('div', {
     style: {
-      opacity: getState('useStepTiming')(s) ? null
-      : '0.5',
+      opacity: getState('useStepTiming')(s)
+        ? null
+        : '0.5',
     },
   }, intNode('timingStepCount', 1, 400, 1)(c)(s)),
 ]);
-

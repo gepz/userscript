@@ -6,8 +6,7 @@ import SettingProps from '@/settingUI/SettingProps';
 import updateAt from '@/settingUI/updateAt';
 
 export default boolUpdater.make<
-SettingState,
-SettingProps,
-AppCommander
+  SettingState,
+  SettingProps,
+  AppCommander
 >(updateAt);
-

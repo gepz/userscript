@@ -3,7 +3,7 @@ import {
 } from 'hyperapp';
 
 export default interface RootComponent<T> {
-  tag: keyof HTMLElementTagNameMap,
+  tag: keyof HTMLElementTagNameMap
   view: (s: T) => VNode<T>
 }
 
@@ -13,4 +13,3 @@ export const makeComponent = <T>(
   tag,
   view: x(tag),
 });
-

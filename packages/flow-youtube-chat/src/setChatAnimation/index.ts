@@ -32,15 +32,15 @@ export default (
 ) => (
   mainState: MainState,
 ): Z.Effect<{
-  newChat: FlowChat,
+  newChat: FlowChat
 }, Cause.NoSuchElementException> => pipe(
   getChatFontSize(mainState),
   // eslint-disable-next-line func-names
   Z.tap((height) => Z.gen(function* () {
     // eslint-disable-next-line no-param-reassign
     chat.element.style.transform = `translate(${
-      (yield* SynchronizedRef.get(mainState.playerRect)).width
-         * (mainState.config.value.flowX2 - mainState.config.value.flowX1)
+      (yield * SynchronizedRef.get(mainState.playerRect)).width
+      * (mainState.config.value.flowX2 - mainState.config.value.flowX1)
     }px, -${height * 2}px)`;
   })),
   Z.filterOrFail(() => E.match(chat.animationState, {
@@ -56,7 +56,7 @@ export default (
         height,
       } satisfies FlowChat,
       oldChatIndex: pipe(
-        yield* SynchronizedRef.get(mainState.flowChats),
+        yield * SynchronizedRef.get(mainState.flowChats),
         A.findFirstIndex((x) => x === chat),
       ),
       progress: getFlowChatProgress(chat.animationState),
@@ -77,7 +77,8 @@ export default (
           animationState: E.left('Ended'),
         })),
         Z.orElse(() => Z.succeed<FlowChat>(ctx.newChat)),
-      ) : setNewChatAnimation(ctx.newChat)(lane)(ctx.progress)(mainState))),
+      )
+      : setNewChatAnimation(ctx.newChat)(lane)(ctx.progress)(mainState))),
     Z.map((x) => ({
       oldChatIndex: ctx.oldChatIndex,
       newChat: x,

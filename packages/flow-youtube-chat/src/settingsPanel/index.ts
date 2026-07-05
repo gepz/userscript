@@ -36,78 +36,80 @@ export default (
   c: AppCommander,
 ) => (
   state: SettingState,
-): VNode<SettingState> => (state.showPanel ? h('div', {
-  class: 'fyc_panel',
-  style: {
-    backgroundColor: 'rgba(30,30,30,0.9)',
-    position: 'absolute',
-    zIndex: '66666',
-    color: '#fff',
-    fontSize: '14px',
-    overflow: 'auto',
-    left: `${state.panelRect.x}px`,
-    top: `${state.panelRect.y}px`,
-    width: `${state.panelRect.width}px`,
-    height: `${state.panelRect.height}px`,
-    border: 'solid 1px #666',
-    fontFamily: 'MS PGothic',
-    lineHeight: '1.2',
-    colorScheme: 'dark',
-  },
-}, [
-  h('div', {
+): VNode<SettingState> => (state.showPanel
+  ? h('div', {
+    class: 'fyc_panel',
     style: {
+      backgroundColor: 'rgba(30,30,30,0.9)',
       position: 'absolute',
-      inset: '3px 3px auto auto',
+      zIndex: '66666',
+      color: '#fff',
+      fontSize: '14px',
+      overflow: 'auto',
+      left: `${state.panelRect.x}px`,
+      top: `${state.panelRect.y}px`,
+      width: `${state.panelRect.width}px`,
+      height: `${state.panelRect.height}px`,
+      border: 'solid 1px #666',
+      fontFamily: 'MS PGothic',
+      lineHeight: '1.2',
+      colorScheme: 'dark',
     },
   }, [
-    text('🌐'),
-    h('select', {
-      onchange: updateInput('lang')(
-        setFilteredString(languages),
-      )(c),
-    }, pipe(
-      languages,
-      A.zip(languageLabels),
-      A.map(([lang, label]) => option(
-        lang,
-        label,
-        lang === state.lang,
+    h('div', {
+      style: {
+        position: 'absolute',
+        inset: '3px 3px auto auto',
+      },
+    }, [
+      text('🌐'),
+      h('select', {
+        onchange: updateInput('lang')(
+          setFilteredString(languages),
+        )(c),
+      }, pipe(
+        languages,
+        A.zip(languageLabels),
+        A.map(([lang, label]) => option(
+          lang,
+          label,
+          lang === state.lang,
+        )),
       )),
-    )),
-  ]),
-  tabContainer<SettingState>({
-    container: {},
-    label: {
-      padding: '6px',
-    },
-    labelFocus: {
-      background: '#666',
-    },
-    tab: {
-      height: '364px',
-      display: 'flex',
-      padding: '6px',
-    },
-  })((s, n) => updateAt('mainTab')(n)(c)(s))(pipe(
-    [
-      'flowChat',
-      'chatFilter',
-      'chatField',
-      'feedback',
-    ] as const,
-    A.map(getText),
-    A.map(apply(state)),
-  ))(pipe(
-    [
-      flowChatPanel,
-      filterPanel,
-      chatFieldPanel,
-      feedbackPanel,
-    ] as const,
-    A.map(apply(c)),
-    A.map(constant),
-    A.map(flip),
-    A.map(apply(state)),
-  ))(getState('mainTab')(state)),
-]) : h('div', {}));
+    ]),
+    tabContainer<SettingState>({
+      container: {},
+      label: {
+        padding: '6px',
+      },
+      labelFocus: {
+        background: '#666',
+      },
+      tab: {
+        height: '364px',
+        display: 'flex',
+        padding: '6px',
+      },
+    })((s, n) => updateAt('mainTab')(n)(c)(s))(pipe(
+      [
+        'flowChat',
+        'chatFilter',
+        'chatField',
+        'feedback',
+      ] as const,
+      A.map(getText),
+      A.map(apply(state)),
+    ))(pipe(
+      [
+        flowChatPanel,
+        filterPanel,
+        chatFieldPanel,
+        feedbackPanel,
+      ] as const,
+      A.map(apply(c)),
+      A.map(constant),
+      A.map(flip),
+      A.map(apply(state)),
+    ))(getState('mainTab')(state)),
+  ])
+  : h('div', {}));

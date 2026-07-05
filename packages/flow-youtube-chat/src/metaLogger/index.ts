@@ -17,12 +17,17 @@ import {
 const getConsoleLog = (
   x: LogLevel.LogLevel,
   // eslint-disable-next-line no-console
-) => (x === LogLevel.Trace ? Console.trace
-: x === LogLevel.Debug ? Console.debug
-: x === LogLevel.Info ? Console.info
-: x === LogLevel.Warning ? Console.warn
-: x === LogLevel.Error || x === LogLevel.Fatal ? Console.error
-: Console.log);
+) => (x === LogLevel.Trace
+  ? Console.trace
+  : x === LogLevel.Debug
+    ? Console.debug
+    : x === LogLevel.Info
+      ? Console.info
+      : x === LogLevel.Warning
+        ? Console.warn
+        : x === LogLevel.Error || x === LogLevel.Fatal
+          ? Console.error
+          : Console.log);
 
 export default Logger.make<unknown, void>(({
   logLevel,

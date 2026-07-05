@@ -20,9 +20,9 @@ export default class implements m.Component {
   [_: number]: never;
 
   private state: {
-    condition: string,
-    pageCount: number,
-    loadedPageCount: number,
+    condition: string
+    pageCount: number
+    loadedPageCount: number
   };
 
   private readonly conditionInputInput$ = new Subject<InputEvent>();
@@ -200,11 +200,13 @@ export default class implements m.Component {
 
       statusLabel: m(`label${classAttr(['text-primary'])}`, {
         style: commonStyle,
-      }, this.state.loadedPageCount < this.state.pageCount ? `${
-        this.state.loadedPageCount
-      } of ${
-        this.state.pageCount
-      } pages done` : 'All pages done'),
+      }, this.state.loadedPageCount < this.state.pageCount
+        ? `${
+          this.state.loadedPageCount
+        } of ${
+          this.state.pageCount
+        } pages done`
+        : 'All pages done'),
     };
 
     const ui = m(`div${classAttr([

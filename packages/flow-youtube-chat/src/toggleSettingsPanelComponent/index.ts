@@ -32,10 +32,11 @@ const togglePanel = (
   },
   (newState) => [
     newState,
-    x.showPanel ? () => decodeUnknownSync(instanceOf(HTMLElement))(
-      e.currentTarget,
-    ).blur()
-    : () => {},
+    x.showPanel
+      ? () => decodeUnknownSync(instanceOf(HTMLElement))(
+        e.currentTarget,
+      ).blur()
+      : () => {},
     () => Z.runPromise(updateState((oldState) => ({
       ...oldState,
       ...newState,

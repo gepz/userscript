@@ -24,8 +24,8 @@ export default (
   mainState: MainState,
 // eslint-disable-next-line func-names
 ): Z.Effect<void> => Z.gen(function* () {
-  const chatFontSize = yield* getChatFontSize(mainState);
-  if (yield* pipe(
+  const chatFontSize = yield * getChatFontSize(mainState);
+  if (yield * pipe(
     Z.succeed({
       data,
       element: emptyElement,
@@ -40,7 +40,7 @@ export default (
       interval,
     }) => !intervalTooSmall(interval)(mainState.config.value)),
   )) {
-    yield* pipe(
+    yield * pipe(
       SynchronizedRef.get(mainState.flowChats),
       Z.flatMap((chats) => A.findFirstIndex(
         chats,
@@ -60,16 +60,16 @@ export default (
           // eslint-disable-next-line func-names
           Z.gen(function* () {
             const chat = pipe(
-              yield* SynchronizedRef.get(mainState.flowChats),
+              yield * SynchronizedRef.get(mainState.flowChats),
               A.unsafeGet(index),
             );
 
-            yield* SynchronizedRef.update(
+            yield * SynchronizedRef.update(
               mainState.flowChats,
               A.remove(index),
             );
 
-            yield* chat.animationState.pipe(
+            yield * chat.animationState.pipe(
               Z.tap((animation) => Z.sync(() => animation.cancel())),
               Z.ignore,
             );

@@ -1,4 +1,4 @@
-import { apply, flip, pipe, } from 'effect/Function';
+import { apply, pipe, flip, } from 'effect/Function';
 import getChecked from '../getChecked';
 export const make = (updateAt) => (key) => flip((s, e) => pipe(
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

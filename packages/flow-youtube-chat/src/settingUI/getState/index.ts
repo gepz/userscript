@@ -9,4 +9,3 @@ export default <K extends SettingKey<unknown>>(k: K): (
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   (k in computed ? computed[k as never] : (s) => s[k as never])
 );
-

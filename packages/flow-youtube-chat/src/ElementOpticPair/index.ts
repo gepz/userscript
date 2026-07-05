@@ -8,10 +8,10 @@ import {
   Refinement,
 } from 'effect/Predicate';
 
-type ElementOpticPair<S, A> = {
-  ele: A,
+interface ElementOpticPair<S, A> {
+  ele: A
   opt: Op.Optional<S, A>
-};
+}
 
 export default ElementOpticPair;
 

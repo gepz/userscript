@@ -1,4 +1,3 @@
-export default interface TextGetter<Key, State> {
-    (key: Key): (state: State) => string;
-}
+type TextGetter<Key, State> = (key: Key) => (state: State) => string;
+export default TextGetter;
 //# sourceMappingURL=index.d.ts.map

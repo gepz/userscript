@@ -10,4 +10,3 @@ type AppPropertiesKey<
   T> = ConditionalKeys<State, T> | ConditionalKeys<C, (s: State) => T>;
 
 export default AppPropertiesKey;
-

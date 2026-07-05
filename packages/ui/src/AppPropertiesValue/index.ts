@@ -10,4 +10,3 @@ type AppPropertiesValue<
 : never;
 
 export default AppPropertiesValue;
-

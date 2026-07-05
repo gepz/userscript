@@ -15,6 +15,6 @@ export default (
 ) => (
   v: unknown,
 ) => (typeof v === 'number'
- || typeof v === 'string'
- || (Array.isArray(v) && (typeof v[0] === 'string' || v.length === 0)))
- && !A.some<string>((x) => x === k)(exceptions);
+  || typeof v === 'string'
+  || (Array.isArray(v) && (typeof v[0] === 'string' || v.length === 0)))
+&& !A.some<string>((x) => x === k)(exceptions);

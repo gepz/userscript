@@ -7,4 +7,3 @@ type ExactTypeKey<O, Type> = {
 }[keyof O];
 
 export default ExactTypeKey;
-

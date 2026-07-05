@@ -6,8 +6,8 @@ import {
 export default pipe(
   Z.sync(() => document.createElement('div')),
   Z.tap((x) => Z.sync(() => Object.assign<
-  CSSStyleDeclaration,
-  Partial<CSSStyleDeclaration>
+    CSSStyleDeclaration,
+    Partial<CSSStyleDeclaration>
   >(x.style, {
     pointerEvents: 'none',
     zIndex: '30',

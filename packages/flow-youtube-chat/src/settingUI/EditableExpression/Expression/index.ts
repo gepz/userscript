@@ -1,16 +1,12 @@
 import * as Ed from '@userscript/ui/Editable';
 import {
+  Option as O,
+  Array as A,
+} from 'effect';
+import {
   identity,
   pipe,
 } from 'effect/Function';
-import {
-  Option as O,
-} from 'effect';
-
-import {
-  Array as A,
-} from 'effect';
-
 import * as expEval from 'expression-eval';
 
 // eslint-disable-next-line max-len
@@ -24,12 +20,12 @@ import LiteralArray from '@/settingUI/editableExpression/LiteralArray';
 import type MemberExpression from '@/settingUI/editableExpression/MemberExpression';
 
 type Expression = ArrayExpression
-| CallExpression
-| Identifier
-| Literal
-| LiteralArray
-| MemberExpression
-| Compound;
+  | CallExpression
+  | Identifier
+  | Literal
+  | LiteralArray
+  | MemberExpression
+  | Compound;
 
 export default Expression;
 
@@ -53,7 +49,7 @@ const memberExp = (
   O.bind('property', () => pipe(
     f(exp.property),
     O.filter((x): x is Exclude<
-    Expression, ArrayExpression | LiteralArray
+      Expression, ArrayExpression | LiteralArray
     > => x.type !== 'ArrayExpression' && x.type !== 'LiteralArray'),
   )),
 );
@@ -77,10 +73,12 @@ const callExp = (
 
 const literal = (
   exp: expEval.parse.Literal,
-): O.Option<Literal> => (typeof exp.value === 'string' ? O.some({
-  type: 'Literal',
-  value: Ed.of(exp.value),
-}) : O.none());
+): O.Option<Literal> => (typeof exp.value === 'string'
+  ? O.some({
+    type: 'Literal',
+    value: Ed.of(exp.value),
+  })
+  : O.none());
 
 const arrayExp = (
   f: ExpressionFunctoin,
@@ -96,9 +94,9 @@ const arrayExp = (
     O.filter(A.every((
       x,
     ): x is {
-      type: 'Literal';
-      value: string;
-      raw: string;
+      type: 'Literal'
+      value: string
+      raw: string
     } => typeof x.value === 'string')),
     O.map((es): LiteralArray => ({
       type: 'LiteralArray',
@@ -107,17 +105,19 @@ const arrayExp = (
         A.map((x) => x.value),
       )),
     })),
-    (x) => (O.isSome(x) ? x : pipe(
-      {
-        type: exp.type,
-      },
-      O.some,
-      O.bind('elements', () => pipe(
-        elements,
-        A.map(f),
-        O.sequenceArray,
+    (x) => (O.isSome(x)
+      ? x
+      : pipe(
+        {
+          type: exp.type,
+        },
+        O.some,
+        O.bind('elements', () => pipe(
+          elements,
+          A.map(f),
+          O.sequenceArray,
+        )),
       )),
-    )),
   ),
 );
 
@@ -137,14 +137,14 @@ const compound = (
   )),
 );
 
-type expType = {
-  Identifier: expEval.parse.Identifier,
-  MemberExpression: expEval.parse.MemberExpression,
-  CallExpression: expEval.parse.CallExpression,
-  Literal: expEval.parse.Literal,
-  ArrayExpression: expEval.parse.ArrayExpression,
-  Compound: expEval.parse.Compound,
-};
+interface expType {
+  Identifier: expEval.parse.Identifier
+  MemberExpression: expEval.parse.MemberExpression
+  CallExpression: expEval.parse.CallExpression
+  Literal: expEval.parse.Literal
+  ArrayExpression: expEval.parse.ArrayExpression
+  Compound: expEval.parse.Compound
+}
 
 const isExpType = <T extends keyof expType>(
   type: T,
@@ -154,10 +154,16 @@ const isExpType = <T extends keyof expType>(
 
 export const fromJsepExp: ExpressionFunctoin = (
   x,
-) => (isExpType('Identifier')(x) ? O.some(identifier(x))
-: isExpType('MemberExpression')(x) ? memberExp(fromJsepExp)(x)
-: isExpType('CallExpression')(x) ? callExp(fromJsepExp)(x)
-: isExpType('Literal')(x) ? literal(x)
-: isExpType('ArrayExpression')(x) ? arrayExp(fromJsepExp)(x)
-: isExpType('Compound')(x) ? compound(fromJsepExp)(x)
-: O.none());
+) => (isExpType('Identifier')(x)
+  ? O.some(identifier(x))
+  : isExpType('MemberExpression')(x)
+    ? memberExp(fromJsepExp)(x)
+    : isExpType('CallExpression')(x)
+      ? callExp(fromJsepExp)(x)
+      : isExpType('Literal')(x)
+        ? literal(x)
+        : isExpType('ArrayExpression')(x)
+          ? arrayExp(fromJsepExp)(x)
+          : isExpType('Compound')(x)
+            ? compound(fromJsepExp)(x)
+            : O.none());

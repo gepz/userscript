@@ -11,8 +11,10 @@ export default (
   text: string,
   level: LogLevel.LogLevel['label'],
 ) => (x: Log): Log => pipe(
-  x.compressedBlocks.length === maxEventLogBlockCount ? log.removeBlock(
-    Math.floor(preserveEventLogBlockCount),
-  )(x) : x,
+  x.compressedBlocks.length === maxEventLogBlockCount
+    ? log.removeBlock(
+      Math.floor(preserveEventLogBlockCount),
+    )(x)
+    : x,
   log.append(text, level),
 );

@@ -29,8 +29,8 @@ const parseMessage = (
   message: Element,
   config: UserConfig,
 ): {
-  vnodes: HTMLTemplateResult[],
-  length: number,
+  vnodes: HTMLTemplateResult[]
+  length: number
 } => {
   const eleWin = message.ownerDocument.defaultView ?? window;
   const {
@@ -38,8 +38,8 @@ const parseMessage = (
   } = config;
 
   const initResult: {
-    vnodes: HTMLTemplateResult[],
-    length: number,
+    vnodes: HTMLTemplateResult[]
+    length: number
   } = {
     vnodes: [],
     length: 0,
@@ -50,42 +50,45 @@ const parseMessage = (
     A.reduce(initResult, ({
       vnodes,
       length,
-    }, node) => (length >= maxChatLength ? {
-      vnodes,
-      length,
-    }
-    : (!config.textOnly && node instanceof eleWin.HTMLImageElement) ? {
-      vnodes: [
-        ...vnodes,
-        html`<img style=${styleMap({
-          height: '1em',
-          width: '1em',
-          verticalAlign: 'text-top',
-        } satisfies Partial<CSSStyleDeclaration>)} src=${
-          node.src.replace(/=w\d+-h\d+-c-k-nd$/, '')
-        } alt=${node.alt}>`,
-      ],
-      length: length + 1,
-    }
-    : pipe(
-      node.textContent ?? '',
-      Str.slice(0, maxChatLength),
-      (x) => (node instanceof eleWin.HTMLAnchorElement ? {
-        vnodes: [
-          ...vnodes,
-          html`<span style=${styleMap({
-            fontSize: '0.84em',
-            textDecoration: 'underline',
-            ...textStyle,
-          } satisfies Partial<CSSStyleDeclaration>)}>${x}</span>`,
-        ],
-        length: length + x.length,
+    }, node) => (length >= maxChatLength
+      ? {
+        vnodes,
+        length,
       }
-      : {
-        vnodes: [...vnodes, html`${x}`],
-        length: length + x.length,
-      }),
-    ))),
+      : (!config.textOnly && node instanceof eleWin.HTMLImageElement)
+        ? {
+          vnodes: [
+            ...vnodes,
+            html`<img style=${styleMap({
+              height: '1em',
+              width: '1em',
+              verticalAlign: 'text-top',
+            } satisfies Partial<CSSStyleDeclaration>)} src=${
+              node.src.replace(/=w\d+-h\d+-c-k-nd$/, '')
+            } alt=${node.alt}>`,
+          ],
+          length: length + 1,
+        }
+        : pipe(
+          node.textContent ?? '',
+          Str.slice(0, maxChatLength),
+          (x) => (node instanceof eleWin.HTMLAnchorElement
+            ? {
+              vnodes: [
+                ...vnodes,
+                html`<span style=${styleMap({
+                  fontSize: '0.84em',
+                  textDecoration: 'underline',
+                  ...textStyle,
+                } satisfies Partial<CSSStyleDeclaration>)}>${x}</span>`,
+              ],
+              length: length + x.length,
+            }
+            : {
+              vnodes: [...vnodes, html`${x}`],
+              length: length + x.length,
+            }),
+        ))),
   );
 };
 
@@ -98,7 +101,7 @@ export default (
     return {
       data: chat.data,
       config: mainState.config.value,
-      fontSize: yield* getChatFontSize(mainState),
+      fontSize: yield * getChatFontSize(mainState),
     };
   }),
   Z.map(({
@@ -108,10 +111,13 @@ export default (
   }) => html`<span style=${styleMap({
     fontSize: `${fontSize}px`,
     visibility: config.displayChats ? 'visible' : 'hidden',
-    color: data.authorType === 'owner' ? config.ownerColor
-    : data.authorType === 'moderator' ? config.moderatorColor
-    : data.authorType === 'member' ? config.memberColor
-    : config.color,
+    color: data.authorType === 'owner'
+      ? config.ownerColor
+      : data.authorType === 'moderator'
+        ? config.moderatorColor
+        : data.authorType === 'member'
+          ? config.memberColor
+          : config.color,
     fontWeight: config.fontWeight.toString(),
     fontFamily: config.font,
     opacity: config.chatOpacity.toString(),

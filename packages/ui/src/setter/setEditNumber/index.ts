@@ -24,12 +24,14 @@ const setEditNumber: EditSetter<Editable<number>> = (
       ? pipe(
         state,
         Ed.setText(value),
-      ) : Ed.fromValueText(x)(value))
+      )
+      : Ed.fromValueText(x)(value))
     : (x) => (Number.isNaN(x)
       ? pipe(
         state,
         Tu.mapSecond(constant(O.some([value, O.some('')]))),
-      ) : Ed.of(x)),
+      )
+      : Ed.of(x)),
 );
 
 export default setEditNumber;

@@ -42,7 +42,7 @@ export const setText: <T>(x: string) => (e: Editable<T>) => Editable<T> = (
 ) => Tu.mapSecond((snd) => snd.pipe(
   O.map(Tu.mapFirst(constant(x))),
   O.orElse(constant(O.some<
-  readonly [string, O.Option<string>]
+    readonly [string, O.Option<string>]
   >([x, O.none()]))),
 ));
 

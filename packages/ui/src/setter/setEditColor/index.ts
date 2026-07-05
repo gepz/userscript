@@ -14,11 +14,12 @@ const setEditColor: EditSetter<Editable<string>> = (
   editing,
 ) => (
   value,
-) => (editing ? (validateColor(value)
-  ? constant(Ed.fromValueText(value)(value))
-  : Ed.setText(value))
-: (validateColor(value)
-  ? constant(Ed.of(value))
-  : Tu.mapSecond(constant(O.some([value, O.some('')])))));
+) => (editing
+  ? (validateColor(value)
+    ? constant(Ed.fromValueText(value)(value))
+    : Ed.setText(value))
+  : (validateColor(value)
+    ? constant(Ed.of(value))
+    : Tu.mapSecond(constant(O.some([value, O.some('')])))));
 
 export default setEditColor;

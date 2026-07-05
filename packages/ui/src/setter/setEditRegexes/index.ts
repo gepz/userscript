@@ -42,14 +42,15 @@ const setEditRegexes: EditSetter<Editable<readonly string[]>> = (
     ),
   }),
   (ctx) => (
-    editing ? Ed.setText(value)
-    : pipe(
-      ctx.errors,
-      O.map((x) => Tu.mapSecond(() => O.some<
-      readonly [string, O.Option<string>]
-      >([value, O.some(x)]))),
-      O.getOrElse(() => () => Ed.of(ctx.regexes)),
-    )
+    editing
+      ? Ed.setText(value)
+      : pipe(
+        ctx.errors,
+        O.map((x) => Tu.mapSecond(() => O.some<
+          readonly [string, O.Option<string>]
+        >([value, O.some(x)]))),
+        O.getOrElse(() => () => Ed.of(ctx.regexes)),
+      )
   ),
 );
 

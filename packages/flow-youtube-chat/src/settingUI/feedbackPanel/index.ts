@@ -90,8 +90,9 @@ export default (
                 }, text(x.id)),
                 h('div', {
                   style: {
-                    background: j % 2 === 0 ? '#fff'
-                    : '#ddd',
+                    background: j % 2 === 0
+                      ? '#fff'
+                      : '#ddd',
                     color: '#000',
                     flex: 'auto',
                     wordBreak: 'break-all',

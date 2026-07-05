@@ -3,6 +3,6 @@ import {
 } from '../GmStorage';
 
 export type LegacyStorage = GmStorage<{
-  sortValue: string,
-  pageCount: number,
+  sortValue: string
+  pageCount: number
 }>;

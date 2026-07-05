@@ -1,5 +1,5 @@
 export default interface PageLoadedMessage {
-  url: string,
-  parentPageId: string,
-  hasTeasers: boolean,
+  url: string
+  parentPageId: string
+  hasTeasers: boolean
 }

@@ -17,9 +17,9 @@ import Editable, * as Ed from '@/Editable';
 export default <T>(
   rows: number,
   action: Partial<Record<
-  'oninput'
-  | 'onchange'
-  , Action<T>
+    'oninput'
+    | 'onchange',
+    Action<T>
   >>,
 ) => (value: Editable<readonly string[]>): VNode<T> => h('textarea', {
   rows,

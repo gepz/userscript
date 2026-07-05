@@ -9,4 +9,3 @@ type ConfigObservable = {
 };
 
 export default ConfigObservable;
-

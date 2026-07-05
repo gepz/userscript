@@ -38,6 +38,6 @@ export default ({
     Z.orElseSucceed(() => s),
   ),
 }) satisfies Record<
-string,
-(c: AppCommander) => (s: SettingState) => Z.Effect<SettingState>
+  string,
+  (c: AppCommander) => (s: SettingState) => Z.Effect<SettingState>
 >;

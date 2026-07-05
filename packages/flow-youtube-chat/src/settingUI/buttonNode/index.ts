@@ -19,10 +19,10 @@ import action from '@/settingUI/action';
 
 export default (
   label: TextKey
-  & ConditionalKeys<
+    & ConditionalKeys<
   typeof action,
-  (c: AppCommander) => (s: SettingState) => Z.Effect<SettingState>
-  >,
+      (c: AppCommander) => (s: SettingState) => Z.Effect<SettingState>
+    >,
 ): (c: AppCommander) => (s: SettingState) => VNode<SettingState> => (
   c,
 ) => (state) => h('button', {

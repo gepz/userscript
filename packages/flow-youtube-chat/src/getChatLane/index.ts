@@ -26,12 +26,12 @@ export default (
   },
   flowChats,
   playerRect,
-} : MainState): Z.Effect<{
-  lane: number,
-  interval: number,
+}: MainState): Z.Effect<{
+  lane: number
+  interval: number
 // eslint-disable-next-line func-names
 }> => Z.gen(function* () {
-  const rect = yield* SynchronizedRef.get(playerRect);
+  const rect = yield * SynchronizedRef.get(playerRect);
   const flowWidth = rect.width * (
     config.flowX2 - config.flowX1
   );
@@ -43,7 +43,7 @@ export default (
   } = getFlowChatRect(flowChat, config, rect);
 
   const movingChats = pipe(
-    yield* SynchronizedRef.get(flowChats),
+    yield * SynchronizedRef.get(flowChats),
     (chats) => A.take(chats, O.getOrElse(chatIndex, () => chats.length)),
     A.filter((chat) => E.isRight(chat.animationState) && chat.width > 0),
     A.sort(mapInput((x: FlowChat) => x.lane)(N.Order)),
@@ -59,8 +59,8 @@ export default (
       * config.minSpacing;
 
     return ((flowWidth - otherX) / (flowWidth + otherWidth)) - progress
-     < (chatWidth + gap) / (flowWidth + chatWidth)
-     || otherX + otherWidth + gap > chatX;
+      < (chatWidth + gap) / (flowWidth + chatWidth)
+      || otherX + otherWidth + gap > chatX;
   }, {
     maxSize: 1000,
   });
@@ -115,40 +115,44 @@ export default (
       maxInterval,
       maxIntervalLane,
       lastLane,
-    }, info) => ((maxInterval > 0.999 || !info.tooClose()) ? {
-      maxInterval,
-      maxIntervalLane,
-      lastLane,
-    }
-    : (() => {
-      const nextLane = info.lane;
-      const interLane = N.clamp({
-        minimum: 0,
-        maximum: config.laneCount - 1,
-      })((lastLane + nextLane) / 2);
+    }, info) => ((maxInterval > 0.999 || !info.tooClose())
+      ? {
+        maxInterval,
+        maxIntervalLane,
+        lastLane,
+      }
+      : (() => {
+        const nextLane = info.lane;
+        const interLane = N.clamp({
+          minimum: 0,
+          maximum: config.laneCount - 1,
+        })((lastLane + nextLane) / 2);
 
-      const newInterval = Math.min(
-        interLane - lastLane,
-        nextLane - interLane,
-        1,
-      );
+        const newInterval = Math.min(
+          interLane - lastLane,
+          nextLane - interLane,
+          1,
+        );
 
-      return {
-        lastLane: nextLane,
-        ...((newInterval - maxInterval > 0.001) ? {
-          maxInterval: newInterval,
-          maxIntervalLane: Math.max(lastLane + newInterval, 0),
-        } : {
-          maxInterval,
-          maxIntervalLane,
-        }),
-      };
-    })())),
+        return {
+          lastLane: nextLane,
+          ...((newInterval - maxInterval > 0.001)
+            ? {
+              maxInterval: newInterval,
+              maxIntervalLane: Math.max(lastLane + newInterval, 0),
+            }
+            : {
+              maxInterval,
+              maxIntervalLane,
+            }),
+        };
+      })())),
     (x) => ({
       lane: Math.abs(
         formerLaneInterval - x.maxInterval,
-      ) < 0.001 ? flowChat.lane
-      : x.maxIntervalLane,
+      ) < 0.001
+        ? flowChat.lane
+        : x.maxIntervalLane,
       interval: x.maxInterval,
     }),
   );

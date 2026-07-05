@@ -7,4 +7,3 @@ export default (width: number): StyleProp => ({
   width: `${width}px`,
   margin: '2px',
 });
-

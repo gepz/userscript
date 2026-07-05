@@ -21,8 +21,9 @@ const setEditStrings: EditSetter<Editable<readonly string[]>> = (
   Str.split(/\r\n|\n/),
   A.filter(P.not(Str.isEmpty)),
   (x) => constant(
-    editing ? [x, O.some([value, O.none()])]
-    : Ed.of(x),
+    editing
+      ? [x, O.some([value, O.none()])]
+      : Ed.of(x),
   ),
 );
 

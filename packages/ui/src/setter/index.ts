@@ -23,4 +23,3 @@ export {
   setString,
   setStrings,
 };
-

@@ -1,13 +1,12 @@
 import EditSetter from '@userscript/ui/EditSetter';
 import {
+  Option as O,
+} from 'effect';
+import {
   pipe,
   apply,
   constant,
 } from 'effect/Function';
-import {
-  Option as O,
-} from 'effect';
-
 import * as Op from 'monocle-ts/Optional';
 
 import Expression from '@/settingUI/editableExpression/Expression';

@@ -14,10 +14,10 @@ import {
 } from 'hyperapp';
 
 export interface TabContainerStyle {
-  container: StyleProp,
-  label: StyleProp,
-  labelFocus: StyleProp,
-  tab: StyleProp,
+  container: StyleProp
+  label: StyleProp
+  labelFocus: StyleProp
+  tab: StyleProp
 }
 
 export default <T>(

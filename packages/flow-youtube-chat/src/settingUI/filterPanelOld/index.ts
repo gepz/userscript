@@ -24,4 +24,3 @@ export default (
     style: panelBoxStyle(212),
   }, plainTextAreaNode('bannedUsers', 18)(c)(s)),
 ]);
-

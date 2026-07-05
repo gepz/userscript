@@ -11,4 +11,3 @@ export default textColorNode(
   getState,
   getExampleTextStyle,
 );
-

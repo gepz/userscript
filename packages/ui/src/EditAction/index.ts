@@ -2,19 +2,19 @@ import InputUpdater from '@/InputUpdater';
 import StateDispatchable from '@/StateDispatchable';
 import EditSetter from '@/setter/EditSetter';
 
-export default interface EditAction<
+type EditAction<
   State,
   Props,
   AppCommander,
-> {
-  <K extends keyof Props>(
-    key: K,
-    setter: EditSetter<Props[K]>,
-  ): (c: AppCommander) => {
-    oninput: (s: State, e: Event) => StateDispatchable<State>,
-    onchange: (s: State, e: Event) => StateDispatchable<State>,
-  }
-}
+> = <K extends keyof Props>(
+  key: K,
+  setter: EditSetter<Props[K]>,
+) => (c: AppCommander) => {
+  oninput: (s: State, e: Event) => StateDispatchable<State>
+  onchange: (s: State, e: Event) => StateDispatchable<State>
+};
+
+export default EditAction;
 
 export const make = <State, Props, AppCommander>(
   updateInput: InputUpdater<State, Props, AppCommander>,
@@ -25,4 +25,3 @@ export const make = <State, Props, AppCommander>(
   oninput: updateInput(key)(setter(true))(c),
   onchange: updateInput(key)(setter(false))(c),
 });
-

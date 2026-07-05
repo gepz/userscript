@@ -28,9 +28,9 @@ export default (
     settingsPanelSize.height,
   )),
   Z.filterOrFail((x) => x.x !== last.x
-  || x.y !== last.y
-  || x.width !== last.width
-  || x.height !== last.height),
+    || x.y !== last.y
+    || x.width !== last.width
+    || x.height !== last.height),
   Z.tap(nextSettingsRect),
   Z.ignore,
 );

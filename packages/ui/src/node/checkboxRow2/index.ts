@@ -4,8 +4,8 @@ import {
 } from 'preact';
 
 const checkboxRow2: ComponentType<{
-  label: string,
-  checked: boolean,
+  label: string
+  checked: boolean
   onchange: (e: Event) => void
 }> = ({
   label, checked, onchange,

@@ -1,5 +1,4 @@
 export default interface Identifier {
-  type: 'Identifier';
-  name: string;
+  type: 'Identifier'
+  name: string
 }
-

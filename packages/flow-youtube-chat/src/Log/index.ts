@@ -11,11 +11,11 @@ import {
   decompressFromEncodedURIComponent,
 } from 'lz-string';
 
-type LogEntry = {
-  id: number,
-  text: string,
-  level: LogLevel.LogLevel['label'],
-};
+interface LogEntry {
+  id: number
+  text: string
+  level: LogLevel.LogLevel['label']
+}
 
 type LogBlock = readonly LogEntry[];
 
@@ -24,9 +24,9 @@ type CompressedLogBlock = string & Brand.Brand<'CompressedLogBlock'>;
 const makeCompressedLogBlock = Brand.nominal<CompressedLogBlock>();
 
 type Log = {
-  nextId: number,
-  compressedBlocks: readonly CompressedLogBlock[],
-  lastBlock: LogBlock,
+  nextId: number
+  compressedBlocks: readonly CompressedLogBlock[]
+  lastBlock: LogBlock
 } & Brand.Brand<'Log'>;
 
 const makeLog = Brand.nominal<Log>();
@@ -35,10 +35,10 @@ export default Log;
 
 type LogExportBlock = string;
 
-type LogExport = {
-  nextId: number,
-  blocks: A.NonEmptyReadonlyArray<LogExportBlock>,
-};
+interface LogExport {
+  nextId: number
+  blocks: A.NonEmptyReadonlyArray<LogExportBlock>
+}
 
 export const decompressBlock = (x: CompressedLogBlock): LogBlock => pipe(
   decompressFromUTF16(x),
@@ -98,16 +98,20 @@ export const removeBlock = (
   i: number,
 ) => (
   log: Log,
-): Log => (i > log.compressedBlocks.length ? log : makeLog({
-  nextId: log.nextId,
-  ...(i === log.compressedBlocks.length ? {
-    lastBlock: [],
-    compressedBlocks: log.compressedBlocks,
-  } : {
-    lastBlock: log.lastBlock,
-    compressedBlocks: A.remove(log.compressedBlocks, i),
-  }),
-}));
+): Log => (i > log.compressedBlocks.length
+  ? log
+  : makeLog({
+    nextId: log.nextId,
+    ...(i === log.compressedBlocks.length
+      ? {
+        lastBlock: [],
+        compressedBlocks: log.compressedBlocks,
+      }
+      : {
+        lastBlock: log.lastBlock,
+        compressedBlocks: A.remove(log.compressedBlocks, i),
+      }),
+  }));
 
 export const append = (
   text: string,
@@ -121,15 +125,17 @@ export const append = (
       text,
       level,
     }),
-    (x) => (x.length === blockSize ? {
-      compressedBlocks: A.append(
-        log.compressedBlocks,
-        makeCompressedLogBlock(compressToUTF16(JSON.stringify(x))),
-      ),
-      lastBlock: [],
-    } : {
-      compressedBlocks: log.compressedBlocks,
-      lastBlock: x,
-    }),
+    (x) => (x.length === blockSize
+      ? {
+        compressedBlocks: A.append(
+          log.compressedBlocks,
+          makeCompressedLogBlock(compressToUTF16(JSON.stringify(x))),
+        ),
+        lastBlock: [],
+      }
+      : {
+        compressedBlocks: log.compressedBlocks,
+        lastBlock: x,
+      }),
   ),
 });

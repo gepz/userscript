@@ -5,9 +5,9 @@ import {
 import UserConfigSetter from '@/UserConfigSetter';
 
 export default interface AppCommander {
-  setConfig: UserConfigSetter,
+  setConfig: UserConfigSetter
   act: {
-    clearFlowChats: Z.Effect<void>,
+    clearFlowChats: Z.Effect<void>
   }
   provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>
 }

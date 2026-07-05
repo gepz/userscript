@@ -8,4 +8,3 @@ const textRowStyle: StyleProp = {
 };
 
 export default textRowStyle;
-

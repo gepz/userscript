@@ -1,17 +1,14 @@
+import * as Ed from '@userscript/ui/Editable';
+import {
+  Option as O,
+  Array as A,
+} from 'effect';
 import {
   constant,
   flow,
   identity,
   pipe,
 } from 'effect/Function';
-import {
-  Option as O,
-} from 'effect';
-
-import {
-  Array as A,
-} from 'effect';
-
 import * as expEval from 'expression-eval';
 
 import ArrayExpression from '@/settingUI/editableExpression/ArrayExpression';
@@ -22,7 +19,6 @@ import Identifier from '@/settingUI/editableExpression/Identifier';
 import Literal from '@/settingUI/editableExpression/Literal';
 import LiteralArray from '@/settingUI/editableExpression/LiteralArray';
 import MemberExpression from '@/settingUI/editableExpression/MemberExpression';
-import * as Ed from '@userscript/ui/Editable';
 
 type JsepExpressionFunction = (x: Expression) => expEval.parse.Expression;
 
@@ -110,12 +106,18 @@ const compound = (
 
 const editableExpressionToJsep: JsepExpressionFunction = (
   x,
-) => (x.type === 'Identifier' ? identifier(x)
-: x.type === 'ArrayExpression' ? arrayExp(editableExpressionToJsep)(x)
-: x.type === 'MemberExpression' ? memberExp(editableExpressionToJsep)(x)
-: x.type === 'CallExpression' ? callExp(editableExpressionToJsep)(x)
-: x.type === 'Literal' ? literal(x)
-: x.type === 'LiteralArray' ? literalArray(x)
-: compound(editableExpressionToJsep)(x));
+) => (x.type === 'Identifier'
+  ? identifier(x)
+  : x.type === 'ArrayExpression'
+    ? arrayExp(editableExpressionToJsep)(x)
+    : x.type === 'MemberExpression'
+      ? memberExp(editableExpressionToJsep)(x)
+      : x.type === 'CallExpression'
+        ? callExp(editableExpressionToJsep)(x)
+        : x.type === 'Literal'
+          ? literal(x)
+          : x.type === 'LiteralArray'
+            ? literalArray(x)
+            : compound(editableExpressionToJsep)(x));
 
 export default editableExpressionToJsep;

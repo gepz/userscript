@@ -48,4 +48,3 @@ export default (
     )(getState(label)(s)),
   ],
 );
-

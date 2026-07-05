@@ -7,8 +7,7 @@ import getState from '@/settingUI/getState';
 import updateAt from '@/settingUI/updateAt';
 
 export default inputUpdater.make<
-SettingState,
-SettingProps,
-AppCommander
+  SettingState,
+  SettingProps,
+  AppCommander
 >(getState, updateAt);
-

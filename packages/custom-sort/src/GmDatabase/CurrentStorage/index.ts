@@ -4,7 +4,7 @@ import {
 
 export type CurrentStorage = GmStorage<{
   v1: {
-    condition: string,
-    pageCount: number,
-  },
+    condition: string
+    pageCount: number
+  }
 }>;

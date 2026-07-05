@@ -1,6 +1,5 @@
 import Setter from '@/setter/Setter';
 
-export default interface EditSetter<T> {
-  (editing: boolean): Setter<string, T>
-}
+type EditSetter<T> = (editing: boolean) => Setter<string, T>;
 
+export default EditSetter;

@@ -15,9 +15,9 @@ import Editable, * as Ed from '@/Editable';
 
 export default <T>(
   action: Partial<Record<
-  'oninput'
-  | 'onchange'
-  , Action<T>
+    'oninput'
+    | 'onchange',
+    Action<T>
   >>,
 ) => (value: Editable<string>): VNode<T> => h('input', {
   style: {

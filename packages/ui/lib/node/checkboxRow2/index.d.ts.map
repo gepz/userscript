@@ -1,0 +1,1 @@
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/node/checkboxRow2/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAEL,KAAK,aAAa,EACnB,MAAM,QAAQ,CAAC;AAEhB,QAAA,MAAM,YAAY,EAAE,aAAa,CAAC;IAChC,KAAK,EAAE,MAAM,CAAA;IACb,OAAO,EAAE,OAAO,CAAA;IAChB,QAAQ,EAAE,CAAC,CAAC,EAAE,KAAK,KAAK,IAAI,CAAA;CAC7B,CASE,CAAC;AAEJ,eAAe,YAAY,CAAC"}

@@ -12,4 +12,3 @@ export default <T>(
   value,
   selected,
 }, text(label));
-

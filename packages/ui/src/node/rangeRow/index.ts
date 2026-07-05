@@ -18,9 +18,9 @@ import RangeConfig from '@/node/RangeConfig';
 export default <T>(
   config: RangeConfig,
   action: Partial<Record<
-  'oninput'
-  | 'onchange'
-  , Action<T>
+    'oninput'
+    | 'onchange',
+    Action<T>
   >>,
 ) => (value: Editable<number>): VNode<T> => h('div', {}, [
   h('input', {

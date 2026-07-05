@@ -78,21 +78,21 @@ export default (
 ): (ctx: {
     updateSettingState: (
       dispatchable: Dispatchable<SettingState>,
-    ) => Z.Effect<void>,
-    setChangedConfig: UserConfigSetter,
-    co: ConfigObservable,
-    mainState: MainState,
+    ) => Z.Effect<void>
+    setChangedConfig: UserConfigSetter
+    co: ConfigObservable
+    mainState: MainState
     channel: BroadcastChannel<{ [K in keyof UserConfig]: [K, UserConfig[K]] }[
       keyof UserConfig
-    ]>,
-    reinitSubject: Subject<void>,
-    reinitialize: Z.Effect<void>,
+    ]>
+    reinitSubject: Subject<void>
+    reinitialize: Z.Effect<void>
     apps: {
-      toggleChatButtonApp: WrappedApp<SettingState>,
-      settingsApp: WrappedApp<SettingState>,
-      toggleSettingsPanelApp: WrappedApp<SettingState>,
-    },
-    chatScreen: HTMLDivElement,
+      toggleChatButtonApp: WrappedApp<SettingState>
+      settingsApp: WrappedApp<SettingState>
+      toggleSettingsPanelApp: WrappedApp<SettingState>
+    }
+    chatScreen: HTMLDivElement
   }) => Z.Effect<Observable<unknown>> => flow(
   // eslint-disable-next-line func-names
   (ctx) => Z.gen(function* () {
@@ -129,11 +129,11 @@ export default (
         ctx.chatScreen,
         live,
       ),
-      css: yield* mainCss,
-      documentMutationPair: yield* observePair(MutationObserver),
-      chatMutationPair: yield* observePair(MutationObserver),
-      playerResizePair: yield* observePair(ResizeObserver),
-      bodyResizePair: yield* observePair(ResizeObserver),
+      css: yield * mainCss,
+      documentMutationPair: yield * observePair(MutationObserver),
+      chatMutationPair: yield * observePair(MutationObserver),
+      playerResizePair: yield * observePair(ResizeObserver),
+      bodyResizePair: yield * observePair(ResizeObserver),
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       liveElementKeys: Object.keys(live) as (keyof typeof live)[],
     };
@@ -251,10 +251,10 @@ export default (
         fromEvent(c.channel, 'message'),
         map(([key, val]) => pipe(
           listeningBroadcastConfigKeys.includes(key),
-          // eslint-disable-next-line max-len
-          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-          (x) => (x ? c.setChangedConfig[key](val as never)
-          : Z.sync(() => { })),
+          (x) => (x
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            ? c.setChangedConfig[key](val as never)
+            : Z.sync(() => { })),
         )),
         tapEffect(provideLog),
       ),

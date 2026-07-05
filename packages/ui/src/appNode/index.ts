@@ -23,4 +23,3 @@ export {
   textAreaNode,
   textColorNode,
 };
-

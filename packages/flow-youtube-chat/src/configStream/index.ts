@@ -63,8 +63,8 @@ export default (
             co.flowX1,
             startWith(mainState.config.value.flowX1),
             tapEffect((x) => provideLog(Z.sync(() => Object.assign<
-            CSSStyleDeclaration,
-            Partial<CSSStyleDeclaration>
+              CSSStyleDeclaration,
+              Partial<CSSStyleDeclaration>
             >(chatScreen.style, {
               left: `${x * 100}%`,
               width: `${(mainState.config.value.flowX2 - x) * 100}%`,
@@ -73,8 +73,8 @@ export default (
           pipe(
             co.flowX2,
             tapEffect((x) => provideLog(Z.sync(() => Object.assign<
-            CSSStyleDeclaration,
-            Partial<CSSStyleDeclaration>
+              CSSStyleDeclaration,
+              Partial<CSSStyleDeclaration>
             >(chatScreen.style, {
               left: `${mainState.config.value.flowX1 * 100}%`,
               width: `${(x - mainState.config.value.flowX1) * 100}%`,
@@ -138,12 +138,16 @@ export default (
       Z.map(A.filter((x) => E.isRight(x.animationState))),
       Z.flatMap(Z.forEach((chat) => pipe(
         Z.allSuccesses([
-          c.render ? Z.succeed(renderChat(chat))
-          : Z.fail(new Cause.NoSuchElementException()),
-          c.setAnimation ? Z.succeed((state: MainState) => Z.ignore(
-            setChatAnimation(chat)(state),
-          )) : c.setPlayState ? Z.succeed(setChatPlayState(chat))
-          : Z.fail(new Cause.NoSuchElementException()),
+          c.render
+            ? Z.succeed(renderChat(chat))
+            : Z.fail(new Cause.NoSuchElementException()),
+          c.setAnimation
+            ? Z.succeed((state: MainState) => Z.ignore(
+              setChatAnimation(chat)(state),
+            ))
+            : c.setPlayState
+              ? Z.succeed(setChatPlayState(chat))
+              : Z.fail(new Cause.NoSuchElementException()),
         ]),
         Z.flatMap(Z.forEach(apply(mainState))),
       ))),

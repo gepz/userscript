@@ -59,7 +59,7 @@ export default ({
   settingUpdateApps,
   provideLog,
 }: {
-  settingUpdateApps: BehaviorSubject<Dispatch<SettingState>[]>,
+  settingUpdateApps: BehaviorSubject<Dispatch<SettingState>[]>
   provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>
 }): Z.Effect<unknown> => provideLog(pipe(
   // eslint-disable-next-line func-names
@@ -73,10 +73,10 @@ export default ({
       )),
       configSubject: makeSubject(configKeys),
       channel: new BroadcastChannel<
-      { [K in keyof UserConfig]: [K, UserConfig[K]] }[keyof UserConfig]>(
+        { [K in keyof UserConfig]: [K, UserConfig[K]] }[keyof UserConfig]>(
         scriptIdentifier,
       ),
-      configValue: yield* makeConfig(defaultGMConfig),
+      configValue: yield * makeConfig(defaultGMConfig),
     };
 
     const setterFromMap = setterFromKeysAndMap(configKeys);
@@ -90,7 +90,7 @@ export default ({
       }),
     );
 
-    yield* setConfigPlain.filterExp(defaultFilter(ctx.configValue));
+    yield * setConfigPlain.filterExp(defaultFilter(ctx.configValue));
 
     const changedConfigMap = <K extends keyof UserConfig>(
       key: K,
@@ -108,11 +108,11 @@ export default ({
         (key) => (val) => changedConfigMap(key)(val).pipe(Z.ignore),
       ),
       mainState: {
-        chatPlaying: yield* SynchronizedRef.make(true),
-        playerRect: yield* SynchronizedRef.make(
+        chatPlaying: yield * SynchronizedRef.make(true),
+        playerRect: yield * SynchronizedRef.make(
           new DOMRectReadOnly(0, 0, 600, 400),
         ),
-        flowChats: yield* SynchronizedRef.make<readonly FlowChat[]>([]),
+        flowChats: yield * SynchronizedRef.make<readonly FlowChat[]>([]),
         config: {
           value: ctx.configValue,
           getConfig: makeGetter(ctx.configValue),
@@ -144,11 +144,11 @@ export default ({
     return {
       ...ctx,
       apps: {
-        toggleChatButtonApp: yield* wrapApp(
+        toggleChatButtonApp: yield * wrapApp(
           toggleChatButton(ctx.mainState.config.setConfig),
           stateInit,
         ),
-        settingsApp: yield* wrapApp(
+        settingsApp: yield * wrapApp(
           settingsComponent({
             setConfig: ctx.mainState.config.setConfig,
             act: {
@@ -158,7 +158,7 @@ export default ({
           }),
           stateInit,
         ),
-        toggleSettingsPanelApp: yield* wrapApp(
+        toggleSettingsPanelApp: yield * wrapApp(
           toggleSettingsPanelComponent(ctx.updateSettingState),
           stateInit,
         ),
@@ -190,13 +190,13 @@ export default ({
       requestAnimationFrame(() => forwardTo(reinitSubject)());
     }));
 
-    (yield* allStream(
+    (yield * allStream(
       provideLog,
     )({
       ...ctx,
       reinitSubject,
       reinitialize,
-      chatScreen: yield* makeChatScreen,
+      chatScreen: yield * makeChatScreen,
       co: pipe(
         ctx.configSubject,
         mapObject(([k, value]) => [
@@ -220,9 +220,11 @@ export default ({
                   'bannedWordRegexes',
                 ] as const,
                 A.containsWith(Str.Equivalence)(k),
-                (x) => (x ? ctx.mainState.config.setConfig.filterExp(
-                  defaultFilter(ctx.mainState.config.value),
-                ) : Z.void),
+                (x) => (x
+                  ? ctx.mainState.config.setConfig.filterExp(
+                    defaultFilter(ctx.mainState.config.value),
+                  )
+                  : Z.void),
               )),
               (x) => Z.sync(
                 () => setTimeout(() => Z.runPromise(provideLog(x)), 0),
@@ -241,6 +243,6 @@ export default ({
       complete: () => Z.runPromise(Z.logWarning('Stream complete')),
     });
 
-    yield* reinitialize;
+    yield * reinitialize;
   })),
 ));

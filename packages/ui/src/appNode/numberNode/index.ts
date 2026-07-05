@@ -4,4 +4,3 @@ import {
 } from '@/setter';
 
 export default numericNode(setEditNumber);
-

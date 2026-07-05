@@ -39,8 +39,8 @@ type Schema<T extends StoragePair[]> = T extends [
     {
       upgradeAlias?: U[0] extends GmStorage ?
         UpgradeAlias<GmStorage<U[0]>, GmStorage<U[1]>>
-        : never,
-      defaultStorage: GmStorage<U[1]>,
+        : never
+      defaultStorage: GmStorage<U[1]>
     },
     ...Schema<V>,
   ]

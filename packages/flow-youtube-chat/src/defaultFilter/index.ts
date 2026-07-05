@@ -14,8 +14,8 @@ A.some(
 ])),
 A.some(
   flip(flow([matchedByText, A.some]))(${
-  JSON.stringify(config.bannedWordRegexes)
-})
+    JSON.stringify(config.bannedWordRegexes)
+  })
 )(A.getSomes([
   messageText,
   paymentInfo
