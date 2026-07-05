@@ -3,3 +3,5 @@ packages:
 allowBuilds:
   '@swc/core': true
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  - webpack@5.108.4
