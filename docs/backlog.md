@@ -11,8 +11,6 @@ done; re-verify versions before starting, this list ages.
   expressions. The intended replacement (typed restricted expressions) is
   already in progress — see the "In flight" section of
   `packages/flow-youtube-chat/plan.md`.
-- **Replace `deep-diff` in flow-youtube-chat.** Deprecated/abandoned; needs a
-  maintained substitute or vendoring.
 - **hyperapp is dormant upstream** (2.0.22 final, typings papered over by
   `hyperappDomCompat.d.ts`). Long-term: migrate off or vendor.
 

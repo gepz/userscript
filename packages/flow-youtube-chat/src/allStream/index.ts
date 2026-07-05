@@ -3,9 +3,6 @@ import {
   BroadcastChannel,
 } from 'broadcast-channel';
 import {
-  diff,
-} from 'deep-diff';
-import {
   SynchronizedRef,
   Array as A,
   Duration as D,
@@ -22,6 +19,7 @@ import {
 import {
   Dispatchable,
 } from 'hyperapp';
+import diff from 'microdiff';
 import {
   asyncScheduler,
   EMPTY,
@@ -265,7 +263,21 @@ export default (
           (c.co[key] as Subject<unknown>),
           startWith(c.mainState.config.value[key]),
           bufferCount(2, 1),
-          map(([x, y]) => diff(x, y)),
+          // microdiff only accepts object/array roots; primitive config
+          // values get a hand-rolled root-level change entry instead.
+          map(([x, y]) => (
+            typeof x === 'object' && x !== null
+            && typeof y === 'object' && y !== null
+              ? diff(x, y)
+              : [
+                {
+                  type: 'CHANGE',
+                  path: [],
+                  oldValue: x,
+                  value: y,
+                },
+              ]
+          )),
           map((x) => Z.logDebug(
             `Config ${key}: ${JSON.stringify(x, undefined, 2)}`,
           )),

@@ -21,7 +21,6 @@ export default merge<Configuration>(
       {
         // sweetalert2: 'Swal',
         rxjs: 'rxjs',
-        'deep-diff': 'DeepDiff',
         astring: 'astring',
         jsep: 'jsep',
         'hash-it': 'window[\'hash-it\']',
