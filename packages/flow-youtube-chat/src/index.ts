@@ -1,13 +1,11 @@
 import {
   Effect as Z,
+  Ref,
   pipe,
 } from 'effect';
 import {
   Dispatch,
 } from 'hyperapp';
-import {
-  BehaviorSubject,
-} from 'rxjs';
 
 import SettingState from '@/SettingState';
 import initialize from '@/initialize';
@@ -16,7 +14,7 @@ import provideLog from '@/provideLog';
 Z.runPromise(pipe(
   // eslint-disable-next-line func-names
   Z.gen(function* () {
-    const settingUpdateApps = new BehaviorSubject<Dispatch<SettingState>[]>([]);
+    const settingUpdateApps = yield * Ref.make<Dispatch<SettingState>[]>([]);
     yield * initialize({
       settingUpdateApps,
       provideLog: provideLog(settingUpdateApps),

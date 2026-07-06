@@ -3,6 +3,7 @@ import {
   Cause,
   Logger,
   LogLevel,
+  Ref,
   pipe,
 } from 'effect';
 import {
@@ -11,9 +12,6 @@ import {
 import {
   Dispatch,
 } from 'hyperapp';
-import {
-  BehaviorSubject,
-} from 'rxjs';
 
 import LogAnnotationKeys from '@/LogAnnotationKeys';
 import SettingState from '@/SettingState';
@@ -21,7 +19,7 @@ import eventLogger from '@/eventLogger';
 import metaLogger from '@/metaLogger';
 
 export default (
-  settingUpdateApps: BehaviorSubject<Dispatch<SettingState>[]>,
+  settingUpdateApps: Ref.Ref<Dispatch<SettingState>[]>,
 ) => <T>(
   effect: Z.Effect<T>,
 ): Z.Effect<T> => pipe(

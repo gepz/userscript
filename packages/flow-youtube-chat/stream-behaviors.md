@@ -17,19 +17,19 @@ Preservation tags:
 
 | ID | Behavior | Tag |
 |----|----------|-----|
-| W1 | `setConfigPlain[key](v)` mutates `configValue[key]` in place, *then* emits `v` on `configSubject[key]`. A subscriber reacting to the emission always sees `configValue` already updated. | spec |
-| W2 | `changedConfigMap` skips everything (no mutation, no emission, no persistence) when `fast-deep-equal` says the new value equals `configValue[key]`. | spec (logic unchanged; covered once rewired) |
-| W3 | `setChangedConfig` = dedup + local write only — no broadcast, no GM write. Used for values *received* over BroadcastChannel, so broadcasts cannot loop. | manual |
-| W4 | `mainState.config.setConfig` = dedup + local write, then `channel.postMessage([key, val])`, then `GM.setValue(gmKey, toGm(val))` — in that order, all skipped when deduped. | manual |
+| W1 | `setConfigPlain[key](v)` mutates `configValue[key]` in place, *then* emits `v` on `configSubject[key]`. A subscriber reacting to the emission always sees `configValue` already updated. | spec (`configWriteFunnel`) |
+| W2 | `changedConfigMap` skips everything (no mutation, no emission, no persistence) when `fast-deep-equal` says the new value equals `configValue[key]`. | spec (`configWriteFunnel`) |
+| W3 | `setChangedConfig` = dedup + local write only — no broadcast, no GM write. Used for values *received* over BroadcastChannel, so broadcasts cannot loop. | spec (`configWriteFunnel`) |
+| W4 | `mainState.config.setConfig` = dedup + local write, then `channel.postMessage([key, val])`, then `GM.setValue(gmKey, toGm(val))` — in that order, all skipped when deduped. | spec (`configWriteFunnel`; broadcast/persist injected) |
 | W5 | At startup, `filterExp` is set unconditionally (no dedup) to `defaultFilter(configValue)` after GM values load. | manual |
 
 ## 2. Config read path (`co` in `initialize`)
 
 | ID | Behavior | Tag |
 |----|----------|-----|
-| R1 | `configSubject[key]` is a plain `Subject`: no initial value, no replay. Call sites that need the current value bolt on `startWith(...)` (configStream `fieldScale`/`flowX1`; allStream diff-log). | **changed** — `SubscriptionRef.changes` emits the current value first, so the `startWith` calls disappear. Sites that today have *no* `startWith` (e.g. `flowX2`) receive one extra initial emission; checked per-site in Phase 2 (all downstream effects are idempotent repaints). |
-| R2 | Each `co[key]` carries a side effect on every emission, `share()`d so it runs once per emission no matter how many branches subscribe: (a) dispatch `setSettingFromConfig(k)(v)` into all setting apps; (b) if `k` ∈ {bannedWords, bannedUsers, bannedWordRegexes}, rebuild `filterExp = defaultFilter(config)` via the *full* `setConfig` path (broadcast + GM persist). | **changed** — side effects move to the write path (`setConfigPlain`), which is the single funnel all writes already pass through. Same once-per-write guarantee, no `share()` needed. |
-| R3 | The R2 side effect is deferred with `setTimeout(…, 0)` and fire-and-forget `runPromise` — it runs on a later macrotask than downstream subscribers, and its failures vanish. | **changed** — write-path effects run sequenced in the runtime, before the write completes, with failures surfacing through `provideLog`. The setTimeout existed to escape subject re-entrancy (R2b writes `filterExp` from inside a config emission); the Effect version must instead ensure the nested `filterExp` write happens *after* the outer ref set, not inside it (no re-entrant `SubscriptionRef` update). Covered by a spec on the write funnel: a write hook that writes another key terminates and both emissions are observed. |
+| R1 | `configSubject[key]` is a plain `Subject`: no initial value, no replay. Call sites that need the current value bolt on `startWith(...)` (configStream `fieldScale`/`flowX1`; allStream diff-log). | types — exact parity: `SubscriptionRef.changes` emits the current value first, so `startWith` sites take `.changes` directly and plain-Subject sites take `.changes` + `Stream.drop(1)` (`changed()` in configStream). The diff-log branch needs neither: `zipWithPrevious` + filter-on-`Some` reproduces `bufferCount(2, 1)` exactly. |
+| R2 | Each `co[key]` carries a side effect on every emission, `share()`d so it runs once per emission no matter how many branches subscribe: (a) dispatch `setSettingFromConfig(k)(v)` into all setting apps; (b) if `k` ∈ {bannedWords, bannedUsers, bannedWordRegexes}, rebuild `filterExp = defaultFilter(config)` via the *full* `setConfig` path (broadcast + GM persist). | **changed** — side effects live on the write path (`src/configWriteFunnel`), the single funnel all writes pass through. Same once-per-write guarantee without `share()`, and hooks can no longer be missed during branch-rebuild subscription gaps. spec |
+| R3 | The R2 side effect is deferred with `setTimeout(…, 0)` and fire-and-forget `runPromise` — it runs on a later macrotask than downstream subscribers, and its failures vanish. | **changed** — write-path effects run sequenced in the runtime after the ref set, with failures surfacing through the write effect. No re-entrancy: SubscriptionRef subscribers pull asynchronously. The filterExp rebuild is `Z.suspend`ed so the default filter is computed after the banned list is stored (the spec caught the eager-evaluation variant reading the old list). spec |
 
 ## 3. Broadcast receive (`allStream` branch 1)
 
@@ -42,19 +42,19 @@ Preservation tags:
 
 | ID | Behavior | Tag |
 |----|----------|-----|
-| L1 | `reinitialize` schedules `reinitSubject.next()` on the next animation frame; N calls in one frame window produce N events. Emissions while nobody is subscribed are dropped (plain Subject; the first `reinitialize` runs after `.subscribe`). | manual (PubSub keeps drop-when-unsubscribed semantics) |
+| L1 | `reinitialize` schedules `reinitSubject.next()` on the next animation frame; N calls in one frame window produce N events. Emissions while nobody is subscribed are dropped (plain Subject; the first `reinitialize` runs after `.subscribe`). | **changed** — the reinit channel is an unbounded `Queue<void>`: events during teardown/retry windows are buffered instead of dropped (at worst an extra idempotent rebuild), which removes the subscribe-before-rAF race the Subject version relied on. rAF scheduling and N-calls→N-events kept. |
 | L2 | Each reinit event: async hop + 100 ms delay + `logInfo('Init')`, then **switchMap** — the previous polling loop and the whole branch tree below it are torn down (DOM listeners removed, throttle state discarded) and rebuilt. | manual |
 | L3 | Element polling: every 700 ms, read all `LivePage` elements, update the `ele` caches, log `"<key> found/lost"` per change (reference equality via `strictOptionEquivalence`), and emit only when at least one element changed. `startWith(0)` makes the downstream setup run immediately on (re)init without waiting for a change. | manual |
 | L4 | Every poll tick also runs `tapUpdateSettingsRect`: read current `settingsRect` (BehaviorSubject `first()` = current value), recompute from the toggle element's bounding rect, write back only when changed (`updateSettingsRect` no-ops on equal rects). | manual (`first()` becomes `SubscriptionRef.get`) |
 | L5 | **Every emitted poll tick** (element change or the initial `startWith`) re-runs the "Loading..." setup *and* — via the second `switchMap` at `allStream` line 246 — tears down and rebuilds all nine merged branches. Setup: disconnect all four observers, re-observe `document` (childList+subtree), append css, then `Z.allSuccesses` (per-item failure tolerated): observe chatField/chatTicker, prepend chatScreen into player, mount the three apps (settings toggle falls back to before the chat button), observe body, and set `chatPlaying` = video present ∧ (¬paused ∨ offlineSlate present). | manual |
-| L6 | `retry({delay})` with no count = infinite: on any pipeline error, log at Error level, wait 5000 ms, call `reinitialize`, resubscribe the whole chain from `reinitSubject`. | manual (`Stream.retry(Schedule.fixed(5s))` + `Stream.tapErrorCause`) |
+| L6 | `retry({delay})` with no count = infinite: on any pipeline error, log at Error level, wait 5000 ms, call `reinitialize`, resubscribe the whole chain from `reinitSubject`. | manual — recursive `Stream.catchAllCause` loop (log → sleep 5 s → reinitialize → re-run). Deliberately catches defects too: a thrown exception in a branch effect is a failure in rxjs but a defect in Effect, and `Stream.retry` alone would let it kill the pipeline permanently. |
 | L7 | Terminal `.subscribe`: error → `Stream Errored` log; complete → `Stream complete` warning. Both defensive (subjects never complete; retry never exhausts). | manual (`Stream.runDrain` forked in the same Effect program) |
 
 ## 5. Merged branches (all concurrent, rebuilt per L5)
 
 | ID | Behavior | Tag |
 |----|----------|-----|
-| M1 | Per-key diff logging: `startWith(current)` → `bufferCount(2, 1)` pairwise → microdiff for object/array roots, hand-rolled root-level `CHANGE` entry for primitives → `logDebug` JSON. First write after subscription pairs with the value at subscription time. | spec (pairwise-diff mapping extracted to a pure helper); pairing via `Stream.zipWithPrevious` |
+| M1 | Per-key diff logging: `startWith(current)` → `bufferCount(2, 1)` pairwise → microdiff for object/array roots, hand-rolled root-level `CHANGE` entry for primitives → `logDebug` JSON. First write after subscription pairs with the value at subscription time. | spec (`configDiff`); pairing via `Stream.zipWithPrevious` + filter-on-`Some` |
 | M2 | Video toggle: wired only if the video element is cached at branch-build time. `playing` → `true`; `waiting`/`pause` → `false`; `chatPlaying = playing ∨ offlineSlate present`; effect sets the `chatPlaying` ref then `setChatPlayState` on every live flow chat. | spec (event→bool mapping) + manual |
 | M3 | Chat mutations: each MutationObserver batch → `onChatFieldMutate`, strictly sequential (A1). | manual |
 | M4 | URL change: document mutations → `location.href` → `distinctUntilChanged` → `skip(1)` (baseline = href at branch build; only *changes* trigger) → settings-rect update → log + `removeOldChats(0)` (clear all) → 1700 ms delay → `reinitialize`. | manual |
@@ -67,7 +67,7 @@ Preservation tags:
 | ID | Behavior | Tag |
 |----|----------|-----|
 | C1 | Built inside `defer` — fresh operator state per subscription (rebuilt on every L5 rebuild). | manual (Stream is lazy per-run by construction) |
-| C2 | banned\*, `lang`, `maxChatLength`, `simplifyChatField`, `createBanButton`, `createChats`, `fieldScale` pass through with no local effect (their effects live in R2 / direct config reads); `fieldScale` is merged twice (once scaled, once pass-through) — harmless duplicate. | types (exhaustive key wiring is visible in one place) |
+| C2 | banned\*, `lang`, `maxChatLength`, `simplifyChatField`, `createBanButton`, `createChats`, `fieldScale` pass through with no local effect; `fieldScale` is merged twice — harmless duplicate. | **changed** — removed. These merges existed only to hold a subscription so the `share()`d read-path side effects (R2) would run; with the effects on the write path they were dead pass-throughs. |
 | C3 | `fieldScale`: `startWith(current)` → `scaleChatField` effect per value. | manual |
 | C4 | Flag machine: three groups map keys to `{render, setAnimation}` / `{render}` / `{setPlayState}` / `{setAnimation}` partial flags; `flowX1`/`flowX2` additionally repaint `chatScreen.style` left/width inline (`flowX1` with `startWith(current)`, `flowX2` without). | manual |
 | C5 | Flag stream throttled 180 ms leading+trailing; **flags of dropped intermediate events are lost, not unioned** (trailing = last event's flags only). Existing quirk, preserved as-is by T1. | spec (T1 trailing-latest) |
@@ -87,7 +87,7 @@ Preservation tags:
 | ID | Behavior | Tag |
 |----|----------|-----|
 | T1 | `throttleTime(d, {leading: true, trailing: true})` (used at 180/300/500 ms): first event of a burst emits immediately and opens a window of `d`; the latest event arriving during the window emits when it closes and opens a new window; a window closing with nothing pending ends the train (next event is leading again). A lone event is emitted exactly once. | spec (`throttleLatest` combinator, TestClock) |
-| T2 | 100 ms init delay, 700 ms poll, 1700 ms reinit delay, 5000 ms retry delay, 10 s heartbeat (forked daemon). | manual (`Z.sleep`/`Stream.tick`/`Schedule.fixed`) |
+| T2 | 100 ms init delay, 700 ms poll, 1700 ms reinit delay, 5000 ms retry delay, 10 s heartbeat (forked daemon). | manual — `Z.sleep`/`Schedule.fixed`. The 700 ms poll uses `Stream.fromSchedule(Schedule.fixed(...))`, whose first emission comes after one period like rxjs `interval`; `Stream.tick` emits immediately and would double the initial setup. |
 
 ## 9. Out of scope
 

@@ -1,4 +1,3 @@
-import forwardTo from '@userscript/forward-to';
 import wrapApp from '@userscript/ui/wrapApp';
 import {
   BroadcastChannel,
@@ -6,29 +5,22 @@ import {
 import {
   SynchronizedRef,
   Array as A,
-  Effect as Z,
   Cause,
+  Effect as Z,
   Duration as D,
-  String as Str,
+  Queue,
+  Ref,
   LogLevel,
   Schedule,
+  Stream,
   pipe,
 } from 'effect';
-import deepEq from 'fast-deep-equal';
 import {
   Dispatch,
   Dispatchable,
 } from 'hyperapp';
-import {
-  Subject,
-  BehaviorSubject,
-  share,
-} from 'rxjs';
 
 import packageJson from '@/../package.json';
-import {
-  makeSubject,
-} from '@/ConfigSubject';
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
@@ -40,18 +32,17 @@ import {
 } from '@/UserConfigGetter';
 import allStream from '@/allStream';
 import configKeys from '@/configKeys';
+import configWriteFunnel from '@/configWriteFunnel';
 import defaultFilter from '@/defaultFilter';
 import defaultGMConfig from '@/defaultGMConfig';
 import logWithMeta from '@/logWithMeta';
 import makeChatScreen from '@/makeChatScreen';
-import mapObject from '@/mapObject';
 import removeOldChats from '@/removeOldChats';
 import scriptIdentifier from '@/scriptIdentifier';
 import setSettingFromConfig from '@/setSettingFromConfig';
-import setterFromKeysAndMap from '@/setterFromKeysAndMap';
 import settingStateInit from '@/settingStateInit';
 import settingsComponent from '@/settingsComponent';
-import tapEffect from '@/tapEffect';
+import makeRefs from '@/stream/makeRefs';
 import toggleChatButton from '@/toggleChatButton';
 import toggleSettingsPanelComponent from '@/toggleSettingsPanelComponent';
 
@@ -59,54 +50,61 @@ export default ({
   settingUpdateApps,
   provideLog,
 }: {
-  settingUpdateApps: BehaviorSubject<Dispatch<SettingState>[]>
+  settingUpdateApps: Ref.Ref<Dispatch<SettingState>[]>
   provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>
 }): Z.Effect<unknown> => provideLog(pipe(
   // eslint-disable-next-line func-names
   Z.gen(function* () {
-    const ctx = {
-      updateSettingState: (
-        dispatchable: Dispatchable<SettingState>,
-      ): Z.Effect<void> => provideLog(pipe(
-        Z.succeed(settingUpdateApps.value),
-        Z.flatMap(Z.forEach((x) => Z.sync(() => x(dispatchable)))),
-      )),
-      configSubject: makeSubject(configKeys),
-      channel: new BroadcastChannel<
-        { [K in keyof UserConfig]: [K, UserConfig[K]] }[keyof UserConfig]>(
-        scriptIdentifier,
+    const updateSettingState = (
+      dispatchable: Dispatchable<SettingState>,
+    ): Z.Effect<void> => provideLog(pipe(
+      Ref.get(settingUpdateApps),
+      Z.flatMap(Z.forEach((x) => Z.sync(() => x(dispatchable)))),
+    ));
+
+    const channel = new BroadcastChannel<
+      { [K in keyof UserConfig]: [K, UserConfig[K]] }[keyof UserConfig]>(
+      scriptIdentifier,
+    );
+
+    const configValue = yield * makeConfig(defaultGMConfig);
+    const configRefs = yield * makeRefs(configValue);
+
+    const {
+      setConfigPlain,
+      setChangedConfig,
+      setConfig,
+    } = configWriteFunnel({
+      configValue,
+      configRefs,
+      configKeys,
+      dispatchToSettings: (key) => (val) => updateSettingState(
+        setSettingFromConfig(key)(val),
       ),
-      configValue: yield * makeConfig(defaultGMConfig),
-    };
+      broadcastAndPersist: (key) => (val) => pipe(
+        Z.promise(() => channel.postMessage(
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          [key, val] as {
+            [K2 in keyof UserConfig]: [K2, UserConfig[K2]]
+          }[keyof UserConfig],
+        )),
+        Z.zipRight(Z.promise(() => pipe(
+          defaultGMConfig[key],
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          (x) => GM.setValue(x.gmKey, x.toGm(val as never)),
+        ))),
+      ),
+      defaultFilterExp: () => defaultFilter(configValue),
+    });
 
-    const setterFromMap = setterFromKeysAndMap(configKeys);
-    const setConfigPlain = setterFromMap(
-      (key) => (val) => Z.sync(() => {
-        Object.assign(ctx.configValue, {
-          [key]: val,
-        });
-
-        ctx.configSubject[key].next(val);
-      }),
-    );
-
-    yield * setConfigPlain.filterExp(defaultFilter(ctx.configValue));
-
-    const changedConfigMap = <K extends keyof UserConfig>(
-      key: K,
-    ) => (
-      val: UserConfig[K],
-    ): Z.Effect<unknown, Cause.NoSuchElementException> => pipe(
-      Z.sync(() => ctx.configValue[key]),
-      Z.filterOrFail((x) => !deepEq(x, val)),
-      Z.flatMap(() => setConfigPlain[key](val)),
-    );
+    yield * setConfigPlain.filterExp(defaultFilter(configValue));
 
     return {
-      ...ctx,
-      setChangedConfig: setterFromMap(
-        (key) => (val) => changedConfigMap(key)(val).pipe(Z.ignore),
-      ),
+      updateSettingState,
+      channel,
+      configValue,
+      configRefs,
+      setChangedConfig,
       mainState: {
         chatPlaying: yield * SynchronizedRef.make(true),
         playerRect: yield * SynchronizedRef.make(
@@ -114,26 +112,9 @@ export default ({
         ),
         flowChats: yield * SynchronizedRef.make<readonly FlowChat[]>([]),
         config: {
-          value: ctx.configValue,
-          getConfig: makeGetter(ctx.configValue),
-          setConfig: setterFromMap(
-            (key) => (val) => changedConfigMap(key)(val).pipe(
-              Z.zipRight(Z.promise(() => ctx.channel.postMessage(
-                // eslint-disable-next-line @stylistic/max-len
-                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                [key, val] as {
-                  [K in keyof UserConfig]: [K, UserConfig[K]]
-                }[keyof UserConfig],
-              ))),
-              Z.zipRight(Z.promise(() => pipe(
-                defaultGMConfig[key],
-                // eslint-disable-next-line @stylistic/max-len
-                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                (x) => GM.setValue(x.gmKey, x.toGm(val as never)),
-              ))),
-              Z.ignore,
-            ),
-          ),
+          value: configValue,
+          getConfig: makeGetter(configValue),
+          setConfig,
         },
       } satisfies MainState,
     };
@@ -165,11 +146,11 @@ export default ({
       },
     };
   })),
-  Z.tap((ctx) => Z.sync(() => settingUpdateApps.next(A.map([
+  Z.tap((ctx) => Ref.set(settingUpdateApps, A.map([
     ctx.apps.settingsApp,
     ctx.apps.toggleSettingsPanelApp,
     ctx.apps.toggleChatButtonApp,
-  ], (x) => x.dispatch)))),
+  ], (x) => x.dispatch))),
   Z.tap((ctx) => pipe(
     Z.succeed([
       `Version: ${packageJson.version}`,
@@ -185,62 +166,30 @@ export default ({
   )),
   // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* () {
-    const reinitSubject = new Subject<void>();
+    const reinitQueue = yield * Queue.unbounded<void>();
     const reinitialize = provideLog(Z.sync(() => {
-      requestAnimationFrame(() => forwardTo(reinitSubject)());
+      requestAnimationFrame(() => {
+        Queue.unsafeOffer(reinitQueue, undefined);
+      });
     }));
 
-    (yield * allStream(
+    const stream = yield * allStream(
       provideLog,
     )({
       ...ctx,
-      reinitSubject,
+      reinitQueue,
       reinitialize,
       chatScreen: yield * makeChatScreen,
-      co: pipe(
-        ctx.configSubject,
-        mapObject(([k, value]) => [
-          k,
-          pipe(
-            value,
-            tapEffect<unknown>((v) => provideLog(pipe(
-              Z.succeed(<T>(s: T) => ({
-                ...s,
-                [k]: v,
-              })),
-              Z.zipLeft(ctx.updateSettingState(
-                // eslint-disable-next-line @stylistic/max-len
-                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                setSettingFromConfig(k)(v as UserConfig[keyof UserConfig]),
-              )),
-              Z.zipLeft(pipe(
-                [
-                  'bannedWords',
-                  'bannedUsers',
-                  'bannedWordRegexes',
-                ] as const,
-                A.containsWith(Str.Equivalence)(k),
-                (x) => (x
-                  ? ctx.mainState.config.setConfig.filterExp(
-                    defaultFilter(ctx.mainState.config.value),
-                  )
-                  : Z.void),
-              )),
-              (x) => Z.sync(
-                () => setTimeout(() => Z.runPromise(provideLog(x)), 0),
-              ),
-            ))),
-            share(),
-          ),
-        ]),
-      ),
-    })).subscribe({
-      error: (x) => Z.runPromise(
-
-        logWithMeta(LogLevel.Error)(`Stream Errored: ${x}`)(x),
-      ),
-      complete: () => Z.runPromise(Z.logWarning('Stream complete')),
     });
+
+    yield * pipe(
+      Stream.runDrain(stream),
+      Z.zipRight(Z.logWarning('Stream complete')),
+      Z.catchAllCause((cause) => logWithMeta(LogLevel.Error)(
+        `Stream Errored: ${Cause.pretty(cause)}`,
+      )(Cause.squash(cause))),
+      Z.forkDaemon,
+    );
 
     yield * reinitialize;
   })),
