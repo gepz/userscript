@@ -24,11 +24,7 @@ done; re-verify versions before starting, this list ages.
 
 ## Dependency majors (deferred deliberately)
 
-- Node-toolchain majors: `@types/node` 22 -> 26 (align with Node 26 runtime),
-  `cross-env` 10, `webpack-cli` 7, `webpack-dev-server` 6,
-  `webpack-bundle-analyzer` 5 (ships no typings — see `docs/decisions.md`).
-- App-library majors: `zod` 4 (custom-sort), `type-fest` 5, `delay` 7,
-  `hash-it` 7, `micro-memoize` 5.
+- `webpack-bundle-analyzer` 5: ships no typings — see `docs/decisions.md`.
 - Effect v4 (beta since early 2026, will be LTS): single-version ecosystem,
   much smaller core, and a built-in `Optic` module (standalone
   `Optic.id<T>().key(...)` chains plus schema-derived lenses) that can
