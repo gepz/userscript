@@ -7,10 +7,14 @@ some form). Verify against `src/` before starting one.
 ## In flight: typed filter expressions
 
 The largest work-in-progress: a typed, restricted expression system to power
-user-defined chat filters and replace the deprecated `expression-eval`
-dependency (unmaintained, has a security advisory, and evaluates
-user-supplied input — the riskiest dependency in the repo). The WIP sources
-are excluded from builds via `tsconfig.exclude.json`:
+a type-checked editing UI for user-defined chat filters. This is editor UX
+work only — the runtime no longer needs it for safety, since filter
+expressions are parsed by `jsep` and executed by the restricted interpreter
+in `src/filter/evaluateExpression` (own-property access only, no `this`, no
+bitwise operators). Whether to finish this WIP as designed, rescope it to
+first-order type checking in direct-style TypeScript, or drop it is an open
+decision (see `docs/backlog.md`). The WIP sources are excluded from builds
+via `tsconfig.exclude.json`:
 `src/restrictedExpression`, `src/typedExpression`, `src/settingUI/filterPanel`
 (the old panel `filterPanelOld` still ships), `src/settingUI/EditableExpression`,
 `src/settingUI/filter`, `src/filter/filterContextType`, `src/type`.

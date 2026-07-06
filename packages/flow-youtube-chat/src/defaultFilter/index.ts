@@ -1,10 +1,10 @@
-import * as expEval from 'expression-eval';
+import jsep from 'jsep';
 
 import UserConfig from '@/UserConfig';
 
 export default (
   config: UserConfig,
-): expEval.parse.Expression => expEval.parse(`
+): jsep.Expression => jsep(`
 or([
 A.some(
   flip(flow([inText, A.some]))(${JSON.stringify(config.bannedWords)})

@@ -1,0 +1,11 @@
+diff --git a/typings/tsd.d.ts b/typings/tsd.d.ts
+index 002be1cade08fe75ea2a91505bdefa5e48a6ff33..3479b97da5991f7d40632e24df71e720ff6ddf24 100644
+--- a/typings/tsd.d.ts
++++ b/typings/tsd.d.ts
+@@ -176,5 +176,5 @@ declare module 'jsep' {
+ 
+ 	function jsep(val: string | jsep.Expression): jsep.Expression;
+ 
+-	export = jsep;
++	export default jsep;
+ }

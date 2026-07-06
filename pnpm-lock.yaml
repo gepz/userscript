@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
+  jsep@1.4.0: 457df5185262f7fb099185669c266abd3a103e917d959bcc86a5d9448e9dbcd8
   micro-memoize@5.1.1: 0249a28ba2446f8f31f269cb058b16c7b02adbfdff29aafa0648b1bd65182147
 
 importers:
@@ -324,9 +325,6 @@ importers:
       effect:
         specifier: ^3.21.4
         version: 3.21.4
-      expression-eval:
-        specifier: ^5.0.1
-        version: 5.0.1
       fast-deep-equal:
         specifier: ^3.1.3
         version: 3.1.3
@@ -338,7 +336,7 @@ importers:
         version: 2.0.22
       jsep:
         specifier: ^1.4.0
-        version: 1.4.0
+        version: 1.4.0(patch_hash=457df5185262f7fb099185669c266abd3a103e917d959bcc86a5d9448e9dbcd8)
       lit-html:
         specifier: ^3.3.3
         version: 3.3.3
@@ -2768,10 +2766,6 @@ packages:
     resolution: {integrity: sha512-hIS4idWWai69NezIdRt2xFVofaF4j+6INOpJlVOLDO8zXGpUVEVzIYk12UUi2JzjEzWL3IOAxcTubgz9Po0yXw==}
     engines: {node: '>= 18'}
 
-  expression-eval@5.0.1:
-    resolution: {integrity: sha512-7SL4miKp19lI834/F6y156xlNg+i9Q41tteuGNCq9C06S78f1bm3BXuvf0+QpQxv369Pv/P2R7Hb17hzxLpbDA==}
-    deprecated: The expression-eval npm package is no longer maintained. The package was originally published as part of a now-completed personal project, and I do not have incentives to continue maintenance.
-
   extendable-error@0.1.7:
     resolution: {integrity: sha512-UOiS2in6/Q0FK0R0q6UY9vYpQ21mr/Qn1KOnte7vsACuNJf514WvCCUHSRCPcgjPT2bAhNIJdlE6bVap1GKmeg==}
 
@@ -3345,10 +3339,6 @@ packages:
   js-yaml@4.3.0:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
-
-  jsep@0.3.5:
-    resolution: {integrity: sha512-AoRLBDc6JNnKjNcmonituEABS5bcfqDhQAWWXNTFrqu6nVXBpBAGfcoTGZMFlIrh9FjmE1CQyX9CTNwZrXMMDA==}
-    engines: {node: '>= 6.0.0'}
 
   jsep@1.4.0:
     resolution: {integrity: sha512-B7qPcEVE3NVkmSJbaYxvv4cHkVW7DQsZz13pUMrfS8z8Q/BuShN+gcTXrUlPiGqM2/t/EEaI030bpxMqY8gMlw==}
@@ -7291,10 +7281,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  expression-eval@5.0.1:
-    dependencies:
-      jsep: 0.3.5
-
   extendable-error@0.1.7: {}
 
   fast-check@3.23.2:
@@ -7855,9 +7841,7 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  jsep@0.3.5: {}
-
-  jsep@1.4.0: {}
+  jsep@1.4.0(patch_hash=457df5185262f7fb099185669c266abd3a103e917d959bcc86a5d9448e9dbcd8): {}
 
   jsesc@3.1.0: {}
 

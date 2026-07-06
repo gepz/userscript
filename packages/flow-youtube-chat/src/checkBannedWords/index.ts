@@ -2,10 +2,10 @@ import {
   Effect as Z,
   pipe,
 } from 'effect';
-import * as expEval from 'expression-eval';
 
 import ChatData from '@/ChatData';
 import UserConfig from '@/UserConfig';
+import evaluateExpression from '@/filter/evaluateExpression';
 import filterContext from '@/filter/filterContext';
 
 export default (
@@ -14,7 +14,7 @@ export default (
 ): Z.Effect<boolean> => pipe(
   Z.succeed(data),
   Z.filterOrFail(
-    (x) => Boolean(expEval.eval(config.filterExp, filterContext(x))),
+    (x) => Boolean(evaluateExpression(filterContext(x))(config.filterExp)),
   ),
   Z.map((x) => [
     x.message,

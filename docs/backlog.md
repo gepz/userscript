@@ -6,13 +6,21 @@ done; re-verify versions before starting, this list ages.
 
 ## Security / correctness
 
-- **Replace `expression-eval` in flow-youtube-chat.** Deprecated,
-  unmaintained, has a security advisory, and evaluates user-supplied filter
-  expressions. The intended replacement (typed restricted expressions) is
-  already in progress — see the "In flight" section of
-  `packages/flow-youtube-chat/plan.md`.
 - **hyperapp is dormant upstream** (2.0.22 final, typings papered over by
   `hyperappDomCompat.d.ts`). Long-term: migrate off or vendor.
+
+## Design decisions pending
+
+- **Decide the fate of the typed filter-expression editor WIP** in
+  flow-youtube-chat (~3.2k lines across `src/type`, `src/typedExpression`,
+  `src/restrictedExpression`, `src/settingUI/{filter,filterPanel,EditableExpression}`,
+  `src/filter/filterContextType`; all excluded via `tsconfig.exclude.json`).
+  With `expression-eval` replaced by `jsep` + `src/filter/evaluateExpression`,
+  this is editor UX work, not security work. Options: finish as designed
+  (generic type inference; two files still have mid-edit syntax errors),
+  rescope to first-order type checking in direct-style TypeScript, or delete
+  the WIP after folding its design into `plan.md`. See the "In flight"
+  section of `packages/flow-youtube-chat/plan.md`.
 
 ## Dependency majors (deferred deliberately)
 

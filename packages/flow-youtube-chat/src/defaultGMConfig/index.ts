@@ -7,7 +7,7 @@ import {
   String as Str,
   pipe,
 } from 'effect';
-import * as expEval from 'expression-eval';
+import jsep from 'jsep';
 
 import GMConfig from '@/GMConfig';
 import fycKey from '@/fycKey';
@@ -88,9 +88,9 @@ const defaultGMConfig: GMConfig = pipe(
   },
   (x) => ({
     ...x,
-    filterExp: ic<string, expEval.parse.Expression>(
+    filterExp: ic<string, jsep.Expression>(
       'filterExp',
-      expEval.parse(`
+      jsep(`
   or([
   A.some(
     flip(flow([inText, A.some]))(${JSON.stringify(x.bannedWords.defaultValue)})
@@ -111,7 +111,7 @@ const defaultGMConfig: GMConfig = pipe(
   )(authorID)
   ])
         `),
-      expEval.parse,
+      jsep,
       generate,
     ),
   }),

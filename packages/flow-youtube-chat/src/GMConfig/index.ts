@@ -1,4 +1,4 @@
-import * as expEval from 'expression-eval';
+import type jsep from 'jsep';
 
 import GMConfigItem from '@/GMConfigItem';
 import languages from '@/languages';
@@ -38,6 +38,6 @@ export default interface GMConfig {
   flowX2: GMConfigItem<number>
   shadowColor: GMConfigItem<string>
   logEvents: GMConfigItem<boolean>
-  filterExp: GMConfigItem<expEval.parse.Expression>
+  filterExp: GMConfigItem<jsep.Expression>
   // displayMatrix: ConfigItem<readonly (readonly boolean[])[]>,
 }
