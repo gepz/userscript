@@ -89,7 +89,54 @@ Preservation tags:
 | T1 | `throttleTime(d, {leading: true, trailing: true})` (used at 180/300/500 ms): first event of a burst emits immediately and opens a window of `d`; the latest event arriving during the window emits when it closes and opens a new window; a window closing with nothing pending ends the train (next event is leading again). A lone event is emitted exactly once. | spec (`throttleLatest` combinator, TestClock) |
 | T2 | 100 ms init delay, 700 ms poll, 1700 ms reinit delay, 5000 ms retry delay, 10 s heartbeat (forked daemon). | manual — `Z.sleep`/`Schedule.fixed`. The 700 ms poll uses `Stream.fromSchedule(Schedule.fixed(...))`, whose first emission comes after one period like rxjs `interval`; `Stream.tick` emits immediately and would double the initial setup. |
 
-## 9. Out of scope
+## 9. Manual smoke-test procedure
+
+Covers every `manual` row. Preparation: exactly one FYC enabled (disable the
+Greasyfork copy), fresh `dist/main/index.user.js` installed, a watch page
+with live chat or chat replay. Open the settings panel and enable the
+`logEvents` checkbox first — Debug/Info logs (`Init`, `<key> found/lost`,
+`Loading...`, `Config <key>: [diff]`, `URL Changed`) only appear in that
+event log; the browser console only gets Warning and above.
+
+1. **Startup** (L2, L3, L5, T2, W5, M7): reload the watch page. Within ~1 s
+   the chat toggle button appears in the player controls, the settings
+   toggle next to the video menu row, and chats flow over the video. Event
+   log shows `Init` → `<key> found` lines → `Loading...`. The settings
+   panel opens next to its toggle button and shows the persisted values.
+2. **Chat flow and play state** (M2, M3, C6): chats from the chat panel
+   appear as flowing danmaku. Pause the video (use a replay/VOD): flowing
+   chats freeze in place; play resumes them.
+3. **Live setting updates** (C3, C4, C5, C6, W1, W4, M1): with chats on
+   screen, change `fontSize` / `flowSpeed` / `chatOpacity` — visible chats
+   update within ~200 ms; dragging a slider rapidly coalesces (intermediate
+   values dropped, final value applied). `fieldScale` rescales the chat
+   input field. `flowX1`/`flowX2` restyle the flow area's left/width. Every
+   change logs a `Config <key>: [diff]` entry.
+4. **Banned words → filter rebuild** (R2/R3 write path): add a word
+   currently appearing in chat to `bannedWords` — new matching chats stop
+   flowing immediately (the filter must derive from the *new* list). Event
+   log shows `Config bannedWords` then `Config filterExp`. Removing the
+   word lets them flow again.
+5. **Cross-tab broadcast** (B1, B2, W3, W4): open a second watch tab, same
+   profile. Change `fontSize` in tab A: tab B's panel shows the new value
+   and its chats restyle, without touching tab B. No ping-pong: the value
+   settles once, no oscillation. Reload a tab: the change persisted (GM).
+6. **URL change → reinit** (M4, L1, L2): click another video via the SPA
+   (no hard reload). Flowing chats clear immediately, log shows
+   `URL Changed: <href>`, and after ~1.8 s a fresh `Init` → `found` →
+   `Loading...` cycle re-mounts the UI on the new video. Also navigate to
+   the home page and back — the script recovers on return.
+7. **Resize** (M5, M6, L4, M7): toggle theater mode / resize the window.
+   Flowing chats reposition to the new player rect within ~500 ms; an open
+   settings panel follows its toggle button within ~300 ms.
+8. **Chat toggle button**: the player-controls button toggles the danmaku
+   off/on, and the state survives a reload.
+9. **No errors** (L6, L7): after all of the above, the browser console has
+   no FYC `Errored:`/`Stream Errored` lines. The retry loop itself is not
+   manually triggerable without injecting a fault; it was verified by
+   probe.
+
+## 10. Out of scope
 
 `custom-sort` stays on rxjs (no effect dependency; rxjs arrives via CDN
 `@require`; its Subjects are push-native mithril event glue). The
