@@ -48,6 +48,11 @@ jobs:
           pnpm --filter @userscript/flow-youtube-chat exec tsc -p tsconfig.build.json --noEmit
           pnpm --filter @userscript/custom-sort exec tsc -p tsconfig.build.json --noEmit
 
+      # Only flow-youtube-chat has a vitest suite so far; -r would also run
+      # the placeholder "test" scripts in other packages.
+      - name: Test
+        run: pnpm --filter @userscript/flow-youtube-chat run test
+
       # Sibling packages consume the committed lib/ output via workspace
       # symlinks, so a stale lib/ means consumers silently use old code.
       - name: Committed lib/ output is current
