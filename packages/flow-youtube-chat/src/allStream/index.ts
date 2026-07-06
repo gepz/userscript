@@ -121,7 +121,11 @@ export default (
     Z.map(A.some<boolean>(identity)),
   ));
 
-  const setup = provideLog(pipe(
+  // Suspended so the element caches are read at run time: setup re-runs on
+  // every emitted poll tick and must see the elements that tick just stored.
+  // A plain pipe would capture the empty caches from construction and the
+  // mounts would silently fail forever inside allSuccesses.
+  const setup = provideLog(Z.suspend(() => pipe(
     Z.logDebug('Loading...'),
     Z.zipRight(
       Z.sync(() => {
@@ -192,7 +196,7 @@ export default (
         Z.flatMap((x) => SynchronizedRef.set(ctx.mainState.chatPlaying, x)),
       ),
     ])),
-  ));
+  )));
 
   // Branch streams are (re)constructed on every emitted poll tick, so
   // element caches read at construction time (e.g. live.video.ele) are
