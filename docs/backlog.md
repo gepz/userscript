@@ -11,21 +11,17 @@ done; re-verify versions before starting, this list ages.
 
 ## In progress
 
-- **rxjs → Effect Stream in flow-youtube-chat.** Effect Stream is pull-based
-  (rxjs is push); not a blocker — push sources bridge via queue-backed
-  adapters (`Stream.fromEventListener`, `Stream.async`, `SubscriptionRef`,
-  `PubSub`), and pull semantics replace the `Z.runPromise`-per-event escape
-  in `tapEffect`/`concatMapEffect` with in-runtime `Stream.tap`/`mapEffect`.
-  Two things need redesign rather than transliteration: hot multicast
-  (config side effects move from the `share()`d read path to the
-  `setConfigPlain` write funnel) and `throttleTime(leading+trailing)` (custom
-  `throttleLatest` combinator). Behavior contract with per-behavior
-  preservation strategy: `packages/flow-youtube-chat/stream-behaviors.md`.
-  Phases: (1) primitives + tests, (2) rewire `configStream`/`allStream`/
-  `initialize`, (3) drop rxjs dep, `@require` line, webpack external, and the
-  `tapEffect`/`concatMapEffect`/`forwardTo` usage. `custom-sort` deliberately
-  stays on rxjs (no effect dependency, CDN-required, push-native mithril
-  glue), so the `forward-to` package outlives this migration.
+- **rxjs → Effect Stream in flow-youtube-chat: code-complete, awaiting a
+  manual smoke test.** All three phases landed (primitives + tests, pipeline
+  rewire, packaging cleanup); rxjs is out of the dependency list, webpack
+  externals, and the CDN `@require` list. The behavior contract is
+  `packages/flow-youtube-chat/stream-behaviors.md` — its `spec` rows are
+  covered by the vitest suite; its `manual` rows are the smoke-test
+  checklist for a live/replay YouTube chat page (chat flow, settings panel,
+  banned-word filtering, reinit on URL change, resize handling). Delete that
+  file once smoke-tested. `custom-sort` deliberately stays on rxjs (no
+  effect dependency, CDN-required, push-native mithril glue), so the
+  `forward-to` package outlives this migration.
 
 ## Design decisions pending
 
