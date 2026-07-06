@@ -1,5 +1,6 @@
 import {
   Effect as Z,
+  Struct,
   pipe,
 } from 'effect';
 
@@ -15,8 +16,7 @@ export default UserConfig;
 export const makeConfig = (
   config: GMConfig,
 ): Z.Effect<UserConfig> => pipe(
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  Object.entries(config) as [(keyof GMConfig), GMConfig[keyof GMConfig]][],
+  Struct.entries(config),
   Z.forEach(([k, c]) => c.getValue.pipe(
     Z.map((x: UserConfig[keyof GMConfig]) => [k, x] as const),
   )),
