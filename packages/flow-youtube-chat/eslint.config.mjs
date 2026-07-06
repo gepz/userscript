@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import packageConfig from '@userscript/eslint-config/packageConfig';
 import compat from 'eslint-plugin-compat';
 
@@ -19,6 +21,16 @@ export default packageConfig({
     {
       ...compat.configs['flat/recommended'],
       files: ['**/*.ts', '**/*.tsx'],
+    },
+    // Spec files are excluded from tsconfig.build.json, so type-aware
+    // linting parses them against the spec program instead.
+    {
+      files: ['src/**/*.spec.ts'],
+      languageOptions: {
+        parserOptions: {
+          project: path.join(import.meta.dirname, 'tsconfig.spec.json'),
+        },
+      },
     },
   ],
 });

@@ -1,0 +1,22 @@
+// Program for src including *.spec.ts files (tsconfig.build.json excludes
+// them). Used by vitest-adjacent tooling and typed eslint on spec files.
+// The excluded WIP directories mirror tsconfig.exclude.json; keep in sync.
+{
+  "extends": "../../tsconfig.bundle.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "incremental": false,
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "lib",
+    "./src/filter/filterContextType",
+    "./src/restrictedExpression",
+    "./src/settingUI/EditableExpression",
+    "./src/settingUI/filter",
+    "./src/settingUI/filterPanel",
+    "./src/type",
+    "./src/typedExpression",
+  ]
+}
