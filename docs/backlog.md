@@ -26,13 +26,13 @@ done; re-verify versions before starting, this list ages.
 
 - `webpack-bundle-analyzer` 5: ships no typings — see `docs/decisions.md`.
 - Effect v4 (beta since early 2026, will be LTS): single-version ecosystem,
-  much smaller core, and a built-in `Optic` module (standalone
-  `Optic.id<T>().key(...)` chains plus schema-derived lenses) that can
-  replace the frozen `@fp-ts/optic` (v0.25.0, Sep 2024, stale peer floor).
-  The typed filter-expression WIP uses `@fp-ts/optic` via `Op.Optional`;
-  keep that usage behind local helpers (`ElementOpticPair`,
-  `expressionSetter`) so the swap stays mechanical. Migrate when v4 is
-  stable, not during beta.
+  much smaller core, and a built-in `Optic` module that replaces the frozen
+  `@fp-ts/optic` (v0.25.0, stale peer floor). Migrate when v4 is stable,
+  not during beta. Pain points pre-scanned in `docs/effect-v4-scan.md`
+  (2026-07): the big items are Option-as-Effect subtyping removal, the
+  `FiberRef`→`Context.Reference` logger rewrite, `Either`→`Result`, and
+  `@effect/typeclass` having no v4 counterpart — which makes deciding the
+  filter-editor WIP's fate (above) a prerequisite.
 - TypeScript 6.x once typescript-eslint supports it.
 - eslint 10: blocked on plugin ecosystem (`eslint-config-airbnb-extended`,
   `eslint-plugin-canonical`, the compat-shimmed
