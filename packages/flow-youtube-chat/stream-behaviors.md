@@ -118,9 +118,14 @@ event log; the browser console only gets Warning and above.
    log shows `Config bannedWords` then `Config filterExp`. Removing the
    word lets them flow again.
 5. **Cross-tab broadcast** (B1, B2, W3, W4): open a second watch tab, same
-   profile. Change `fontSize` in tab A: tab B's panel shows the new value
-   and its chats restyle, without touching tab B. No ping-pong: the value
-   settles once, no oscillation. Reload a tab: the change persisted (GM).
+   profile. Every write is broadcast, but the receive side only applies
+   `listeningBroadcastConfigKeys` (`lang`, banned lists, `filterExp`,
+   `simplifyChatField`, `createBanButton`, `fieldScale`). Change
+   `fieldScale` in tab A: tab B's panel shows the new value and its chat
+   field rescales, without touching tab B; a `bannedWords` edit also
+   carries its rebuilt `filterExp` across. Changing `fontSize` in tab A
+   must NOT affect tab B (dropped by the receive filter). No ping-pong:
+   values settle once. Reload a tab: changes persisted (GM).
 6. **URL change → reinit** (M4, L1, L2): click another video via the SPA
    (no hard reload). Flowing chats clear immediately, log shows
    `URL Changed: <href>`, and after ~1.8 s a fresh `Init` → `found` →
