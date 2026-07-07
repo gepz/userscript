@@ -9,6 +9,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Nothing
 
 
+## [1.20.0] - 2026-07-07
+
+### Security
+
+- Replaced the unmaintained `expression-eval` library (which has an open
+  security advisory) with a restricted built-in interpreter for custom
+  filter expressions.
+
+### Changed
+
+- Filter expressions are now evaluated more strictly: names that are not
+  part of the filter scope raise an error instead of silently becoming
+  `undefined`, and `this` and bitwise operators are rejected.
+- Migrated the internal reactive engine from rxjs to Effect Stream. The
+  script loads one fewer external library, recovers from more kinds of
+  internal errors, and setting changes can no longer be missed while the
+  script is re-initializing after a page change.
+
+## [1.19.3] - 2026-07-06
+
+### Changed
+
+- Rebuilt on a modernized toolchain: dependency updates and refreshed
+  pinned CDN library versions in the userscript header. No functional
+  changes intended.
+
 ## [1.19.2] - 2023-08-06
 
 ### Fixed

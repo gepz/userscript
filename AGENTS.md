@@ -40,6 +40,13 @@ restructuring builds, configs, or dependencies.
 - **Versioning.** changesets, changelog-only (no publish, no tags). Include
   the `.changeset/*.md` file in the same commit as the change it describes;
   run `changeset version` later as its own `build: versioning` commit.
+- **Releasing flow-youtube-chat.** Whenever `changeset version` bumps
+  `flow-youtube-chat`, also add matching dated entries to its user-facing
+  changelogs `CHANGELOG_EN.md` and `CHANGELOG_JP.md` (Keep a Changelog
+  format, both languages, written for Greasyfork users — describe visible
+  behavior, not internals; the generated `CHANGELOG.md` is developer-facing).
+  Then rebuild so `dist/main/index.user.js` carries the new `@version`; the
+  Greasyfork upload itself is manual.
 
 ## Coding conventions
 
