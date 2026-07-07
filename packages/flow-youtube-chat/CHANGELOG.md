@@ -1,5 +1,43 @@
 # @userscript/flow-youtube-chat
 
+## 1.20.0
+
+### Minor Changes
+
+- a3bdeb3: Replace deprecated `expression-eval` (unmaintained, open security advisory)
+  with the maintained `jsep` parser — already CDN-required, previously unused —
+  plus a built-in restricted interpreter (`src/filter/evaluateExpression`) for
+  user filter expressions. The interpreter only reads own properties (no
+  prototype chain, no `__proto__`/`constructor`/`prototype`), rejects `this`
+  and bitwise operators, and throws on identifiers missing from the filter
+  scope instead of yielding `undefined`. jsep 1.4's typings are patched
+  (`export =` to `export default`) to pass the bare-tsc CI gate under ES module
+  output.
+- 1a8869e: Migrate the reactive layer from rxjs to Effect Stream. The rxjs CDN
+  `@require` and webpack external are gone; the `tapEffect`/`concatMapEffect`
+  adapters (which escaped the Effect runtime with a `runPromise` per event) are
+  replaced by in-runtime `Stream.tap`/`Stream.mapEffect`. Config change
+  notification moved from per-key Subjects to SubscriptionRefs, and the config
+  side effects (setting-panel dispatch, filterExp rebuild on banned-list
+  changes) moved from the shared `share()`d read path to the write funnel
+  (`src/configWriteFunnel`, now unit-tested), so they can no longer be missed
+  during pipeline rebuild windows. Deliberate behavior changes: reinit
+  events are buffered in a queue instead of
+  dropped while resubscribing, the retry loop now also recovers from defects
+  (thrown exceptions) instead of only typed failures, and the filterExp
+  rebuild reads the banned list after it is stored (previously it could act on
+  the pre-write value when effects were composed eagerly).
+
+### Patch Changes
+
+- 89c7301: Dependency majors: hash-it 7 (CDN require path moved to its UMD build),
+  micro-memoize 5 (now bundled instead of CDN-required — its v5 UMD depends on
+  globals that its dependencies' own UMD builds don't register), type-fest 5.
+- ea45e88: Replace abandoned `deep-diff` with `microdiff` (bundled; one CDN require
+  fewer). Only used to render config changes in debug logs.
+- Updated dependencies [89c7301]
+  - @userscript/ui@1.1.4
+
 ## 1.19.3
 
 ### Patch Changes

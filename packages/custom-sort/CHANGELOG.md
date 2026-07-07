@@ -1,5 +1,12 @@
 # @userscript/custom-sort
 
+## 1.1.4
+
+### Patch Changes
+
+- 89c7301: Dependency majors: zod 4, delay 7, type-fest 5 (all bundled; userscript
+  header unchanged).
+
 ## 1.1.3
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @userscript/webpack-config
 
+## 1.0.6
+
+### Patch Changes
+
+- f59abaf: Declare `typescript` as a devDependency; `build-lib` runs `tsc`, which
+  previously resolved from whatever the environment happened to provide.
+
 ## 1.0.5
 
 ### Patch Changes

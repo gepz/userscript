@@ -1,7 +1,7 @@
 {
   "name": "@userscript/webpack-config",
   "private": true,
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Shared webpack config fragments: ts-loader, fork-ts-checker, style loaders, dev server, umd output",
   "keywords": [],
   "license": "AGPL-3.0-or-later",
