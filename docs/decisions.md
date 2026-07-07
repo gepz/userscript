@@ -78,3 +78,19 @@ a shim script. Bundling it (plus those two small deps) costs ~18 KiB and
 removes the coordination problem. hash-it stayed a `@require`; its v7 moved
 the browser file to `dist/umd/index.js` and dropped the default export
 (`import { hash }`).
+
+## flow-youtube-chat streams on Effect, custom-sort stays on rxjs (2026-07)
+
+The flow-youtube-chat reactive layer runs on Effect Stream (v1.20.0): push
+sources bridge through queue/PubSub adapters (`src/stream/*`), config change
+notification is SubscriptionRef-based, and config side effects live on the
+write funnel (`src/configWriteFunnel`, unit-tested) rather than a shared
+read path. Two hard-won constraints from that migration: effect values are
+built eagerly, so anything reading mutable state written earlier in the
+same flow must be `Z.suspend`ed (the setup mount pass and the filterExp
+rebuild both broke without it); and thrown exceptions are defects, which
+`Stream.retry` ignores — the reinit loop uses a recursive
+`Stream.catchAllCause` instead. custom-sort deliberately stays on rxjs: it
+has no effect dependency, rxjs arrives free via CDN `@require`, and its
+Subjects are push-native mithril event glue. The `@userscript/forward-to`
+package therefore survives until custom-sort moves.
