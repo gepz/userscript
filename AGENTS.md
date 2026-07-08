@@ -66,6 +66,14 @@ restructuring builds, configs, or dependencies.
   behavior: fix the comment in the same change — unless the comment reads like lost
   intent rather than a stale description, in which case surface the discrepancy
   instead of silently rewriting it.
+- **Explain a cross-cutting mechanism once — when it's non-trivial and liable to change.**
+  Give it a single home — a `docs/` file if one exists, otherwise the type that implements
+  or enforces it — and have other sites carry only the *local constraint* plus a pointer,
+  never a re-derivation. The tell: behavior no edit at those lines could change is a
+  mechanism — point at the home; something a future editor *of this code* must respect is
+  local — inline it. Prefer pointing at a stable symbol (greppable, survives renames) over
+  a bare path. Keep version gates and "remove once X" notes in `docs/backlog.md` or memory,
+  not restated across comments.
 - **Fix bugs at the root, not around them.** Avoid speculative workarounds or defensive
   coding that adds technical debt. Add logs, prints, or tests to probe the environment
   and confirm the exact cause and conditions first, then make a precise fix. Remove any
