@@ -39,6 +39,24 @@ done; re-verify versions before starting, this list ages.
   `eslint-plugin-consistent-default-export-name`,
   `eslint-plugin-import-newlines` v2 for eslint 10 support).
 
+## Build pipeline (waiting on webpack experiments to stabilize)
+
+Both arrived in the webpack 5.98→5.108 range (checked 2026-07); re-verify
+experiment status before starting.
+
+- **Replace `style-loader` + `css-loader` with native CSS** (`experiments.css`,
+  `exportType: "style"` injects via `HTMLStyleElement` since 5.106).
+  `postcss-loader` stays — it runs Tailwind and autoprefixer, which native CSS
+  does not cover. Shrinks `styleLoaderConfig` to one loader plus a generator
+  option.
+- **Replace `ts-loader` with native type-stripping** (`experiments.typescript`,
+  since 5.108; uses Node's type erasure). Blocked on refactoring the three
+  `enum`s in flow-youtube-chat (`src/type/UI`, `src/type/Primitive`,
+  `src/LogAnnotationKeys`) to `const` objects + union types — stripping
+  handles erasable syntax only. That refactor is worth doing regardless
+  (TypeScript's `erasableSyntaxOnly` direction). fork-ts-checker remains the
+  type gate either way; stripping does no checking.
+
 ## Housekeeping
 
 - `run-s` occasionally fails with EACCES spawning corepack's `pnpm.cjs`
