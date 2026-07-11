@@ -126,8 +126,8 @@ marketplace** as a workaround. Verify it actually registers before relying on it
 
 ## For this repo specifically
 
-Correctness is already covered: strict `tsc` (`skipLibCheck: false`, whole-program
-fork-ts-checker) is ground truth, and `grep` finds strings. An LSP would be an **accuracy
+Correctness is already covered: the repo's whole-program `tsc` type gate (see
+`docs/architecture.md`, "Build pipeline") is ground truth, and `grep` finds strings. An LSP would be an **accuracy
 and speed** upgrade for *symbol-level* work — `grep` can't tell a symbol from a
 same-named string and misses references; an LSP gives exact, complete find-references and
 safe cross-file rename. The two places it would pay off are already on the backlog: the

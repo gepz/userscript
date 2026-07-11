@@ -23,13 +23,13 @@ web UI. It covers **20+ languages on a single branch**, JS/TS/CSS included, up t
 
 | Capability | Community Build | Notes |
 |---|---|---|
-| JS/TS/CSS analysis | ✅ | Core rules, single project |
-| **Branch analysis** | ❌ | Multi-branch is Developer edition+ |
-| **PR decoration** | ❌ | Also Developer+; makes CE a poor fit for PR-review workflows |
-| Advanced security (taint/injection dataflow) | mostly ❌ | Deep security analysis is a paid tier for JS/TS |
-| Quality-gate dashboard + history | ✅ | The main genuine draw |
-| Cognitive-complexity metric | ✅ | Not native to eslint |
-| Cross-file duplication detection | ✅ | Not native to eslint |
+| JS/TS/CSS analysis | Yes | Core rules, single project |
+| **Branch analysis** | No | Multi-branch is Developer edition+ |
+| **PR decoration** | No | Also Developer+; makes CE a poor fit for PR-review workflows |
+| Advanced security (taint/injection dataflow) | Mostly no | Deep security analysis is a paid tier for JS/TS |
+| Quality-gate dashboard + history | Yes | The main genuine draw |
+| Cognitive-complexity metric | Yes | Not native to eslint |
+| Cross-file duplication detection | Yes | Not native to eslint |
 
 There's an unofficial `sonarqube-community-branch-plugin` (mc1arke) that bolts
 branch/PR analysis onto CE, but it's a community hack against internal APIs — not
@@ -39,9 +39,9 @@ evaluation, and learning"** precisely because of the no-branch/no-PR limitation.
 ## How much of it is actually new here
 
 The repo's existing gate is already strong: **eslint 9 flat config** (airbnb-extended,
-typescript-eslint, `eslint-plugin-canonical`, import plugins) plus **strict `tsc`**
-(`skipLibCheck: false`, whole-program fork-ts-checker on every build). A large share of
-Sonar's TS "code smell" / bug-pattern rules overlap with what airbnb + typescript-eslint
+typescript-eslint, `eslint-plugin-canonical`, import plugins) plus the repo's
+**whole-program `tsc` type gate** (see `docs/architecture.md`, "Build pipeline"). A large
+share of Sonar's TS "code smell" / bug-pattern rules overlap with what airbnb + typescript-eslint
 already flag. Sonar even documents that it **imports a selection of ESLint rules** and
 **respects your eslint disable comments** — a tell of how much common ground there is.
 
