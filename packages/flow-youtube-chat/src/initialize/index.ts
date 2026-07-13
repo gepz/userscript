@@ -53,7 +53,6 @@ export default ({
   settingUpdateApps: Ref.Ref<Dispatch<SettingState>[]>
   provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>
 }): Z.Effect<unknown> => provideLog(pipe(
-  // eslint-disable-next-line func-names
   Z.gen(function* () {
     const updateSettingState = (
       dispatchable: Dispatchable<SettingState>,
@@ -119,7 +118,6 @@ export default ({
       } satisfies MainState,
     };
   }),
-  // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* () {
     const stateInit = settingStateInit(ctx.mainState.config.value);
     return {
@@ -164,7 +162,6 @@ export default ({
     Z.schedule(Schedule.fixed(D.seconds(10))),
     Z.forkDaemon,
   )),
-  // eslint-disable-next-line func-names
   Z.flatMap((ctx) => Z.gen(function* () {
     const reinitQueue = yield * Queue.unbounded<void>();
     const reinitialize = provideLog(Z.sync(() => {

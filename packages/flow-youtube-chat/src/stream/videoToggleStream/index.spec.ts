@@ -14,7 +14,6 @@ import videoToggleStream from '@/stream/videoToggleStream';
 
 describe('videoToggleStream', () => {
   it('maps playing to true and waiting/pause to false, ignoring others', () => (
-    // eslint-disable-next-line func-names
     Z.runPromise(Z.gen(function* () {
       const video = new EventTarget();
       const collected: boolean[] = [];

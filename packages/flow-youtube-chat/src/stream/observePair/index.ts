@@ -16,7 +16,6 @@ export default <T, T2>(
 ): Z.Effect<{
   stream: Stream.Stream<T2>
   observer: T
-  // eslint-disable-next-line func-names
 }> => Z.gen(function* () {
   const pubsub = yield * PubSub.unbounded<T2>();
   const runtime = yield * Z.runtime();

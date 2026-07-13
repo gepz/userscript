@@ -18,12 +18,11 @@ import setChatAnimation from '@/setChatAnimation';
 
 const emptyElement = document.createElement('span');
 
-export default (
+export default Z.fnUntraced(function* (
   data: ChatData,
   chatScrn: HTMLElement,
   mainState: MainState,
-// eslint-disable-next-line func-names
-): Z.Effect<void> => Z.gen(function* () {
+) {
   const chatFontSize = yield * getChatFontSize(mainState);
   if (yield * pipe(
     Z.succeed({
@@ -57,7 +56,6 @@ export default (
           Z.zipLeft(Z.logDebug('Flow chat element added')),
         ),
         onSuccess: (index): Z.Effect<HTMLElement> => pipe(
-          // eslint-disable-next-line func-names
           Z.gen(function* () {
             const chat = pipe(
               yield * SynchronizedRef.get(mainState.flowChats),

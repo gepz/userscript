@@ -94,7 +94,6 @@ export default (
   chat: FlowChat,
   mainState: MainState,
 ): Z.Effect<HTMLTemplateResult> => pipe(
-  // eslint-disable-next-line func-names
   Z.gen(function* () {
     return {
       data: chat.data,

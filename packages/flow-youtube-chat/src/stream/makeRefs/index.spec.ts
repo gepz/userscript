@@ -25,7 +25,6 @@ const collectTwo = <A>(
 
 describe('makeRefs', () => {
   it('emits the current value first, then subsequent writes', () => (
-    // eslint-disable-next-line func-names
     Z.runPromise(Z.gen(function* () {
       const refs = yield * makeRefs({
         count: 0,
@@ -44,7 +43,6 @@ describe('makeRefs', () => {
   ));
 
   it('multicasts: every subscriber sees every write', () => (
-    // eslint-disable-next-line func-names
     Z.runPromise(Z.gen(function* () {
       const refs = yield * makeRefs({
         count: 0,
@@ -65,7 +63,6 @@ describe('makeRefs', () => {
   ));
 
   it('keys are independent: a write to one ref does not emit on another', () => (
-    // eslint-disable-next-line func-names
     Z.runPromise(Z.gen(function* () {
       const refs = yield * makeRefs({
         a: 'a0',

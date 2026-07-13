@@ -32,5 +32,14 @@ export default packageConfig({
         },
       },
     },
+    // Effect's effect-defining idiom is an anonymous generator handed to
+    // Effect.gen / Effect.fn; naming every one to satisfy func-names is pure
+    // ceremony, so exempt generators here rather than scatter disables.
+    {
+      files: ['**/*.ts', '**/*.tsx'],
+      rules: {
+        'func-names': ['error', 'as-needed', { generators: 'never' }],
+      },
+    },
   ],
 });

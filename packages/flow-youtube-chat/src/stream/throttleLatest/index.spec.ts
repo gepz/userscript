@@ -37,7 +37,6 @@ const timed = <A>(
 // TestClock.adjust calls.
 const collectInBackground = <A>(
   stream: Stream.Stream<A>,
-// eslint-disable-next-line func-names
 ) => Z.gen(function* () {
   const collected: A[] = [];
   const fiber = yield * pipe(
@@ -56,7 +55,6 @@ const collectInBackground = <A>(
 
 describe('throttleLatest', () => {
   it('emits the first element immediately and the latest at window end', () => (
-    // eslint-disable-next-line func-names
     runTest(Z.gen(function* () {
       // concat(never): production sources don't complete, and completion
       // triggers the trailing flush tested separately below.
@@ -84,7 +82,6 @@ describe('throttleLatest', () => {
   ));
 
   it('opens a new window when the trailing element is emitted', () => (
-    // eslint-disable-next-line func-names
     runTest(Z.gen(function* () {
       const {
         collected, fiber,
@@ -107,7 +104,6 @@ describe('throttleLatest', () => {
   ));
 
   it('treats an element after an empty window as leading again', () => (
-    // eslint-disable-next-line func-names
     runTest(Z.gen(function* () {
       const {
         collected, fiber,
@@ -130,7 +126,6 @@ describe('throttleLatest', () => {
   ));
 
   it('emits a lone element exactly once', () => (
-    // eslint-disable-next-line func-names
     runTest(Z.gen(function* () {
       const {
         collected, fiber,
@@ -147,14 +142,12 @@ describe('throttleLatest', () => {
   ));
 
   it('flushes a pending trailing element when upstream ends', () => (
-    // eslint-disable-next-line func-names
     runTest(Z.gen(function* () {
       const result = yield * pipe(
         timed([[0, 'a'], [30, 'b']]),
         throttleLatest('100 millis'),
         Stream.runCollect,
         Z.fork,
-        // eslint-disable-next-line func-names
         Z.flatMap((fiber) => Z.gen(function* () {
           yield * TestClock.adjust('30 millis');
 
@@ -167,7 +160,6 @@ describe('throttleLatest', () => {
   ));
 
   it('propagates upstream failure', () => (
-    // eslint-disable-next-line func-names
     runTest(Z.gen(function* () {
       const fiber = yield * pipe(
         Stream.concat(timed([[0, 'a']]), Stream.fail('boom')),

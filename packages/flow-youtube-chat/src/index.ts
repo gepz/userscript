@@ -12,7 +12,6 @@ import initialize from '@/initialize';
 import provideLog from '@/provideLog';
 
 Z.runPromise(pipe(
-  // eslint-disable-next-line func-names
   Z.gen(function* () {
     const settingUpdateApps = yield * Ref.make<Dispatch<SettingState>[]>([]);
     yield * initialize({

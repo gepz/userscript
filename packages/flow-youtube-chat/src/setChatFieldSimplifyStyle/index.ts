@@ -5,10 +5,9 @@ import {
   pipe,
 } from 'effect';
 
-export default (
+export default Z.fnUntraced(function* (
   chat: HTMLElement,
-// eslint-disable-next-line func-names
-): Z.Effect<void> => Z.gen(function* () {
+) {
   if (!chat.querySelector(
     '.style-scope.yt-live-chat-paid-message-renderer',
   )) {

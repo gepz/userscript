@@ -34,7 +34,6 @@ export default (
 ): Stream.Stream<A, E, R> => {
   const duration = D.decode(durationInput);
 
-  // eslint-disable-next-line func-names
   return Stream.unwrapScoped(Z.gen(function* () {
     const output = yield * Queue.unbounded<Take.Take<A, E>>();
     const gate = yield * Z.makeSemaphore(1);
@@ -45,12 +44,10 @@ export default (
     // One fiber per burst train: sleeps out the current window, emits the
     // trailing element if one arrived (opening the next window), and stops
     // at the first empty window.
-    // eslint-disable-next-line func-names
     const windowTrain: Z.Effect<void> = Z.gen(function* () {
       for (;;) {
         yield * Z.sleep(duration);
 
-        // eslint-disable-next-line func-names
         const emitted = yield * gate.withPermits(1)(Z.gen(function* () {
           const state = yield * Ref.get(window);
 
@@ -79,7 +76,6 @@ export default (
 
     // Returns whether a new window train was opened.
     const onElement = (element: A): Z.Effect<boolean> => gate.withPermits(1)(
-      // eslint-disable-next-line func-names
       Z.gen(function* () {
         const state = yield * Ref.get(window);
 
@@ -111,7 +107,6 @@ export default (
       )),
       Z.matchCauseEffect({
         onFailure: (cause) => Queue.offer(output, Take.failCause(cause)),
-        // eslint-disable-next-line func-names
         onSuccess: () => Z.gen(function* () {
           const state = yield * gate.withPermits(1)(Ref.get(window));
 

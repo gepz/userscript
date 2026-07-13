@@ -69,7 +69,6 @@ export default (
     toggleSettingsPanelApp: WrappedApp<SettingState>
   }
   chatScreen: HTMLDivElement
-  // eslint-disable-next-line func-names
 }): Z.Effect<Stream.Stream<unknown>> => Z.gen(function* () {
   const live = makePageState(livePageYt);
   const css = yield * mainCss;

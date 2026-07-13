@@ -39,7 +39,6 @@ export default (
   newChat: FlowChat
 }, Cause.NoSuchElementException> => pipe(
   getChatFontSize(mainState),
-  // eslint-disable-next-line func-names
   Z.tap((height) => Z.gen(function* () {
     chat.element.style.transform = `translate(${
       (yield * SynchronizedRef.get(mainState.playerRect)).width
@@ -50,7 +49,6 @@ export default (
     onLeft: (x) => x === 'NotStarted',
     onRight: () => true,
   })),
-  // eslint-disable-next-line func-names
   Z.flatMap((height) => Z.gen(function* () {
     return {
       newChat: {

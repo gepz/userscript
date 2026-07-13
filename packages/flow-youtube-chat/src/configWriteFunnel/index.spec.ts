@@ -70,7 +70,6 @@ describe('configWriteFunnel', () => {
   });
 
   it('mutates configValue before emitting on the ref (W1)', async () => {
-    // eslint-disable-next-line func-names
     await Z.runPromise(Z.gen(function* () {
       const snapshots: [unknown, unknown][] = [];
       const fiber = yield * pipe(
@@ -91,7 +90,6 @@ describe('configWriteFunnel', () => {
   });
 
   it('runs write side effects once per write, not per subscriber', async () => {
-    // eslint-disable-next-line func-names
     await Z.runPromise(Z.gen(function* () {
       const consume = pipe(
         fixture.refs.fieldScale.changes,
@@ -113,7 +111,6 @@ describe('configWriteFunnel', () => {
   });
 
   it('rebuilds filterExp through the full path on banned-list writes', () => (
-    // eslint-disable-next-line func-names
     Z.runPromise(Z.gen(function* () {
       yield * fixture.funnel.setConfigPlain.bannedWords(['x']);
 
@@ -130,7 +127,6 @@ describe('configWriteFunnel', () => {
   ));
 
   it('skips the filterExp rebuild when it is unchanged', () => (
-    // eslint-disable-next-line func-names
     Z.runPromise(Z.gen(function* () {
       yield * fixture.funnel.setConfigPlain.bannedWords(['x']);
       yield * fixture.funnel.setConfigPlain.bannedWords(['x']);
@@ -145,7 +141,6 @@ describe('configWriteFunnel', () => {
   ));
 
   it('setConfig dedups unchanged values: no effects, no emission (W2)', () => (
-    // eslint-disable-next-line func-names
     Z.runPromise(Z.gen(function* () {
       yield * fixture.funnel.setConfig.fieldScale(1);
 
@@ -155,7 +150,6 @@ describe('configWriteFunnel', () => {
   ));
 
   it('setChangedConfig writes locally without broadcasting (W3)', () => (
-    // eslint-disable-next-line func-names
     Z.runPromise(Z.gen(function* () {
       yield * fixture.funnel.setChangedConfig.fieldScale(3);
 
@@ -165,7 +159,6 @@ describe('configWriteFunnel', () => {
   ));
 
   it('setConfig writes, dispatches, then broadcasts, in order (W4)', () => (
-    // eslint-disable-next-line func-names
     Z.runPromise(Z.gen(function* () {
       yield * fixture.funnel.setConfig.fieldScale(4);
 

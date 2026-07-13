@@ -31,7 +31,6 @@ export default (
 }: MainState): Z.Effect<{
   lane: number
   interval: number
-// eslint-disable-next-line func-names
 }> => Z.gen(function* () {
   const rect = yield * SynchronizedRef.get(playerRect);
   const flowWidth = rect.width * (

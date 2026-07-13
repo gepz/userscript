@@ -22,7 +22,6 @@ class FakeObserver {
 
 describe('observePair', () => {
   it('delivers callback values to a running stream in order', () => (
-    // eslint-disable-next-line func-names
     Z.runPromise(Z.gen(function* () {
       const {
         stream, observer,
@@ -50,7 +49,6 @@ describe('observePair', () => {
   ));
 
   it('drops values published while nothing is subscribed', () => (
-    // eslint-disable-next-line func-names
     Z.runPromise(Z.gen(function* () {
       const {
         stream, observer,

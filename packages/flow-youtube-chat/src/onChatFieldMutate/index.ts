@@ -25,7 +25,6 @@ export default (
   Z.map(A.flatMap((e) => (Array.from(e.addedNodes) as HTMLElement[]))),
   Z.map(A.filter((x) => x.children.length > 0)),
   Z.map(A.reverse),
-  // eslint-disable-next-line func-names
   Z.flatMap(Z.forEach((chat) => Z.gen(function* () {
     yield * Z.logDebug('Chat detected');
     const data = parseChat(chat);
