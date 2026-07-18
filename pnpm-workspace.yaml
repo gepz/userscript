@@ -8,4 +8,3 @@ minimumReleaseAgeExclude:
   - type-fest@5.8.0
 patchedDependencies:
   jsep@1.4.0: patches/jsep@1.4.0.patch
-  micro-memoize@5.1.1: patches/micro-memoize@5.1.1.patch

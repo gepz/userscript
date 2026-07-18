@@ -31,7 +31,7 @@
     "jsep": "^1.4.0",
     "lit-html": "^3.3.3",
     "lz-string": "^1.5.0",
-    "micro-memoize": "^5.1.1",
+    "micro-memoize": "^5.1.2",
     "microdiff": "^1.5.0",
     "sweetalert2": "^11.26.25",
     "ts-toolbelt": "^9.6.0",

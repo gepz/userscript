@@ -6,7 +6,6 @@ settings:
 
 patchedDependencies:
   jsep@1.4.0: 457df5185262f7fb099185669c266abd3a103e917d959bcc86a5d9448e9dbcd8
-  micro-memoize@5.1.1: 0249a28ba2446f8f31f269cb058b16c7b02adbfdff29aafa0648b1bd65182147
 
 importers:
 
@@ -338,8 +337,8 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0
       micro-memoize:
-        specifier: ^5.1.1
-        version: 5.1.1(patch_hash=0249a28ba2446f8f31f269cb058b16c7b02adbfdff29aafa0648b1bd65182147)
+        specifier: ^5.1.2
+        version: 5.1.2
       microdiff:
         specifier: ^1.5.0
         version: 1.5.0
@@ -3697,8 +3696,8 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
-  micro-memoize@5.1.1:
-    resolution: {integrity: sha512-QDwluos8YeMijiKxZGwaV4f4tzj0soS6+xcsJhJ3+4wdEIHMyKbIKVUziebOgWX3e6yiijdoaHo+9tyhbnaWXA==}
+  micro-memoize@5.1.2:
+    resolution: {integrity: sha512-dbWHvnmuOCClNkneO6OIIXjEUJCIE0Ftar4DE36aJzXw3SqJCbgGTRxrbjrHq8fR+O3nZiLZmXdODczOnifK6w==}
 
   microdiff@1.5.0:
     resolution: {integrity: sha512-Drq+/THMvDdzRYrK0oxJmOKiC24ayUV8ahrt8l3oRK51PWt6gdtrIGrlIH3pT/lFh1z93FbAcidtsHcWbnRz8Q==}
@@ -8374,7 +8373,7 @@ snapshots:
 
   merge2@1.4.1: {}
 
-  micro-memoize@5.1.1(patch_hash=0249a28ba2446f8f31f269cb058b16c7b02adbfdff29aafa0648b1bd65182147):
+  micro-memoize@5.1.2:
     dependencies:
       fast-equals: 5.4.0
       fast-stringify: 4.0.0
