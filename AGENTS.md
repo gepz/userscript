@@ -37,16 +37,26 @@ restructuring builds, configs, or dependencies.
   `@userscript/eslint-config` package (see its `packageConfig` factory). Run
   `npx eslint .` inside a package. Generated output (`lib/`, `dist/`) is
   ignored by config, not by being clean.
-- **Versioning.** changesets, changelog-only (no publish, no tags). Include
-  the `.changeset/*.md` file in the same commit as the change it describes;
-  run `changeset version` later as its own `build: versioning` commit.
+- **Versioning.** changesets, changelog-only (no publish, no tags). Three
+  separate steps, don't conflate them: the **commit** carries the change; a
+  **changeset** (`.changeset/*.md`) rides in that same commit, but *only when
+  the change alters what a consumer gets* — flow-youtube-chat behavior a user
+  would notice, or a lib package's public API / types / `lib` output that
+  siblings consume; **`changeset version`** runs later as its own
+  `build: versioning` commit, consuming pending changesets to bump versions
+  and `workspace:` ranges and write the developer `CHANGELOG.md`. Skip the
+  changeset for build/dev-tooling, CI, docs, tests, or behavior-neutral
+  internal churn — including a dependency bump whose shipped behavior is
+  identical (e.g. a typings-only patch); it rides along in the next release
+  that ships for another reason.
 - **Releasing flow-youtube-chat.** Whenever `changeset version` bumps
   `flow-youtube-chat`, also add matching dated entries to its user-facing
   changelogs `CHANGELOG_EN.md` and `CHANGELOG_JP.md` (Keep a Changelog
   format, both languages, written for Greasyfork users — describe visible
   behavior, not internals; the generated `CHANGELOG.md` is developer-facing).
   Then rebuild so `dist/main/index.user.js` carries the new `@version`; the
-  Greasyfork upload itself is manual.
+  Greasyfork upload itself is manual. Nothing auto-rebuilds — `dist/` is
+  gitignored — so a dependency bump reaches users only through this step.
 
 ## Coding conventions
 
