@@ -94,3 +94,18 @@ rebuild both broke without it); and thrown exceptions are defects, which
 has no effect dependency, rxjs arrives free via CDN `@require`, and its
 Subjects are push-native mithril event glue. The `@userscript/forward-to`
 package therefore survives until custom-sort moves.
+
+## Multi-step `build` scripts chain with `&&`, not a task runner (2026-07)
+
+Every package's `build` is a plain `pnpm run A && pnpm run B` chain; don't
+reintroduce `npm-run-all`/`run-s`. npm-run-all 4.1.5 (its final release)
+picks how to launch each child script in `lib/run-task.js` from the *file
+extension* of `npm_execpath`, matched against `/\.m?js/`. A `.cjs` path fails
+that test, so it execs the file directly (`spawn(pnpm.cjs, ['run', task])`)
+instead of via `node` — which needs the executable bit, and corepack's
+cached `pnpm.cjs` shim doesn't reliably have it, giving intermittent EACCES.
+pnpm's bin was `pnpm.cjs` through v10 and became `pnpm.mjs` at v11 (matches
+the regex, run via `node`), so the current pin hides the bug; a `.cjs` bin
+would resurrect it. `&&` sidesteps the whole thing (the shell resolves `pnpm`
+from PATH — the corepack symlink, `+x` with a shebang) and drops a dead dep.
+All uses were sequential; no `run-p` existed.

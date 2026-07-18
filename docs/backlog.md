@@ -59,5 +59,4 @@ experiment status before starting.
 
 ## Housekeeping
 
-- `run-s` occasionally fails with EACCES spawning corepack's `pnpm.cjs`
-  (seen in ui's `build`); root-cause or replace `npm-run-all`.
+_(none open)_

@@ -10,7 +10,7 @@
     "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack serve --config ./config/webpack.config.dev.ts",
     "build-webpack": "cross-env TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./config/webpack.config.prod.ts",
     "build-prettify": "prettier --config ./config/prettier.config.js --write ./dist/main/index.user.js",
-    "build": "run-s build-webpack build-prettify",
+    "build": "pnpm run build-webpack && pnpm run build-prettify",
     "start": "pnpm dev"
   },
   "dependencies": {
@@ -47,9 +47,7 @@
     "eslint-plugin-consistent-default-export-name": "^0.0.15",
     "eslint-plugin-import-newlines": "^1.4.1",
     "eslint-plugin-import-x": "^4.17.1",
-    "globals": "^17.7.0",
-    "npm-run-all": "^4.1.5",
-    "postcss": "^8.5.16",
+    "globals": "^17.7.0",    "postcss": "^8.5.16",
     "postcss-loader": "^8.2.1",
     "prettier": "^3.9.4",
     "style-loader": "^4.0.0",
