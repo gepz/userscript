@@ -11,12 +11,13 @@ APIs may still change). Affected packages: `flow-youtube-chat` and `ui`
 - **Effect subtyping is gone (`migration/yieldable.md`).** In v3 `Option`,
   `Either`, `Ref`, `Fiber` were structural subtypes of `Effect`; in v4 they
   are only `Yieldable` (usable with `yield*`) or plain values, and are NOT
-  assignable to `Effect`. This repo leans on Option-as-Effect heavily:
-  `livePageYt` reads, the `allStream` setup mounts (`live.<key>.ele.pipe(
-  Z.flatMap(...))`), `Z.option` round-trips in `pollChanged`. Each such
-  site needs `.asEffect()` or a restructure into `Effect.gen`/`O.match`.
-  This is the largest single item and it is not greppable by one pattern —
-  the compiler will find the sites, but expect wide type-error fallout.
+  assignable to `Effect`. Live code was restructured off Option-as-Effect
+  in 2026-07 with the transpose family (`livePageYt`, `allStream`'s
+  `pollChanged` and setup mounts, `scaleChatField`), so the expected
+  fallout is now small — the compiler arbitrates any stragglers at
+  migration time. The excluded filter-editor WIP still leans on the
+  subtyping (e.g. `restrictedExpression/CallExpression`), which is part of
+  why deciding its fate (backlog) is a migration prerequisite.
 - **`FiberRef` family removed (`migration/fiberref.md`).** `FiberRef`,
   `FiberRefs`, `FiberRefsPatch` are replaced by `Context.Reference` /
   built-in `References.*`. Hits the logging stack: `LogMeta`'s

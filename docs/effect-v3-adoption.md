@@ -26,23 +26,6 @@ is free but affords nothing below.
   from `fnUntraced`; convert them only if adopting traced spans.
   v4-aligned (`Effect.fn` is core v4 idiom).
 
-- **Pre-v4 restructure of Option-as-Effect sites with the transpose family
-  (`Effect.transposeOption` 3.13, `Effect.transposeMapOption` 3.14).** The
-  v4 scan's largest item is that `Option` stops being assignable to `Effect`.
-  The new transpose combinators express most of those sites in v3 terms that
-  survive v4 unchanged:
-  - `pollChanged` (`allStream`): the `Z.option` → `Z.flatMap(O.liftPredicate(...))`
-    → `Z.isSuccess` round-trip becomes an explicit `Effect<Option<...>>`
-    pipeline.
-  - The `setup` mounts: `live.<key>.ele.pipe(Z.flatMap(...))` on an `Option`
-    becomes `Z.transposeMapOption(live.<key>.ele, (x) => Z.sync(...))`, which
-    never fails — `Z.allSuccesses` keeps working during the transition.
-  - `livePageYt`: continuations returning `Option` into `Z.flatMap`
-    (`O.fromNullable`, `A.findFirst`) — replace with the `Z.fromNullable` /
-    `Z.filterOrFail` forms already used in the same file.
-  Doing this incrementally now, behind passing types, converts the v4
-  migration's widest type-error fallout into a no-op.
-
 - **`Stream.mergeWithTag` (3.8.5) + `Effect.whenLogLevel` (3.13) for the
   per-key config debug streams** (`allStream`, the `configKeys → A.map`
   block). `Stream.mergeWithTag` merges a struct of streams into one stream of

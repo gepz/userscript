@@ -103,20 +103,21 @@ export default (
   );
 
   const pollChanged = provideLog(pipe(
-    Z.succeed(liveElementKeys),
-    Z.flatMap(Z.forEach((key) => live[key].read.pipe(
-      Z.option,
-      Z.flatMap(O.liftPredicate(
+    Z.forEach(liveElementKeys, (key) => pipe(
+      Z.option(live[key].read),
+      Z.map(O.liftPredicate(
         (newEle) => !strictOptionEquivalence(live[key].ele, newEle),
       )),
-      Z.tap((x) => Z.sync(() => {
-        live[key].ele = x;
-      })),
+      Z.flatMap(Z.transposeMapOption((newEle) => pipe(
+        Z.sync(() => {
+          live[key].ele = newEle;
+        }),
+        Z.zipRight(Z.logDebug(
+          `${key} ${O.isSome(newEle) ? 'found' : 'lost'}`,
+        )),
+      ))),
       Z.map(O.isSome),
-      Z.map((x) => `${key} ${x ? 'found' : 'lost'}`),
-      Z.flatMap(Z.logDebug),
-      Z.isSuccess,
-    ))),
+    )),
     Z.map(A.some<boolean>(identity)),
   ));
 
@@ -148,51 +149,45 @@ export default (
     Z.zipRight(Z.allSuccesses([
       ...A.map(
         [live.chatField.ele, live.chatTicker.ele],
-        Z.flatMap((x) => Z.sync(
+        Z.transposeMapOption((x) => Z.sync(
           () => chatMutationPair.observer.observe(x, {
             childList: true,
           }),
         )),
       ),
-      live.player.ele.pipe(
-        Z.flatMap((element) => pipe(
-          Z.succeed(element),
-          Z.tap((x) => Z.sync(() => playerResizePair.observer.observe(x))),
-          Z.flatMap((x) => Z.sync(() => x.prepend(ctx.chatScreen))),
-        )),
-      ),
-      live.toggleChatBtnParent.ele.pipe(
-        Z.flatMap((x) => Z.sync(() => x.prepend(
-          ctx.apps.toggleChatButtonApp.node,
-        ))),
-      ),
-      live.settingsToggleNextElement.ele.pipe(
-        Z.flatMap((x) => Z.sync(() => x.before(
+      Z.transposeMapOption(live.player.ele, (x) => Z.sync(() => {
+        playerResizePair.observer.observe(x);
+        x.prepend(ctx.chatScreen);
+      })),
+      Z.transposeMapOption(live.toggleChatBtnParent.ele, (x) => Z.sync(
+        () => x.prepend(ctx.apps.toggleChatButtonApp.node),
+      )),
+      pipe(
+        live.settingsToggleNextElement.ele,
+        O.map((x) => Z.sync(() => x.before(
           ctx.apps.toggleSettingsPanelApp.node,
         ))),
-        Z.orElse(() => live.toggleChatBtnParent.ele.pipe(
-          Z.flatMap(() => Z.sync(
-            () => ctx.apps.toggleChatButtonApp.node.before(
-              ctx.apps.toggleSettingsPanelApp.node,
-            ),
+        O.orElse(() => O.map(
+          live.toggleChatBtnParent.ele,
+          () => Z.sync(() => ctx.apps.toggleChatButtonApp.node.before(
+            ctx.apps.toggleSettingsPanelApp.node,
           )),
         )),
+        Z.transposeOption,
       ),
-      live.settingsContainer.ele.pipe(
-        Z.flatMap((x) => Z.sync(() => x.append(ctx.apps.settingsApp.node))),
-      ),
+      Z.transposeMapOption(live.settingsContainer.ele, (x) => Z.sync(
+        () => x.append(ctx.apps.settingsApp.node),
+      )),
       pipe(
         document.body,
         Z.fromNullable,
         Z.flatMap((x) => Z.sync(() => bodyResizePair.observer.observe(x))),
       ),
-      live.video.ele.pipe(
-        Z.filterOrElse(
-          (x) => !x.paused,
-          () => live.offlineSlate.ele,
-        ),
-        Z.isSuccess,
-        Z.flatMap((x) => SynchronizedRef.set(ctx.mainState.chatPlaying, x)),
+      pipe(
+        live.video.ele,
+        O.map((x) => !x.paused || O.isSome(live.offlineSlate.ele)),
+        O.getOrElse(() => false),
+        (x) => SynchronizedRef.set(ctx.mainState.chatPlaying, x),
       ),
     ])),
   )));

@@ -12,8 +12,7 @@ export default (
 ) => (
   scale: number,
 ): Z.Effect<void> => pipe(
-  live.chatField.ele,
-  Z.flatMap((field: HTMLElement) => pipe(
+  Z.transposeMapOption(live.chatField.ele, (field) => pipe(
     [
       pipe(
         O.fromNullable(field.parentElement),
@@ -39,5 +38,5 @@ export default (
     A.getSomes,
     Z.all,
   )),
-  Z.ignore,
+  Z.asVoid,
 );

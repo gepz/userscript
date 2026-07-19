@@ -1,7 +1,6 @@
 import {
   Effect as Z,
   Option as O,
-  Array as A,
   Cause,
   pipe,
 } from 'effect';
@@ -17,8 +16,8 @@ const chatApp: Z.Effect<Element, Cause.NoSuchElementException> = pipe(
       (x) => x === 'loading' || x === 'complete',
     )),
     O.flatMapNullable((x) => x.contentDocument),
-    O.orElse(() => O.some(document)),
-    O.flatMapNullable((x) => x.querySelector('yt-live-chat-app')),
+    O.getOrElse((): Document => document),
+    (x) => Z.fromNullable(x.querySelector('yt-live-chat-app')),
   )),
 );
 
@@ -27,7 +26,9 @@ export default ({
     Z.sync(() => Array.from(
       document.querySelectorAll<HTMLElement>('.ytp-right-controls'),
     )),
-    Z.flatMap(A.findFirst((x) => x.offsetParent !== null)),
+    Z.flatMap((xs) => Z.fromNullable(
+      xs.find((x) => x.offsetParent !== null),
+    )),
   ),
   settingsToggleNextElement: pipe(
     Z.sync(() => document.querySelector<HTMLElement>('#menu-container')),
@@ -43,43 +44,40 @@ export default ({
   ),
   settingsContainer: pipe(
     Z.sync(() => document.body),
-    Z.flatMap(O.fromNullable),
+    Z.flatMap(Z.fromNullable),
   ),
   player: pipe(
     Z.sync(() => document.querySelector('#movie_player')),
-    Z.flatMap(O.fromNullable),
+    Z.flatMap(Z.fromNullable),
   ),
   video: pipe(
     Z.sync(() => document.querySelector<HTMLVideoElement>(
       'video.video-stream.html5-main-video',
     )),
-    Z.flatMap(O.fromNullable),
+    Z.flatMap(Z.fromNullable),
   ),
   chatField: pipe(
     chatApp,
-    Z.flatMap((app) => pipe(
+    Z.flatMap((app) => Z.fromNullable(
       app.querySelector<HTMLElement>('#items.yt-live-chat-item-list-renderer'),
-      O.fromNullable,
     )),
   ),
   chatTicker: pipe(
     chatApp,
-    Z.flatMap((app) => pipe(
+    Z.flatMap((app) => Z.fromNullable(
       app.querySelector<HTMLElement>('#items.yt-live-chat-ticker-renderer'),
-      O.fromNullable,
     )),
   ),
   chatScroller: pipe(
     chatApp,
-    Z.flatMap((app) => pipe(
+    Z.flatMap((app) => Z.fromNullable(
       app.querySelector<HTMLElement>(
         '#item-scroller.yt-live-chat-item-list-renderer',
       ),
-      O.fromNullable,
     )),
   ),
   offlineSlate: pipe(
     Z.sync(() => document.querySelector('.ytp-offline-slate')),
-    Z.flatMap(O.fromNullable),
+    Z.flatMap(Z.fromNullable),
   ),
 }) satisfies LivePage;
