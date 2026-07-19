@@ -13,6 +13,7 @@ import {
 } from 'effect';
 
 import {
+  Record as R,
   ReadonlyRecord as RR,
 } from 'effect';
 import {
@@ -25,7 +26,6 @@ import {
 import AppCommander from '@/AppCommander';
 import * as EOP from '@/ElementOpticPair';
 import SettingState from '@/SettingState';
-import mapObject from '@/mapObject';
 import setRecord from '@/setRecord';
 import ErrorType from '@/type/ErrorType';
 import FunctionType, * as functionType from '@/type/FunctionType';
@@ -88,7 +88,7 @@ const replaceVarType = (
     )
     : type.tag === 'record' ? pipe(
       type.value,
-      mapObject(([k, v]) => [k, r(v)]),
+      R.mapEntries((v, k) => [k, r(v)]),
       recordType.of,
     )
     : type),

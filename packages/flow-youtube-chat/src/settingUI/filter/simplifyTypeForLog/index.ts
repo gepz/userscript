@@ -14,7 +14,10 @@ import {
 } from 'effect';
 
 
-import mapObject from '@/mapObject';
+import {
+  Record as R,
+} from 'effect';
+
 import Primitive from '@/type/Primitive';
 import SimpleType from '@/type/SimpleType';
 import UI from '@/type/UI';
@@ -89,7 +92,7 @@ const simplifyTypeForLog = (obj: unknown): unknown => pipe(
     )),
     E.merge,
     (x) => (typeof x === 'object' && x !== null
-      ? mapObject(([k, v]) => [k, simplifyTypeForLog(v)])(x)
+      ? R.mapEntries((v, k) => [k, simplifyTypeForLog(v)])(x)
       : x),
   ) : obj,
 );

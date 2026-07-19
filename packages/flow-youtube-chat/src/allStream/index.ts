@@ -13,6 +13,7 @@ import {
   Schedule,
   LogLevel,
   Stream,
+  Struct,
   pipe,
 } from 'effect';
 import {
@@ -51,7 +52,7 @@ import updateSettingsRect from '@/updateSettingsRect';
 
 export default (
   provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>,
-) => (ctx: {
+) => Z.fnUntraced(function* (ctx: {
   updateSettingState: (
     dispatchable: Dispatchable<SettingState>,
   ) => Z.Effect<void>
@@ -69,15 +70,14 @@ export default (
     toggleSettingsPanelApp: WrappedApp<SettingState>
   }
   chatScreen: HTMLDivElement
-}): Z.Effect<Stream.Stream<unknown>> => Z.gen(function* () {
+}) {
   const live = makePageState(livePageYt);
   const css = yield * mainCss;
   const documentMutationPair = yield * observePair(MutationObserver);
   const chatMutationPair = yield * observePair(MutationObserver);
   const playerResizePair = yield * observePair(ResizeObserver);
   const bodyResizePair = yield * observePair(ResizeObserver);
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  const liveElementKeys = Object.keys(live) as (keyof typeof live)[];
+  const liveElementKeys = Struct.keys(live);
   const settingsRect = yield * SubscriptionRef.make(new DOMRectReadOnly(
     0,
     0,

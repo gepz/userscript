@@ -1,5 +1,7 @@
-import UserConfig from '@/UserConfig';
+import {
+  Struct,
+} from 'effect';
+
 import defaultGMConfig from '@/defaultGMConfig';
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-export default Object.keys(defaultGMConfig) as (keyof UserConfig)[];
+export default Struct.keys(defaultGMConfig);

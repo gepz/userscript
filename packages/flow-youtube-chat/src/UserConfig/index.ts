@@ -1,27 +1,18 @@
 import {
   Effect as Z,
-  Struct,
-  pipe,
+  Record as R,
 } from 'effect';
 
 import GMConfig from '@/GMConfig';
 import GMConfigItem from '@/GMConfigItem';
 
 type UserConfig = {
-  [P in keyof GMConfig]: GMConfig[P] extends GMConfigItem<infer R> ? R : never;
+  [P in keyof GMConfig]: GMConfig[P] extends GMConfigItem<infer R2> ? R2 : never;
 };
 
 export default UserConfig;
 
-export const makeConfig = (
-  config: GMConfig,
-): Z.Effect<UserConfig> => pipe(
-  Struct.entries(config),
-  Z.forEach(([k, c]) => c.getValue.pipe(
-    Z.map((x: UserConfig[keyof GMConfig]) => [k, x] as const),
-  )),
-  Z.map<
-    readonly(readonly [keyof UserConfig, UserConfig[keyof UserConfig]])[],
-    UserConfig
-  >(Object.fromEntries),
-);
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+export const makeConfig = (config: GMConfig): Z.Effect<UserConfig> => Z.all(
+  R.map(config, (c) => c.getValue),
+) as Z.Effect<UserConfig>;

@@ -1,10 +1,10 @@
 import {
   Effect as Z,
-  pipe,
+  Record as R,
+  Struct,
 } from 'effect';
 
 import UserConfig from '@/UserConfig';
-import mapObject from '@/mapObject';
 
 type UserConfigGetter = {
   [P in keyof UserConfig]: Z.Effect<UserConfig[P]>;
@@ -12,7 +12,10 @@ type UserConfigGetter = {
 
 export default UserConfigGetter;
 
-export const makeGetter = (c: UserConfig): UserConfigGetter => pipe(
-  c,
-  mapObject(([x]) => [x, Z.sync(() => c[x])]),
-);
+export const makeGetter = (
+  c: UserConfig,
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+): UserConfigGetter => R.fromIterableWith(
+  Struct.keys(c),
+  (k) => [k, Z.sync(() => c[k])],
+) as UserConfigGetter;

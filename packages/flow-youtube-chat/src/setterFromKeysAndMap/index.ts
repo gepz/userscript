@@ -1,6 +1,6 @@
 import {
-  Array as A,
   Effect as Z,
+  Record as R,
   pipe,
 } from 'effect';
 
@@ -11,6 +11,6 @@ export default (keys: (keyof UserConfig)[]) => (
   f: <K extends keyof UserConfig>(k: K) => (v: UserConfig[K]) => Z.Effect<void>,
 ): UserConfigSetter => pipe(
   keys,
-  A.map((x) => [x, f(x)]),
-  Object.fromEntries,
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  (ks) => R.fromIterableWith(ks, (k) => [k, f(k)]) as UserConfigSetter,
 );

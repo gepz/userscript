@@ -22,16 +22,13 @@ export default (
   flowChat: FlowChat,
   chatIndex: O.Option<number>,
   progress: number,
-) => ({
+) => Z.fnUntraced(function* ({
   config: {
     value: config,
   },
   flowChats,
   playerRect,
-}: MainState): Z.Effect<{
-  lane: number
-  interval: number
-}> => Z.gen(function* () {
+}: MainState) {
   const rect = yield * SynchronizedRef.get(playerRect);
   const flowWidth = rect.width * (
     config.flowX2 - config.flowX1

@@ -90,22 +90,18 @@ const parseMessage = (
   );
 };
 
-export default (
+export default Z.fnUntraced(function* (
   chat: FlowChat,
   mainState: MainState,
-): Z.Effect<HTMLTemplateResult> => pipe(
-  Z.gen(function* () {
-    return {
-      data: chat.data,
-      config: mainState.config.value,
-      fontSize: yield * getChatFontSize(mainState),
-    };
-  }),
-  Z.map(({
+) {
+  const {
     data,
-    config,
-    fontSize,
-  }) => html`<span style=${styleMap({
+  } = chat;
+
+  const config = mainState.config.value;
+  const fontSize = yield * getChatFontSize(mainState);
+
+  return html`<span style=${styleMap({
     fontSize: `${fontSize}px`,
     visibility: config.displayChats ? 'visible' : 'hidden',
     color: data.authorType === 'owner'
@@ -174,5 +170,5 @@ export default (
       ),
     ],
     A.getSomes,
-  )}</span>`),
-);
+  )}</span>`;
+});

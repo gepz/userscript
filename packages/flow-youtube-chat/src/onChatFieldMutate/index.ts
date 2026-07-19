@@ -25,7 +25,7 @@ export default (
   Z.map(A.flatMap((e) => (Array.from(e.addedNodes) as HTMLElement[]))),
   Z.map(A.filter((x) => x.children.length > 0)),
   Z.map(A.reverse),
-  Z.flatMap(Z.forEach((chat) => Z.gen(function* () {
+  Z.flatMap(Z.forEach(Z.fnUntraced(function* (chat: HTMLElement) {
     yield * Z.logDebug('Chat detected');
     const data = parseChat(chat);
     if (yield * checkBannedWords(data, mainState.config.value)) {

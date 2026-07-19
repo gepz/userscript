@@ -5,6 +5,7 @@
 // import * as expEval from 'expression-eval';
 import * as Ed from '@userscript/ui/Editable';
 import {
+  Record as R,
   pipe,
 } from 'effect';
 
@@ -13,15 +14,14 @@ import MappedConfigState from '@/MappedConfigState';
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
 import isEditable from '@/isEditable';
-import mapObject from '@/mapObject';
 // import Compound from '@/settingUI/editableExpression/Compound';
 import settingsPanelSize from '@/settingsPanelSize';
 
 // import fromJsepExp from '@/settingUI/editableExpression/fromJsepExp';
 
 export default (config: UserConfig): SettingState => pipe(
-  config,
-  mapObject(([k, v]) => [
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  R.mapEntries(config, (v, k) => [
     k,
     isEditable(k)(v)
       ? Ed.of(v)
@@ -37,8 +37,8 @@ export default (config: UserConfig): SettingState => pipe(
       //   })),
       // )
         : v,
-  ]),
-  (x: MappedConfigState) => ({
+  ]) as MappedConfigState,
+  (x) => ({
     ...x,
     showPanel: false,
     mainTab: 0,
