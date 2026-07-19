@@ -59,4 +59,13 @@ experiment status before starting.
 
 ## Housekeeping
 
-_(none open)_
+- **Adopt newer effect v3 APIs** per `docs/effect-v3-adoption.md` (2026-07).
+  Done so far: the `Z.fnUntraced` generator sweep and the Record plumbing
+  (`mapObject` deleted, `Struct.keys`, `Effect.all` over records). Remaining:
+  `Stream.mergeWithTag` + `Effect.whenLogLevel` for the config debug streams,
+  pre-v4 restructures of Option-as-Effect sites (shrinks the migration in
+  `docs/effect-v4-scan.md`), `Stream.asyncPush` for `observePair`, Schema at
+  the trust boundaries, and the logging/runtime items. Includes two direct
+  cleanups: delete the empty `src/filterOption`, fix comments citing the
+  deleted `stream-behaviors.md` (`observePair`, `videoToggleStream`,
+  `throttleLatest`; `makeRefs` is done).
