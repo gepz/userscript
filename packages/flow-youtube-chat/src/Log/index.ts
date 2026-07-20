@@ -1,7 +1,10 @@
 import {
   Array as A,
   Brand,
+  Either as E,
   LogLevel,
+  ParseResult,
+  Schema as S,
   pipe,
 } from 'effect';
 import {
@@ -40,6 +43,31 @@ interface LogExport {
   blocks: A.NonEmptyReadonlyArray<LogExportBlock>
 }
 
+// The literals must stay assignable to LogLevel.LogLevel['label']; tsc
+// checks that where decoded entries flow into LogBlock.
+const logBlockJson = S.parseJson(S.Array(S.Struct({
+  id: S.Number,
+  text: S.String,
+  level: S.Literal(
+    'ALL',
+    'FATAL',
+    'ERROR',
+    'WARN',
+    'INFO',
+    'DEBUG',
+    'TRACE',
+    'OFF',
+  ),
+})));
+
+// Accepts unknown because lz-string decompression yields null on garbage.
+const decodeLogBlock = S.decodeUnknownEither(logBlockJson);
+
+const decodeLogExport = S.decodeEither(S.parseJson(S.Struct({
+  nextId: S.Number,
+  blocks: S.NonEmptyArray(S.String),
+})));
+
 export const decompressBlock = (x: CompressedLogBlock): LogBlock => pipe(
   decompressFromUTF16(x),
   JSON.parse,
@@ -55,36 +83,43 @@ export const exportLog = (x: Log): string => `<pre>${JSON.stringify({
   ),
 } satisfies LogExport)}</pre>`;
 
-export const importLog = (s: string): Log => makeLog(pipe(
+// Trust boundary: the input is pasted text. Every block is decoded before
+// anything is stored, so a malformed paste is a typed failure instead of a
+// defect now or corrupted state that only explodes on a later read.
+export const importLog = (
+  s: string,
+): E.Either<Log, ParseResult.ParseError> => pipe(
   s[0] === '<' ? s.slice(5, -6) : s,
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  (x) => JSON.parse(x) as LogExport,
-  (log) => ({
-    nextId: log.nextId,
-    ...pipe(
-      log.blocks,
-      A.map(decompressFromEncodedURIComponent),
-      A.matchRight({
-        onEmpty: () => ({
-          compressedBlocks: [],
-          lastBlock: [],
-        }),
-        onNonEmpty: (init, last) => ({
-          compressedBlocks: A.map(
-            init,
-            (x) => pipe(
-              compressToUTF16(x),
-              makeCompressedLogBlock,
-            ),
-          ),
-
-          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-          lastBlock: JSON.parse(last) as LogBlock,
-        }),
+  decodeLogExport,
+  E.flatMap((logExport) => pipe(
+    logExport.blocks,
+    A.map(decompressFromEncodedURIComponent),
+    (blocks): E.Either<
+      Pick<Log, 'compressedBlocks' | 'lastBlock'>,
+      ParseResult.ParseError
+    > => A.matchRight(blocks, {
+      onEmpty: () => E.right({
+        compressedBlocks: [],
+        lastBlock: [],
       }),
-    ),
-  }),
-));
+      onNonEmpty: (init, last) => E.all({
+        compressedBlocks: pipe(
+          init,
+          A.map((x) => E.map(
+            decodeLogBlock(x),
+            () => makeCompressedLogBlock(compressToUTF16(x)),
+          )),
+          E.all,
+        ),
+        lastBlock: decodeLogBlock(last),
+      }),
+    }),
+    E.map((blocks) => makeLog({
+      nextId: logExport.nextId,
+      ...blocks,
+    })),
+  )),
+);
 
 export const blockSize = 200;
 

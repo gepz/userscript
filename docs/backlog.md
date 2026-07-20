@@ -67,5 +67,7 @@ experiment status before starting.
   `docs/effect-v4-scan.md`), `Stream.mergeWithTag` + `Effect.whenLogLevel`
   for the config debug streams, `Stream.asyncPush` in `observePair`, traced
   `Effect.fn` on `removeOldChats` (other candidates deliberately declined —
-  see the doc), and the housekeeping cleanups. Remaining: Schema at the
-  trust boundaries and the logging/runtime items.
+  see the doc), Schema at the trust boundaries (importLog, indirectConfig,
+  lang; simpleConfig declined — see the doc), and the housekeeping cleanups.
+  Remaining: the logging/runtime items, which fold into the v4 migration's
+  logging rewrite (`docs/effect-v4-scan.md`) rather than standing alone.

@@ -4,9 +4,13 @@ import {
 import {
   Array as A,
   Predicate as P,
+  Schema as S,
   String as Str,
   pipe,
 } from 'effect';
+import {
+  identity,
+} from 'effect/Function';
 import jsep from 'jsep';
 
 import GMConfig from '@/GMConfig';
@@ -17,10 +21,12 @@ import simpleConfig from '@/simpleConfig';
 
 const stringsArgs: [
   [],
+  S.Schema<string>,
   (x: string) => readonly string[],
   (x: readonly string[]) => string,
 ] = [
   [],
+  S.String,
   (x) => pipe(
     Str.split(x, /\r\n|\n/),
     A.filter(P.not(Str.isEmpty)),
@@ -36,21 +42,19 @@ const sc = <T extends GM.Value>(
 const ic = <T1 extends GM.Value, T2>(
   k: string,
   d: T2,
+  s: S.Schema<T1>,
   c: (x: T1) => T2,
   g: (x: T2) => GM.Value,
-) => indirectConfig(fycKey(k), d, c, g);
+) => indirectConfig(fycKey(k), d, s, c, g);
 
 const defaultGMConfig: GMConfig = pipe(
   {
-    lang: ic<string, typeof languages[number]>(
+    lang: ic<typeof languages[number], typeof languages[number]>(
       'LANG',
       'FYC_EN',
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      (x) => (languages.includes(x as typeof languages[number])
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        ? (x as typeof languages[number])
-        : 'FYC_EN'),
-      (x) => x,
+      S.Literal(...languages),
+      identity,
+      identity,
     ),
     font: sc<string>('FONT', 'MS PGothic'),
     chatOpacity: sc<number>('OPACITY', 0.8),
@@ -111,6 +115,7 @@ const defaultGMConfig: GMConfig = pipe(
   )(authorID)
   ])
         `),
+      S.String,
       jsep,
       generate,
     ),

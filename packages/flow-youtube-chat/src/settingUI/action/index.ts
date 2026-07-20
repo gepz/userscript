@@ -1,5 +1,6 @@
 import {
   Effect as Z,
+  Either as E,
   pipe,
 } from 'effect';
 // import Swal from 'sweetalert2';
@@ -31,9 +32,12 @@ export default ({
     // eslint-disable-next-line no-alert
     Z.sync(() => prompt(getText('importLog')(s))),
     Z.flatMap(Z.fromNullable),
-    Z.map((x) => ({
-      ...s,
-      eventLog: log.importLog(x),
+    Z.flatMap((x) => E.match(log.importLog(x), {
+      onLeft: Z.fail,
+      onRight: (eventLog) => Z.succeed({
+        ...s,
+        eventLog,
+      }),
     })),
     Z.orElseSucceed(() => s),
   ),

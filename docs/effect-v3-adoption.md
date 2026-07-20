@@ -12,23 +12,6 @@ is free but affords nothing below.
 
 ## High value
 
-- **`Schema` (in core since 3.10) for the trust boundaries.** Three inputs are
-  currently cast, not validated:
-  - `Log.importLog` runs `JSON.parse(x) as LogExport` on text pasted into a
-    `prompt()` — the clearest candidate: `Schema.parseJson(LogExportSchema)`
-    turns malformed pastes into a typed failure instead of a defect or silent
-    corruption (`decompressBlock` has the same shape internally).
-  - `indirectConfig` casts `GM.getValue` results (`as Promise<T1 | undefined>`)
-    and only defaults on `undefined`; a per-item schema validates stored
-    values that may predate format changes.
-  - the `lang` config key validates via `languages.includes` with double
-    casts (`defaultGMConfig`) — `Schema.Literal(...languages)` is the direct
-    form.
-  Cost caveat: effect is bundled and tree-shaken (not a CDN `@require`), and
-  Schema is one of the heavier subtrees. Two `Schema.instanceOf` sites already
-  pull in some of it, but measure with the commented-out `BundleAnalyzerPlugin`
-  in `webpack.config.prod.ts` before adopting broadly.
-
 - **`Logger.withLeveledConsole` (3.8)** replaces `metaLogger`'s six-branch
   `getConsoleLog` ternary (level → `console.*` routing). Partial: the
   meta-dependent parts (suppressing sub-Warning entries without meta,
@@ -83,6 +66,13 @@ is free but affords nothing below.
   milliseconds feed the Web Animations API, where numbers are the right type.
 - No fit found for the other new modules in range: `Mailbox`, `ExecutionPlan`,
   `LayerMap`, `Graph`, `HashRing`, `TSubscriptionRef`, `Micro`.
+- **Schema for `simpleConfig`.** The other trust boundaries (`Log.importLog`,
+  `indirectConfig`, the `lang` key) are schema-validated (2026-07; bundle
+  cost of the adoption measured at +16.6 KB / +2.2% prettified).
+  `simpleConfig` still trusts the `GM.getValue(key, default)` overload's
+  return type, which lies if storage holds a wrong-typed value; validating
+  would need a schema switched on `typeof defaultValue` behind a cast.
+  Adopt only if wrong-typed simple values ever actually bite.
 - **Traced `Effect.fn` beyond `removeOldChats`.** Decided during adoption
   (2026-07): per-chat functions (`getChatLane`, `chatNode`,
   `setNewChatAnimation`, `setChatPlayState`, `onChatFieldMutate`'s callback)
