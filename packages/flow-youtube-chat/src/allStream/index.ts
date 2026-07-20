@@ -10,6 +10,7 @@ import {
   Effect as Z,
   Option as O,
   Queue,
+  Record as R,
   Schedule,
   LogLevel,
   Stream,
@@ -33,7 +34,6 @@ import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
 import UserConfigSetter from '@/UserConfigSetter';
 import configDiff from '@/configDiff';
-import configKeys from '@/configKeys';
 import configStream from '@/configStream';
 import listeningBroadcastConfigKeys from '@/listeningBroadcastConfigKeys';
 import livePageYt from '@/livePageYt';
@@ -208,20 +208,29 @@ export default (
           : Z.sync(() => { })),
       ))),
     ),
-    ...pipe(
-      configKeys,
-      A.map((key) => pipe(
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        (ctx.configRefs[key] as SubscriptionRef.SubscriptionRef<unknown>)
-          .changes,
-        Stream.zipWithPrevious,
-        Stream.filterMap(([previous, next]) => O.map(
-          previous,
-          (x) => configDiff(x, next),
-        )),
-        Stream.mapEffect((x) => provideLog(Z.logDebug(
-          `Config ${key}: ${JSON.stringify(x, undefined, 2)}`,
-        ))),
+    pipe(
+      Stream.mergeWithTag(
+        // Explicit <unknown> widens the per-key stream union covariantly (no
+        // cast); the diff handler below is value-type-agnostic anyway.
+        R.map(ctx.configRefs, (ref) => Stream.zipWithPrevious<
+          unknown, never, never
+        >(ref.changes)),
+        {
+          concurrency: 'unbounded',
+        },
+      ),
+      // whenLogLevel gates the diff itself: configDiff + stringify cost
+      // nothing unless debug logging is currently enabled.
+      Stream.mapEffect(({
+        _tag: key, value: [previous, next],
+      }) => provideLog(
+        Z.whenLogLevel(
+          Z.transposeMapOption(previous, (x) => Z.logDebug(
+            `Config ${key}: ${
+              JSON.stringify(configDiff(x, next), undefined, 2)}`,
+          )),
+          LogLevel.Debug,
+        ),
       )),
     ),
     config$,

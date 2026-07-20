@@ -26,15 +26,6 @@ is free but affords nothing below.
   from `fnUntraced`; convert them only if adopting traced spans.
   v4-aligned (`Effect.fn` is core v4 idiom).
 
-- **`Stream.mergeWithTag` (3.8.5) + `Effect.whenLogLevel` (3.13) for the
-  per-key config debug streams** (`allStream`, the `configKeys → A.map`
-  block). `Stream.mergeWithTag` merges a struct of streams into one stream of
-  `{ _tag: key, value }`, replacing the per-key closure and its
-  `SubscriptionRef<unknown>` cast with one `Record.map` over `configRefs`.
-  Wrapping the handler in `Z.whenLogLevel(LogLevel.Debug)` also stops
-  computing `configDiff` + `JSON.stringify(x, undefined, 2)` on every config
-  change when debug logging is disabled — today that work runs regardless.
-
 - **`Stream.asyncPush` (3.6) to replace the `stream/observePair` bridge.**
   observePair hand-builds observer → `PubSub.publish` → `Stream.fromPubSub`.
   `Stream.asyncPush` was added for exactly this: register the observer in an
