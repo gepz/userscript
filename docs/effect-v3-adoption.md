@@ -12,30 +12,6 @@ is free but affords nothing below.
 
 ## High value
 
-- **Traced `Effect.fn` (3.11) where failure context matters.** The
-  generator-shaped `(args) => Z.gen(...)` wrappers are converted to
-  `Z.fnUntraced` (`getChatLane`, `chatNode`, `onChatFieldMutate`'s per-chat
-  callback, the inner function of `allStream`, plus the two prior adoptions).
-  What remains is a judgment call, not mechanics: upgrading cold-path
-  functions (e.g. `removeOldChats`, the reinit flow) to traced
-  `Effect.fn("name")` gives each call a named span, so the `Cause.pretty`
-  output in `allStream`'s `resilient` handler and the terminal handler gains
-  a real trace instead of an anonymous stack. Skip hot per-chat paths — a
-  span per call is not free. Non-generator arrows returning `pipe(...)`
-  (`removeOldChats`, `setNewChatAnimation`, `setChatPlayState`) gain nothing
-  from `fnUntraced`; convert them only if adopting traced spans.
-  v4-aligned (`Effect.fn` is core v4 idiom).
-
-- **`Stream.asyncPush` (3.6) to replace the `stream/observePair` bridge.**
-  observePair hand-builds observer → `PubSub.publish` → `Stream.fromPubSub`.
-  `Stream.asyncPush` was added for exactly this: register the observer in an
-  `acquireRelease`, call `emit` from the callback, and get `disconnect` as a
-  scoped finalizer for free. The setup-time `observe`/`disconnect` choreography
-  in `allStream` is unaffected (it manages *what* is observed, not the
-  bridge). Check buffering before switching: asyncPush buffers via
-  `bufferSize`/`strategy` options, and MutationObserver bursts must not be
-  dropped where the PubSub today is unbounded.
-
 - **`Schema` (in core since 3.10) for the trust boundaries.** Three inputs are
   currently cast, not validated:
   - `Log.importLog` runs `JSON.parse(x) as LogExport` on text pasted into a
@@ -107,10 +83,10 @@ is free but affords nothing below.
   milliseconds feed the Web Animations API, where numbers are the right type.
 - No fit found for the other new modules in range: `Mailbox`, `ExecutionPlan`,
   `LayerMap`, `Graph`, `HashRing`, `TSubscriptionRef`, `Micro`.
-
-## Housekeeping found during the scan
-
-- `src/filterOption/index.ts` is an empty file with no importers — delete.
-- Comments in `stream/{observePair,videoToggleStream,throttleLatest}` still
-  cite behaviors from `stream-behaviors.md`, deleted in 4515813 — rewrite
-  them to state the constraint directly.
+- **Traced `Effect.fn` beyond `removeOldChats`.** Decided during adoption
+  (2026-07): per-chat functions (`getChatLane`, `chatNode`,
+  `setNewChatAnimation`, `setChatPlayState`, `onChatFieldMutate`'s callback)
+  stay untraced — a span per chat is not free on hot paths — and
+  `initialize`'s `reinitialize` is a trivial `Z.sync` that cannot fail, so a
+  span there adds nothing. Revisit only if failure attribution proves
+  insufficient in practice.

@@ -61,13 +61,11 @@ experiment status before starting.
 
 - **Adopt newer effect v3 APIs** per `docs/effect-v3-adoption.md` (2026-07).
   Done so far: the `Z.fnUntraced` generator sweep, the Record plumbing
-  (`mapObject` deleted, `Struct.keys`, `Effect.all` over records), and the
+  (`mapObject` deleted, `Struct.keys`, `Effect.all` over records), the
   pre-v4 transpose restructure of the live-code Option-as-Effect sites
   (`livePageYt`, `allStream`, `scaleChatField` — shrinks the migration in
-  `docs/effect-v4-scan.md`), and `Stream.mergeWithTag` +
-  `Effect.whenLogLevel` for the config debug streams. Remaining:
-  `Stream.asyncPush` for `observePair`, Schema at
-  the trust boundaries, and the logging/runtime items. Includes two direct
-  cleanups: delete the empty `src/filterOption`, fix comments citing the
-  deleted `stream-behaviors.md` (`observePair`, `videoToggleStream`,
-  `throttleLatest`; `makeRefs` is done).
+  `docs/effect-v4-scan.md`), `Stream.mergeWithTag` + `Effect.whenLogLevel`
+  for the config debug streams, `Stream.asyncPush` in `observePair`, traced
+  `Effect.fn` on `removeOldChats` (other candidates deliberately declined —
+  see the doc), and the housekeeping cleanups. Remaining: Schema at the
+  trust boundaries and the logging/runtime items.

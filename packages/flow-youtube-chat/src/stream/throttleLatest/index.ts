@@ -19,8 +19,8 @@ type Window<A>
   };
 
 /**
- * rxjs `throttleTime(d, { leading: true, trailing: true })` semantics
- * (behavior T1 in stream-behaviors.md): the first element of a burst is
+ * rxjs `throttleTime(d, { leading: true, trailing: true })` semantics: the
+ * first element of a burst is
  * emitted immediately and opens a window of `d`; the latest element arriving
  * during the window is emitted when it closes, which opens a new window; a
  * window closing with nothing pending ends the train. A lone element is

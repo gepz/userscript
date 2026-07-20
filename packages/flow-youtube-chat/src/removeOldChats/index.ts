@@ -12,9 +12,11 @@ import {
 
 import FlowChat from '@/FlowChat';
 
+// Traced: runs on URL change / settings resets (cold), and the span makes
+// Cause.pretty in the resilient/terminal handlers name this function.
 export default (
   flowChats: SynchronizedRef.SynchronizedRef<readonly FlowChat[]>,
-) => (
+) => Z.fn('removeOldChats')((
   maxChatCount: number,
 ): Z.Effect<void> => pipe(
   SynchronizedRef.get(flowChats),
@@ -34,4 +36,4 @@ export default (
   )),
   Z.tap((x) => Z.logDebug(`length after clear: ${x.length}`)),
   Z.flatMap((x) => SynchronizedRef.set(flowChats, x)),
-);
+));

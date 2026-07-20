@@ -75,4 +75,46 @@ describe('observePair', () => {
       expect(collected).toEqual(['late']);
     }))
   ));
+
+  // allStream re-subscribes each pair's stream on every poll tick (switch
+  // semantics), so a fresh run after a completed one must receive values.
+  it('delivers to a second run after the first completes', () => (
+    Z.runPromise(Z.gen(function* () {
+      const {
+        stream, observer,
+      } = yield * observePair(FakeObserver);
+
+      const run = (collected: string[]): Z.Effect<Fiber.RuntimeFiber<void>> => pipe(
+        stream,
+        Stream.take(1),
+        Stream.runForEach((value) => Z.sync(() => {
+          collected.push(value);
+        })),
+        Z.fork,
+      );
+
+      const first: string[] = [];
+      const firstFiber = yield * run(first);
+
+      yield * Z.sleep('10 millis');
+
+      observer.emit('a');
+
+      yield * Fiber.join(firstFiber);
+
+      observer.emit('dropped between runs');
+
+      const second: string[] = [];
+      const secondFiber = yield * run(second);
+
+      yield * Z.sleep('10 millis');
+
+      observer.emit('b');
+
+      yield * Fiber.join(secondFiber);
+
+      expect(first).toEqual(['a']);
+      expect(second).toEqual(['b']);
+    }))
+  ));
 });
