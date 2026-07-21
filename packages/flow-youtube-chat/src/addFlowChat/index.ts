@@ -58,7 +58,7 @@ export default Z.fnUntraced(function* (
         onSuccess: (index): Z.Effect<HTMLElement> => pipe(
           Z.gen(function* () {
             const chat = pipe(
-              yield * SynchronizedRef.get(mainState.flowChats),
+              yield * mainState.flowChats,
               A.unsafeGet(index),
             );
 

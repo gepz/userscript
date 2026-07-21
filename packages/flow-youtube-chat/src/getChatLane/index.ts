@@ -5,7 +5,6 @@ import {
   Effect as Z,
   Number as N,
   pipe,
-  SynchronizedRef,
 } from 'effect';
 import {
   mapInput,
@@ -29,7 +28,7 @@ export default (
   flowChats,
   playerRect,
 }: MainState) {
-  const rect = yield * SynchronizedRef.get(playerRect);
+  const rect = yield * playerRect;
   const flowWidth = rect.width * (
     config.flowX2 - config.flowX1
   );
@@ -41,7 +40,7 @@ export default (
   } = getFlowChatRect(flowChat, config, rect);
 
   const movingChats = pipe(
-    yield * SynchronizedRef.get(flowChats),
+    yield * flowChats,
     (chats) => A.take(chats, O.getOrElse(chatIndex, () => chats.length)),
     A.filter((chat) => E.isRight(chat.animationState) && chat.width > 0),
     A.sort(mapInput((x: FlowChat) => x.lane)(N.Order)),

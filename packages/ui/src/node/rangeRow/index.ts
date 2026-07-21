@@ -1,4 +1,5 @@
 import {
+  Number as N,
   Option as O,
 } from 'effect';
 import {
@@ -47,7 +48,7 @@ export default <T>(
       value,
       Ed.text,
       O.getOrElse(constant(
-        Ed.value(value).toFixed(4).replace(/\.?0+$/, ''),
+        String(N.round(Ed.value(value), 4)),
       )),
     ),
     ...action,

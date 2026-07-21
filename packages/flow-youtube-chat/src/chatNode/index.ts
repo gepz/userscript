@@ -35,58 +35,42 @@ const parseMessage = (
     maxChatLength,
   } = config;
 
-  const initResult: {
-    vnodes: HTMLTemplateResult[]
-    length: number
-  } = {
-    vnodes: [],
-    length: 0,
-  };
-
   return pipe(
     Array.from(message.childNodes),
-    A.reduce(initResult, ({
-      vnodes,
+    A.mapAccum(0, (
       length,
-    }, node) => (length >= maxChatLength
-      ? {
-        vnodes,
-        length,
-      }
+      node,
+    ): [number, O.Option<HTMLTemplateResult>] => (length >= maxChatLength
+      ? [length, O.none()]
       : (!config.textOnly && node instanceof eleWin.HTMLImageElement)
-        ? {
-          vnodes: [
-            ...vnodes,
-            html`<img style=${styleMap({
-              height: '1em',
-              width: '1em',
-              verticalAlign: 'text-top',
-            } satisfies Partial<CSSStyleDeclaration>)} src=${
-              node.src.replace(/=w\d+-h\d+-c-k-nd$/, '')
-            } alt=${node.alt}>`,
-          ],
-          length: length + 1,
-        }
+        ? [
+          length + 1,
+          O.some(html`<img style=${styleMap({
+            height: '1em',
+            width: '1em',
+            verticalAlign: 'text-top',
+          } satisfies Partial<CSSStyleDeclaration>)} src=${
+            node.src.replace(/=w\d+-h\d+-c-k-nd$/, '')
+          } alt=${node.alt}>`),
+        ]
         : pipe(
           node.textContent ?? '',
           Str.slice(0, maxChatLength),
-          (x) => (node instanceof eleWin.HTMLAnchorElement
-            ? {
-              vnodes: [
-                ...vnodes,
-                html`<span style=${styleMap({
-                  fontSize: '0.84em',
-                  textDecoration: 'underline',
-                  ...textStyle,
-                } satisfies Partial<CSSStyleDeclaration>)}>${x}</span>`,
-              ],
-              length: length + x.length,
-            }
-            : {
-              vnodes: [...vnodes, html`${x}`],
-              length: length + x.length,
-            }),
+          (x): [number, O.Option<HTMLTemplateResult>] => [
+            length + x.length,
+            O.some(node instanceof eleWin.HTMLAnchorElement
+              ? html`<span style=${styleMap({
+                fontSize: '0.84em',
+                textDecoration: 'underline',
+                ...textStyle,
+              } satisfies Partial<CSSStyleDeclaration>)}>${x}</span>`
+              : html`${x}`),
+          ],
         ))),
+    ([length, vnodes]) => ({
+      vnodes: A.getSomes(vnodes),
+      length,
+    }),
   );
 };
 

@@ -4,7 +4,6 @@ import {
   Option as O,
   Array as A,
   pipe,
-  SynchronizedRef,
 } from 'effect';
 
 import MainState from '@/MainState';
@@ -35,7 +34,7 @@ export default (
         pipe(
           addFlowChat(data, chatScrn, mainState),
           Z.when(pipe(
-            yield * SynchronizedRef.get(mainState.flowChats),
+            yield * mainState.flowChats,
             (flowChats) => () => mainState.config.value.createChats
               && data.chatType === 'normal' && !A.some(
               flowChats,

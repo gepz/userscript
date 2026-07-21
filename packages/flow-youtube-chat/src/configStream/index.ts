@@ -2,7 +2,7 @@ import {
   Effect as Z,
   Array as A,
   Either as E,
-  Cause,
+  Option as O,
   Stream,
   SynchronizedRef,
 } from 'effect';
@@ -138,19 +138,20 @@ export default (
         SynchronizedRef.get(mainState.flowChats),
         Z.map(A.filter((x) => E.isRight(x.animationState))),
         Z.flatMap(Z.forEach((chat) => pipe(
-          Z.allSuccesses([
+          [
             c.render
-              ? Z.succeed(renderChat(chat))
-              : Z.fail(new Cause.NoSuchElementException()),
+              ? O.some(renderChat(chat))
+              : O.none(),
             c.setAnimation
-              ? Z.succeed((state: MainState) => Z.ignore(
+              ? O.some((state: MainState) => Z.ignore(
                 setChatAnimation(chat)(state),
               ))
               : c.setPlayState
-                ? Z.succeed(setChatPlayState(chat))
-                : Z.fail(new Cause.NoSuchElementException()),
-          ]),
-          Z.flatMap(Z.forEach(apply(mainState))),
+                ? O.some(setChatPlayState(chat))
+                : O.none(),
+          ],
+          A.getSomes,
+          Z.forEach(apply(mainState)),
         ))),
       ))),
     ),

@@ -1,4 +1,4 @@
-import { Option as O, } from 'effect';
+import { Number as N, Option as O, } from 'effect';
 import { constant, pipe, identity, } from 'effect/Function';
 import { h, } from 'hyperapp';
 import * as Ed from '../../Editable';
@@ -23,7 +23,7 @@ export default (config, action) => (value) => h('div', {}, [
             borderColor: Ed.hasError(value) ? '#f55' : null,
         },
         inputmode: 'decimal',
-        value: pipe(value, Ed.text, O.getOrElse(constant(Ed.value(value).toFixed(4).replace(/\.?0+$/, '')))),
+        value: pipe(value, Ed.text, O.getOrElse(constant(String(N.round(Ed.value(value), 4))))),
         ...action,
     }),
 ]);

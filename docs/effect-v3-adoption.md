@@ -36,23 +36,6 @@ is free but affords nothing below.
   note as above: this touches exactly the files the v4 logging rewrite
   touches — do them together.
 
-## Smaller wins
-
-- Yieldable subtypes (3.8–3.9): `yield* someRef`, `yield* someQueue` etc.
-  now work directly in `Z.gen`, dropping `SynchronizedRef.get`/`Queue.take`
-  noise in generator code. Survives v4 (yieldables stay; only
-  Effect-assignability goes).
-- `Number.round` (3.8): `ui`'s `rangeRow` trailing-zero trim
-  (`toFixed(4).replace(/\.?0+$/, '')`) is `String(N.round(x, 4))` — verify
-  the exponent-notation edge for very small values first.
-- Long-available but unused, worth using on next touch: `O.firstSomeOf` for
-  `parseChat`'s stacked `O.orElse` color fallbacks; `A.mapAccum` for
-  `chatNode`'s manual length-accumulating `A.reduce`; `A.getSomes` over
-  `O.some`/`O.none` instead of `Z.allSuccesses` +
-  `Z.fail(new Cause.NoSuchElementException())` as flag-dispatch in
-  `configStream`; `Match` for `evaluateExpression`'s 10-case `switch` if
-  exhaustiveness checking is wanted (the switch is otherwise fine).
-
 ## Checked, not applicable
 
 - **`stream/throttleLatest` has no v3 replacement.** v3 `Stream.throttle` is
@@ -73,6 +56,15 @@ is free but affords nothing below.
   return type, which lies if storage holds a wrong-typed value; validating
   would need a schema switched on `typeof defaultValue` behind a cast.
   Adopt only if wrong-typed simple values ever actually bite.
+- **The smaller wins are done (2026-07)**: yieldable refs in generators
+  (`yield * someRef` — kept `Ref.get` only in `throttleLatest`, whose ref is
+  named `window` and would read as the global), `Number.round` in `ui`'s
+  `rangeRow` (output verified identical across the range-config domain; the
+  one divergence, `-0` → `0`, is an improvement), `O.firstSomeOf` in
+  `parseChat`, `A.mapAccum` in `chatNode` (also drops the quadratic vnode
+  spreading), `A.getSomes` flag-dispatch in `configStream`. Declined: `Match`
+  for `evaluateExpression`'s `switch` — exhaustiveness isn't needed and the
+  switch is fine.
 - **Traced `Effect.fn` beyond `removeOldChats`.** Decided during adoption
   (2026-07): per-chat functions (`getChatLane`, `chatNode`,
   `setNewChatAnimation`, `setChatPlayState`, `onChatFieldMutate`'s callback)

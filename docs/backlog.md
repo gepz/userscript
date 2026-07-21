@@ -60,14 +60,9 @@ experiment status before starting.
 ## Housekeeping
 
 - **Adopt newer effect v3 APIs** per `docs/effect-v3-adoption.md` (2026-07).
-  Done so far: the `Z.fnUntraced` generator sweep, the Record plumbing
-  (`mapObject` deleted, `Struct.keys`, `Effect.all` over records), the
-  pre-v4 transpose restructure of the live-code Option-as-Effect sites
-  (`livePageYt`, `allStream`, `scaleChatField` — shrinks the migration in
-  `docs/effect-v4-scan.md`), `Stream.mergeWithTag` + `Effect.whenLogLevel`
-  for the config debug streams, `Stream.asyncPush` in `observePair`, traced
-  `Effect.fn` on `removeOldChats` (other candidates deliberately declined —
-  see the doc), Schema at the trust boundaries (importLog, indirectConfig,
-  lang; simpleConfig declined — see the doc), and the housekeeping cleanups.
-  Remaining: the logging/runtime items, which fold into the v4 migration's
-  logging rewrite (`docs/effect-v4-scan.md`) rather than standing alone.
+  Done: everything actionable, including the pre-v4 transpose restructure of
+  the live-code Option-as-Effect sites, Schema at the trust boundaries, and
+  the smaller wins; declined candidates are recorded in the doc's "Checked,
+  not applicable" section. Remaining: the logging/runtime items, which fold
+  into the v4 migration's logging rewrite (`docs/effect-v4-scan.md`) rather
+  than standing alone.

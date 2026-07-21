@@ -59,6 +59,11 @@ export default (
       && x !== 'rgba(0, 0, 0, 0)'),
   );
 
+  const visibleBackgroundColorIn = (selector: string): O.Option<string> => pipe(
+    O.fromNullable(chat.querySelector(selector)),
+    O.flatMap(visibleBackgroundColor),
+  );
+
   return {
     chatType,
     authorType: chat.querySelector('.owner')
@@ -92,36 +97,20 @@ export default (
     ),
     paymentInfo,
     textColor: isPaidNormal
-      ? pipe(
-        O.fromNullable(chat.querySelector('#header')),
-        O.flatMap(visibleBackgroundColor),
-        O.orElse(() => pipe(
-          O.fromNullable(chat.querySelector('#card')),
-          O.flatMap(visibleBackgroundColor),
-        )),
-        O.orElse(() => pipe(
-          O.fromNullable(chat.querySelector('#content')),
-          O.flatMap(visibleBackgroundColor),
-        )),
-      )
+      ? O.firstSomeOf(A.map(
+        ['#header', '#card', '#content'],
+        visibleBackgroundColorIn,
+      ))
       : isPaidSticker
         ? O.some(window.getComputedStyle(chat).getPropertyValue(
           '--yt-live-chat-paid-sticker-chip-background-color',
         ))
         : O.none(),
     paidColor: isPaidNormal
-      ? pipe(
-        O.fromNullable(chat.querySelector('#content')),
-        O.flatMap(visibleBackgroundColor),
-        O.orElse(() => pipe(
-          O.fromNullable(chat.querySelector('#card')),
-          O.flatMap(visibleBackgroundColor),
-        )),
-        O.orElse(() => pipe(
-          O.fromNullable(chat.querySelector('#header')),
-          O.flatMap(visibleBackgroundColor),
-        )),
-      )
+      ? O.firstSomeOf(A.map(
+        ['#content', '#card', '#header'],
+        visibleBackgroundColorIn,
+      ))
       : isPaidSticker
         ? O.some(window.getComputedStyle(chat).getPropertyValue(
           '--yt-live-chat-paid-sticker-background-color',

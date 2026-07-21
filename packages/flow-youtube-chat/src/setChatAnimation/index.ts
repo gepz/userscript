@@ -41,7 +41,7 @@ export default (
   getChatFontSize(mainState),
   Z.tap((height) => Z.gen(function* () {
     chat.element.style.transform = `translate(${
-      (yield * SynchronizedRef.get(mainState.playerRect)).width
+      (yield * mainState.playerRect).width
       * (mainState.config.value.flowX2 - mainState.config.value.flowX1)
     }px, -${height * 2}px)`;
   })),
@@ -57,7 +57,7 @@ export default (
         height,
       } satisfies FlowChat,
       oldChatIndex: pipe(
-        yield * SynchronizedRef.get(mainState.flowChats),
+        yield * mainState.flowChats,
         A.findFirstIndex((x) => x === chat),
       ),
       progress: getFlowChatProgress(chat.animationState),
