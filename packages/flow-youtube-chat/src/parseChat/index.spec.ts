@@ -3,30 +3,29 @@ import {
   Option as O,
 } from 'effect';
 import {
+  readFileSync,
+} from 'node:fs';
+import {
   describe,
   expect,
   it,
 } from 'vitest';
 
 import parseChat from '@/parseChat';
-import {
-  engagementMessage,
-  membershipItem,
-  memberMessage,
-  moderatorMessage,
-  normalMessage,
-  ownerMessage,
-  paidMessage,
-  paidSticker,
-  tickerPaidMessage,
-} from '@/parseChat/fixtures';
+
+// Fragment provenance and refresh workflow: see fixtures/README.md.
+// cwd-relative because import.meta.url is an http URL under happy-dom.
+const fixture = (name: string): string => readFileSync(
+  `src/parseChat/fixtures/${name}.html`,
+  'utf8',
+);
 
 // getComputedStyle only resolves styles for attached elements in happy-dom,
 // so the fixture is mounted before parsing.
-const parse = (html: string) => {
+const parse = (name: string) => {
   const host = document.createElement('div');
   document.body.append(host);
-  host.innerHTML = html;
+  host.innerHTML = fixture(name);
   const chat = host.firstElementChild;
 
   if (!(chat instanceof HTMLElement)) {
@@ -38,7 +37,7 @@ const parse = (html: string) => {
 
 describe('parseChat', () => {
   it('parses a normal text message', () => {
-    const data = parse(normalMessage);
+    const data = parse('normalMessage');
 
     expect(data.chatType).toBe('normal');
     expect(data.authorType).toBe('normal');
@@ -53,15 +52,15 @@ describe('parseChat', () => {
   });
 
   it.each([
-    ['owner', ownerMessage],
-    ['moderator', moderatorMessage],
-    ['member', memberMessage],
-  ] as const)('recognizes the %s author type', (authorType, fixture) => {
-    expect(parse(fixture).authorType).toBe(authorType);
+    ['owner', 'ownerMessage'],
+    ['moderator', 'moderatorMessage'],
+    ['member', 'memberMessage'],
+  ] as const)('recognizes the %s author type', (authorType, name) => {
+    expect(parse(name).authorType).toBe(authorType);
   });
 
   it('parses a paid message with payment info and card colors', () => {
-    const data = parse(paidMessage);
+    const data = parse('paidMessage');
 
     expect(data.chatType).toBe('normal');
     expect(data.authorID).toEqual(O.some('PlainToken456'));
@@ -72,7 +71,7 @@ describe('parseChat', () => {
   });
 
   it('parses a paid sticker via its custom-property colors', () => {
-    const data = parse(paidSticker);
+    const data = parse('paidSticker');
 
     expect(data.chatType).toBe('normal');
     expect(data.paymentInfo).toEqual(O.some('¥200'));
@@ -82,7 +81,7 @@ describe('parseChat', () => {
   });
 
   it('parses a membership item', () => {
-    const data = parse(membershipItem);
+    const data = parse('membershipItem');
 
     expect(data.chatType).toBe('membership');
     expect(data.authorType).toBe('member');
@@ -91,7 +90,7 @@ describe('parseChat', () => {
   });
 
   it('parses a ticker item, taking payment info from #content>#text', () => {
-    const data = parse(tickerPaidMessage);
+    const data = parse('tickerPaidMessage');
 
     expect(data.chatType).toBe('ticker');
     expect(data.paymentInfo).toEqual(O.some('$10.00'));
@@ -100,7 +99,7 @@ describe('parseChat', () => {
   });
 
   it('parses an engagement message without payment info', () => {
-    const data = parse(engagementMessage);
+    const data = parse('engagementMessage');
 
     expect(data.chatType).toBe('engagement');
     expect(data.paymentInfo).toEqual(O.none());
