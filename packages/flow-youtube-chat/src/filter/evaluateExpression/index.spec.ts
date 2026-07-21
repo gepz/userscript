@@ -121,14 +121,13 @@ describe('evaluateExpression', () => {
 });
 
 describe('defaultFilter end to end', () => {
-  // Only the three banned-* keys feed defaultFilter; the cast spares the
-  // spec a full UserConfig fixture.
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  const config = {
+  const config: Pick<
+    UserConfig, 'bannedWords' | 'bannedWordRegexes' | 'bannedUsers'
+  > = {
     bannedWords: ['spam'],
     bannedWordRegexes: ['^\\d+$'],
     bannedUsers: ['BadActor'],
-  } as UserConfig;
+  };
 
   const chatData = (overrides: Partial<ChatData>): ChatData => ({
     chatType: 'normal',
@@ -151,34 +150,50 @@ describe('defaultFilter end to end', () => {
     ));
 
   it.each([
-    [
-      true, 'a banned word in the message', {
+    {
+      expected: true,
+      label: 'a banned word in the message',
+      overrides: {
         messageText: O.some('buy spam now'),
       },
-    ],
-    [
-      true, 'a banned word in the payment info', {
+    },
+    {
+      expected: true,
+      label: 'a banned word in the payment info',
+      overrides: {
         paymentInfo: O.some('spam!'),
       },
-    ],
-    [
-      true, 'a banned regex match', {
+    },
+    {
+      expected: true,
+      label: 'a banned regex match',
+      overrides: {
         messageText: O.some('12345'),
       },
-    ],
-    [
-      true, 'a banned author', {
+    },
+    {
+      expected: true,
+      label: 'a banned author',
+      overrides: {
         authorID: O.some('BadActor'),
       },
-    ],
-    [
-      false, 'a clean message', {
+    },
+    {
+      expected: false,
+      label: 'a clean message',
+      overrides: {
         messageText: O.some('hello there'),
         authorID: O.some('GoodActor'),
       },
-    ],
-    [false, 'an empty chat', {}],
-  ] as const)('returns %s for %s', (expected, label, overrides) => {
+    },
+    {
+      expected: false,
+      label: 'an empty chat',
+      overrides: {},
+    },
+  ])('returns $expected for $label', ({
+    expected, overrides,
+  }) => {
     expect(filtered(overrides)).toBe(expected);
   });
 });

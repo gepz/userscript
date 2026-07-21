@@ -1,4 +1,7 @@
 {
   "extends": "../../tsconfig.package.json",
-  "references": [{ "path": "./tsconfig.src.json" }]
+  "references": [
+    { "path": "./tsconfig.src.json" },
+    { "path": "./tsconfig.spec.json" },
+  ]
 }

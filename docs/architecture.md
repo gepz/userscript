@@ -47,6 +47,12 @@ Root `tsconfig.*.json` files are the shared bases (`base` → `src` →
   includes `config/` and any work-in-progress sources excluded from builds
   (e.g. via `tsconfig.exclude.json` in flow-youtube-chat). It is not expected
   to pass a full `tsc` run; don't use it as a gate.
+- `tsconfig.spec.json` (flow-youtube-chat) — src plus `*.spec.ts`, which the
+  root base config excludes from every other project. Used by typed eslint on
+  spec files and referenced from the package `tsconfig.json` so editors
+  resolve `@/` inside specs; it must stay `composite` for that reference
+  lookup to work. Unlike `tsconfig.json`, a full
+  `tsc -p tsconfig.spec.json --noEmit` is expected to pass.
 
 ## Lint architecture
 

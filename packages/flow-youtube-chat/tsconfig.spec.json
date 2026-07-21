@@ -1,11 +1,14 @@
 // Program for src including *.spec.ts files (tsconfig.build.json excludes
-// them). Used by vitest-adjacent tooling and typed eslint on spec files.
-// The excluded WIP directories mirror tsconfig.exclude.json; keep in sync.
+// them). Used by typed eslint on spec files, and referenced from
+// tsconfig.json so editors assign spec files to this project (composite is
+// what makes that reference lookup work; the implied .tsbuildinfo is
+// gitignored). The excluded WIP directories mirror tsconfig.exclude.json;
+// keep in sync.
 {
   "extends": "../../tsconfig.bundle.json",
   "compilerOptions": {
+    "composite": true,
     "noEmit": true,
-    "incremental": false,
   },
   "exclude": [
     "node_modules",

@@ -4,15 +4,21 @@ import {
   SubscriptionRef,
 } from 'effect';
 
-import ConfigRefs from '@/ConfigRefs';
-import UserConfig from '@/UserConfig';
+type Refs<T> = {
+  [K in keyof T]: SubscriptionRef.SubscriptionRef<T[K]>
+};
 
 /**
- * One SubscriptionRef per config key, seeded with the key's current value.
+ * One SubscriptionRef per record key, seeded with the key's current value.
  * Replaces the per-key Subject maps (`ConfigSubject`): unlike a Subject,
  * `.changes` on each ref emits the current value first.
  */
-// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-export default (o: UserConfig): Z.Effect<ConfigRefs> => Z.all(
+/* eslint-disable @typescript-eslint/consistent-type-assertions --
+   R.map collapses the per-key value types to their union; the cast restores
+   the precise mapped type. */
+export default <T extends Record<string, unknown>>(
+  o: T,
+): Z.Effect<Refs<T>> => Z.all(
   R.map(o, (v) => SubscriptionRef.make(v)),
-) as Z.Effect<ConfigRefs>;
+) as Z.Effect<Refs<T>>;
+/* eslint-enable @typescript-eslint/consistent-type-assertions */

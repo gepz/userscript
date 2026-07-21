@@ -3,7 +3,7 @@ import jsep from 'jsep';
 import UserConfig from '@/UserConfig';
 
 export default (
-  config: UserConfig,
+  config: Pick<UserConfig, 'bannedWords' | 'bannedWordRegexes' | 'bannedUsers'>,
 ): jsep.Expression => jsep(`
 or([
 A.some(
