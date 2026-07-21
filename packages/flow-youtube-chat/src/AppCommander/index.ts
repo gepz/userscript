@@ -9,5 +9,4 @@ export default interface AppCommander {
   act: {
     clearFlowChats: Z.Effect<void>
   }
-  provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>
 }

@@ -50,9 +50,7 @@ import videoToggleStream from '@/stream/videoToggleStream';
 import strictOptionEquivalence from '@/strictOptionEquivalence';
 import updateSettingsRect from '@/updateSettingsRect';
 
-export default (
-  provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>,
-) => Z.fnUntraced(function* (ctx: {
+export default Z.fnUntraced(function* (ctx: {
   updateSettingState: (
     dispatchable: Dispatchable<SettingState>,
   ) => Z.Effect<void>
@@ -87,22 +85,21 @@ export default (
 
   const tapUpdateSettingsRect = <T, E, R>(
     stream: Stream.Stream<T, E, R>,
-  ): Stream.Stream<T, E, R> => Stream.tap(stream, () => provideLog(pipe(
+  ): Stream.Stream<T, E, R> => Stream.tap(stream, () => pipe(
     SubscriptionRef.get(settingsRect),
     Z.flatMap(updateSettingsRect(ctx.apps.toggleSettingsPanelApp.node)(
       (rect) => SubscriptionRef.set(settingsRect, rect),
     )),
-  )));
+  ));
 
   const config$ = configStream(
-    provideLog,
     ctx.mainState,
     ctx.configRefs,
     ctx.chatScreen,
     live,
   );
 
-  const pollChanged = provideLog(pipe(
+  const pollChanged = pipe(
     Z.forEach(liveElementKeys, (key) => pipe(
       Z.option(live[key].read),
       Z.map(O.liftPredicate(
@@ -119,13 +116,13 @@ export default (
       Z.map(O.isSome),
     )),
     Z.map(A.some<boolean>(identity)),
-  ));
+  );
 
   // Suspended so the element caches are read at run time: setup re-runs on
   // every emitted poll tick and must see the elements that tick just stored.
   // A plain pipe would capture the empty caches from construction and the
   // mounts would silently fail forever inside allSuccesses.
-  const setup = provideLog(Z.suspend(() => pipe(
+  const setup = Z.suspend(() => pipe(
     Z.logDebug('Loading...'),
     Z.zipRight(
       Z.sync(() => {
@@ -190,7 +187,7 @@ export default (
         (x) => SynchronizedRef.set(ctx.mainState.chatPlaying, x),
       ),
     ])),
-  )));
+  ));
 
   // Branch streams are (re)constructed on every emitted poll tick, so
   // element caches read at construction time (e.g. live.video.ele) are
@@ -200,13 +197,13 @@ export default (
       Stream.fromEventListener<{ [K in keyof UserConfig]: [K, UserConfig[K]] }[
         keyof UserConfig
       ]>(ctx.channel, 'message'),
-      Stream.mapEffect(([key, val]) => provideLog(pipe(
+      Stream.mapEffect(([key, val]) => pipe(
         listeningBroadcastConfigKeys.includes(key),
         (x) => (x
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           ? ctx.setChangedConfig[key](val as never)
           : Z.sync(() => { })),
-      ))),
+      )),
     ),
     pipe(
       Stream.mergeWithTag(
@@ -223,14 +220,12 @@ export default (
       // nothing unless debug logging is currently enabled.
       Stream.mapEffect(({
         _tag: key, value: [previous, next],
-      }) => provideLog(
-        Z.whenLogLevel(
-          Z.transposeMapOption(previous, (x) => Z.logDebug(
-            `Config ${key}: ${
-              JSON.stringify(configDiff(x, next), undefined, 2)}`,
-          )),
-          LogLevel.Debug,
-        ),
+      }) => Z.whenLogLevel(
+        Z.transposeMapOption(previous, (x) => Z.logDebug(
+          `Config ${key}: ${
+            JSON.stringify(configDiff(x, next), undefined, 2)}`,
+        )),
+        LogLevel.Debug,
       )),
     ),
     config$,
@@ -240,22 +235,22 @@ export default (
         onSome: (element) => pipe(
           videoToggleStream(element),
           Stream.map((playing) => playing || O.isSome(live.offlineSlate.ele)),
-          Stream.mapEffect((chatPlaying) => provideLog(pipe(
+          Stream.mapEffect((chatPlaying) => pipe(
             SynchronizedRef.set(ctx.mainState.chatPlaying, chatPlaying),
             Z.zipRight(pipe(
               SynchronizedRef.get(ctx.mainState.flowChats),
               Z.map(A.map(setChatPlayState)),
               Z.flatMap(Z.forEach(apply(ctx.mainState))),
             )),
-          ))),
+          )),
         ),
       }),
     ),
     pipe(
       chatMutationPair.stream,
-      Stream.mapEffect((records) => provideLog(
-        onChatFieldMutate(ctx.chatScreen, ctx.mainState)(records),
-      )),
+      Stream.mapEffect(
+        onChatFieldMutate(ctx.chatScreen, ctx.mainState),
+      ),
     ),
     pipe(
       documentMutationPair.stream,
@@ -263,10 +258,10 @@ export default (
       Stream.changes,
       Stream.drop(1),
       tapUpdateSettingsRect,
-      Stream.mapEffect((x) => provideLog(Z.all([
+      Stream.mapEffect((x) => Z.all([
         Z.logDebug(`URL Changed: ${x}`),
         removeOldChats(ctx.mainState.flowChats)(0),
-      ]))),
+      ])),
       Stream.mapEffect(() => pipe(
         Z.sleep('1700 millis'),
         Z.zipRight(ctx.reinitialize),
@@ -276,13 +271,13 @@ export default (
       playerResizePair.stream,
       throttleLatest('500 millis'),
       (s) => Stream.concat(Stream.succeed([]), s),
-      Stream.mapEffect(() => provideLog(live.player.ele.pipe(
+      Stream.mapEffect(() => live.player.ele.pipe(
         O.map((x) => x.getBoundingClientRect()),
         O.match({
           onNone: () => Z.void,
           onSome: (x) => onPlayerResize(x, ctx.mainState),
         }),
-      ))),
+      )),
     ),
     pipe(
       bodyResizePair.stream,
@@ -303,7 +298,7 @@ export default (
     Stream.fromQueue(ctx.reinitQueue),
     Stream.mapEffect(() => pipe(
       Z.sleep('100 millis'),
-      Z.zipRight(provideLog(Z.logInfo('Init'))),
+      Z.zipRight(Z.logInfo('Init')),
     )),
     Stream.flatMap(() => pipe(
       Stream.fromSchedule(Schedule.fixed('700 millis')),
@@ -329,9 +324,9 @@ export default (
     pipe(
       self,
       Stream.catchAllCause((cause) => Stream.unwrap(pipe(
-        provideLog(logWithMeta(LogLevel.Error)(
+        logWithMeta(LogLevel.Error)(
           `Errored: ${Cause.pretty(cause)}`,
-        )(Cause.squash(cause))),
+        )(Cause.squash(cause)),
         Z.zipRight(Z.sleep('5 seconds')),
         Z.zipRight(ctx.reinitialize),
         Z.as(resilient(self)),

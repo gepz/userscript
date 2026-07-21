@@ -1,62 +1,57 @@
 import {
-  Effect as Z,
-  Option as O,
+  Console,
+  Context,
+  DefaultServices,
+  FiberRef,
+  FiberRefs,
   Logger,
   LogLevel,
-  Console,
-  FiberRefs,
-  HashMap as HM,
+  Option as O,
   pipe,
 } from 'effect';
 
-import LogAnnotationKeys from '@/LogAnnotationKeys';
-import {
-  logMeta,
-} from '@/LogMeta';
+import LogMeta from '@/LogMeta';
 
-const getConsoleLog = (
+const consoleMethod = (
   x: LogLevel.LogLevel,
-
-) => (x === LogLevel.Trace
-  ? Console.trace
-  : x === LogLevel.Debug
-    ? Console.debug
-    : x === LogLevel.Info
-      ? Console.info
-      : x === LogLevel.Warning
-        ? Console.warn
-        : x === LogLevel.Error || x === LogLevel.Fatal
-          ? Console.error
-          : Console.log);
+): 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'log' => (
+  x === LogLevel.Trace
+    ? 'trace'
+    : x === LogLevel.Debug
+      ? 'debug'
+      : x === LogLevel.Info
+        ? 'info'
+        : x === LogLevel.Warning
+          ? 'warn'
+          : x === LogLevel.Error || x === LogLevel.Fatal
+            ? 'error'
+            : 'log');
 
 export default Logger.make<unknown, void>(({
   logLevel,
   message,
   context,
-  annotations,
-}) => Z.runPromise(pipe(
-  () => `${pipe(
-    annotations,
-    HM.get(LogAnnotationKeys.name),
-    O.match({
-      onNone: () => '',
+}) => {
+  const unsafeConsole = Context.get(
+    FiberRefs.getOrDefault(context, DefaultServices.currentServices),
+    Console.Console,
+  ).unsafe;
 
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      onSome: (x) => `[${x}] `,
-    }),
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  )}${message}`,
-  (getStr) => pipe(
-    FiberRefs.getOrDefault(context, logMeta),
+  return pipe(
+    Context.get(
+      FiberRefs.getOrDefault(context, FiberRef.currentContext),
+      LogMeta,
+    ),
     O.match({
-      onNone: () => (
-        LogLevel.greaterThanEqual(LogLevel.Warning)(logLevel)
-          ? getConsoleLog(logLevel)(getStr())
-          : Z.void),
-      onSome: (meta) => Z.sync(() => getConsoleLog(logLevel)(
-        `${getStr()}: `,
+      onNone: () => (LogLevel.greaterThanEqual(LogLevel.Warning)(logLevel)
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        ? unsafeConsole[consoleMethod(logLevel)](`[FYC] ${message}`)
+        : undefined),
+      onSome: (meta) => unsafeConsole[consoleMethod(logLevel)](
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        `[FYC] ${message}: `,
         meta,
-      )),
+      ),
     }),
-  ),
-)));
+  );
+});

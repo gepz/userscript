@@ -20,16 +20,19 @@ APIs may still change). Affected packages: `flow-youtube-chat` and `ui`
   why deciding its fate (backlog) is a migration prerequisite.
 - **`FiberRef` family removed (`migration/fiberref.md`).** `FiberRef`,
   `FiberRefs`, `FiberRefsPatch` are replaced by `Context.Reference` /
-  built-in `References.*`. Hits the logging stack: `LogMeta`'s
-  `FiberRef.unsafeMake`, `metaLogger`'s `FiberRefs.getOrDefault(context,
-  logMeta)` (the logger callback's `context` shape changes too), and
-  `withMinimumLogLevel` (→ `References.MinimumLogLevel`). Plan to rewrite
-  `provideLog`/`metaLogger`/`logWithMeta` as a unit.
+  built-in `References.*`. The logging stack pre-migrated in 2026-07
+  (`docs/effect-v3-adoption.md`): `LogMeta` is already a
+  `Context.Reference`, `logWithMeta` provides it as a service, and
+  `runLogged`'s `ManagedRuntime` replaced the `provideLog` threading. Left
+  for v4: `metaLogger` still reads the logger callback's
+  `context: FiberRefs` (via `FiberRef.currentContext` and
+  `DefaultServices.currentServices`) — the callback's shape changes — and
+  `Logger.minimumLogLevel` becomes `References.MinimumLogLevel`.
 - **`Cause` flattened (`migration/cause.md`).** Now
   `{ reasons: ReadonlyArray<Fail | Die | Interrupt> }`; no
   Sequential/Parallel tree. We use `Cause.pretty` and `Cause.squash` in
   `allStream`'s resilient wrapper, `initialize`'s terminal handler, and
-  `provideLog` — the migration doc doesn't say whether pretty/squash
+  `runLogged` — the migration doc doesn't say whether pretty/squash
   survive; verify and adapt.
 - **`@effect/typeclass` has no v4 counterpart** (not in the effect-smol
   workspace; v4 core offers `Combiner`/`Reducer` instead). Live consumer:

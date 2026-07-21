@@ -7,9 +7,10 @@ import {
 
 import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';
+import runLogged from '@/runLogged';
 // import defaultToast from '@/defaultToast';
 
-const template = Z.runPromise(pipe(
+const template = runLogged(pipe(
   Z.succeed(document.createElement('button')),
   Z.tap((x) => Z.sync(() => x.classList.add(
     'style-scope',
@@ -85,6 +86,6 @@ export default (
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     Z.map((x) => x.cloneNode(true) as HTMLElement),
 
-    Z.tap((x) => Z.sync(() => { x.onclick = () => Z.runPromise(onclick); })),
+    Z.tap((x) => Z.sync(() => { x.onclick = () => runLogged(onclick); })),
   ),
 );

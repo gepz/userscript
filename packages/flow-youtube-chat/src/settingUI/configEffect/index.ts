@@ -1,13 +1,11 @@
 import {
-  Effect as Z,
-} from 'effect';
-import {
   Effect,
 } from 'hyperapp';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
+import runLogged from '@/runLogged';
 
 export default <T extends keyof UserConfig>(
   k: T,
@@ -15,4 +13,4 @@ export default <T extends keyof UserConfig>(
 ): (c: AppCommander) => Effect<SettingState> => (
   c,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-) => () => Z.runPromise(c.provideLog(c.setConfig[k](v as never)));
+) => () => runLogged(c.setConfig[k](v as never));

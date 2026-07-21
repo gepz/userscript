@@ -19,6 +19,7 @@ import {
 
 import SettingState from '@/SettingState';
 import getText from '@/getText';
+import runLogged from '@/runLogged';
 
 const togglePanel = (
   updateState: (x: Dispatchable<SettingState>) => Z.Effect<void>,
@@ -37,7 +38,7 @@ const togglePanel = (
         e.currentTarget,
       ).blur()
       : () => {},
-    () => Z.runPromise(updateState((oldState) => ({
+    () => runLogged(updateState((oldState) => ({
       ...oldState,
       ...newState,
     }))),

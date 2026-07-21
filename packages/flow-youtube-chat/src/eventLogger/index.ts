@@ -4,21 +4,16 @@ import {
   Ref,
   pipe,
 } from 'effect';
-import {
-  Dispatch,
-} from 'hyperapp';
 
-import SettingState from '@/SettingState';
 import appendEventLog from '@/appendEventLog';
+import settingUpdateApps from '@/settingUpdateApps';
 import updateSettingState from '@/updateSettingState';
 
-export default (
-  apps: Ref.Ref<Dispatch<SettingState>[]>,
-) => Logger.make<unknown, void>(({
+export default Logger.make<unknown, void>(({
   logLevel,
   message,
 }) => Z.runPromise(pipe(
-  Ref.get(apps),
+  Ref.get(settingUpdateApps),
   Z.flatMap((x) => updateSettingState(x)((s) => (s.logEvents
     ? ({
       ...s,

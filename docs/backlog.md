@@ -29,10 +29,12 @@ done; re-verify versions before starting, this list ages.
   much smaller core, and a built-in `Optic` module that replaces the frozen
   `@fp-ts/optic` (v0.25.0, stale peer floor). Migrate when v4 is stable,
   not during beta. Pain points pre-scanned in `docs/effect-v4-scan.md`
-  (2026-07): the big items are Option-as-Effect subtyping removal, the
-  `FiberRef`→`Context.Reference` logger rewrite, `Either`→`Result`, and
-  `@effect/typeclass` having no v4 counterpart — which makes deciding the
-  filter-editor WIP's fate (above) a prerequisite.
+  (2026-07): the big items are Option-as-Effect subtyping removal,
+  `Either`→`Result`, and `@effect/typeclass` having no v4 counterpart —
+  which makes deciding the filter-editor WIP's fate (above) a prerequisite.
+  The `FiberRef`→`Context.Reference` logger rewrite was pulled forward into
+  v3 (2026-07, `docs/effect-v3-adoption.md`); only the logger-callback
+  shape change and `References.MinimumLogLevel` remain there.
 - TypeScript 6.x once typescript-eslint supports it.
 - eslint 10: blocked on plugin ecosystem (`eslint-config-airbnb-extended`,
   `eslint-plugin-canonical`, the compat-shimmed
@@ -50,19 +52,10 @@ experiment status before starting.
   does not cover. Shrinks `styleLoaderConfig` to one loader plus a generator
   option.
 - **Replace `ts-loader` with native type-stripping** (`experiments.typescript`,
-  since 5.108; uses Node's type erasure). Blocked on refactoring the three
-  `enum`s in flow-youtube-chat (`src/type/UI`, `src/type/Primitive`,
-  `src/LogAnnotationKeys`) to `const` objects + union types — stripping
-  handles erasable syntax only. That refactor is worth doing regardless
-  (TypeScript's `erasableSyntaxOnly` direction). fork-ts-checker remains the
-  type gate either way; stripping does no checking.
-
-## Housekeeping
-
-- **Adopt newer effect v3 APIs** per `docs/effect-v3-adoption.md` (2026-07).
-  Done: everything actionable, including the pre-v4 transpose restructure of
-  the live-code Option-as-Effect sites, Schema at the trust boundaries, and
-  the smaller wins; declined candidates are recorded in the doc's "Checked,
-  not applicable" section. Remaining: the logging/runtime items, which fold
-  into the v4 migration's logging rewrite (`docs/effect-v4-scan.md`) rather
-  than standing alone.
+  since 5.108; uses Node's type erasure). Stripping handles erasable syntax
+  only; live code is enum-free since `src/LogAnnotationKeys` was deleted in
+  the 2026-07 logging rewrite, so the remaining `enum`s (`src/type/UI`,
+  `src/type/Primitive`) sit in the build-excluded filter-editor WIP and only
+  block this if that WIP ships (its `const`-object refactor is worth doing
+  regardless — TypeScript's `erasableSyntaxOnly` direction). fork-ts-checker
+  remains the type gate either way; stripping does no checking.

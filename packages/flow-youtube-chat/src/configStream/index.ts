@@ -24,7 +24,6 @@ import setChatPlayState from '@/setChatPlayState';
 import throttleLatest from '@/stream/throttleLatest';
 
 export default (
-  provideLog: (x: Z.Effect<void>) => Z.Effect<void>,
   mainState: MainState,
   refs: ConfigRefs,
   chatScreen: HTMLElement,
@@ -40,7 +39,7 @@ export default (
   return Stream.merge(
     pipe(
       refs.fieldScale.changes,
-      Stream.mapEffect((x) => provideLog(scaleChatField(live)(x))),
+      Stream.mapEffect(scaleChatField(live)),
     ),
     pipe(
       Stream.mergeAll<Partial<ChatUpdateConfig>, never, never>([
@@ -57,23 +56,23 @@ export default (
             changed('flowY2'),
             pipe(
               refs.flowX1.changes,
-              Stream.tap((x) => provideLog(Z.sync(() => Object.assign<
+              Stream.tap((x) => Z.sync(() => Object.assign<
                 CSSStyleDeclaration,
                 Partial<CSSStyleDeclaration>
               >(chatScreen.style, {
                 left: `${x * 100}%`,
                 width: `${(mainState.config.value.flowX2 - x) * 100}%`,
-              })))),
+              }))),
             ),
             pipe(
               changed('flowX2'),
-              Stream.tap((x) => provideLog(Z.sync(() => Object.assign<
+              Stream.tap((x) => Z.sync(() => Object.assign<
                 CSSStyleDeclaration,
                 Partial<CSSStyleDeclaration>
               >(chatScreen.style, {
                 left: `${mainState.config.value.flowX1 * 100}%`,
                 width: `${(x - mainState.config.value.flowX1) * 100}%`,
-              })))),
+              }))),
             ),
             changed('textOnly'),
           ], {
@@ -111,9 +110,7 @@ export default (
           Stream.mergeAll<unknown, never, never>([
             pipe(
               changed('maxChatCount'),
-              Stream.tap((x) => provideLog(
-                removeOldChats(mainState.flowChats)(x),
-              )),
+              Stream.tap(removeOldChats(mainState.flowChats)),
             ),
             changed('noOverlap'),
             changed('timingFunction'),
@@ -134,7 +131,7 @@ export default (
         setPlayState: false,
         ...x,
       }) satisfies ChatUpdateConfig),
-      Stream.mapEffect((c) => provideLog(pipe(
+      Stream.mapEffect((c) => pipe(
         SynchronizedRef.get(mainState.flowChats),
         Z.map(A.filter((x) => E.isRight(x.animationState))),
         Z.flatMap(Z.forEach((chat) => pipe(
@@ -153,7 +150,7 @@ export default (
           A.getSomes,
           Z.forEach(apply(mainState)),
         ))),
-      ))),
+      )),
     ),
   );
 };

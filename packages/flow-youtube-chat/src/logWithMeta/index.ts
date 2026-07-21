@@ -5,9 +5,7 @@ import {
   pipe,
 } from 'effect';
 
-import LogMeta, {
-  logMeta,
-} from '@/LogMeta';
+import LogMeta from '@/LogMeta';
 
 export default (
   level: LogLevel.LogLevel,
@@ -17,6 +15,6 @@ export default (
   data: unknown,
 ): Z.Effect<void> => pipe(
   Z.log(message),
-  Z.locally<LogMeta>(logMeta, O.some(data)),
+  Z.provideService(LogMeta, O.some(data)),
   (x) => LogLevel.locally(level)(x),
 );

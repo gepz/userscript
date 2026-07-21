@@ -2,7 +2,6 @@ import RootComponent, {
   makeComponent,
 } from '@userscript/ui/RootComponent';
 import {
-  Effect as Z,
   pipe,
 } from 'effect';
 import {
@@ -12,6 +11,7 @@ import {
 import SettingState from '@/SettingState';
 import UserConfigSetter from '@/UserConfigSetter';
 import getText from '@/getText';
+import runLogged from '@/runLogged';
 
 export default (
   setConfig: UserConfigSetter,
@@ -48,7 +48,7 @@ export default (
             ...s,
             displayChats,
           },
-          () => Z.runPromise(setConfig.displayChats(displayChats)),
+          () => runLogged(setConfig.displayChats(displayChats)),
         ],
       ),
     }, [

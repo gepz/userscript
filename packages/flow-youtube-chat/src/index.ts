@@ -1,23 +1,12 @@
 import {
   Effect as Z,
-  Ref,
   pipe,
 } from 'effect';
-import {
-  Dispatch,
-} from 'hyperapp';
 
-import SettingState from '@/SettingState';
 import initialize from '@/initialize';
-import provideLog from '@/provideLog';
+import runLogged from '@/runLogged';
 
-Z.runPromise(pipe(
-  Z.gen(function* () {
-    const settingUpdateApps = yield * Ref.make<Dispatch<SettingState>[]>([]);
-    yield * initialize({
-      settingUpdateApps,
-      provideLog: provideLog(settingUpdateApps),
-    });
-  }),
+runLogged(pipe(
+  initialize,
   Z.withConcurrency(30),
 ));

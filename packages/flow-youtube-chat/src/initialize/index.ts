@@ -16,7 +16,6 @@ import {
   pipe,
 } from 'effect';
 import {
-  Dispatch,
   Dispatchable,
 } from 'hyperapp';
 
@@ -41,25 +40,20 @@ import removeOldChats from '@/removeOldChats';
 import scriptIdentifier from '@/scriptIdentifier';
 import setSettingFromConfig from '@/setSettingFromConfig';
 import settingStateInit from '@/settingStateInit';
+import settingUpdateApps from '@/settingUpdateApps';
 import settingsComponent from '@/settingsComponent';
 import makeRefs from '@/stream/makeRefs';
 import toggleChatButton from '@/toggleChatButton';
 import toggleSettingsPanelComponent from '@/toggleSettingsPanelComponent';
 
-export default ({
-  settingUpdateApps,
-  provideLog,
-}: {
-  settingUpdateApps: Ref.Ref<Dispatch<SettingState>[]>
-  provideLog: <T>(x: Z.Effect<T>) => Z.Effect<T>
-}): Z.Effect<unknown> => provideLog(pipe(
+export default pipe(
   Z.gen(function* () {
     const updateSettingState = (
       dispatchable: Dispatchable<SettingState>,
-    ): Z.Effect<void> => provideLog(pipe(
+    ): Z.Effect<void> => pipe(
       Ref.get(settingUpdateApps),
       Z.flatMap(Z.forEach((x) => Z.sync(() => x(dispatchable)))),
-    ));
+    );
 
     const channel = new BroadcastChannel<
       { [K in keyof UserConfig]: [K, UserConfig[K]] }[keyof UserConfig]>(
@@ -133,7 +127,6 @@ export default ({
             act: {
               clearFlowChats: removeOldChats(ctx.mainState.flowChats)(0),
             },
-            provideLog,
           }),
           stateInit,
         ),
@@ -164,15 +157,13 @@ export default ({
   )),
   Z.flatMap((ctx) => Z.gen(function* () {
     const reinitQueue = yield * Queue.unbounded<void>();
-    const reinitialize = provideLog(Z.sync(() => {
+    const reinitialize = Z.sync(() => {
       requestAnimationFrame(() => {
         Queue.unsafeOffer(reinitQueue, undefined);
       });
-    }));
+    });
 
-    const stream = yield * allStream(
-      provideLog,
-    )({
+    const stream = yield * allStream({
       ...ctx,
       reinitQueue,
       reinitialize,
@@ -190,4 +181,4 @@ export default ({
 
     yield * reinitialize;
   })),
-));
+) satisfies Z.Effect<unknown>;

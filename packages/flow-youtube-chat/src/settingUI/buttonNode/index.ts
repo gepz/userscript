@@ -15,6 +15,7 @@ import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
 import TextKey from '@/TextKey';
 import getText from '@/getText';
+import runLogged from '@/runLogged';
 import action from '@/settingUI/action';
 
 export default (
@@ -29,9 +30,9 @@ export default (
   type: 'button',
   onclick: (s) => [
     s,
-    (d) => Z.runPromise(c.provideLog(pipe(
+    (d) => runLogged(pipe(
       action[label](c)(s),
       Z.flatMap((newS) => Z.sync(() => d(newS))),
-    ))),
+    )),
   ],
 }, text(getText(label)(state)));
