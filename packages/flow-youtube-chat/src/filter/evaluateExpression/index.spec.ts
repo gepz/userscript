@@ -131,6 +131,7 @@ describe('defaultFilter end to end', () => {
 
   const chatData = (overrides: Partial<ChatData>): ChatData => ({
     chatType: 'normal',
+    chatID: O.none(),
     authorType: 'normal',
     authorID: O.none(),
     authorName: O.none(),

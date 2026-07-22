@@ -29,7 +29,7 @@ describe('sanitize', () => {
   it('anonymizes values while keeping structure, ids and classes', () => {
     const out = sanitize('memberMessage', mount(`
       <yt-live-chat-text-message-renderer author-type="member"
-        aria-label="RealName says hi">
+        id="ChwKGkNSZWFsTWVzc2FnZUlk" aria-label="RealName says hi">
         <!-- tracking comment -->
         <script>alert(1)</script>
         <yt-img-shadow id="author-photo" height="24">
@@ -52,6 +52,8 @@ describe('sanitize', () => {
     expect(out).not.toContain('<script');
     expect(out).not.toContain('<!--');
     expect(out).not.toContain('3:47');
+    expect(out).not.toContain('ChwKGkNSZWFsTWVzc2FnZUlk');
+    expect(out).toContain('id="FixtureChatID"');
     // Branch forced to ytc/, token canonical, real size suffix kept.
     expect(out).toContain('ggpht.com/ytc/AIdroFakeToken123=s64-c-k-no-rj');
     expect(out).toContain('class="member style-scope"');

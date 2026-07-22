@@ -71,6 +71,12 @@ export default (slot: Slot, chat: HTMLElement): string => {
       });
   });
 
+  // The root id is YouTube's per-message identifier — unique to one real
+  // chat message, so canonicalized like every other traceable value.
+  if (root.id !== '') {
+    root.setAttribute('id', 'FixtureChatID');
+  }
+
   const photo = root.querySelector('#author-photo img');
 
   if (photo) {

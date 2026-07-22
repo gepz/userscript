@@ -66,6 +66,10 @@ export default (
 
   return {
     chatType,
+    chatID: pipe(
+      chat.id,
+      O.liftPredicate((x) => x !== ''),
+    ),
     authorType: chat.querySelector('.owner')
       ? 'owner'
       : chat.querySelector('.moderator')

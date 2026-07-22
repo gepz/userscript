@@ -15,8 +15,9 @@ A fragment has one of two provenances:
 - **Captured** (first line `<!-- captured YYYY-MM-DD -->`): real markup from
   a live page, anonymized by `@/fixtureCapture/sanitize`. Structure, tags,
   ids and classes are verbatim from YouTube; every value the spec asserts on
-  (author names, photo-URL tokens, amounts, message bodies, timestamps,
-  colors) is rewritten to the canonical values below, so captures drop in
+  (the root's message id, author names, photo-URL tokens, amounts, message
+  bodies, timestamps, colors) is rewritten to the canonical values below,
+  so captures drop in
   with zero spec edits. A failing spec after a capture means parseChat
   disagrees with real markup — fix parseChat (or its spec), not the fixture.
 

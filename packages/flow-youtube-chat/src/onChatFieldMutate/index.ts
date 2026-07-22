@@ -39,9 +39,23 @@ export default (
               && data.chatType === 'normal' && !A.some(
               flowChats,
               (x) => E.isRight(x.animationState)
-                && strictOptionEquivalence(x.data.authorID, data.authorID)
-                && strictOptionEquivalence(x.data.messageText, data.messageText)
-                && strictOptionEquivalence(x.data.timestamp, data.timestamp),
+                && O.match(data.chatID, {
+                  // The renderer id is YouTube's per-message identity, so
+                  // an equal id means the page re-added the same message.
+                  onSome: (id) => O.contains(x.data.chatID, id),
+                  // Id-less markup (never seen in captures) falls back to
+                  // the field heuristic, which can also false-positive on
+                  // distinct look-alike messages — hence the id preference.
+                  onNone: () => strictOptionEquivalence(
+                    x.data.authorID,
+                    data.authorID,
+                  )
+                  && strictOptionEquivalence(
+                    x.data.messageText,
+                    data.messageText,
+                  )
+                  && strictOptionEquivalence(x.data.timestamp, data.timestamp),
+                }),
             ),
           )),
         ),

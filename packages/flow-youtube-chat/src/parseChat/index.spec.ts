@@ -40,6 +40,7 @@ describe('parseChat', () => {
     const data = parse('normalMessage');
 
     expect(data.chatType).toBe('normal');
+    expect(data.chatID).toEqual(O.some('FixtureChatID'));
     expect(data.authorType).toBe('normal');
     expect(data.authorID).toEqual(O.some('AIdroFakeToken123'));
     expect(data.authorName).toEqual(O.some('Regular Viewer'));
@@ -63,6 +64,7 @@ describe('parseChat', () => {
     const data = parse('paidMessage');
 
     expect(data.chatType).toBe('normal');
+    expect(data.chatID).toEqual(O.some('FixtureChatID'));
     // Real superchats occur both with and without #author-photo, and the
     // sanitizer keeps structure verbatim, so either variant may be the
     // captured fixture: authorID is the canonical token or nothing.
