@@ -1,7 +1,7 @@
 {
   "name": "@userscript/ui",
   "private": true,
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Shared hyperapp UI components and state helpers for userscript settings panels",
   "keywords": [],
   "license": "AGPL-3.0-or-later",
@@ -56,7 +56,8 @@
     "eslint-plugin-consistent-default-export-name": "^0.0.15",
     "eslint-plugin-import-newlines": "^1.4.1",
     "eslint-plugin-import-x": "^4.17.1",
-    "globals": "^17.7.0",    "ts-loader": "^9.6.2",
+    "globals": "^17.7.0",
+    "ts-loader": "^9.6.2",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.9.0",
     "tsconfig-paths": "^4.2.0",

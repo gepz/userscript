@@ -1,5 +1,28 @@
 # @userscript/flow-youtube-chat
 
+## 1.20.1
+
+### Patch Changes
+
+- 12ee03f: Banning a user now also works by their unique @handle, closing the gap
+  where superchats and paid stickers (which no longer carry an author photo,
+  and hence no author id) slipped past the ban. A Banned Users row may be a
+  legacy avatar token (existing rows keep working unchanged), an @handle, or
+  both separated by a space; the ban button now records handle and token
+  together, so a ban survives the user changing their avatar. Legacy
+  token-only rows additionally hide an id-less superchat once that token has
+  been seen alongside its handle in the current stream — and never when the
+  same name was seen with several ids.
+- 329b9c2: Duplicate detection now uses YouTube's own per-message id, so two distinct
+  messages that merely look alike (same text and displayed minute, neither
+  with an author photo) are no longer dropped as duplicates.
+- 52b55ce: Validate external inputs with schemas: importing a malformed event log now
+  fails cleanly (leaving the current log untouched) instead of silently
+  corrupting it, and stored settings that fail validation fall back to their
+  defaults instead of producing broken behavior.
+- Updated dependencies [4a417ed]
+  - @userscript/ui@1.1.5
+
 ## 1.20.0
 
 ### Minor Changes

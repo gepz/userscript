@@ -9,6 +9,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Nothing
 
 
+## [1.20.1] - 2026-07-23
+
+### Added
+
+- Banned Users now understands @handles. A row can be an @handle, a legacy
+  ID token, or both separated by a space; the ban button records both at
+  once, so a ban keeps working even after the user changes their avatar.
+
+### Fixed
+
+- Superchats and paid stickers from banned users are now hidden. YouTube's
+  current chat markup no longer includes an author photo on paid messages,
+  so bans matched by ID alone could not catch them.
+- Two different messages that merely look alike (same text and same
+  displayed time, both without an author photo) are no longer mistaken for
+  duplicates — duplicate detection now uses YouTube's own message id.
+- Importing a malformed event log now fails cleanly and leaves the current
+  log untouched, and stored settings that fail validation fall back to
+  their defaults instead of causing broken behavior.
+
+### Changed
+
+- The Banned Words, Banned Regexes and Banned Users boxes no longer wrap
+  long lines: one line is always one entry, and long entries scroll
+  horizontally.
+
 ## [1.20.0] - 2026-07-07
 
 ### Security

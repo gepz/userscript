@@ -1,7 +1,7 @@
 {
   "name": "@userscript/flow-youtube-chat",
   "private": true,
-  "version": "1.20.0",
+  "version": "1.20.1",
   "description": "Userscript that flows YouTube live chat over the video, danmaku-style",
   "license": "AGPL-3.0-or-later",
   "scripts": {
@@ -23,7 +23,7 @@
     "@effect/typeclass": "^0.40.0",
     "@fp-ts/optic": "^0.25.0",
     "@userscript/tap-non-null": "workspace:^1.0.4",
-    "@userscript/ui": "workspace:^1.1.4",
+    "@userscript/ui": "workspace:^1.1.5",
     "astring": "^1.9.0",
     "broadcast-channel": "^7.3.0",
     "effect": "^3.21.4",
