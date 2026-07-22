@@ -21,10 +21,21 @@ const serverBase = 'http://localhost:8931';
 
 const statusResponse = S.parseJson(S.Struct({
   captured: S.Array(S.String),
+  unknown: S.Array(S.String),
 }));
+
+// Renderer kinds known to exist that the fixtures deliberately do not
+// model. Anything else slotFor rejects is surfaced as an unknown, because
+// tag-level drift never fails a test: an unrecognized renderer is simply
+// never captured, so discovery has to happen here.
+const ignoredTags = new Set([
+  'yt-live-chat-placeholder-item-renderer',
+  'yt-live-chat-mode-change-message-renderer',
+]);
 
 const captured = new Set<string>();
 const pending = new Set<Slot>();
+const unknownTags = new Set<string>();
 let serverReachable = false;
 
 const badge = document.createElement('div');
@@ -51,8 +62,30 @@ const render = (): void => {
     ? `FYC capture ${captured.size}/${slots.length}${
       missing.length > 0
         ? `\nmissing: ${missing.join(', ')}`
-        : ' — all captured'}`
+        : ' — all captured'}${
+      unknownTags.size > 0
+        ? `\nunknown: ${[...unknownTags].join(', ')}`
+        : ''}`
     : `FYC capture: server unreachable at ${serverBase}\nrun: pnpm capture-server`;
+};
+
+const reportUnknown = (tag: string): void => {
+  if (ignoredTags.has(tag) || unknownTags.has(tag)) {
+    return;
+  }
+
+  unknownTags.add(tag);
+  render();
+  GM.xmlHttpRequest({
+    method: 'POST',
+    url: `${serverBase}/unknown`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: JSON.stringify({
+      tag,
+    }),
+  });
 };
 
 const submit = (slot: Slot, element: HTMLElement): void => {
@@ -98,6 +131,8 @@ const refreshStatus = (): void => {
       if (O.isSome(status)) {
         captured.clear();
         status.value.captured.forEach((slot) => captured.add(slot));
+        unknownTags.clear();
+        status.value.unknown.forEach((tag) => unknownTags.add(tag));
       }
 
       render();
@@ -112,7 +147,13 @@ const refreshStatus = (): void => {
 const maybeCapture = (element: HTMLElement): void => {
   const slot = slotFor(element);
 
-  if (O.isSome(slot) && !captured.has(slot.value) && !pending.has(slot.value)) {
+  if (O.isNone(slot)) {
+    reportUnknown(element.tagName.toLowerCase());
+
+    return;
+  }
+
+  if (!captured.has(slot.value) && !pending.has(slot.value)) {
     submit(slot.value, element);
   }
 };

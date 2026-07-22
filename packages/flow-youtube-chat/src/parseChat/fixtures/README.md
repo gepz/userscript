@@ -47,3 +47,10 @@ carries an explicit `background-color`.
    and memberships land whenever one appears, so leave it running — the
    server accumulates across sessions and streams.
 4. Re-run `pnpm test` and review the git diff of this directory.
+
+The badge (and the server log) also lists `unknown:` renderer kinds — chat
+or ticker children whose tag matches no slot and is not on the
+deliberately-unmodeled list in `@/fixtureCapture/main`. No test can catch
+tag-level drift: an unrecognized renderer is simply never captured, so the
+suite stays green on stale fixtures. This line is the discovery signal that
+the slot enumeration itself needs a new entry.

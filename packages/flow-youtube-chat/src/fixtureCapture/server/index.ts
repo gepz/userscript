@@ -43,6 +43,10 @@ const captured = new Set(process.argv.includes('--refresh')
     (slot) => readFileSync(fixtureFile(slot), 'utf8').startsWith(marker),
   ));
 
+// Renderer tag names the client saw but could not classify: the discovery
+// signal for slot kinds the fixtures do not model yet. In-memory only.
+const unknown = new Set<string>();
+
 const report = (): void => {
   const missing = validSlots.filter((slot) => !captured.has(slot));
 
@@ -91,16 +95,42 @@ const handleCapture = (body: string, response: ServerResponse): void => {
   });
 };
 
-createServer((request, response) => {
-  if (request.method === 'GET' && request.url === '/status') {
-    respond(response, 200, {
-      captured: [...captured],
+const handleUnknown = (body: string, response: ServerResponse): void => {
+  const parsed: unknown = JSON.parse(body);
+
+  if (!isRecord(parsed)
+    || typeof parsed['tag'] !== 'string'
+    || !/^[a-z][a-z0-9-]{0,99}$/.test(parsed['tag'])) {
+    respond(response, 400, {
+      error: 'expected {tag} naming a renderer element',
     });
 
     return;
   }
 
-  if (request.method === 'POST' && request.url === '/capture') {
+  if (!unknown.has(parsed['tag'])) {
+    unknown.add(parsed['tag']);
+    process.stdout.write(`unknown renderer: ${parsed['tag']}\n`);
+  }
+
+  respond(response, 200, {
+    unknown: [...unknown],
+  });
+};
+
+createServer((request, response) => {
+  if (request.method === 'GET' && request.url === '/status') {
+    respond(response, 200, {
+      captured: [...captured],
+      unknown: [...unknown],
+    });
+
+    return;
+  }
+
+  if (request.method === 'POST'
+    && (request.url === '/capture' || request.url === '/unknown')) {
+    const handler = request.url === '/capture' ? handleCapture : handleUnknown;
     const chunks: Buffer[] = [];
     let size = 0;
 
@@ -116,7 +146,7 @@ createServer((request, response) => {
 
     request.on('end', () => {
       try {
-        handleCapture(Buffer.concat(chunks).toString(), response);
+        handler(Buffer.concat(chunks).toString(), response);
       } catch {
         respond(response, 400, {
           error: 'invalid request',
