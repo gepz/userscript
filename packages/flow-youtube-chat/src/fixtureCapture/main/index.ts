@@ -37,6 +37,8 @@ const captured = new Set<string>();
 const pending = new Set<Slot>();
 const unknownTags = new Set<string>();
 let serverReachable = false;
+let snapshotScheduled = false;
+let snapshotSaved = false;
 
 const badge = document.createElement('div');
 
@@ -65,7 +67,8 @@ const render = (): void => {
         : ' — all captured'}${
       unknownTags.size > 0
         ? `\nunknown: ${[...unknownTags].join(', ')}`
-        : ''}`
+        : ''}${
+      snapshotSaved ? '\nsnapshot: saved' : ''}`
     : `FYC capture: server unreachable at ${serverBase}\nrun: pnpm capture-server`;
 };
 
@@ -171,6 +174,34 @@ const observer = new MutationObserver((records) => {
 let observedField: HTMLElement | undefined;
 let observedTicker: HTMLElement | undefined;
 
+// Unlike slot captures, the snapshot is RAW markup: real names, avatars and
+// message text. The server writes it into the gitignored capture-snapshots/
+// directory; it must never become a committed fixture as-is.
+const takeSnapshot = (): void => {
+  const app = observedField?.closest('yt-live-chat-app');
+
+  if (!app) {
+    return;
+  }
+
+  GM.xmlHttpRequest({
+    method: 'POST',
+    url: `${serverBase}/snapshot`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: JSON.stringify({
+      html: app.outerHTML,
+    }),
+    onload: (response) => {
+      if (response.status === 200) {
+        snapshotSaved = true;
+        render();
+      }
+    },
+  });
+};
+
 const attach = (): void => {
   const field = O.getOrUndefined(Z.runSync(Z.option(livePageYt.chatField)));
   const ticker = O.getOrUndefined(Z.runSync(Z.option(livePageYt.chatTicker)));
@@ -182,6 +213,13 @@ const attach = (): void => {
   observer.disconnect();
   observedField = field;
   observedTicker = ticker;
+
+  // One raw snapshot per page load, delayed so the chat has populated.
+  if (field && !snapshotScheduled) {
+    snapshotScheduled = true;
+    setTimeout(takeSnapshot, 30000);
+  }
+
   [field, ticker].forEach((element) => {
     if (element) {
       observer.observe(element, {

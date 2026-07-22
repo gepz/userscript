@@ -1,4 +1,5 @@
 import {
+  mkdirSync,
   readFileSync,
   readdirSync,
   writeFileSync,
@@ -23,6 +24,12 @@ const port = 8931;
 const marker = '<!-- captured ';
 const fixturesDir = fileURLToPath(
   new URL('../../parseChat/fixtures', import.meta.url),
+);
+
+// Raw whole-DOM snapshots: real user content, so the directory is
+// gitignored (see the root .gitignore) and must stay local-only.
+const snapshotDir = fileURLToPath(
+  new URL('../../../capture-snapshots', import.meta.url),
 );
 
 const fixtureFile = (slot: string): string => path.join(
@@ -118,6 +125,31 @@ const handleUnknown = (body: string, response: ServerResponse): void => {
   });
 };
 
+const handleSnapshot = (body: string, response: ServerResponse): void => {
+  const parsed: unknown = JSON.parse(body);
+
+  if (!isRecord(parsed) || typeof parsed['html'] !== 'string') {
+    respond(response, 400, {
+      error: 'expected {html}',
+    });
+
+    return;
+  }
+
+  mkdirSync(snapshotDir, {
+    recursive: true,
+  });
+
+  const file = path.join(snapshotDir, `snapshot-${
+    new Date().toISOString().replace(/[:.]/g, '-')}.html`);
+
+  writeFileSync(file, `${parsed['html']}\n`);
+  process.stdout.write(`raw snapshot written: ${file}\n`);
+  respond(response, 200, {
+    written: path.basename(file),
+  });
+};
+
 createServer((request, response) => {
   if (request.method === 'GET' && request.url === '/status') {
     respond(response, 200, {
@@ -128,16 +160,25 @@ createServer((request, response) => {
     return;
   }
 
-  if (request.method === 'POST'
-    && (request.url === '/capture' || request.url === '/unknown')) {
-    const handler = request.url === '/capture' ? handleCapture : handleUnknown;
+  const handlers: Record<string, typeof handleCapture | undefined> = {
+    '/capture': handleCapture,
+    '/unknown': handleUnknown,
+    '/snapshot': handleSnapshot,
+  };
+
+  const handler = request.method === 'POST' && request.url !== undefined
+    ? handlers[request.url]
+    : undefined;
+
+  if (handler) {
+    const sizeLimit = request.url === '/snapshot' ? 30_000_000 : 2_000_000;
     const chunks: Buffer[] = [];
     let size = 0;
 
     request.on('data', (chunk: Buffer) => {
       size += chunk.length;
 
-      if (size > 2_000_000) {
+      if (size > sizeLimit) {
         request.destroy();
       } else {
         chunks.push(chunk);

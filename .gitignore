@@ -25,3 +25,7 @@ dist-ssr
 
 *.tsbuildinfo
 build/
+
+# Raw live-chat DOM snapshots from the fixture-capture tool: real user
+# content, local-only by design, never to be committed.
+capture-snapshots/

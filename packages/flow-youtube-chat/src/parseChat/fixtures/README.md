@@ -54,3 +54,15 @@ deliberately-unmodeled list in `@/fixtureCapture/main`. No test can catch
 tag-level drift: an unrecognized renderer is simply never captured, so the
 suite stays green on stale fixtures. This line is the discovery signal that
 the slot enumeration itself needs a new entry.
+
+## Raw whole-DOM snapshots
+
+Once per page load (30s after the chat attaches) the capture script also
+sends the entire `yt-live-chat-app` element, UNSANITIZED, and the server
+writes it to the gitignored `capture-snapshots/` directory in the package
+root. Use it to inspect unknown renderers' internals, the chat shell the
+`@/livePageYt` lookups depend on, or anything the per-slot fixtures don't
+model. It contains real user content (names, avatars, messages) — that is
+the point, and why it must stay local: never commit or share one as-is;
+derive a redacted fixture from it instead if something needs to be pinned
+by a test. Reload the page for a fresh snapshot; delete old files freely.
