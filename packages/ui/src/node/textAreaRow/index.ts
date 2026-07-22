@@ -23,6 +23,10 @@ export default <T>(
   >>,
 ) => (value: Editable<readonly string[]>): VNode<T> => h('textarea', {
   rows,
+  // One entry per line: soft wrap would fold a long entry (a "handle
+  // token" ban row, a long regex) into what looks like several entries,
+  // so overflow scrolls horizontally instead.
+  wrap: 'off',
   style: {
     resize: 'none',
     boxSizing: 'border-box',
