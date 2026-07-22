@@ -1,4 +1,6 @@
-import Slot from '@/fixtureCapture/Slot';
+import type {
+  Slot,
+} from '@/fixtureCapture/Slot';
 
 const keepAttribute = new Set(['id', 'class']);
 

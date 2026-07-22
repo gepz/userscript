@@ -10,6 +10,7 @@ export const slots = [
   'engagementMessage',
 ] as const;
 
-type Slot = (typeof slots)[number];
-
-export default Slot;
+// Named type export (not default): node type stripping runs this module
+// for importers of `slots` (the capture server), and a type has no runtime
+// binding to be the default.
+export type Slot = (typeof slots)[number];

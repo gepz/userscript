@@ -11,8 +11,9 @@ import {
   it,
 } from 'vitest';
 
-import Slot, {
+import {
   slots,
+  type Slot,
 } from '@/fixtureCapture/Slot';
 import slotFor from '@/fixtureCapture/slotFor';
 

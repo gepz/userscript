@@ -1,3 +1,12 @@
 {
-  "extends": ["../../tsconfig.bundle.json", "./tsconfig.exclude.json"]
+  "extends": ["../../tsconfig.bundle.json", "./tsconfig.exclude.json"],
+  // The capture server (src/fixtureCapture/server) runs under node's type
+  // stripping and therefore imports its shared modules with explicit .ts
+  // extensions, which needs allowImportingTsExtensions — and that in turn
+  // requires noEmit, which is accurate here anyway: emit happens through
+  // ts-loader in webpack, never through tsc.
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+  },
 }

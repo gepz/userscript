@@ -2,7 +2,9 @@ import {
   Option as O,
 } from 'effect';
 
-import Slot from '@/fixtureCapture/Slot';
+import type {
+  Slot,
+} from '@/fixtureCapture/Slot';
 import parseChat from '@/parseChat';
 
 const byAuthorType = {

@@ -4,43 +4,55 @@ import {
   Schema as S,
 } from 'effect';
 
-import Slot, {
+import {
   slots,
 } from '@/fixtureCapture/Slot';
+import {
+  cooldownMs,
+  maxSamples,
+  port,
+} from '@/fixtureCapture/protocol';
 import sanitize from '@/fixtureCapture/sanitize';
 import slotFor from '@/fixtureCapture/slotFor';
 import livePageYt from '@/livePageYt';
 
 // Dev-only capture userscript entry (dist/capture, built by
-// config/webpack.config.capture.ts, never shipped). Feeds sanitized live
-// renderer markup to the ingest server; the workflow is documented in
+// config/webpack.config.capture.ts, never shipped). Feeds live renderer
+// markup to the ingest server (@/fixtureCapture/server); shared constants
+// in @/fixtureCapture/protocol; the workflow is documented in
 // src/parseChat/fixtures/README.md.
 
-// Must match the port constant in @/fixtureCapture/server.
-const serverBase = 'http://localhost:8931';
+const serverBase = `http://localhost:${port}`;
 
-const statusResponse = S.parseJson(S.Struct({
-  captured: S.Array(S.String),
-  unknown: S.Array(S.String),
+// Every server response carries the per-kind sample counts, so any reply —
+// status poll or capture, accepted or rejected — resyncs this client.
+const kindsResponse = S.parseJson(S.Struct({
+  kinds: S.Record({
+    key: S.String,
+    value: S.Number,
+  }),
 }));
 
 // Renderer kinds known to exist that the fixtures deliberately do not
-// model. Anything else slotFor rejects is surfaced as an unknown, because
-// tag-level drift never fails a test: an unrecognized renderer is simply
-// never captured, so discovery has to happen here.
+// model. Anything else slotFor rejects is captured as an unknown kind,
+// because tag-level drift never fails a test: an unrecognized renderer is
+// simply never captured, so discovery has to happen here.
 const ignoredTags = new Set([
   'yt-live-chat-placeholder-item-renderer',
   'yt-live-chat-mode-change-message-renderer',
 ]);
 
-const captured = new Set<string>();
-const pending = new Set<Slot>();
-const unknownTags = new Set<string>();
-// Dedup for unknown reports must be per page load, not unknownTags: that
-// set mirrors the server, and a tag already known there would suppress
-// ever sending the raw markup again after a reload.
-const reportedTags = new Set<string>();
+const slotSet = new Set<string>(slots);
+
+// Mirror of the server's per-kind sample counts. Nothing is captured or
+// sent before the first successful sync, so a fresh page load cannot race
+// ahead of what the server already holds.
+const kinds = new Map<string, number>();
+let synced = false;
 let serverReachable = false;
+
+const pending = new Set<string>();
+const cooldownUntil = new Map<string, number>();
 let snapshotScheduled = false;
 let snapshotSaved = false;
 
@@ -61,73 +73,70 @@ badge.style.cssText = [
   'pointer-events: none',
 ].join('; ');
 
+const countOf = (kind: string): number => kinds.get(kind) ?? 0;
+
+const progress = (
+  kind: string,
+): string => `${kind} ${countOf(kind)}/${maxSamples}`;
+
 const render = (): void => {
-  const missing = slots.filter((slot) => !captured.has(slot));
+  const missing = slots.filter((slot) => countOf(slot) < maxSamples);
+  const unknownKinds = [...kinds.keys()]
+    .filter((kind) => !slotSet.has(kind));
 
   badge.textContent = serverReachable
-    ? `FYC capture ${captured.size}/${slots.length}${
+    ? `FYC capture ${slots.length - missing.length}/${slots.length
+    } slots full${
       missing.length > 0
-        ? `\nmissing: ${missing.join(', ')}`
-        : ' — all captured'}${
-      unknownTags.size > 0
-        ? `\nunknown: ${[...unknownTags].join(', ')}`
+        ? `\nsampling: ${missing.map(progress).join(', ')}`
+        : ''}${
+      unknownKinds.length > 0
+        ? `\nunknown: ${unknownKinds.map(progress).join(', ')}`
         : ''}${
       snapshotSaved ? '\nsnapshot: saved' : ''}`
     : `FYC capture: server unreachable at ${serverBase}\nrun: pnpm capture-server`;
 };
 
-const reportUnknown = (element: HTMLElement): void => {
-  const tag = element.tagName.toLowerCase();
+const syncKinds = (responseText: string): void => {
+  const status = S.decodeUnknownOption(kindsResponse)(responseText);
 
-  if (ignoredTags.has(tag) || reportedTags.has(tag)) {
-    return;
+  if (O.isSome(status)) {
+    synced = true;
+    kinds.clear();
+    Object.entries(status.value.kinds).forEach(([kind, sampleCount]) => {
+      kinds.set(kind, sampleCount);
+    });
   }
-
-  reportedTags.add(tag);
-  unknownTags.add(tag);
-  render();
-  GM.xmlHttpRequest({
-    method: 'POST',
-    url: `${serverBase}/unknown`,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: JSON.stringify({
-      tag,
-      // Raw markup so the server can keep an inspectable copy; local-only
-      // like the slot twins.
-      html: element.outerHTML,
-    }),
-  });
 };
 
-const submit = (slot: Slot, element: HTMLElement): void => {
-  pending.add(slot);
+const submit = (
+  kind: string,
+  element: HTMLElement,
+  sanitized: string | undefined,
+): void => {
+  pending.add(kind);
+  cooldownUntil.set(kind, Date.now() + cooldownMs);
   GM.xmlHttpRequest({
     method: 'POST',
     url: `${serverBase}/capture`,
     headers: {
       'Content-Type': 'application/json',
     },
+    // Raw markup becomes a local-only sample; sanitized (slot kinds only —
+    // unknowns have no sanitizer) becomes the committed fixture.
     data: JSON.stringify({
-      slot,
-      html: sanitize(slot, element),
-      // Unsanitized twin, written to the gitignored capture-snapshots/
-      // directory for auditing what sanitize removed.
+      kind,
       raw: element.outerHTML,
+      sanitized,
     }),
     onload: (response) => {
-      pending.delete(slot);
-
-      if (response.status === 200) {
-        serverReachable = true;
-        captured.add(slot);
-      }
-
+      pending.delete(kind);
+      serverReachable = true;
+      syncKinds(response.responseText);
       render();
     },
     onerror: () => {
-      pending.delete(slot);
+      pending.delete(kind);
       serverReachable = false;
       render();
     },
@@ -139,18 +148,8 @@ const refreshStatus = (): void => {
     method: 'GET',
     url: `${serverBase}/status`,
     onload: (response) => {
-      serverReachable = response.status === 200;
-      const status = S.decodeUnknownOption(statusResponse)(
-        response.responseText,
-      );
-
-      if (O.isSome(status)) {
-        captured.clear();
-        status.value.captured.forEach((slot) => captured.add(slot));
-        unknownTags.clear();
-        status.value.unknown.forEach((tag) => unknownTags.add(tag));
-      }
-
+      serverReachable = true;
+      syncKinds(response.responseText);
       render();
     },
     onerror: () => {
@@ -161,17 +160,25 @@ const refreshStatus = (): void => {
 };
 
 const maybeCapture = (element: HTMLElement): void => {
-  const slot = slotFor(element);
-
-  if (O.isNone(slot)) {
-    reportUnknown(element);
-
+  if (!synced) {
     return;
   }
 
-  if (!captured.has(slot.value) && !pending.has(slot.value)) {
-    submit(slot.value, element);
+  const slot = slotFor(element);
+  const kind = O.isSome(slot) ? slot.value : element.tagName.toLowerCase();
+
+  if ((O.isNone(slot) && ignoredTags.has(kind))
+    || countOf(kind) >= maxSamples
+    || pending.has(kind)
+    || Date.now() < (cooldownUntil.get(kind) ?? 0)) {
+    return;
   }
+
+  submit(
+    kind,
+    element,
+    O.isSome(slot) ? sanitize(slot.value, element) : undefined,
+  );
 };
 
 const observer = new MutationObserver((records) => {
@@ -216,6 +223,13 @@ const takeSnapshot = (): void => {
 };
 
 const attach = (): void => {
+  // Before the first status sync nothing may be captured, so observing (or
+  // scanning already-rendered chat) would only discard elements; the 2s
+  // interval below re-attaches right after the sync lands.
+  if (!synced) {
+    return;
+  }
+
   const field = O.getOrUndefined(Z.runSync(Z.option(livePageYt.chatField)));
   const ticker = O.getOrUndefined(Z.runSync(Z.option(livePageYt.chatTicker)));
 

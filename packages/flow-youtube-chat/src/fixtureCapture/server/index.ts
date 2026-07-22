@@ -1,7 +1,6 @@
 import {
   existsSync,
   mkdirSync,
-  readFileSync,
   readdirSync,
   writeFileSync,
 } from 'node:fs';
@@ -14,53 +13,79 @@ import {
   fileURLToPath,
 } from 'node:url';
 
+// Node's type stripping resolves only explicit .ts specifiers, so these
+// local imports must carry the extension the lint rule would strip.
+/* eslint-disable import-x/extensions, import-x/no-useless-path-segments */
+import {
+  slots,
+} from '../Slot/index.ts';
+import {
+  cooldownMs,
+  maxSamples,
+  port,
+  sampleName,
+  tagPattern,
+} from '../protocol/index.ts';
+/* eslint-enable import-x/extensions, import-x/no-useless-path-segments */
+
 // Fixture-capture ingest server: `pnpm capture-server`, run directly by
-// node's type stripping, so no @/ aliases and only erasable syntax here.
-// Receives already-sanitized fragments from the capture userscript
-// (@/fixtureCapture/main) and writes them into src/parseChat/fixtures/;
+// node's type stripping, so no @/ aliases and only erasable syntax here
+// and in the modules imported above. Receives captures from the userscript
+// (@/fixtureCapture/main); shared constants in @/fixtureCapture/protocol;
 // workflow in src/parseChat/fixtures/README.md.
 
-// Must match serverBase in @/fixtureCapture/main.
-const port = 8931;
 const marker = '<!-- captured ';
 const fixturesDir = fileURLToPath(
   new URL('../../parseChat/fixtures', import.meta.url),
 );
 
-// Raw whole-DOM snapshots: real user content, so the directory is
-// gitignored (see the root .gitignore) and must stay local-only.
+// Raw samples and whole-DOM snapshots: real user content, so the directory
+// is gitignored (see the root .gitignore) and must stay local-only.
 const snapshotDir = fileURLToPath(
   new URL('../../../capture-snapshots', import.meta.url),
 );
 
-const fixtureFile = (slot: string): string => path.join(
-  fixturesDir,
-  `${slot}.html`,
-);
+const slotSet = new Set<string>(slots);
 
-// The fixture files on disk define the valid slots.
-const validSlots = readdirSync(fixturesDir)
-  .filter((name) => name.endsWith('.html'))
-  .map((name) => name.slice(0, -'.html'.length));
+// Samples held per kind, derived from the files on disk, so counts survive
+// restarts. --refresh forgets them: every kind gets re-sampled (and its
+// files and fixture overwritten) this run.
+const counts = new Map<string, number>();
 
-// --refresh forgets prior captures, so every slot the page produces gets
-// re-captured this run.
-const captured = new Set(process.argv.includes('--refresh')
-  ? []
-  : validSlots.filter(
-    (slot) => readFileSync(fixtureFile(slot), 'utf8').startsWith(marker),
-  ));
+if (!process.argv.includes('--refresh') && existsSync(snapshotDir)) {
+  readdirSync(snapshotDir).forEach((name) => {
+    // Inverse of sampleName in ../protocol.
+    const match = /^sample-(.+)-(\d+)\.html$/.exec(name);
+    const kind = match?.[1];
+    const n = Number(match?.[2]);
 
-// Renderer tag names the client saw but could not classify: the discovery
-// signal for slot kinds the fixtures do not model yet. In-memory only.
-const unknown = new Set<string>();
+    if (kind !== undefined && Number.isInteger(n)) {
+      counts.set(kind, Math.max(counts.get(kind) ?? 0, n));
+    }
+  });
+}
+
+const lastAccepted = new Map<string, number>();
+
+const kindCounts = (): Record<string, number> => Object.fromEntries(counts);
+
+const progress = (
+  kind: string,
+): string => `${kind} ${counts.get(kind) ?? 0}/${maxSamples}`;
 
 const report = (): void => {
-  const missing = validSlots.filter((slot) => !captured.has(slot));
+  const missing = slots.filter((slot) => (counts.get(slot) ?? 0) < maxSamples);
+  const unknownKinds = [...counts.keys()]
+    .filter((kind) => !slotSet.has(kind));
 
-  process.stdout.write(`captured ${captured.size}/${validSlots.length}${
-    missing.length > 0 ? `; missing: ${missing.join(', ')}` : '; all slots'
-  }\n`);
+  process.stdout.write(`slots full ${slots.length - missing.length}/${
+    slots.length}${
+    missing.length > 0
+      ? `; sampling: ${missing.map(progress).join(', ')}`
+      : ''}${
+    unknownKinds.length > 0
+      ? `; unknown: ${unknownKinds.map(progress).join(', ')}`
+      : ''}\n`);
 };
 
 const respond = (
@@ -83,73 +108,49 @@ const handleCapture = (body: string, response: ServerResponse): void => {
   const parsed: unknown = JSON.parse(body);
 
   if (!isRecord(parsed)
-    || typeof parsed['slot'] !== 'string'
-    || typeof parsed['html'] !== 'string'
-    || !validSlots.includes(parsed['slot'])) {
+    || typeof parsed['kind'] !== 'string'
+    || typeof parsed['raw'] !== 'string'
+    || !(slotSet.has(parsed['kind'])
+      ? typeof parsed['sanitized'] === 'string'
+      : tagPattern.test(parsed['kind']))) {
     respond(response, 400, {
-      error: 'expected {slot, html} with a known slot',
+      error: 'expected {kind, raw}, plus sanitized for slot kinds',
     });
 
     return;
   }
 
-  writeFileSync(fixtureFile(parsed['slot']), `${marker}${
-    new Date().toISOString().slice(0, 10)} -->\n${parsed['html'].trim()}\n`);
+  const kind = parsed['kind'];
+  const held = counts.get(kind) ?? 0;
 
-  // Raw twin of the same element (slot name is validated above, so it is
-  // safe as a filename). Local-only, like the whole-DOM snapshots.
-  if (typeof parsed['raw'] === 'string') {
+  // Full kinds and cooldown violations are rejected, but still answered
+  // with the counts, so the client resyncs (and stops sending a full kind)
+  // instead of retrying.
+  if (held < maxSamples
+    && Date.now() - (lastAccepted.get(kind) ?? 0) >= cooldownMs) {
     mkdirSync(snapshotDir, {
       recursive: true,
     });
 
     writeFileSync(
-      path.join(snapshotDir, `slot-${parsed['slot']}.html`),
+      path.join(snapshotDir, sampleName(kind, held + 1)),
       `${parsed['raw']}\n`,
     );
-  }
 
-  captured.add(parsed['slot']);
-  report();
-  respond(response, 200, {
-    captured: [...captured],
-  });
-};
+    // The committed fixture is the sanitized twin of the newest sample.
+    if (typeof parsed['sanitized'] === 'string') {
+      writeFileSync(path.join(fixturesDir, `${kind}.html`), `${marker}${
+        new Date().toISOString().slice(0, 10)} -->\n${
+        parsed['sanitized'].trim()}\n`);
+    }
 
-const handleUnknown = (body: string, response: ServerResponse): void => {
-  const parsed: unknown = JSON.parse(body);
-
-  if (!isRecord(parsed)
-    || typeof parsed['tag'] !== 'string'
-    || !/^[a-z][a-z0-9-]{0,99}$/.test(parsed['tag'])) {
-    respond(response, 400, {
-      error: 'expected {tag} naming a renderer element',
-    });
-
-    return;
-  }
-
-  if (!unknown.has(parsed['tag'])) {
-    unknown.add(parsed['tag']);
-    process.stdout.write(`unknown renderer: ${parsed['tag']}\n`);
-  }
-
-  // Keep the first raw occurrence of each tag for inspection (the tag is
-  // validated above, so it is safe as a filename). Local-only, like the
-  // slot twins; delete the file to re-collect a fresh copy.
-  const file = path.join(snapshotDir, `unknown-${parsed['tag']}.html`);
-
-  if (typeof parsed['html'] === 'string' && !existsSync(file)) {
-    mkdirSync(snapshotDir, {
-      recursive: true,
-    });
-
-    writeFileSync(file, `${parsed['html']}\n`);
-    process.stdout.write(`unknown raw written: ${file}\n`);
+    counts.set(kind, held + 1);
+    lastAccepted.set(kind, Date.now());
+    report();
   }
 
   respond(response, 200, {
-    unknown: [...unknown],
+    kinds: kindCounts(),
   });
 };
 
@@ -181,8 +182,7 @@ const handleSnapshot = (body: string, response: ServerResponse): void => {
 createServer((request, response) => {
   if (request.method === 'GET' && request.url === '/status') {
     respond(response, 200, {
-      captured: [...captured],
-      unknown: [...unknown],
+      kinds: kindCounts(),
     });
 
     return;
@@ -190,7 +190,6 @@ createServer((request, response) => {
 
   const handlers: Record<string, typeof handleCapture | undefined> = {
     '/capture': handleCapture,
-    '/unknown': handleUnknown,
     '/snapshot': handleSnapshot,
   };
 

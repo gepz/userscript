@@ -1,3 +1,10 @@
 {
-  "extends": ["../../tsconfig.src.json", "./tsconfig.exclude.json"]
+  "extends": ["../../tsconfig.src.json", "./tsconfig.exclude.json"],
+  // For the capture server's explicit .ts-extension imports; see the note
+  // in tsconfig.build.json. noEmit satisfies the option's requirement and
+  // is accurate: this project exists for editor assignment, nothing emits.
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+  },
 }

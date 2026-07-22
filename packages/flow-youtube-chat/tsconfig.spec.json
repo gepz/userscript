@@ -9,6 +9,9 @@
   "compilerOptions": {
     "composite": true,
     "noEmit": true,
+    // For the capture server's explicit .ts-extension imports; see the
+    // note in tsconfig.build.json.
+    "allowImportingTsExtensions": true,
   },
   "exclude": [
     "node_modules",

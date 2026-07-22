@@ -39,24 +39,37 @@ carries an explicit `background-color`.
 
 1. `pnpm build-capture`, then install `dist/capture/index.user.js` in your
    userscript manager (it is a separate dev-only script; it never ships).
-2. `pnpm capture-server` — writes into this directory. Pass `--refresh` to
-   re-capture slots that already have captured fragments.
+2. `pnpm capture-server` — writes fixtures into this directory and raw
+   samples into the gitignored `capture-snapshots/`. Pass `--refresh` to
+   forget the existing samples, so every kind is re-sampled (and its
+   fixture overwritten) this run.
 3. Open a busy YouTube live stream. The badge in the bottom-left corner
-   shows progress and the still-missing slots. Common messages land
-   immediately (existing chat is scanned on attach); superchats, stickers
-   and memberships land whenever one appears, so leave it running — the
-   server accumulates across sessions and streams.
+   shows per-kind sample counts and the still-missing slots. Common
+   messages land immediately (existing chat is scanned on attach);
+   superchats, stickers and memberships land whenever one appears, so
+   leave it running — the server accumulates across sessions and streams.
 4. Re-run `pnpm test` and review the git diff of this directory.
+
+Every capture kind — the nine slots and any unknown renderer tag — is
+sampled identically: the server keeps up to `maxSamples` raw samples per
+kind as `capture-snapshots/sample-<kind>-<n>.html`, accepts at most one per
+cooldown period so the samples come from distinct messages, and rejects
+the rest. Every response carries the per-kind counts, so clients (which
+send nothing before their first status sync) stop offering a kind the
+moment the server reports it full. For slot kinds each accepted sample
+also rewrites the committed fixture here — the fixture is always the
+sanitized twin of the newest sample. The numbers live in
+`@/fixtureCapture/protocol`, the one module both sides import.
 
 The badge (and the server log) also lists `unknown:` renderer kinds — chat
 or ticker children whose tag matches no slot and is not on the
 deliberately-unmodeled list in `@/fixtureCapture/main`. No test can catch
-tag-level drift: an unrecognized renderer is simply never captured, so the
-suite stays green on stale fixtures. This line is the discovery signal that
-the slot enumeration itself needs a new entry. The first raw occurrence of
-each unknown tag is saved to `capture-snapshots/` as `unknown-<tag>.html`,
-so the decision (new slot vs deliberately unmodeled) can be made from its
-actual markup; delete the file to collect a fresh copy.
+tag-level drift: an unrecognized renderer never becomes a fixture, so the
+suite stays green on stale fixtures. This line is the discovery signal
+that the slot enumeration itself needs a new entry. Unknown kinds ride the
+same sampling pipeline as slots; they differ only in having no sanitizer,
+so they produce raw samples but no committed fixture. Decide from the
+samples whether the tag becomes a new slot or joins the ignored list.
 
 ## Raw whole-DOM snapshots
 
@@ -70,6 +83,6 @@ the point, and why it must stay local: never commit or share one as-is;
 derive a redacted fixture from it instead if something needs to be pinned
 by a test. Reload the page for a fresh snapshot; delete old files freely.
 
-Each slot capture also drops an unsanitized twin of the same element there
-as `slot-<name>.html`, so every fixture has a raw original to audit the
-sanitizer against.
+The `sample-<kind>-<n>.html` files live there too: every fixture has raw
+originals to audit the sanitizer against, and every unknown renderer has
+real markup to inspect.
