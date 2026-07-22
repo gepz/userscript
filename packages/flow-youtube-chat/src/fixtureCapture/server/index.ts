@@ -1,4 +1,5 @@
 import {
+  existsSync,
   mkdirSync,
   readFileSync,
   readdirSync,
@@ -131,6 +132,20 @@ const handleUnknown = (body: string, response: ServerResponse): void => {
   if (!unknown.has(parsed['tag'])) {
     unknown.add(parsed['tag']);
     process.stdout.write(`unknown renderer: ${parsed['tag']}\n`);
+  }
+
+  // Keep the first raw occurrence of each tag for inspection (the tag is
+  // validated above, so it is safe as a filename). Local-only, like the
+  // slot twins; delete the file to re-collect a fresh copy.
+  const file = path.join(snapshotDir, `unknown-${parsed['tag']}.html`);
+
+  if (typeof parsed['html'] === 'string' && !existsSync(file)) {
+    mkdirSync(snapshotDir, {
+      recursive: true,
+    });
+
+    writeFileSync(file, `${parsed['html']}\n`);
+    process.stdout.write(`unknown raw written: ${file}\n`);
   }
 
   respond(response, 200, {

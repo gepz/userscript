@@ -53,7 +53,10 @@ or ticker children whose tag matches no slot and is not on the
 deliberately-unmodeled list in `@/fixtureCapture/main`. No test can catch
 tag-level drift: an unrecognized renderer is simply never captured, so the
 suite stays green on stale fixtures. This line is the discovery signal that
-the slot enumeration itself needs a new entry.
+the slot enumeration itself needs a new entry. The first raw occurrence of
+each unknown tag is saved to `capture-snapshots/` as `unknown-<tag>.html`,
+so the decision (new slot vs deliberately unmodeled) can be made from its
+actual markup; delete the file to collect a fresh copy.
 
 ## Raw whole-DOM snapshots
 

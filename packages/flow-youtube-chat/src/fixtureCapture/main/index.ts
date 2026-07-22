@@ -36,6 +36,10 @@ const ignoredTags = new Set([
 const captured = new Set<string>();
 const pending = new Set<Slot>();
 const unknownTags = new Set<string>();
+// Dedup for unknown reports must be per page load, not unknownTags: that
+// set mirrors the server, and a tag already known there would suppress
+// ever sending the raw markup again after a reload.
+const reportedTags = new Set<string>();
 let serverReachable = false;
 let snapshotScheduled = false;
 let snapshotSaved = false;
@@ -72,11 +76,14 @@ const render = (): void => {
     : `FYC capture: server unreachable at ${serverBase}\nrun: pnpm capture-server`;
 };
 
-const reportUnknown = (tag: string): void => {
-  if (ignoredTags.has(tag) || unknownTags.has(tag)) {
+const reportUnknown = (element: HTMLElement): void => {
+  const tag = element.tagName.toLowerCase();
+
+  if (ignoredTags.has(tag) || reportedTags.has(tag)) {
     return;
   }
 
+  reportedTags.add(tag);
   unknownTags.add(tag);
   render();
   GM.xmlHttpRequest({
@@ -87,6 +94,9 @@ const reportUnknown = (tag: string): void => {
     },
     data: JSON.stringify({
       tag,
+      // Raw markup so the server can keep an inspectable copy; local-only
+      // like the slot twins.
+      html: element.outerHTML,
     }),
   });
 };
@@ -154,7 +164,7 @@ const maybeCapture = (element: HTMLElement): void => {
   const slot = slotFor(element);
 
   if (O.isNone(slot)) {
-    reportUnknown(element.tagName.toLowerCase());
+    reportUnknown(element);
 
     return;
   }
