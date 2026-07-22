@@ -2,6 +2,9 @@ import {
   Option as O,
 } from 'effect';
 
+import {
+  entryParts,
+} from '@/BanEntry';
 import ChatData from '@/ChatData';
 
 // Author display names are not unique on YouTube, so name-based banning is
@@ -45,5 +48,7 @@ export const isBannedByName = (
   const ids = index.get(name);
 
   return ids?.size === 1
-    && [...ids].every((id) => bannedUsers.includes(id));
+    && [...ids].every((id) => bannedUsers.some(
+      (entry) => entryParts(entry).includes(id),
+    ));
 });

@@ -92,4 +92,10 @@ describe('isBannedByName', () => {
       author('Alice', 'id-2'),
     ))(idlessAlice)).toBe(false);
   });
+
+  it('recognizes banned ids inside composite rows', () => {
+    expect(isBannedByName(['@other id-1'])(observe(author('Alice', 'id-1')))(
+      idlessAlice,
+    )).toBe(true);
+  });
 });

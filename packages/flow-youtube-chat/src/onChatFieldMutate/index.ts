@@ -11,6 +11,10 @@ import {
   isBannedByName,
   recordAuthor,
 } from '@/AuthorNameIndex';
+import {
+  banEntryFor,
+  isBannedAuthor,
+} from '@/BanEntry';
 import MainState from '@/MainState';
 import addFlowChat from '@/addFlowChat';
 import appendChatMessage from '@/appendChatMessage';
@@ -40,6 +44,7 @@ export default (
     );
 
     if ((yield * checkBannedWords(data, mainState.config.value))
+      || isBannedAuthor(mainState.config.value.bannedUsers)(data)
       || isBannedByName(mainState.config.value.bannedUsers)(authorNames)(
         data,
       )) {
@@ -58,11 +63,11 @@ export default (
             ),
           )),
         ),
-        data.authorID.pipe(
+        banEntryFor(data).pipe(
           O.filter(() => mainState.config.value.createBanButton
             && !chat.children.namedItem('card')),
-          Z.flatMap((x: string) => appendChatMessage(
-            banButton(x)(mainState.config.getConfig)(
+          Z.flatMap((entry: string) => appendChatMessage(
+            banButton(entry)(mainState.config.getConfig)(
               mainState.config.setConfig,
             )(chat),
           )(chat)),

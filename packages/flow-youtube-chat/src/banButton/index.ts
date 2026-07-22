@@ -55,8 +55,9 @@ const template = runLogged(pipe(
   })),
 ));
 
+// entry is a bannedUsers row (see @/BanEntry for the format).
 export default (
-  id: string,
+  entry: string,
 ) => (
   getConfig: UserConfigGetter,
 ) => (
@@ -65,10 +66,10 @@ export default (
   chat: HTMLElement,
 ): Z.Effect<HTMLElement> => pipe(
   getConfig.bannedUsers,
-  Z.filterOrFail((x): boolean => !x.includes(id)),
+  Z.filterOrFail((x): boolean => !x.includes(entry)),
   Z.map((x) => pipe(
     A.dedupeWith(x, Str.Equivalence),
-    A.append(id),
+    A.append(entry),
   )),
   Z.flatMap((x) => pipe(
     setConfig.bannedUsers(x),
