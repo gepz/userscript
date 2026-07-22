@@ -2,6 +2,7 @@ import {
   SynchronizedRef,
 } from 'effect';
 
+import AuthorNameIndex from '@/AuthorNameIndex';
 import FlowChat from '@/FlowChat';
 import UserConfig from '@/UserConfig';
 import UserConfigGetter from '@/UserConfigGetter';
@@ -16,4 +17,5 @@ export default interface MainState {
     setConfig: UserConfigSetter
   }
   flowChats: SynchronizedRef.SynchronizedRef<readonly FlowChat[]>
+  authorNames: SynchronizedRef.SynchronizedRef<AuthorNameIndex>
 }

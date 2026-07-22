@@ -20,6 +20,9 @@ import {
 } from 'hyperapp';
 
 import packageJson from '@/../package.json';
+import {
+  emptyAuthorNames,
+} from '@/AuthorNameIndex';
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
@@ -104,6 +107,7 @@ export default pipe(
           new DOMRectReadOnly(0, 0, 600, 400),
         ),
         flowChats: yield * SynchronizedRef.make<readonly FlowChat[]>([]),
+        authorNames: yield * SynchronizedRef.make(emptyAuthorNames),
         config: {
           value: configValue,
           getConfig: makeGetter(configValue),

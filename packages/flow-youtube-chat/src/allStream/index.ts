@@ -25,6 +25,9 @@ import {
   Dispatchable,
 } from 'hyperapp';
 
+import {
+  emptyAuthorNames,
+} from '@/AuthorNameIndex';
 import ConfigRefs from '@/ConfigRefs';
 import {
   makePageState,
@@ -261,6 +264,8 @@ export default Z.fnUntraced(function* (ctx: {
       Stream.mapEffect((x) => Z.all([
         Z.logDebug(`URL Changed: ${x}`),
         removeOldChats(ctx.mainState.flowChats)(0),
+        // Name observations are per stream; see AuthorNameIndex.
+        SynchronizedRef.set(ctx.mainState.authorNames, emptyAuthorNames),
       ])),
       Stream.mapEffect(() => pipe(
         Z.sleep('1700 millis'),

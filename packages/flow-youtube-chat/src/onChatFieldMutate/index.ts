@@ -3,9 +3,14 @@ import {
   Either as E,
   Option as O,
   Array as A,
+  SynchronizedRef,
   pipe,
 } from 'effect';
 
+import {
+  isBannedByName,
+  recordAuthor,
+} from '@/AuthorNameIndex';
 import MainState from '@/MainState';
 import addFlowChat from '@/addFlowChat';
 import appendChatMessage from '@/appendChatMessage';
@@ -27,7 +32,17 @@ export default (
   Z.flatMap(Z.forEach(Z.fnUntraced(function* (chat: HTMLElement) {
     yield * Z.logDebug('Chat detected');
     const data = parseChat(chat);
-    if (yield * checkBannedWords(data, mainState.config.value)) {
+    // Every chat feeds the index — a banned author's own messages are what
+    // associate their id with their display name.
+    const authorNames = yield * SynchronizedRef.updateAndGet(
+      mainState.authorNames,
+      recordAuthor(data),
+    );
+
+    if ((yield * checkBannedWords(data, mainState.config.value))
+      || isBannedByName(mainState.config.value.bannedUsers)(authorNames)(
+        data,
+      )) {
       chat.style.display = 'none';
     } else {
       yield * Z.all([
