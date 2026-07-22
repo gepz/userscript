@@ -66,3 +66,7 @@ model. It contains real user content (names, avatars, messages) — that is
 the point, and why it must stay local: never commit or share one as-is;
 derive a redacted fixture from it instead if something needs to be pinned
 by a test. Reload the page for a fresh snapshot; delete old files freely.
+
+Each slot capture also drops an unsanitized twin of the same element there
+as `slot-<name>.html`, so every fixture has a raw original to audit the
+sanitizer against.

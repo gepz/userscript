@@ -95,6 +95,19 @@ const handleCapture = (body: string, response: ServerResponse): void => {
   writeFileSync(fixtureFile(parsed['slot']), `${marker}${
     new Date().toISOString().slice(0, 10)} -->\n${parsed['html'].trim()}\n`);
 
+  // Raw twin of the same element (slot name is validated above, so it is
+  // safe as a filename). Local-only, like the whole-DOM snapshots.
+  if (typeof parsed['raw'] === 'string') {
+    mkdirSync(snapshotDir, {
+      recursive: true,
+    });
+
+    writeFileSync(
+      path.join(snapshotDir, `slot-${parsed['slot']}.html`),
+      `${parsed['raw']}\n`,
+    );
+  }
+
   captured.add(parsed['slot']);
   report();
   respond(response, 200, {

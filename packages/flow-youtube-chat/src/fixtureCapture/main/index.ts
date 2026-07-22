@@ -102,6 +102,9 @@ const submit = (slot: Slot, element: HTMLElement): void => {
     data: JSON.stringify({
       slot,
       html: sanitize(slot, element),
+      // Unsanitized twin, written to the gitignored capture-snapshots/
+      // directory for auditing what sanitize removed.
+      raw: element.outerHTML,
     }),
     onload: (response) => {
       pending.delete(slot);
