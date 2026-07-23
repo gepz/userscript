@@ -32,6 +32,9 @@ const template = runLogged(pipe(
     border: '1px solid #8888',
     borderRadius: '4px',
     background: 'none',
+    // Breathing room between the border and the preceding text;
+    // inline-start so it also holds in RTL messages (dir="auto").
+    marginInlineStart: '4px',
   }))),
   Z.tap((x) => Z.sync(() => x.setAttribute(
     'aria-label',
