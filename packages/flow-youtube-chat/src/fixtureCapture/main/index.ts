@@ -15,6 +15,7 @@ import {
 import sanitize from '@/fixtureCapture/sanitize';
 import slotFor from '@/fixtureCapture/slotFor';
 import livePageYt from '@/livePageYt';
+import onElementSettled from '@/onElementSettled';
 
 // Dev-only capture userscript entry (dist/capture, built by
 // config/webpack.config.capture.ts, never shipped). Feeds live renderer
@@ -118,47 +119,13 @@ const syncKinds = (responseText: string): void => {
   }
 };
 
-// YouTube inserts some renderers as pre-hydration skeletons and stamps
-// conditional content in afterwards (seen live on the gift renderers), and
-// may rewrite an element later still (moderation, lazy-loaded avatars), so
-// the insert-time serialization is only half the evidence: watch the
-// element until its mutations go quiet (or a deadline passes), then report
-// the settled markup and whether the element left the document.
+// The insert-time serialization is only half the evidence (pre-hydration
+// skeletons, moderation rewrites, lazy loads — see the fixtures README):
+// each capture also reports the settled markup. A longer window than the
+// product recheck, since samples are for offline analysis, not a chat
+// still on screen.
 const settleQuietMs = 1000;
 const settleMaxMs = 10000;
-const settlePollMs = 250;
-
-const observeSettled = (
-  element: HTMLElement,
-  onSettled: (settled: string, detached: boolean) => void,
-): void => {
-  const started = Date.now();
-  let lastMutation = started;
-  const mutations = new MutationObserver(() => {
-    lastMutation = Date.now();
-  });
-
-  mutations.observe(element, {
-    subtree: true,
-    childList: true,
-    attributes: true,
-    characterData: true,
-  });
-
-  let poll: ReturnType<typeof setInterval> | undefined;
-
-  const tick = (): void => {
-    const now = Date.now();
-
-    if (now - lastMutation >= settleQuietMs || now - started >= settleMaxMs) {
-      mutations.disconnect();
-      clearInterval(poll);
-      onSettled(element.outerHTML, !element.isConnected);
-    }
-  };
-
-  poll = setInterval(tick, settlePollMs);
-};
 
 const submit = (
   kind: string,
@@ -242,12 +209,14 @@ const maybeCapture = (element: HTMLElement): void => {
   const raw = element.outerHTML;
   const sanitized = O.isSome(slot) ? sanitize(slot.value, element) : undefined;
 
-  observeSettled(element, (settled, detached) => {
+  onElementSettled(element, settleQuietMs, settleMaxMs, () => {
+    const settled = element.outerHTML;
+
     submit(kind, {
       raw,
       sanitized,
       settled: settled === raw ? undefined : settled,
-      detached,
+      detached: !element.isConnected,
     });
   });
 };

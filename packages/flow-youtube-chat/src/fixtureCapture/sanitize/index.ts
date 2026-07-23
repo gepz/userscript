@@ -134,6 +134,22 @@ export default (slot: Slot, chat: HTMLElement): string => {
     primaryText.textContent = 'Gifted 5 memberships';
   }
 
+  // Membership headers name the channel's tier (and the member's
+  // milestone), so any non-empty header line is canonicalized too; empty
+  // ones stay empty to preserve which lines the renderer populates.
+  const canonicalHeaders: readonly (readonly [string, string])[] = [
+    ['#header-primary-text', 'Joined the membership'],
+    ['#header-subtext', 'Membership milestone'],
+  ];
+
+  canonicalHeaders.forEach(([selector, canonical]) => {
+    const header = root.querySelector(selector);
+
+    if (header && header.textContent !== '') {
+      header.textContent = canonical;
+    }
+  });
+
   const amount = slot === 'paidSticker' ? '¥200' : '$5.00';
 
   Array.from(root.querySelectorAll('#purchase-amount, #purchase-amount-chip'))

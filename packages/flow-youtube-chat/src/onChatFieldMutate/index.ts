@@ -22,6 +22,7 @@ import banButton from '@/banButton';
 import checkBannedWords from '@/checkBannedWords';
 import isDuplicateChat from '@/isDuplicateChat';
 import parseChat from '@/parseChat';
+import recheckChatOnSettle from '@/recheckChatOnSettle';
 import setChatFieldSimplifyStyle from '@/setChatFieldSimplifyStyle';
 
 export default (
@@ -85,6 +86,13 @@ export default (
       ], {
         mode: 'either',
       });
+
+      // Some renderers insert as pre-hydration skeletons and stamp author
+      // identity in afterwards (see src/parseChat/fixtures/README.md), so
+      // every visible chat gets one settled-state recheck that re-applies
+      // the author-dependent steps above. Daemon: outlives this batch's
+      // fiber, bounded by the recheck's own deadline.
+      yield * Z.forkDaemon(recheckChatOnSettle(chat, data, mainState));
     }
   }))),
 );
