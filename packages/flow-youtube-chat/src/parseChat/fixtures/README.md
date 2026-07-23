@@ -75,8 +75,8 @@ the server logs the mutation. Diffing a sample against its settled twin
 is the evidence base for deciding what parseChat must read early (parse
 time) versus late (render time, via the live `messageElement`). The
 product applies the same idea at runtime: every visible chat gets one
-settled-state recheck (`@/recheckChatOnSettle`) that re-applies the
-author-dependent steps when a re-parse disagrees with the insert-time one.
+settled-state recheck (`@/recheckChatOnSettle`) that re-makes its
+decisions when a re-parse disagrees with the insert-time one.
 
 The badge (and the server log) also lists `unknown:` renderer kinds — chat
 or ticker children whose tag matches no slot and is not on the

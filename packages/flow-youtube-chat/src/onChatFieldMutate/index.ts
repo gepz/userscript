@@ -87,12 +87,12 @@ export default (
         mode: 'either',
       });
 
-      // Some renderers insert as pre-hydration skeletons and stamp author
-      // identity in afterwards (see src/parseChat/fixtures/README.md), so
-      // every visible chat gets one settled-state recheck that re-applies
-      // the author-dependent steps above. Daemon: outlives this batch's
-      // fiber, bounded by the recheck's own deadline.
-      yield * Z.forkDaemon(recheckChatOnSettle(chat, data, mainState));
+      // Some renderers insert as pre-hydration skeletons and stamp their
+      // content in afterwards (see src/parseChat/fixtures/README.md), so
+      // every visible chat gets one settled-state recheck that re-makes
+      // the decisions above when a re-parse disagrees. Daemon: outlives
+      // this batch's fiber, bounded by the recheck's own deadline.
+      yield * Z.forkDaemon(recheckChatOnSettle(chat, data, chatScrn, mainState));
     }
   }))),
 );

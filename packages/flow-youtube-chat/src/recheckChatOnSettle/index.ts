@@ -16,6 +16,7 @@ import {
 } from '@/BanEntry';
 import ChatData from '@/ChatData';
 import MainState from '@/MainState';
+import addFlowChat from '@/addFlowChat';
 import appendChatMessage from '@/appendChatMessage';
 import banButton from '@/banButton';
 import checkBannedWords from '@/checkBannedWords';
@@ -31,18 +32,24 @@ import strictOptionEquivalence from '@/strictOptionEquivalence';
 const quietMs = 500;
 const deadlineMs = 2000;
 
-// The parse-time fields that bans, filters and flow rendering consume.
-// message innerHTML is deliberately not compared: emoji images swap src
-// when they lazy-load, and the flow reads the live element anyway.
+// Every parsed field except the two live/noisy ones: message innerHTML
+// changes on every emoji lazy-load (and the flow reads the live element
+// anyway), and messageElement is an element reference. Everything else —
+// including chatType and colors — may legitimately be empty or wrong
+// until the renderer finishes stamping.
 export const parseRelevantChanged = (
   a: ChatData,
   b: ChatData,
-): boolean => a.authorType !== b.authorType
+): boolean => a.chatType !== b.chatType
+  || a.authorType !== b.authorType
+  || !strictOptionEquivalence(a.chatID, b.chatID)
   || !strictOptionEquivalence(a.authorID, b.authorID)
   || !strictOptionEquivalence(a.authorName, b.authorName)
   || !strictOptionEquivalence(a.messageText, b.messageText)
   || !strictOptionEquivalence(a.timestamp, b.timestamp)
-  || !strictOptionEquivalence(a.paymentInfo, b.paymentInfo);
+  || !strictOptionEquivalence(a.paymentInfo, b.paymentInfo)
+  || !strictOptionEquivalence(a.textColor, b.textColor)
+  || !strictOptionEquivalence(a.paidColor, b.paidColor);
 
 const dropFlowChat = (
   data: ChatData,
@@ -69,14 +76,26 @@ const dropFlowChat = (
   ),
 );
 
-const rerenderFlowChat = (
+const updateOrFlowChat = (
   data: ChatData,
+  chatScrn: HTMLElement,
   mainState: MainState,
 ): Z.Effect<void> => pipe(
   SynchronizedRef.get(mainState.flowChats),
   Z.map(A.findFirst((x) => isDuplicateChat(data, x.data))),
   Z.flatMap(O.match({
-    onNone: () => Z.void,
+    // Not flowing: the insert-time pass may have declined for a reason
+    // that no longer holds (a skeleton parsed as a non-flowable type, a
+    // false duplicate match on then-empty fields), so the flow decision
+    // is re-made from scratch; the findFirst above is the double-flow
+    // guard.
+    onNone: () => pipe(
+      addFlowChat(data, chatScrn, mainState),
+      Z.when(() => mainState.config.value.createChats
+        && (data.chatType === 'normal'
+          || data.chatType === 'giftPurchase')),
+      Z.asVoid,
+    ),
     onSome: (chat) => pipe(
       // Replaced in place: the entry keeps its element, lane and
       // animation; only the parsed fields refresh before re-rendering.
@@ -91,6 +110,7 @@ const rerenderFlowChat = (
 const applySettled = (
   chat: HTMLElement,
   data: ChatData,
+  chatScrn: HTMLElement,
   mainState: MainState,
 ): Z.Effect<void> => Z.gen(function* () {
   yield * Z.logDebug('Chat changed after insert, rechecking');
@@ -110,7 +130,7 @@ const applySettled = (
     return;
   }
 
-  yield * rerenderFlowChat(data, mainState);
+  yield * updateOrFlowChat(data, chatScrn, mainState);
 
   yield * banEntryFor(data).pipe(
     O.filter(() => mainState.config.value.createBanButton
@@ -128,15 +148,17 @@ const applySettled = (
 /**
  * One settled-state recheck for a chat that already went through
  * onChatFieldMutate: wait for the element's post-insert mutations to go
- * quiet, re-parse, and — only if a parse-relevant field changed — redo the
- * steps that consumed it: author-index recording, the ban checks (hiding
- * the element and withdrawing its flowing copy), the flowing chat's data
- * and rendering, and late ban-button attachment. Never creates a flow
- * chat, and never un-hides a chat the insert-time pass hid.
+ * quiet, re-parse, and — only if any parsed field changed — re-make every
+ * decision that consumed it: author-index recording, the ban checks
+ * (hiding the element and withdrawing its flowing copy), updating and
+ * re-rendering the flowing chat or flowing it late if the insert-time
+ * pass wrongly declined, and late ban-button attachment. Never un-hides
+ * a chat the insert-time pass hid.
  */
 export default (
   chat: HTMLElement,
   initial: ChatData,
+  chatScrn: HTMLElement,
   mainState: MainState,
 ): Z.Effect<void> => pipe(
   Z.async<void>((resume) => {
@@ -148,7 +170,7 @@ export default (
     const data = parseChat(chat);
 
     return parseRelevantChanged(initial, data)
-      ? applySettled(chat, data, mainState)
+      ? applySettled(chat, data, chatScrn, mainState)
       : Z.void;
   })),
 );

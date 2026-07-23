@@ -66,7 +66,24 @@ describe('parseRelevantChanged', () => {
     )).toBe(true);
   });
 
-  it('ignores fields the recheck does not consume', () => {
+  it('detects a late-settling chat type or payment styling', () => {
+    expect(parseRelevantChanged(
+      chatData({}),
+      chatData({
+        chatType: 'giftPurchase',
+      }),
+    )).toBe(true);
+
+    expect(parseRelevantChanged(
+      chatData({}),
+      chatData({
+        paymentInfo: O.some('$5.00'),
+        paidColor: O.some('rgb(0, 191, 165)'),
+      }),
+    )).toBe(true);
+  });
+
+  it('ignores the live message fields', () => {
     const before = chatData({});
     const element = document.createElement('div');
 
@@ -75,7 +92,6 @@ describe('parseRelevantChanged', () => {
     expect(parseRelevantChanged(before, chatData({
       message: O.some('<img src="other">'),
       messageElement: O.some(element),
-      textColor: O.some('rgb(0, 0, 0)'),
     }))).toBe(false);
   });
 });
