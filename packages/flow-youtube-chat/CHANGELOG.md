@@ -1,5 +1,24 @@
 # @userscript/flow-youtube-chat
 
+## 1.21.1
+
+### Patch Changes
+
+- 6f06e40: Seeking in a stream no longer floods the screen. A seek rebuilds the
+  chat list by re-inserting around a hundred messages at once — dozens of
+  superchats included — most of them above the visible window. Now only
+  the visible tail of the rebuilt list flows, exactly the messages you see
+  in the chat panel; everything re-inserted further up stays put. Live
+  messages, including ones arriving below the visible window while you are
+  scrolled up, flow as before.
+- a3691a6: Chats whose content loads a moment after insertion (gift announcements,
+  some membership items, superchat avatars and styling) are now re-checked
+  once they finish loading, and every decision is re-made from the
+  completed data: bans hide them (including withdrawing an already-flowing
+  chat), the ban button appears on them, member coloring and superchat
+  styling apply correctly, and a chat wrongly skipped at insertion flows
+  once its identity is complete.
+
 ## 1.21.0
 
 ### Minor Changes

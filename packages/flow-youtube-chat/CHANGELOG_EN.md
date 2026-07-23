@@ -8,6 +8,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Nothing
 
+## [1.21.1] - 2026-07-24
+
+### Fixed
+
+- Seeking in a stream no longer floods the screen with dozens of
+  re-inserted superchats. A seek rebuilds the chat list all at once, most
+  of it above the visible window; now only the messages you actually see
+  at the bottom of the chat panel flow. Live messages, including ones
+  arriving while you are scrolled up, flow as before.
+- Chats whose content fills in a moment after they appear (gift
+  announcements, superchat styling, some membership items) are re-checked
+  once complete: bans and banned words apply from the completed content
+  (withdrawing an already-flowing chat if needed), member and superchat
+  coloring correct themselves, the ban button appears, and a chat wrongly
+  skipped at first flows once its content is complete.
+
 ## [1.21.0] - 2026-07-23
 
 ### Added
