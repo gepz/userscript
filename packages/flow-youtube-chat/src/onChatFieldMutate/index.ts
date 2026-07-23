@@ -75,8 +75,7 @@ export default (
           )),
         ),
         banEntryFor(data).pipe(
-          O.filter(() => mainState.config.value.createBanButton
-            && !chat.children.namedItem('card')),
+          O.filter(() => mainState.config.value.createBanButton),
           Z.flatMap((entry: string) => appendChatMessage(
             banButton(entry)(mainState.config.getConfig)(
               mainState.config.setConfig,

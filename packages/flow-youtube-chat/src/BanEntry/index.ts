@@ -18,10 +18,13 @@ export const entryParts = (
 
 // The row the ban button writes: both identities when available, so the
 // ban survives avatar changes (which rewrite the token) and any future
-// reversal of handle display (which would retire the name part).
+// reversal of handle display (which would retire the name part). A
+// redemption's author is the gift's recipient, not someone who spoke, so
+// it offers no entry — banning a user for being gifted would be wrong.
 export const banEntryFor = (data: ChatData): O.Option<string> => pipe(
   A.getSomes([data.authorName, data.authorID]),
   O.liftPredicate(A.isNonEmptyReadonlyArray),
+  O.filter(() => data.chatType !== 'giftRedemption'),
   O.map(A.join(' ')),
 );
 

@@ -49,6 +49,15 @@ describe('banEntryFor', () => {
 
     expect(banEntryFor(chatData({}))).toEqual(O.none());
   });
+
+  it('offers no entry for a gift redemption', () => {
+    // The redemption's author is the gift's recipient, not a speaker.
+    expect(banEntryFor(chatData({
+      chatType: 'giftRedemption',
+      authorID: O.some('Token1'),
+      authorName: O.some('@alice'),
+    }))).toEqual(O.none());
+  });
 });
 
 describe('isBannedAuthor', () => {

@@ -140,8 +140,7 @@ const applySettled = (
 
   yield * banEntryFor(data).pipe(
     O.filter(() => mainState.config.value.createBanButton
-      && chat.querySelector('.fyc_button') === null
-      && !chat.children.namedItem('card')),
+      && chat.querySelector('.fyc_button') === null),
     Z.flatMap((entry: string) => appendChatMessage(
       banButton(entry)(mainState.config.getConfig)(
         mainState.config.setConfig,
