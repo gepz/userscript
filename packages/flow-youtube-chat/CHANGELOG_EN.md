@@ -18,6 +18,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - The "Show ban button" setting now also adds or removes buttons on
   messages already in the chat.
 
+### Fixed
+
+- The ban button is now visible in light theme.
+
 ## [1.21.1] - 2026-07-24
 
 ### Fixed

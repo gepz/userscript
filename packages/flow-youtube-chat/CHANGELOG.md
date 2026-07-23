@@ -13,6 +13,12 @@
   chat: turning it on adds the button to them, turning it off removes
   every button — no longer only affecting messages that arrive afterwards.
 
+### Patch Changes
+
+- 1f75470: The ban button icon inherited a white fallback fill and could vanish on
+  light backgrounds; it now uses a mid-gray fallback fill and a
+  translucent border so it reads on both themes and on colored cards.
+
 ## 1.21.1
 
 ### Patch Changes
