@@ -51,6 +51,7 @@ import observePair from '@/stream/observePair';
 import throttleLatest from '@/stream/throttleLatest';
 import videoToggleStream from '@/stream/videoToggleStream';
 import strictOptionEquivalence from '@/strictOptionEquivalence';
+import sweepBanButtons from '@/sweepBanButtons';
 import updateSettingsRect from '@/updateSettingsRect';
 
 export default Z.fnUntraced(function* (ctx: {
@@ -150,10 +151,18 @@ export default Z.fnUntraced(function* (ctx: {
       // Only the message list feeds the flow: a superchat's ticker bubble
       // is a duplicate announcement of its list entry, so the ticker is
       // deliberately not observed.
-      Z.transposeMapOption(live.chatField.ele, (x) => Z.sync(
-        () => chatMutationPair.observer.observe(x, {
+      Z.transposeMapOption(live.chatField.ele, (x) => pipe(
+        Z.sync(() => chatMutationPair.observer.observe(x, {
           childList: true,
-        }),
+        })),
+        // Chats already in the list when the observer attaches — the
+        // initial batch a stream page renders — fire no mutation
+        // records, so they get their ban buttons from a sweep instead.
+        // Idempotent, so setup re-runs on later poll ticks are
+        // harmless.
+        Z.zipRight(Z.suspend(() => sweepBanButtons(x, ctx.mainState)(
+          ctx.mainState.config.value.createBanButton,
+        ))),
       )),
       Z.transposeMapOption(live.player.ele, (x) => Z.sync(() => {
         playerResizePair.observer.observe(x);
