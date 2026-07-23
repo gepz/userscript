@@ -12,99 +12,75 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- The ban button now also appears on superchats, paid stickers,
-  membership items and gift purchase announcements — next to the author
-  name, or in the header for renderers without one. Gift redemption
-  messages never get one: the user shown there is the gift's recipient,
-  not someone who spoke.
-- The "Show ban button" setting now applies immediately to messages
-  already in the chat: turning it on adds the button to them, turning it
-  off removes every button. Previously it only affected messages that
-  arrived afterwards.
+- The ban button now also appears on superchats, paid stickers, membership
+  items and gift purchase announcements (but not on gift redemption
+  messages).
+- The "Show ban button" setting now also adds or removes buttons on
+  messages already in the chat.
 
 ## [1.21.1] - 2026-07-24
 
 ### Fixed
 
-- Seeking in a stream no longer floods the screen with dozens of
-  re-inserted superchats. A seek rebuilds the chat list all at once, most
-  of it above the visible window; now only the messages you actually see
-  at the bottom of the chat panel flow. Live messages, including ones
-  arriving while you are scrolled up, flow as before.
-- Chats whose content fills in a moment after they appear (gift
-  announcements, superchat styling, some membership items) are re-checked
-  once complete: bans and banned words apply from the completed content
-  (withdrawing an already-flowing chat if needed), member and superchat
-  coloring correct themselves, the ban button appears, and a chat wrongly
-  skipped at first flows once its content is complete.
+- Seeking no longer floods the screen with re-inserted superchats; only
+  the messages actually visible in the chat panel flow.
+- Chats whose content loads in a moment late (gift announcements,
+  superchat styling, some membership items) are re-checked once complete,
+  so filters, colors and the ban button apply correctly.
 
 ## [1.21.0] - 2026-07-23
 
 ### Added
 
-- Membership gift purchase announcements now flow across the video,
-  showing the gifter's name and how many memberships they gifted. Like
-  any other chat they respect the Banned Users and banned-word filters.
+- Membership gift purchase announcements now flow, showing the gifter's
+  name and the number of gifted memberships.
 
 ### Fixed
 
-- A gift purchase no longer floods the flow with its per-recipient
-  "received a gift" messages: previously every recipient's redemption
-  flowed as a separate identical line, so one large gift could spam
-  dozens of them. Now only the single purchase announcement flows.
-
+- A gift purchase now flows as a single announcement instead of one
+  "received a gift" line per recipient.
 
 ## [1.20.1] - 2026-07-23
 
 ### Added
 
-- Banned Users now understands @handles. A row can be an @handle, a legacy
-  ID token, or both separated by a space; the ban button records both at
-  once, so a ban keeps working even after the user changes their avatar.
+- Banned Users now accepts @handles: a row can be an @handle, a legacy ID
+  token, or both separated by a space.
 
 ### Fixed
 
-- Superchats and paid stickers from banned users are now hidden. YouTube's
-  current chat markup no longer includes an author photo on paid messages,
-  so bans matched by ID alone could not catch them.
-- Two different messages that merely look alike (same text and same
-  displayed time, both without an author photo) are no longer mistaken for
-  duplicates — duplicate detection now uses YouTube's own message id.
-- Importing a malformed event log now fails cleanly and leaves the current
-  log untouched, and stored settings that fail validation fall back to
-  their defaults instead of causing broken behavior.
+- Superchats and paid stickers from banned users are hidden again.
+- Two different messages that merely look alike are no longer mistaken
+  for duplicates.
+- Importing a malformed event log now fails cleanly, and invalid stored
+  settings fall back to their defaults.
 
 ### Changed
 
 - The Banned Words, Banned Regexes and Banned Users boxes no longer wrap
-  long lines: one line is always one entry, and long entries scroll
-  horizontally.
+  long lines; long entries scroll horizontally.
 
 ## [1.20.0] - 2026-07-07
 
 ### Security
 
-- Replaced the unmaintained `expression-eval` library (which has an open
-  security advisory) with a restricted built-in interpreter for custom
-  filter expressions.
+- Replaced the unmaintained `expression-eval` library (open security
+  advisory) with a restricted built-in interpreter for custom filter
+  expressions.
 
 ### Changed
 
-- Filter expressions are now evaluated more strictly: names that are not
-  part of the filter scope raise an error instead of silently becoming
-  `undefined`, and `this` and bitwise operators are rejected.
-- Migrated the internal reactive engine from rxjs to Effect Stream. The
-  script loads one fewer external library, recovers from more kinds of
-  internal errors, and setting changes can no longer be missed while the
-  script is re-initializing after a page change.
+- Filter expressions are evaluated more strictly: unknown names raise an
+  error, and `this` and bitwise operators are rejected.
+- Migrated the internal reactive engine from rxjs to Effect Stream; the
+  script loads one fewer library and recovers from more internal errors.
 
 ## [1.19.3] - 2026-07-06
 
 ### Changed
 
-- Rebuilt on a modernized toolchain: dependency updates and refreshed
-  pinned CDN library versions in the userscript header. No functional
-  changes intended.
+- Rebuilt on a modernized toolchain with updated dependencies and CDN
+  library versions. No functional changes intended.
 
 ## [1.19.2] - 2023-08-06
 
