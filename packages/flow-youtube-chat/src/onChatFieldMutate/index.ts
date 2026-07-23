@@ -55,8 +55,12 @@ export default (
           addFlowChat(data, chatScrn, mainState),
           Z.when(pipe(
             yield * mainState.flowChats,
+            // Redemptions are the per-recipient echo of one gift purchase
+            // (identical text, up to one per gifted membership), so only
+            // the purchase announcement flows.
             (flowChats) => () => mainState.config.value.createChats
-              && data.chatType === 'normal' && !A.some(
+              && (data.chatType === 'normal'
+                || data.chatType === 'giftPurchase') && !A.some(
               flowChats,
               (x) => E.isRight(x.animationState)
                 && isDuplicateChat(data, x.data),

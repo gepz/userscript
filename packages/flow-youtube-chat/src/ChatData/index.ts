@@ -3,7 +3,8 @@ import {
 } from 'effect';
 
 export default interface ChatData {
-  chatType: 'normal' | 'membership' | 'engagement'
+  chatType: 'normal' | 'membership' | 'giftPurchase' | 'giftRedemption'
+    | 'engagement'
   // YouTube's per-message id from the renderer root: the stable identity
   // of one chat message, used for duplicate detection.
   chatID: O.Option<string>

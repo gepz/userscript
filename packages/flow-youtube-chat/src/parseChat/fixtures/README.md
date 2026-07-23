@@ -1,11 +1,14 @@
 # parseChat fixtures
 
-One `<slot>.html` fragment per renderer kind `parseChat` distinguishes. The
+One `<slot>.html` fragment per renderer kind `parseChat` distinguishes
+(minus kinds recognized only to be excluded from the flow — those sit on
+the ignored list in `@/fixtureCapture/main` and get no fixture). The
 spec (`../index.spec.ts`) mounts each fragment and asserts the extracted
 `ChatData`, so these files pin the selector contract parseChat is written
 against: descendant classes named after the host renderer tag (polymer
 style-scope), plus the `#author-photo`, `#author-name`, `#timestamp`,
-`#message`, `#card`, `#header`, `#content` and purchase-amount ids.
+`#message`, `#primary-text`, `#card`, `#header`, `#content` and
+purchase-amount ids.
 
 A fragment has one of two provenances:
 
@@ -51,7 +54,7 @@ carries an explicit `background-color`.
    leave it running — the server accumulates across sessions and streams.
 4. Re-run `pnpm test` and review the git diff of this directory.
 
-Every capture kind — the eight slots and any unknown renderer tag — is
+Every capture kind — the nine slots and any unknown renderer tag — is
 sampled identically: the server keeps up to `maxSamples` raw samples per
 kind as `capture-snapshots/sample-<kind>-<n>.html`, accepts at most one per
 cooldown period so the samples come from distinct messages, and rejects

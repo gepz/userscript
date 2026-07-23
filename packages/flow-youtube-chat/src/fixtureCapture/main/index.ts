@@ -42,9 +42,13 @@ const ignoredTags = new Set([
   'yt-live-chat-mode-change-message-renderer',
   // Ticker bubbles duplicate their chat-list entries, so the product does
   // not parse them (see @/allStream); the ticker stays observed only to
-  // discover unlisted ticker renderers such as the sponsor/gift items.
+  // discover unlisted ticker renderers.
   'yt-live-chat-ticker-paid-message-item-renderer',
   'yt-live-chat-ticker-paid-sticker-item-renderer',
+  'yt-live-chat-ticker-sponsor-item-renderer',
+  // The per-recipient echo of a gift purchase; recognized by parseChat but
+  // deliberately never flowed, so no fixture pins it.
+  'ytd-sponsorships-live-chat-gift-redemption-announcement-renderer',
 ]);
 
 const slotSet = new Set<string>(slots);

@@ -18,6 +18,8 @@ const byTag: Record<string, Slot | undefined> = {
   'yt-live-chat-paid-message-renderer': 'paidMessage',
   'yt-live-chat-paid-sticker-renderer': 'paidSticker',
   'yt-live-chat-membership-item-renderer': 'membershipItem',
+  'ytd-sponsorships-live-chat-gift-purchase-announcement-renderer':
+    'giftPurchase',
   'yt-live-chat-viewer-engagement-message-renderer': 'engagementMessage',
 };
 

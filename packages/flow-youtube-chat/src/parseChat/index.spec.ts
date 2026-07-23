@@ -99,6 +99,24 @@ describe('parseChat', () => {
     expect([O.none(), O.some('hello')]).toContainEqual(data.messageText);
   });
 
+  it('parses a gift purchase announcement', () => {
+    const data = parse('giftPurchase');
+
+    expect(data.chatType).toBe('giftPurchase');
+    expect(data.chatID).toEqual(O.some('FixtureChatID'));
+    expect(data.authorID).toEqual(O.none());
+    expect(data.paymentInfo).toEqual(O.none());
+    // The announcement inserts before its author chip stamps, so a capture
+    // may carry the gifter's canonicalized name and badge or no author at
+    // all; the flowed text comes from the live inner column either way.
+    expect([O.none(), O.some('Gift Sender')]).toContainEqual(data.authorName);
+    expect(['normal', 'member']).toContain(data.authorType);
+    expect(O.exists(
+      data.messageText,
+      (x) => x.includes('Gifted 5 memberships'),
+    )).toBe(true);
+  });
+
   it('parses an engagement message without payment info', () => {
     const data = parse('engagementMessage');
 

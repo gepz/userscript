@@ -15,10 +15,18 @@ export default (
   )
     ? 'membership'
     : chat.querySelector<HTMLElement>(
-      '.yt-live-chat-viewer-engagement-message-renderer',
+      '.ytd-sponsorships-live-chat-gift-purchase-announcement-renderer',
     )
-      ? 'engagement'
-      : 'normal';
+      ? 'giftPurchase'
+      : chat.querySelector<HTMLElement>(
+        '.ytd-sponsorships-live-chat-gift-redemption-announcement-renderer',
+      )
+        ? 'giftRedemption'
+        : chat.querySelector<HTMLElement>(
+          '.yt-live-chat-viewer-engagement-message-renderer',
+        )
+          ? 'engagement'
+          : 'normal';
 
   const paymentInfo = pipe(
     chat.querySelector<HTMLElement>('#card') !== null,
@@ -34,8 +42,14 @@ export default (
     ),
   );
 
+  // Gift purchases carry no #message; the header's inner column holds the
+  // author chip plus the "gifted N memberships" text. The announcement
+  // inserts before the chip stamps, and the flow renderer reads this live
+  // element at render time, so the gifter's name still makes it on screen.
   const messageElement = O.fromNullable(
-    chat.querySelector<HTMLElement>('#message'),
+    chat.querySelector<HTMLElement>(chatType === 'giftPurchase'
+      ? '#header-content-inner-column'
+      : '#message'),
   );
 
   const isPaidNormal = O.isSome(paymentInfo) && P.isTruthy(chat.querySelector(

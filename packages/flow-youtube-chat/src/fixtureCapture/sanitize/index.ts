@@ -14,6 +14,7 @@ const fallbackAuthorName: Partial<Record<Slot, string>> = {
   paidMessage: 'Generous Viewer',
   paidSticker: 'Sticker Fan',
   membershipItem: 'New Member',
+  giftPurchase: 'Gift Sender',
 };
 
 const messageText: Partial<Record<Slot, string>> = {
@@ -123,6 +124,14 @@ export default (slot: Slot, chat: HTMLElement): string => {
     } else {
       message.append(messageText[slot] ?? 'hello');
     }
+  }
+
+  // The gift announcement's headline names the gifted channel, so the
+  // whole line is canonicalized like a message body.
+  const primaryText = root.querySelector('#primary-text');
+
+  if (slot === 'giftPurchase' && primaryText) {
+    primaryText.textContent = 'Gifted 5 memberships';
   }
 
   const amount = slot === 'paidSticker' ? '¥200' : '$5.00';
