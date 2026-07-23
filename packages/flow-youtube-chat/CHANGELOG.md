@@ -1,5 +1,18 @@
 # @userscript/flow-youtube-chat
 
+## 1.22.0
+
+### Minor Changes
+
+- 2ca0d5b: The ban button now appears on superchats, paid stickers, membership
+  items and gift purchase announcements — next to the author name (or in
+  the header for renderers without one) — instead of only on plain
+  messages. Gift redemption messages never get one: the user shown there
+  is the gift's recipient, not someone who spoke.
+- 7ce9ba8: The "Show ban button" toggle now applies to messages already in the
+  chat: turning it on adds the button to them, turning it off removes
+  every button — no longer only affecting messages that arrive afterwards.
+
 ## 1.21.1
 
 ### Patch Changes

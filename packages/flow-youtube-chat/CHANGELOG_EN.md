@@ -8,6 +8,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Nothing
 
+## [1.22.0] - 2026-07-24
+
+### Added
+
+- The ban button now also appears on superchats, paid stickers,
+  membership items and gift purchase announcements — next to the author
+  name, or in the header for renderers without one. Gift redemption
+  messages never get one: the user shown there is the gift's recipient,
+  not someone who spoke.
+- The "Show ban button" setting now applies immediately to messages
+  already in the chat: turning it on adds the button to them, turning it
+  off removes every button. Previously it only affected messages that
+  arrived afterwards.
+
 ## [1.21.1] - 2026-07-24
 
 ### Fixed
