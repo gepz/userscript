@@ -24,16 +24,13 @@ const template = runLogged(pipe(
     padding: '0px',
     width: '20px',
     height: '20px',
-    // Mid-gray reads on both YouTube themes and on colored superchat
-    // cards; the border keeps the button findable even where the icon
-    // fill blends into the background. The fill is the inherited
-    // fallback for the svg's var() below.
+    // Mid-gray inherited fallback for the svg's var() below, so the
+    // glyph reads on both YouTube themes even where the variable is
+    // absent.
     fill: '#888',
-    border: '1px solid #8888',
-    borderRadius: '4px',
     background: 'none',
-    // Breathing room between the border and the preceding text;
-    // inline-start so it also holds in RTL messages (dir="auto").
+    // Breathing room from the preceding text; inline-start so it also
+    // holds in RTL messages (dir="auto").
     marginInlineStart: '4px',
   }))),
   Z.tap((x) => Z.sync(() => x.setAttribute(
@@ -47,6 +44,13 @@ const template = runLogged(pipe(
       width: '100%',
       height: '75%',
       fill: 'var(--yt-spec-text-secondary)',
+      // Mid-gray halo painted behind the fill, so the outer half of the
+      // stroke outlines the glyph and keeps it visible where the fill
+      // blends into the background. 32 user units in the 512 viewBox is
+      // about 0.6px outside the glyph at the rendered 20px size.
+      stroke: '#8888',
+      strokeWidth: '32',
+      paintOrder: 'stroke',
     });
 
     svg.setAttribute('viewBox', '0 0 512 512');
