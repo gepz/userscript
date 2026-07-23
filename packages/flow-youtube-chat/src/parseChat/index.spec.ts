@@ -99,15 +99,6 @@ describe('parseChat', () => {
     expect([O.none(), O.some('hello')]).toContainEqual(data.messageText);
   });
 
-  it('parses a ticker item, taking payment info from #content>#text', () => {
-    const data = parse('tickerPaidMessage');
-
-    expect(data.chatType).toBe('ticker');
-    expect(data.paymentInfo).toEqual(O.some('$10.00'));
-    expect(data.textColor).toEqual(O.none());
-    expect(data.paidColor).toEqual(O.none());
-  });
-
   it('parses an engagement message without payment info', () => {
     const data = parse('engagementMessage');
 

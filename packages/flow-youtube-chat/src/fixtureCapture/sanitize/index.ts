@@ -125,17 +125,12 @@ export default (slot: Slot, chat: HTMLElement): string => {
     }
   }
 
-  const amountSelector = slot === 'tickerPaidMessage'
-    ? '#purchase-amount, #purchase-amount-chip, #content>#text'
-    : '#purchase-amount, #purchase-amount-chip';
+  const amount = slot === 'paidSticker' ? '¥200' : '$5.00';
 
-  const amount = slot === 'tickerPaidMessage'
-    ? '$10.00'
-    : slot === 'paidSticker' ? '¥200' : '$5.00';
-
-  Array.from(root.querySelectorAll(amountSelector)).forEach((element) => {
-    element.textContent = amount;
-  });
+  Array.from(root.querySelectorAll('#purchase-amount, #purchase-amount-chip'))
+    .forEach((element) => {
+      element.textContent = amount;
+    });
 
   if (slot === 'paidMessage') {
     root.querySelector('#header')

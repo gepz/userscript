@@ -40,6 +40,11 @@ const kindsResponse = S.parseJson(S.Struct({
 const ignoredTags = new Set([
   'yt-live-chat-placeholder-item-renderer',
   'yt-live-chat-mode-change-message-renderer',
+  // Ticker bubbles duplicate their chat-list entries, so the product does
+  // not parse them (see @/allStream); the ticker stays observed only to
+  // discover unlisted ticker renderers such as the sponsor/gift items.
+  'yt-live-chat-ticker-paid-message-item-renderer',
+  'yt-live-chat-ticker-paid-sticker-item-renderer',
 ]);
 
 const slotSet = new Set<string>(slots);

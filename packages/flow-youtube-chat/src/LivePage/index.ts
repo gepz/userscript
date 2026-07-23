@@ -5,6 +5,8 @@ import {
 
 export default interface LivePage {
   chatField: Z.Effect<HTMLElement, Cause.NoSuchElementException>
+  // The flow sources chats from chatField alone (see @/allStream); the
+  // ticker is looked up only for the fixture capture tooling.
   chatTicker: Z.Effect<HTMLElement, Cause.NoSuchElementException>
   chatScroller: Z.Effect<HTMLElement, Cause.NoSuchElementException>
   video: Z.Effect<HTMLVideoElement, Cause.NoSuchElementException>

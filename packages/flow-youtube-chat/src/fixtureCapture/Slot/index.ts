@@ -6,7 +6,6 @@ export const slots = [
   'paidMessage',
   'paidSticker',
   'membershipItem',
-  'tickerPaidMessage',
   'engagementMessage',
 ] as const;
 

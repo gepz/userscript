@@ -51,7 +51,7 @@ carries an explicit `background-color`.
    leave it running — the server accumulates across sessions and streams.
 4. Re-run `pnpm test` and review the git diff of this directory.
 
-Every capture kind — the nine slots and any unknown renderer tag — is
+Every capture kind — the eight slots and any unknown renderer tag — is
 sampled identically: the server keeps up to `maxSamples` raw samples per
 kind as `capture-snapshots/sample-<kind>-<n>.html`, accepts at most one per
 cooldown period so the samples come from distinct messages, and rejects

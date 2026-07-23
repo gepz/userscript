@@ -11,28 +11,23 @@ export default (
   chat: HTMLElement,
 ): ChatData => {
   const chatType = chat.querySelector<HTMLElement>(
-    '.yt-live-chat-ticker-paid-message-item-renderer',
+    '.yt-live-chat-membership-item-renderer',
   )
-    ? 'ticker'
+    ? 'membership'
     : chat.querySelector<HTMLElement>(
-      '.yt-live-chat-membership-item-renderer',
+      '.yt-live-chat-viewer-engagement-message-renderer',
     )
-      ? 'membership'
-      : chat.querySelector<HTMLElement>(
-        '.yt-live-chat-viewer-engagement-message-renderer',
-      )
-        ? 'engagement'
-        : 'normal';
+      ? 'engagement'
+      : 'normal';
 
   const paymentInfo = pipe(
-    chatType === 'ticker' || chat.querySelector<HTMLElement>('#card') !== null,
+    chat.querySelector<HTMLElement>('#card') !== null,
     (isPaid) => O.fromNullable(
       isPaid
         ? chat.querySelector<HTMLElement>(A.join(', ')(
           [
             '#purchase-amount',
             '#purchase-amount-chip',
-            '#content>#text',
           ],
         ))?.textContent
         : undefined,

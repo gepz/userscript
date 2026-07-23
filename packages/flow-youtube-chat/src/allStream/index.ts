@@ -147,14 +147,14 @@ export default Z.fnUntraced(function* (ctx: {
       }),
     ),
     Z.zipRight(Z.allSuccesses([
-      ...A.map(
-        [live.chatField.ele, live.chatTicker.ele],
-        Z.transposeMapOption((x) => Z.sync(
-          () => chatMutationPair.observer.observe(x, {
-            childList: true,
-          }),
-        )),
-      ),
+      // Only the message list feeds the flow: a superchat's ticker bubble
+      // is a duplicate announcement of its list entry, so the ticker is
+      // deliberately not observed.
+      Z.transposeMapOption(live.chatField.ele, (x) => Z.sync(
+        () => chatMutationPair.observer.observe(x, {
+          childList: true,
+        }),
+      )),
       Z.transposeMapOption(live.player.ele, (x) => Z.sync(() => {
         playerResizePair.observer.observe(x);
         x.prepend(ctx.chatScreen);
