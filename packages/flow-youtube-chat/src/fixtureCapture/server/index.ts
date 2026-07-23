@@ -2,6 +2,7 @@ import {
   existsSync,
   mkdirSync,
   readdirSync,
+  rmSync,
   writeFileSync,
 } from 'node:fs';
 import {
@@ -24,6 +25,7 @@ import {
   maxSamples,
   port,
   sampleName,
+  settledName,
   tagPattern,
 } from '../protocol/index.ts';
 /* eslint-enable import-x/extensions, import-x/no-useless-path-segments */
@@ -110,11 +112,12 @@ const handleCapture = (body: string, response: ServerResponse): void => {
   if (!isRecord(parsed)
     || typeof parsed['kind'] !== 'string'
     || typeof parsed['raw'] !== 'string'
+    || ('settled' in parsed && typeof parsed['settled'] !== 'string')
     || !(slotSet.has(parsed['kind'])
       ? typeof parsed['sanitized'] === 'string'
       : tagPattern.test(parsed['kind']))) {
     respond(response, 400, {
-      error: 'expected {kind, raw}, plus sanitized for slot kinds',
+      error: 'expected {kind, raw, settled?}, plus sanitized for slot kinds',
     });
 
     return;
@@ -136,6 +139,22 @@ const handleCapture = (body: string, response: ServerResponse): void => {
       path.join(snapshotDir, sampleName(kind, held + 1)),
       `${parsed['raw']}\n`,
     );
+
+    // The settled twin records what the element became once its
+    // post-insert mutations went quiet (hydration, lazy loads, rewrites);
+    // it is absent when nothing changed. A stale twin from an earlier
+    // sampling round of this number is removed either way.
+    const settledPath = path.join(snapshotDir, settledName(kind, held + 1));
+
+    rmSync(settledPath, {
+      force: true,
+    });
+
+    if (typeof parsed['settled'] === 'string') {
+      writeFileSync(settledPath, `${parsed['settled']}\n`);
+      process.stdout.write(`${kind} ${held + 1}: mutated after insert${
+        parsed['detached'] === true ? ', left the document' : ''}\n`);
+    }
 
     // The committed fixture is the sanitized twin of the newest sample.
     if (typeof parsed['sanitized'] === 'string') {

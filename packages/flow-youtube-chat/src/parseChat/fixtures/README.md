@@ -65,6 +65,16 @@ also rewrites the committed fixture here — the fixture is always the
 sanitized twin of the newest sample. The numbers live in
 `@/fixtureCapture/protocol`, the one module both sides import.
 
+A sample is serialized at insert time — the moment parseChat sees in
+production — but some renderers are inserted as pre-hydration skeletons
+and stamped afterwards (the gift renderers do this), and any element can
+be rewritten later (moderation, lazy-loaded avatars). The client
+therefore keeps watching the element until its mutations go quiet; if the
+markup changed, the sample gains a raw `settled-<kind>-<n>.html` twin and
+the server logs the mutation. Diffing a sample against its settled twin
+is the evidence base for deciding what parseChat must read early (parse
+time) versus late (render time, via the live `messageElement`).
+
 The badge (and the server log) also lists `unknown:` renderer kinds — chat
 or ticker children whose tag matches no slot and is not on the
 deliberately-unmodeled list in `@/fixtureCapture/main`. No test can catch

@@ -118,13 +118,57 @@ const syncKinds = (responseText: string): void => {
   }
 };
 
+// YouTube inserts some renderers as pre-hydration skeletons and stamps
+// conditional content in afterwards (seen live on the gift renderers), and
+// may rewrite an element later still (moderation, lazy-loaded avatars), so
+// the insert-time serialization is only half the evidence: watch the
+// element until its mutations go quiet (or a deadline passes), then report
+// the settled markup and whether the element left the document.
+const settleQuietMs = 1000;
+const settleMaxMs = 10000;
+const settlePollMs = 250;
+
+const observeSettled = (
+  element: HTMLElement,
+  onSettled: (settled: string, detached: boolean) => void,
+): void => {
+  const started = Date.now();
+  let lastMutation = started;
+  const mutations = new MutationObserver(() => {
+    lastMutation = Date.now();
+  });
+
+  mutations.observe(element, {
+    subtree: true,
+    childList: true,
+    attributes: true,
+    characterData: true,
+  });
+
+  let poll: ReturnType<typeof setInterval> | undefined;
+
+  const tick = (): void => {
+    const now = Date.now();
+
+    if (now - lastMutation >= settleQuietMs || now - started >= settleMaxMs) {
+      mutations.disconnect();
+      clearInterval(poll);
+      onSettled(element.outerHTML, !element.isConnected);
+    }
+  };
+
+  poll = setInterval(tick, settlePollMs);
+};
+
 const submit = (
   kind: string,
-  element: HTMLElement,
-  sanitized: string | undefined,
+  payload: {
+    raw: string
+    sanitized: string | undefined
+    settled: string | undefined
+    detached: boolean
+  },
 ): void => {
-  pending.add(kind);
-  cooldownUntil.set(kind, Date.now() + cooldownMs);
   GM.xmlHttpRequest({
     method: 'POST',
     url: `${serverBase}/capture`,
@@ -132,11 +176,15 @@ const submit = (
       'Content-Type': 'application/json',
     },
     // Raw markup becomes a local-only sample; sanitized (slot kinds only —
-    // unknowns have no sanitizer) becomes the committed fixture.
+    // unknowns have no sanitizer) becomes the committed fixture; settled
+    // rides along only when the element changed after insertion
+    // (JSON.stringify drops the undefined fields).
     data: JSON.stringify({
       kind,
-      raw: element.outerHTML,
-      sanitized,
+      raw: payload.raw,
+      sanitized: payload.sanitized,
+      settled: payload.settled,
+      detached: payload.detached ? true : undefined,
     }),
     onload: (response) => {
       pending.delete(kind);
@@ -183,11 +231,25 @@ const maybeCapture = (element: HTMLElement): void => {
     return;
   }
 
-  submit(
-    kind,
-    element,
-    O.isSome(slot) ? sanitize(slot.value, element) : undefined,
-  );
+  // Reserved here rather than in submit: the kind stays pending across the
+  // whole settle window, so a burst of same-kind inserts yields one sample.
+  pending.add(kind);
+  cooldownUntil.set(kind, Date.now() + cooldownMs);
+
+  // The insert-time form is what parseChat sees in production, so it is
+  // serialized (and sanitized) immediately; the settled form is compared
+  // against it once the element stops changing.
+  const raw = element.outerHTML;
+  const sanitized = O.isSome(slot) ? sanitize(slot.value, element) : undefined;
+
+  observeSettled(element, (settled, detached) => {
+    submit(kind, {
+      raw,
+      sanitized,
+      settled: settled === raw ? undefined : settled,
+      detached,
+    });
+  });
 };
 
 const observer = new MutationObserver((records) => {

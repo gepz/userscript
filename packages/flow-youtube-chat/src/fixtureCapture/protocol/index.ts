@@ -27,6 +27,14 @@ export const sampleName = (
   n: number,
 ): string => `sample-${kind}-${n}.html`;
 
+// Settled twin of a raw sample: the same element re-serialized after its
+// post-insert mutations went quiet. Present only when it differs from the
+// insert-time form; the prefix keeps it invisible to the sample counter.
+export const settledName = (
+  kind: string,
+  n: number,
+): string => `settled-${kind}-${n}.html`;
+
 // Body of every server response (status poll or capture, accepted or
 // rejected): sample counts per kind, so clients resync instead of retrying.
 export type KindCounts = Record<string, number>;
