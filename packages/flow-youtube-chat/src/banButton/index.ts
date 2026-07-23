@@ -24,10 +24,6 @@ const template = runLogged(pipe(
     padding: '0px',
     width: '20px',
     height: '20px',
-    // Mid-gray inherited fallback for the svg's var() below, so the
-    // glyph reads on both YouTube themes even where the variable is
-    // absent.
-    fill: '#888',
     background: 'none',
     // Breathing room from the preceding text; inline-start so it also
     // holds in RTL messages (dir="auto").
@@ -43,12 +39,14 @@ const template = runLogged(pipe(
     Object.assign(svg.style, {
       width: '100%',
       height: '75%',
-      fill: 'var(--yt-spec-text-secondary)',
-      // Mid-gray halo painted behind the fill, so the outer half of the
-      // stroke outlines the glyph and keeps it visible where the fill
-      // blends into the background. 32 user units in the 512 viewBox is
-      // about 0.6px outside the glyph at the rendered 20px size.
-      stroke: '#8888',
+      // Fixed white-on-dark-halo rather than a theme variable, so the
+      // glyph reads the same on both YouTube themes and on colored
+      // cards. The halo is painted behind the fill (paint-order), so
+      // only the outer half of the stroke outlines the glyph; 32 user
+      // units in the 512 viewBox is about 0.6px outside the glyph at
+      // the rendered 20px size.
+      fill: '#fff',
+      stroke: '#0009',
       strokeWidth: '32',
       paintOrder: 'stroke',
     });
