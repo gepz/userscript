@@ -22,6 +22,7 @@ import scaleChatField from '@/scaleChatField';
 import setChatAnimation from '@/setChatAnimation';
 import setChatPlayState from '@/setChatPlayState';
 import throttleLatest from '@/stream/throttleLatest';
+import sweepBanButtons from '@/sweepBanButtons';
 
 export default (
   mainState: MainState,
@@ -36,10 +37,22 @@ export default (
     key: K,
   ): Stream.Stream<UserConfig[K]> => Stream.drop(refs[key].changes, 1);
 
-  return Stream.merge(
+  return Stream.mergeAll([
     pipe(
       refs.fieldScale.changes,
       Stream.mapEffect(scaleChatField(live)),
+    ),
+    pipe(
+      changed('createBanButton'),
+      // The element cache is read at event time, so the sweep hits
+      // whatever chat list the page currently has.
+      Stream.mapEffect((on) => pipe(
+        live.chatField.ele,
+        O.match({
+          onNone: () => Z.void,
+          onSome: (field) => sweepBanButtons(field, mainState)(on),
+        }),
+      )),
     ),
     pipe(
       Stream.mergeAll<Partial<ChatUpdateConfig>, never, never>([
@@ -152,5 +165,7 @@ export default (
         ))),
       )),
     ),
-  );
+  ], {
+    concurrency: 'unbounded',
+  });
 };
