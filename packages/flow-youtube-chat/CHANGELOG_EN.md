@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Nothing
 
+## [1.21.0] - 2026-07-23
+
+### Added
+
+- Membership gift purchase announcements now flow across the video,
+  showing the gifter's name and how many memberships they gifted. Like
+  any other chat they respect the Banned Users and banned-word filters.
+
+### Fixed
+
+- A gift purchase no longer floods the flow with its per-recipient
+  "received a gift" messages: previously every recipient's redemption
+  flowed as a separate identical line, so one large gift could spam
+  dozens of them. Now only the single purchase announcement flows.
+
 
 ## [1.20.1] - 2026-07-23
 
