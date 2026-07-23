@@ -78,6 +78,7 @@ const dropFlowChat = (
 
 const updateOrFlowChat = (
   data: ChatData,
+  insertedAsBackfill: boolean,
   chatScrn: HTMLElement,
   mainState: MainState,
 ): Z.Effect<void> => pipe(
@@ -88,10 +89,14 @@ const updateOrFlowChat = (
     // that no longer holds (a skeleton parsed as a non-flowable type, a
     // false duplicate match on then-empty fields), so the flow decision
     // is re-made from scratch; the findFirst above is the double-flow
-    // guard.
+    // guard. The insert-time backfill verdict (see isAboveVisibleTail)
+    // is carried, not re-measured: seek backfill stays declined, while a
+    // live chat that has merely scrolled up since insert still flows
+    // late.
     onNone: () => pipe(
       addFlowChat(data, chatScrn, mainState),
-      Z.when(() => mainState.config.value.createChats
+      Z.when(() => !insertedAsBackfill
+        && mainState.config.value.createChats
         && (data.chatType === 'normal'
           || data.chatType === 'giftPurchase')),
       Z.asVoid,
@@ -110,6 +115,7 @@ const updateOrFlowChat = (
 const applySettled = (
   chat: HTMLElement,
   data: ChatData,
+  insertedAsBackfill: boolean,
   chatScrn: HTMLElement,
   mainState: MainState,
 ): Z.Effect<void> => Z.gen(function* () {
@@ -130,7 +136,7 @@ const applySettled = (
     return;
   }
 
-  yield * updateOrFlowChat(data, chatScrn, mainState);
+  yield * updateOrFlowChat(data, insertedAsBackfill, chatScrn, mainState);
 
   yield * banEntryFor(data).pipe(
     O.filter(() => mainState.config.value.createBanButton
@@ -158,6 +164,7 @@ const applySettled = (
 export default (
   chat: HTMLElement,
   initial: ChatData,
+  insertedAsBackfill: boolean,
   chatScrn: HTMLElement,
   mainState: MainState,
 ): Z.Effect<void> => pipe(
@@ -170,7 +177,7 @@ export default (
     const data = parseChat(chat);
 
     return parseRelevantChanged(initial, data)
-      ? applySettled(chat, data, chatScrn, mainState)
+      ? applySettled(chat, data, insertedAsBackfill, chatScrn, mainState)
       : Z.void;
   })),
 );

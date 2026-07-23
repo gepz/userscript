@@ -20,6 +20,7 @@ import addFlowChat from '@/addFlowChat';
 import appendChatMessage from '@/appendChatMessage';
 import banButton from '@/banButton';
 import checkBannedWords from '@/checkBannedWords';
+import isAboveVisibleTail from '@/isAboveVisibleTail';
 import isDuplicateChat from '@/isDuplicateChat';
 import parseChat from '@/parseChat';
 import recheckChatOnSettle from '@/recheckChatOnSettle';
@@ -51,6 +52,8 @@ export default (
       )) {
       chat.style.display = 'none';
     } else {
+      const backfill = isAboveVisibleTail(chat);
+
       yield * Z.all([
         pipe(
           addFlowChat(data, chatScrn, mainState),
@@ -58,8 +61,11 @@ export default (
             yield * mainState.flowChats,
             // Redemptions are the per-recipient echo of one gift purchase
             // (identical text, up to one per gifted membership), so only
-            // the purchase announcement flows.
-            (flowChats) => () => mainState.config.value.createChats
+            // the purchase announcement flows. Backfill — re-inserted more
+            // than a screenful above the list's end (see
+            // isAboveVisibleTail) — is not live chatter and never flows.
+            (flowChats) => () => !backfill
+              && mainState.config.value.createChats
               && (data.chatType === 'normal'
                 || data.chatType === 'giftPurchase') && !A.some(
               flowChats,
@@ -92,7 +98,9 @@ export default (
       // every visible chat gets one settled-state recheck that re-makes
       // the decisions above when a re-parse disagrees. Daemon: outlives
       // this batch's fiber, bounded by the recheck's own deadline.
-      yield * Z.forkDaemon(recheckChatOnSettle(chat, data, chatScrn, mainState));
+      yield * Z.forkDaemon(
+        recheckChatOnSettle(chat, data, backfill, chatScrn, mainState),
+      );
     }
   }))),
 );
