@@ -43,15 +43,18 @@ const template = runLogged(pipe(
       // glyph reads the same on both YouTube themes and on colored
       // cards. The halo is painted behind the fill (paint-order), so
       // only the outer half of the stroke outlines the glyph; 32 user
-      // units in the 512 viewBox is about 0.6px outside the glyph at
-      // the rendered 20px size.
+      // units in the viewBox is about 0.6px outside the glyph at the
+      // rendered 20px size.
       fill: '#fff',
       stroke: '#0009',
       strokeWidth: '32',
       paintOrder: 'stroke',
     });
 
-    svg.setAttribute('viewBox', '0 0 512 512');
+    // The glyph's circle touches the edges of its natural 512 box; the
+    // viewBox is padded by half the stroke width so the halo isn't
+    // clipped where the scaled content fills the svg's border box.
+    svg.setAttribute('viewBox', '-16 -16 544 544');
 
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute(
