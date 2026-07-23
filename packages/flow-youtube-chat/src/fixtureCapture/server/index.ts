@@ -1,4 +1,5 @@
 import {
+  appendFileSync,
   existsSync,
   mkdirSync,
   readdirSync,
@@ -173,6 +174,43 @@ const handleCapture = (body: string, response: ServerResponse): void => {
   });
 };
 
+// Geometry evidence for the product's isAboveVisibleTail gate: one JSON
+// line per chat-list insert batch (scroller metrics plus each added
+// chat's box over several instants). Contains message ids, so it stays in
+// the local-only snapshot directory with the raw samples.
+const traceFile = (): string => path.join(snapshotDir, 'trace.jsonl');
+
+const handleTrace = (body: string, response: ServerResponse): void => {
+  const parsed: unknown = JSON.parse(body);
+
+  if (!isRecord(parsed)
+    || typeof parsed['batchSize'] !== 'number'
+    || !Array.isArray(parsed['samples'])) {
+    respond(response, 400, {
+      error: 'expected {batchSize, samples}',
+    });
+
+    return;
+  }
+
+  mkdirSync(snapshotDir, {
+    recursive: true,
+  });
+
+  appendFileSync(traceFile(), `${JSON.stringify({
+    time: new Date().toISOString(),
+    ...parsed,
+  })}\n`);
+
+  // Single-message batches are the live baseline and would spam the log;
+  // a multi-insert batch is the repopulation signature worth flagging.
+  if (parsed['batchSize'] >= 4) {
+    process.stdout.write(`geometry trace: batch of ${parsed['batchSize']}\n`);
+  }
+
+  respond(response, 200, {});
+};
+
 const handleSnapshot = (body: string, response: ServerResponse): void => {
   const parsed: unknown = JSON.parse(body);
 
@@ -210,6 +248,7 @@ createServer((request, response) => {
   const handlers: Record<string, typeof handleCapture | undefined> = {
     '/capture': handleCapture,
     '/snapshot': handleSnapshot,
+    '/trace': handleTrace,
   };
 
   const handler = request.method === 'POST' && request.url !== undefined

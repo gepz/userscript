@@ -221,18 +221,123 @@ const maybeCapture = (element: HTMLElement): void => {
   });
 };
 
+let observedField: HTMLElement | undefined;
+let observedTicker: HTMLElement | undefined;
+
+// Geometry trace: evidence for the product's isAboveVisibleTail verdicts.
+// Each chat-list insert batch reports the scroller's scroll metrics and
+// every added chat's box at insert, the next frame, and a few later
+// instants, so seek-repopulation flooding can be diagnosed from real
+// numbers instead of assumptions about when the list restores its scroll.
+const traceLaterMs = [120, 400, 1200];
+const traceSubmitMs = 1300;
+
+interface TraceSample {
+  at: number
+  scroller: {
+    top: number
+    bottom: number
+    scrollTop: number
+    scrollHeight: number
+    clientHeight: number
+  } | null
+  chats: {
+    tag: string
+    id: string | null
+    top: number
+    bottom: number
+    connected: boolean
+  }[]
+}
+
+const measureBatch = (
+  added: readonly HTMLElement[],
+  start: number,
+): TraceSample => {
+  const scroller = added.find((chat) => chat.isConnected)
+    ?.closest('#item-scroller') ?? null;
+
+  const scrollerBox = scroller?.getBoundingClientRect();
+
+  return {
+    at: Math.round(performance.now() - start),
+    scroller: scroller === null || scrollerBox === undefined
+      ? null
+      : {
+        top: Math.round(scrollerBox.top),
+        bottom: Math.round(scrollerBox.bottom),
+        scrollTop: Math.round(scroller.scrollTop),
+        scrollHeight: scroller.scrollHeight,
+        clientHeight: scroller.clientHeight,
+      },
+    chats: added.map((chat) => {
+      const box = chat.getBoundingClientRect();
+
+      return {
+        tag: chat.tagName.toLowerCase(),
+        // The renderer id is the message id: real data, but the trace lives
+        // in the local-only capture-snapshots directory like every raw
+        // sample, and the id is what correlates a trace row with a flow.
+        id: chat.id === '' ? null : chat.id,
+        top: Math.round(box.top),
+        bottom: Math.round(box.bottom),
+        connected: chat.isConnected,
+      };
+    }),
+  };
+};
+
+const traceBatch = (added: readonly HTMLElement[]): void => {
+  if (added.length === 0) {
+    return;
+  }
+
+  const start = performance.now();
+  const samples: TraceSample[] = [measureBatch(added, start)];
+
+  requestAnimationFrame(() => {
+    samples.push(measureBatch(added, start));
+  });
+
+  traceLaterMs.forEach((ms) => {
+    setTimeout(() => {
+      samples.push(measureBatch(added, start));
+    }, ms);
+  });
+
+  // Fire-and-forget: the trace is diagnostics, not sampling state, so it
+  // touches neither the badge nor the kind counts.
+  setTimeout(() => {
+    GM.xmlHttpRequest({
+      method: 'POST',
+      url: `${serverBase}/trace`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify({
+        batchSize: added.length,
+        samples,
+      }),
+    });
+  }, traceSubmitMs);
+};
+
 const observer = new MutationObserver((records) => {
+  traceBatch(records
+    .filter((record) => record.target === observedField)
+    .flatMap((record) => Array.from(record.addedNodes))
+    .filter((node) => node.nodeType === Node.ELEMENT_NODE)
+    // Chat nodes live in the iframe realm, so instanceof cannot narrow.
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    .map((node) => node as HTMLElement));
+
   records.forEach((record) => {
     Array.from(record.addedNodes)
       .filter((node) => node.nodeType === Node.ELEMENT_NODE)
-      // Chat nodes live in the iframe realm, so instanceof cannot narrow.
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       .forEach((node) => maybeCapture(node as HTMLElement));
   });
 });
-
-let observedField: HTMLElement | undefined;
-let observedTicker: HTMLElement | undefined;
 
 // Unlike slot captures, the snapshot is RAW markup: real names, avatars and
 // message text. The server writes it into the gitignored capture-snapshots/

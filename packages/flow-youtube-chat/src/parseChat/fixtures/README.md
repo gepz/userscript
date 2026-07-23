@@ -88,6 +88,17 @@ same sampling pipeline as slots; they differ only in having no sanitizer,
 so they produce raw samples but no committed fixture. Decide from the
 samples whether the tag becomes a new slot or joins the ignored list.
 
+## Geometry trace
+
+The capture script also logs one JSON line per chat-list insert batch to
+`capture-snapshots/trace.jsonl`: the scroller's scroll metrics and every
+added chat's box, measured at insert, the next frame, and a few later
+instants. This is the evidence base for the flow's visibility gate
+(`@/isAboveVisibleTail`) — reproduce a seek-repopulation flood with the
+capture script running and the trace shows where each renderer actually
+sat when the product would have measured it. Like the raw samples it
+contains message ids, so it stays local-only.
+
 ## Raw whole-DOM snapshots
 
 Once per page load (30s after the chat attaches) the capture script also
