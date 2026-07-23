@@ -24,7 +24,14 @@ const template = runLogged(pipe(
     padding: '0px',
     width: '20px',
     height: '20px',
-    fill: '#fff',
+    // Mid-gray reads on both YouTube themes and on colored superchat
+    // cards; the border keeps the button findable even where the icon
+    // fill blends into the background. The fill is the inherited
+    // fallback for the svg's var() below.
+    fill: '#888',
+    border: '1px solid #8888',
+    borderRadius: '4px',
+    background: 'none',
   }))),
   Z.tap((x) => Z.sync(() => x.setAttribute(
     'aria-label',
