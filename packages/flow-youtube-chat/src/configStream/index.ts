@@ -17,6 +17,7 @@ import LivePageState from '@/LivePageState';
 import MainState from '@/MainState';
 import UserConfig from '@/UserConfig';
 import removeOldChats from '@/removeOldChats';
+import removeRepeatedChats from '@/removeRepeatedChats';
 import renderChat from '@/renderChat';
 import scaleChatField from '@/scaleChatField';
 import setChatAnimation from '@/setChatAnimation';
@@ -53,6 +54,14 @@ export default (
           onSome: (field) => sweepBanButtons(field, mainState)(on),
         }),
       )),
+    ),
+    pipe(
+      changed('noRepeatedContent'),
+      // Turning the option on also settles the chats already flowing;
+      // turning it off changes nothing retroactively.
+      Stream.mapEffect((on) => (on
+        ? removeRepeatedChats(mainState.flowChats)
+        : Z.void)),
     ),
     pipe(
       Stream.mergeAll<Partial<ChatUpdateConfig>, never, never>([

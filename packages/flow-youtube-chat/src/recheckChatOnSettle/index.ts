@@ -22,7 +22,7 @@ import appendChatMessage from '@/appendChatMessage';
 import banButton from '@/banButton';
 import checkBannedWords from '@/checkBannedWords';
 import isDuplicateChat from '@/isDuplicateChat';
-import isRepeatedText from '@/isRepeatedText';
+import isRepeatedContent from '@/isRepeatedContent';
 import onElementSettled from '@/onElementSettled';
 import parseChat from '@/parseChat';
 import renderChat from '@/renderChat';
@@ -107,8 +107,8 @@ const updateOrFlowChat = (
           && !A.some(
             flowChats,
             (x) => E.isRight(x.animationState)
-              && mainState.config.value.noRepeatedText
-              && isRepeatedText(data, x.data),
+              && mainState.config.value.noRepeatedContent
+              && isRepeatedContent(data, x.data),
           )),
         Z.asVoid,
       ),

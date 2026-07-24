@@ -53,8 +53,8 @@ export default {
     '如果满足以下所有条件，新弹幕会出现：',
   ],
   noOverlap: ["└Chats won't overlap", '└他のチャットと重ならない', '└弹幕不会重叠'],
-  noRepeatedText: [
-    "└Same text isn't already flowing",
+  noRepeatedContent: [
+    "└Same content isn't already flowing",
     '└同じ内容のチャットが流れていない',
     '└相同内容的弹幕没有在流动',
   ],

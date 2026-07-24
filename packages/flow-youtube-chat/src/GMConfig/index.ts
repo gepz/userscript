@@ -30,7 +30,7 @@ export default interface GMConfig {
   textOnly: GMConfigItem<boolean>
   timingFunction: GMConfigItem<string>
   noOverlap: GMConfigItem<boolean>
-  noRepeatedText: GMConfigItem<boolean>
+  noRepeatedContent: GMConfigItem<boolean>
   minSpacing: GMConfigItem<number>
   fieldScale: GMConfigItem<number>
   flowY1: GMConfigItem<number>

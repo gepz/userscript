@@ -22,7 +22,7 @@ import banButton from '@/banButton';
 import checkBannedWords from '@/checkBannedWords';
 import isAboveVisibleTail from '@/isAboveVisibleTail';
 import isDuplicateChat from '@/isDuplicateChat';
-import isRepeatedText from '@/isRepeatedText';
+import isRepeatedContent from '@/isRepeatedContent';
 import parseChat from '@/parseChat';
 import recheckChatOnSettle from '@/recheckChatOnSettle';
 import rendersNothing from '@/rendersNothing';
@@ -75,8 +75,8 @@ export default (
                 flowChats,
                 (x) => E.isRight(x.animationState)
                   && (isDuplicateChat(data, x.data)
-                    || (mainState.config.value.noRepeatedText
-                      && isRepeatedText(data, x.data))),
+                    || (mainState.config.value.noRepeatedContent
+                      && isRepeatedContent(data, x.data))),
               ),
           )),
         ),

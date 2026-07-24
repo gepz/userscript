@@ -70,7 +70,7 @@ const flowChatPanel: (
         checkboxNode('textOnly'),
         () => (s: SettingState) => text(getText('flowNewChatIf')(s)),
         checkboxNode('noOverlap'),
-        checkboxNode('noRepeatedText'),
+        checkboxNode('noRepeatedContent'),
         // ...pipe(
         //   state.displayMatrix,
         //   A.map(A.map((y) => h<SettingState>('span', {
