@@ -84,9 +84,6 @@ A wishlist, not commitments; verify against `src/` before starting one.
   `effect/*` subpath imports instead of the barrel; the rest is the
   runtime + Stream actually in use, where only the Effect v4 migration
   (above) moves the needle.
-- Repeat chat filter (optional setting): filter out chats whose content
-  matches an earlier chat's, unlike `isDuplicateChat`, which only drops
-  re-detections of the same message
 - Display matrix
 - Auto block user
 - Per site settings

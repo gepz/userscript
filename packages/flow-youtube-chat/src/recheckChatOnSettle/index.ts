@@ -1,6 +1,7 @@
 import {
   Array as A,
   Effect as Z,
+  Either as E,
   Option as O,
   SynchronizedRef,
   pipe,
@@ -21,6 +22,7 @@ import appendChatMessage from '@/appendChatMessage';
 import banButton from '@/banButton';
 import checkBannedWords from '@/checkBannedWords';
 import isDuplicateChat from '@/isDuplicateChat';
+import isRepeatedText from '@/isRepeatedText';
 import onElementSettled from '@/onElementSettled';
 import parseChat from '@/parseChat';
 import renderChat from '@/renderChat';
@@ -84,34 +86,42 @@ const updateOrFlowChat = (
   mainState: MainState,
 ): Z.Effect<void> => pipe(
   SynchronizedRef.get(mainState.flowChats),
-  Z.map(A.findFirst((x) => isDuplicateChat(data, x.data))),
-  Z.flatMap(O.match({
-    // Not flowing: the insert-time pass may have declined for a reason
-    // that no longer holds (a skeleton parsed as a non-flowable type, a
-    // false duplicate match on then-empty fields), so the flow decision
-    // is re-made from scratch; the findFirst above is the double-flow
-    // guard. The insert-time backfill verdict (see isAboveVisibleTail)
-    // is carried, not re-measured: seek backfill stays declined, while a
-    // live chat that has merely scrolled up since insert still flows
-    // late.
-    onNone: () => pipe(
-      addFlowChat(data, chatScrn, mainState),
-      Z.when(() => !insertedAsBackfill
-        && mainState.config.value.createChats
-        && (data.chatType === 'normal'
-          || data.chatType === 'giftPurchase')
-        && !rendersNothing(data, mainState.config.value)),
-      Z.asVoid,
-    ),
-    onSome: (chat) => pipe(
-      // Replaced in place: the entry keeps its element, lane and
-      // animation; only the parsed fields refresh before re-rendering.
-      Z.sync(() => {
-        chat.data = data;
-      }),
-      Z.zipRight(renderChat(chat)(mainState)),
-    ),
-  })),
+  Z.flatMap((flowChats) => O.match(
+    A.findFirst(flowChats, (x) => isDuplicateChat(data, x.data)),
+    {
+      // Not flowing: the insert-time pass may have declined for a reason
+      // that no longer holds (a skeleton parsed as a non-flowable type, a
+      // false duplicate match on then-empty fields), so the flow decision
+      // is re-made from scratch; the findFirst above is the double-flow
+      // guard. The insert-time backfill verdict (see isAboveVisibleTail)
+      // is carried, not re-measured: seek backfill stays declined, while a
+      // live chat that has merely scrolled up since insert still flows
+      // late.
+      onNone: () => pipe(
+        addFlowChat(data, chatScrn, mainState),
+        Z.when(() => !insertedAsBackfill
+          && mainState.config.value.createChats
+          && (data.chatType === 'normal'
+            || data.chatType === 'giftPurchase')
+          && !rendersNothing(data, mainState.config.value)
+          && !A.some(
+            flowChats,
+            (x) => E.isRight(x.animationState)
+              && mainState.config.value.noRepeatedText
+              && isRepeatedText(data, x.data),
+          )),
+        Z.asVoid,
+      ),
+      onSome: (chat) => pipe(
+        // Replaced in place: the entry keeps its element, lane and
+        // animation; only the parsed fields refresh before re-rendering.
+        Z.sync(() => {
+          chat.data = data;
+        }),
+        Z.zipRight(renderChat(chat)(mainState)),
+      ),
+    },
+  )),
 );
 
 const applySettled = (

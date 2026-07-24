@@ -74,6 +74,7 @@ const defaultGMConfig: GMConfig = pipe(
     bannedUsers: ic('NG_USERS', ...stringsArgs),
     createChats: sc<boolean>('TOGGLE_CREATE_COMMENTS', true),
     noOverlap: sc<boolean>('NO_OVERLAP', true),
+    noRepeatedText: sc<boolean>('NO_REPEATED_TEXT', false),
     createBanButton: sc<boolean>('NG_BUTTON', true),
     simplifyChatField: sc<boolean>('SIMPLE_CHAT_FIELD', false),
     displayModName: sc<boolean>('DISPLAY_MODERATOR_NAME', true),

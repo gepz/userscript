@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased:
 
+### Added
+
+- New optional "Same text isn't already flowing" condition: when on, a
+  chat whose text matches one currently flowing will not flow.
+
 ### Fixed
 
 - Messages already in the chat when the page loads now get the ban
