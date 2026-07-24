@@ -1,7 +1,8 @@
 # Filter expression design scratch
 
 Raw working notes for the typed filter-expression system (the WIP
-`src/typedExpression` + `src/restrictedExpression` sources; see `plan.md`).
+`src/typedExpression` + `src/restrictedExpression` sources; see
+`docs/backlog.md`).
 They appear to sketch type-inference steps for curried expression functions
 (reading: `{1, 2}`-style sets as in-scope type variables, `->` as the
 function arrow), and the final line matches the dot-to-bracket member-access

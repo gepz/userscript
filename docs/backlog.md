@@ -1,26 +1,34 @@
 # Backlog
 
-Repo-level work worth doing, roughly ordered. Feature wishlists live with
-their packages (e.g. `packages/flow-youtube-chat/plan.md`). Remove items when
-done; re-verify versions before starting, this list ages.
+Work worth doing, roughly ordered — repo-level items first, then the
+flow-youtube-chat bugs and wishlist. Remove items when done; re-verify
+versions before starting, this list ages.
 
 ## Security / correctness
 
 - **hyperapp is dormant upstream** (2.0.22 final, typings papered over by
   `hyperappDomCompat.d.ts`). Long-term: migrate off or vendor.
 
+## flow-youtube-chat bugs
+
+- Max chat amount sometimes misbehaves, removing chats prematurely
+  before they should go.
+
 ## Design decisions pending
 
 - **Decide the fate of the typed filter-expression editor WIP** in
-  flow-youtube-chat (~3.2k lines across `src/type`, `src/typedExpression`,
-  `src/restrictedExpression`, `src/settingUI/{filter,filterPanel,EditableExpression}`,
-  `src/filter/filterContextType`; all excluded via `tsconfig.exclude.json`).
+  flow-youtube-chat: a typed, restricted expression system meant to power a
+  type-checked editing UI for user-defined chat filters (~3.2k lines across
+  `src/type`, `src/typedExpression`, `src/restrictedExpression`,
+  `src/settingUI/{filter,filterPanel,EditableExpression}`,
+  `src/filter/filterContextType`; all excluded via `tsconfig.exclude.json`,
+  while the old panel `filterPanelOld` still ships).
   With `expression-eval` replaced by `jsep` + `src/filter/evaluateExpression`,
   this is editor UX work, not security work. Options: finish as designed
   (generic type inference; two files still have mid-edit syntax errors),
   rescope to first-order type checking in direct-style TypeScript, or delete
-  the WIP after folding its design into `plan.md`. See the "In flight"
-  section of `packages/flow-youtube-chat/plan.md`.
+  the WIP. Design scratch notes live in
+  `packages/flow-youtube-chat/filter_logic.md`.
 
 ## Dependency majors (deferred deliberately)
 
@@ -59,3 +67,18 @@ experiment status before starting.
   block this if that WIP ships (its `const`-object refactor is worth doing
   regardless — TypeScript's `erasableSyntaxOnly` direction). fork-ts-checker
   remains the type gate either way; stripping does no checking.
+
+## flow-youtube-chat wishlist
+
+A wishlist, not commitments; verify against `src/` before starting one.
+
+- Reduce build size
+- Display matrix
+- Auto block user
+- Per site settings
+- Auto reload
+- Banned lane
+- Sticker support
+- Performance tab
+- Reset default settings
+- Shadow color v2
