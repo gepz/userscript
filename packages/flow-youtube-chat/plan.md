@@ -20,12 +20,15 @@ via `tsconfig.exclude.json`:
 `src/settingUI/filter`, `src/filter/filterContextType`, `src/type`.
 Design scratch notes live in `filter_logic.md`.
 
+## Bugs
+
+- Max chat amount sometimes misbehaves, removing chats prematurely
+  before they should go
+
 ## Wishlist
 
-- Account name filter
-- Repeat chat filter
+- Reduce build size
 - Display matrix
-- Emoji filter
 - Auto block user
 - Per site settings
 - Auto reload
