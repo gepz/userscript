@@ -9,8 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - New optional "Same content isn't already flowing" condition: a chat
-  whose text and emojis match one currently flowing will not flow, and
-  enabling it also removes repeats already flowing.
+  whose text and emojis match one currently flowing will not flow.
 
 ### Fixed
 
