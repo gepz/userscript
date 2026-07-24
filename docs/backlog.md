@@ -72,7 +72,18 @@ experiment status before starting.
 
 A wishlist, not commitments; verify against `src/` before starting one.
 
-- Reduce build size
+- Reduce build size. Measured 2026-07 (`pnpm analyze`, parsed sizes):
+  the 533 KB pre-prettify bundle (137 KB gzipped on the wire) is 90%
+  `effect` (482 KB); everything else is noise (src 25 KB, next-largest
+  dependency 5 KB), and the four CDN `@require` externals already cover
+  every dependency that ships a usable browser global — `effect` has no
+  UMD build, so it cannot move there. Leads, largest first: the Schema
+  stack (~58 KB: Schema + SchemaAST + ParseResult) is only used for
+  config validation and could be replaced by hand-rolled checks; `stm`
+  (13.5 KB) and `Micro` (12.9 KB) look unused and may be shakeable via
+  `effect/*` subpath imports instead of the barrel; the rest is the
+  runtime + Stream actually in use, where only the Effect v4 migration
+  (above) moves the needle.
 - Repeat chat filter (optional setting): filter out chats whose content
   matches an earlier chat's, unlike `isDuplicateChat`, which only drops
   re-detections of the same message
