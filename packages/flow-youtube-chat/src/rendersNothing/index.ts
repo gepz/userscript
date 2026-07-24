@@ -12,7 +12,9 @@ import UserConfig from '@/UserConfig';
 // textOnly is off (textContent already excludes them). The flow gates
 // skip such chats: the typical case is an emoji-only message under
 // textOnly, which would otherwise flow invisibly while still taking a
-// lane and a maxChatCount slot. Keep in sync with chatNode.
+// lane and a maxChatCount slot. Keep in sync with chatNode:
+// consistency.spec.ts here checks this predicate against chatNode's
+// rendered output across a data-by-config grid.
 export default (
   data: ChatData,
   config: Pick<
