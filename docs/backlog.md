@@ -13,6 +13,10 @@ versions before starting, this list ages.
 
 - Max chat amount sometimes misbehaves, removing chats prematurely
   before they should go.
+- With "Text only (ignore emojis)" on, an emoji-only chat still flows as
+  an empty, invisible chat — it should not flow at all, yet it takes a
+  max-chat-count slot and a lane (`chatNode`'s parseMessage drops the
+  images but nothing gates the flow decision on remaining content).
 
 ## Design decisions pending
 
@@ -73,6 +77,9 @@ experiment status before starting.
 A wishlist, not commitments; verify against `src/` before starting one.
 
 - Reduce build size
+- Repeat chat filter (optional setting): filter out chats whose content
+  matches an earlier chat's, unlike `isDuplicateChat`, which only drops
+  re-detections of the same message
 - Display matrix
 - Auto block user
 - Per site settings
