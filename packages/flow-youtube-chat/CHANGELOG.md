@@ -1,5 +1,16 @@
 # @userscript/flow-youtube-chat
 
+## 1.23.0
+
+### Minor Changes
+
+- 449c817: New optional noRepeatedContent setting (default off): a chat whose message content — text and emojis, compared by channel-scoped emoji id — matches a currently flowing chat's does not flow, so the same content never flows twice at once. Distinct from isDuplicateChat, which drops re-renders of one message; a paid chat is never dropped as a repeat, and blank messages never match. Applied at both flow-decision sites (insert-time gate and settle recheck), and turning the option on immediately sweeps the chats already flowing, keeping the earliest of each repeated content.
+
+### Patch Changes
+
+- 1ad43eb: Chats already in the list when the mutation observer attaches — the batch a stream page renders on entry — fire no mutation records and never met the insert pipeline, so they lacked ban buttons until the toggle was flipped. The list is now swept right after the observer attaches.
+- 5489138: Chats that would render as a blank span — typically emoji-only messages under textOnly, but also whitespace-only or fully empty renderers — no longer flow; previously they flowed invisibly while still taking a lane and a maxChatCount slot. The rendersNothing predicate mirrors chatNode's render decisions and gates both flow paths.
+
 ## 1.22.0
 
 ### Minor Changes
