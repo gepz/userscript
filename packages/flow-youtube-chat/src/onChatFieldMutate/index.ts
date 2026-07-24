@@ -24,6 +24,7 @@ import isAboveVisibleTail from '@/isAboveVisibleTail';
 import isDuplicateChat from '@/isDuplicateChat';
 import parseChat from '@/parseChat';
 import recheckChatOnSettle from '@/recheckChatOnSettle';
+import rendersNothing from '@/rendersNothing';
 import setChatFieldSimplifyStyle from '@/setChatFieldSimplifyStyle';
 
 export default (
@@ -67,11 +68,13 @@ export default (
             (flowChats) => () => !backfill
               && mainState.config.value.createChats
               && (data.chatType === 'normal'
-                || data.chatType === 'giftPurchase') && !A.some(
-              flowChats,
-              (x) => E.isRight(x.animationState)
-                && isDuplicateChat(data, x.data),
-            ),
+                || data.chatType === 'giftPurchase')
+              && !rendersNothing(data, mainState.config.value)
+              && !A.some(
+                flowChats,
+                (x) => E.isRight(x.animationState)
+                  && isDuplicateChat(data, x.data),
+              ),
           )),
         ),
         banEntryFor(data).pipe(

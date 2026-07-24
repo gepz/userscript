@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Messages already in the chat when the page loads now get the ban
   button.
+- Chats that would display as nothing (such as emoji-only messages with
+  "Text only" on) no longer flow.
 
 ## [1.22.0] - 2026-07-24
 

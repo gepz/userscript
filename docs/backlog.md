@@ -13,10 +13,6 @@ versions before starting, this list ages.
 
 - Max chat amount sometimes misbehaves, removing chats prematurely
   before they should go.
-- With "Text only (ignore emojis)" on, an emoji-only chat still flows as
-  an empty, invisible chat — it should not flow at all, yet it takes a
-  max-chat-count slot and a lane (`chatNode`'s parseMessage drops the
-  images but nothing gates the flow decision on remaining content).
 
 ## Design decisions pending
 

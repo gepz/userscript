@@ -24,6 +24,7 @@ import isDuplicateChat from '@/isDuplicateChat';
 import onElementSettled from '@/onElementSettled';
 import parseChat from '@/parseChat';
 import renderChat from '@/renderChat';
+import rendersNothing from '@/rendersNothing';
 import strictOptionEquivalence from '@/strictOptionEquivalence';
 
 // Snappier than the capture tool's window: the point is correcting a chat
@@ -98,7 +99,8 @@ const updateOrFlowChat = (
       Z.when(() => !insertedAsBackfill
         && mainState.config.value.createChats
         && (data.chatType === 'normal'
-          || data.chatType === 'giftPurchase')),
+          || data.chatType === 'giftPurchase')
+        && !rendersNothing(data, mainState.config.value)),
       Z.asVoid,
     ),
     onSome: (chat) => pipe(
