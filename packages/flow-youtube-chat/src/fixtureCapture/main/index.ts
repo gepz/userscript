@@ -333,6 +333,110 @@ const recordBatchGeometry = (added: readonly HTMLElement[]): void => {
   }, geometrySubmitMs);
 };
 
+// Flow evictions (kind 'flowEviction' on the /trace channel): evidence
+// for the backlog's max-chat-amount premature-removal bug. The product
+// takes a flowing chat off screen early in exactly two ways —
+// @/addFlowChat cancels a recycled span's animation, @/removeOldChats
+// detaches the span mid-flight — so both surface black-box on the
+// product's .fyc_chat spans (top document, not the chat iframe) as an
+// animation canceled, or an element disconnected, at fractional
+// progress. Natural finishes never report. liveCount is the on-screen
+// span count at the eviction, to compare against the configured max:
+// evictions while visibly below it are the bug's signature.
+const flowSweepMs = 250;
+
+interface WatchedFlow {
+  span: HTMLElement
+  animation: Animation
+  durationMs: number
+  // currentTime survives sampling but is nulled by cancel, so the sweep
+  // keeps the last reading for the cancel report to use.
+  lastTimeMs: number
+}
+
+const watchedFlows = new Map<Animation, WatchedFlow>();
+
+const reportFlowEviction = (
+  watched: WatchedFlow,
+  reason: 'canceled' | 'detached',
+  progressMs: number,
+): void => {
+  const flightProgress = watched.durationMs > 0
+    ? progressMs / watched.durationMs
+    : 1;
+
+  // A finished chat's span is legitimately recycled or cleaned up; only a
+  // chat that still had flight time left was evicted early.
+  if (flightProgress >= 1) {
+    return;
+  }
+
+  GM.xmlHttpRequest({
+    method: 'POST',
+    url: `${serverBase}/trace`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: JSON.stringify({
+      kind: 'flowEviction',
+      reason,
+      progress: Math.round(flightProgress * 100) / 100,
+      elapsedMs: Math.round(progressMs),
+      durationMs: Math.round(watched.durationMs),
+      playState: watched.animation.playState,
+      liveCount: document.querySelectorAll('.fyc_chat').length,
+      // Real message text, matching what was visibly cut short; fine in
+      // the local-only trace, never in anything committed.
+      text: watched.span.textContent?.slice(0, 40) ?? '',
+      url: window.location.href,
+    }),
+  });
+};
+
+const sweepFlowEvictions = (): void => {
+  document.querySelectorAll<HTMLElement>('.fyc_chat').forEach((span) => {
+    // One entry per Animation, not per span: a recycled span gets a fresh
+    // animation, which must be tracked as a new flight.
+    const animation = span.getAnimations()[0];
+
+    if (animation && !watchedFlows.has(animation)) {
+      const watched: WatchedFlow = {
+        span,
+        animation,
+        durationMs: Number(animation.effect?.getTiming().duration ?? 0),
+        lastTimeMs: Number(animation.currentTime ?? 0),
+      };
+
+      watchedFlows.set(animation, watched);
+
+      animation.addEventListener('cancel', () => {
+        if (watchedFlows.delete(animation)) {
+          reportFlowEviction(watched, 'canceled', watched.lastTimeMs);
+        }
+      });
+
+      animation.addEventListener('finish', () => {
+        watchedFlows.delete(animation);
+      });
+    }
+  });
+
+  watchedFlows.forEach((watched, animation) => {
+    if (!watched.span.isConnected && animation.playState !== 'finished') {
+      watchedFlows.delete(animation);
+      reportFlowEviction(
+        watched,
+        'detached',
+        Number(animation.currentTime ?? watched.lastTimeMs),
+      );
+    } else {
+      watched.lastTimeMs = Number(
+        animation.currentTime ?? watched.lastTimeMs,
+      );
+    }
+  });
+};
+
 const observer = new MutationObserver((records) => {
   recordBatchGeometry(records
     .filter((record) => record.target === observedField)
@@ -426,3 +530,6 @@ attach();
 setInterval(attach, 2000);
 // Also heals "server unreachable" and notices a --refresh server restart.
 setInterval(refreshStatus, 10000);
+// Fast enough that a chat evicted moments after starting is still seen
+// with a sampled animation before it goes.
+setInterval(sweepFlowEvictions, flowSweepMs);

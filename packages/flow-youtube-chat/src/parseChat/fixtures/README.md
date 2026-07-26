@@ -99,13 +99,23 @@ stays local-only; it rotates to a single `.old` twin once it exceeds the
 size budget in `@/fixtureCapture/protocol`, so it never grows without
 bound.
 
-The one current producer is the capture script's geometry sampling (kind
-`geometry`): one event per chat-list insert batch, holding the scroller's
-scroll metrics and every added chat's box, measured at insert, the next
-frame, and a few later instants. This is the evidence base for the flow's
-visibility gate (`@/isAboveVisibleTail`) — reproduce a seek-repopulation
-flood with the capture script running and the trace shows where each
-renderer actually sat when the product would have measured it.
+Current producers, both in the capture script:
+
+- **Geometry sampling** (kind `geometry`): one event per chat-list insert
+  batch, holding the scroller's scroll metrics and every added chat's box,
+  measured at insert, the next frame, and a few later instants. This is
+  the evidence base for the flow's visibility gate
+  (`@/isAboveVisibleTail`) — reproduce a seek-repopulation flood with the
+  capture script running and the trace shows where each renderer actually
+  sat when the product would have measured it.
+- **Flow evictions** (kind `flowEviction`): one event whenever a flowing
+  chat leaves the screen before its animation ran out, observed black-box
+  on the product's `.fyc_chat` spans — an animation canceled (the
+  `@/addFlowChat` recycle path) or a span detached mid-flight (the
+  `@/removeOldChats` path), with the flight progress and the on-screen
+  chat count at that moment. Evidence base for the backlog's
+  max-chat-amount premature-removal bug: evictions logged while the
+  live count sits below the configured max are the bug happening.
 
 ## Raw whole-DOM snapshots
 
