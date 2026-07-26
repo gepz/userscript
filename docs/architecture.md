@@ -18,8 +18,9 @@ infrastructure they build on. Everything is consumed in-repo through
 ## Build pipeline
 
 Userscript packages bundle with webpack driven by TypeScript config files
-(`config/webpack.config.*.ts`, loaded through ts-node). Those configs merge
-fragments from `@userscript/webpack-config`:
+(`config/webpack.config.*.ts`, run straight from source by Node's type
+stripping — see `docs/decisions.md`). Those configs merge fragments from
+`@userscript/webpack-config`:
 
 - `tsLoaderConfig` — ts-loader with `transpileOnly: true`; the loader only
   transpiles.
@@ -43,7 +44,7 @@ Root `tsconfig.*.json` files are the shared bases (`base` → `src` →
 
 - `tsconfig.build.json` — the real program: `src/` only, used by ts-loader,
   fork-ts-checker, and eslint's type-aware rules (`srcProject`).
-- `tsconfig.json` — the everything view for editors and ts-node: also
+- `tsconfig.json` — the everything view for editors: also
   includes `config/` and any work-in-progress sources excluded from builds
   (e.g. via `tsconfig.exclude.json` in flow-youtube-chat). It is not expected
   to pass a full `tsc` run; don't use it as a gate.

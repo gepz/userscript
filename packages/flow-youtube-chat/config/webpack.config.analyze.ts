@@ -1,4 +1,4 @@
-import {
+import type {
   Configuration,
 } from 'webpack';
 import {
@@ -8,7 +8,7 @@ import {
   merge,
 } from 'webpack-merge';
 
-import webpackConfigProd from './webpack.config.prod';
+import webpackConfigProd from './webpack.config.prod.ts';
 
 // The production build plus a bundle-composition report. "Parsed" sizes
 // are the post-minify bytes actually shipped — the plain stats module

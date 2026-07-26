@@ -3,6 +3,6 @@ import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-serv
 interface Configuration extends WebpackConfiguration {
     devServer?: WebpackDevServerConfiguration;
 }
-declare const _default: (rootDir: string) => Configuration;
+declare const _default: (rootDir?: string) => Configuration;
 export default _default;
 //# sourceMappingURL=index.d.ts.map

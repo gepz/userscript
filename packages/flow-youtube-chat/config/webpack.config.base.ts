@@ -1,7 +1,6 @@
 import styleLoaderConfig from '@userscript/webpack-config/styleLoaderConfig';
 import tsbaseConfig from '@userscript/webpack-config/tsbaseConfig';
-import path from 'path';
-import {
+import type {
   Configuration,
 } from 'webpack';
 import {
@@ -9,7 +8,7 @@ import {
 } from 'webpack-merge';
 
 export default merge<Configuration>(
-  tsbaseConfig(path.join(__dirname, '../')),
+  tsbaseConfig(),
   styleLoaderConfig,
   {
     stats: {

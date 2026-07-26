@@ -6,6 +6,6 @@ import {
   merge,
 } from 'webpack-merge';
 
-export default (rootDir: string): Configuration => merge(
+export default (rootDir: string = process.cwd()): Configuration => merge(
   baseConfig(rootDir),
 );

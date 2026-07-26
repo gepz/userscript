@@ -1,15 +1,17 @@
 import path from 'path';
-import {
+import type {
   Configuration,
 } from 'webpack';
 import {
   merge,
 } from 'webpack-merge';
-import WebpackUserscript, {
+// Named export, not the default -- see userscriptPlugin.ts.
+import {
   RunAt,
+  UserscriptPlugin,
 } from 'webpack-userscript';
 
-import webpackConfigBase from './webpack.config.base';
+import webpackConfigBase from './webpack.config.base.ts';
 
 // Dev-only fixture-capture userscript (src/fixtureCapture/main). Unminified
 // on purpose: it never ships, and readable output beats size here. The
@@ -19,13 +21,13 @@ export default merge<Configuration>(
   webpackConfigBase,
   {
     entry: {
-      capture: path.join(__dirname, '../src/fixtureCapture/main/index.ts'),
+      capture: path.join(process.cwd(), 'src/fixtureCapture/main/index.ts'),
     },
     optimization: {
       minimize: false,
     },
     plugins: [
-      new WebpackUserscript({
+      new UserscriptPlugin({
         headers: {
           name: 'FYC Fixture Capture',
           namespace: 'FlowYoutubeChatScript',

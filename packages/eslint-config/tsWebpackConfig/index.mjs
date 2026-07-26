@@ -8,6 +8,16 @@ export default [
           devDependencies: true,
         },
       ],
+      // Node runs these files straight from source through its type
+      // stripping, and its ESM resolver never guesses an extension, so a
+      // sibling is imported by the .ts path it actually has on disk.
+      'import-x/extensions': [
+        'error',
+        'ignorePackages',
+        {
+          ts: 'always',
+        },
+      ],
     },
   },
 ];

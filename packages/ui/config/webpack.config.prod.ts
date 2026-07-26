@@ -1,5 +1,5 @@
 import umdLibConfig from '@userscript/webpack-config/umdLibConfig';
-import {
+import type {
   Configuration,
 } from 'webpack';
 import {
@@ -9,7 +9,7 @@ import {
   merge,
 } from 'webpack-merge';
 
-import webpackConfigBase from './webpack.config.base';
+import webpackConfigBase from './webpack.config.base.ts';
 
 export default merge<Configuration>(
   webpackConfigBase,

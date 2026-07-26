@@ -4,15 +4,15 @@ import TerserPlugin from 'terser-webpack-plugin';
 // import {
 //   BundleAnalyzerPlugin,
 // } from 'webpack-bundle-analyzer';
-import {
+import type {
   Configuration,
 } from 'webpack';
 import {
   merge,
 } from 'webpack-merge';
 
-import userscriptPlugin from './userscriptPlugin';
-import webpackConfigBase from './webpack.config.base';
+import userscriptPlugin from './userscriptPlugin.ts';
+import webpackConfigBase from './webpack.config.base.ts';
 
 export default merge<Configuration>(
   webpackConfigBase,
@@ -46,7 +46,7 @@ export default merge<Configuration>(
               ecma: 2020,
               semicolons: true,
               preamble: fs.readFileSync(
-                path.join(__dirname, './userscript_header.js'),
+                path.join(process.cwd(), 'config/userscript_header.js'),
               ).toString(),
             },
             compress: {

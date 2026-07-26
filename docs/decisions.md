@@ -129,3 +129,40 @@ only when the property read fails would be exercised approximately never
 and would rot untested — a Schema decode that stops matching means the
 shape changed and should fail loudly as a missing sticker, not silently
 degrade to an image that is usually a placeholder anyway.
+
+## Webpack configs run on Node's type stripping, not ts-node (2026-07)
+
+webpack-cli 7 loads a `.ts` config by `import()`ing it and only falls back to
+`interpret`/`rechoir` — which demands ts-node, sucrase, babel or tsx — when
+that throws. Node >= 24 strips types itself, so the fallback is dead weight
+once the import can succeed, and dropping it removes `ts-node` and
+`cross-env` from every package.
+
+Making the import succeed is what the config files' odd shapes are for. Each
+constraint is Node's ESM resolver being stricter than a bundler:
+
+- Sibling configs are imported by their real `.ts` path
+  (`./webpack.config.base.ts`), because nothing guesses extensions.
+  `allowImportingTsExtensions` in `tsconfig.package.json` is what lets
+  TypeScript accept that, and `import-x/extensions` is relaxed for non-`src`
+  TS in `@userscript/eslint-config`'s `tsWebpackConfig`.
+- Type-only imports say `import type`. Stripping blanks annotations but keeps
+  the import statement, and `webpack` has no runtime `Configuration` export.
+- No `__dirname`: these files are ESM. `baseConfig`, `tsbaseConfig`,
+  `jsbaseConfig` and `devConfig` default `rootDir` to `process.cwd()`, which
+  pnpm sets to the package directory.
+- `webpack-userscript` is imported by its `UserscriptPlugin` named export.
+  Node's interop hands back `module.exports` and ignores the `__esModule`
+  default marker, so the default import is the module object, not the class.
+- `package.json` is imported with `with { type: 'json' }` and read off the
+  default export; JSON modules have no named exports.
+- Emitted `lib/` needs full specifiers too, so `build-lib` passes
+  `tsc-alias --resolve-full-paths`; tsc copies specifiers verbatim and a
+  directory import fails with `ERR_UNSUPPORTED_DIR_IMPORT`.
+
+Not yet done: the packages are still typeless, so every run reparses the
+configs as ESM and warns `MODULE_TYPELESS_PACKAGE_JSON`. Declaring
+`"type": "module"` would silence it and allow `import.meta.dirname` in place
+of the cwd default, but it also changes how the `require` condition of each
+package's `exports` map resolves for CommonJS consumers, so it wants its own
+change.
