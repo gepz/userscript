@@ -8,9 +8,6 @@ import path from 'node:path';
 // and fails loudly when a changelog is missing its dated entry for the version
 // being released.
 
-const repoBlob = 'https://github.com/gepz/userscript/blob/main';
-const packagePath = 'packages/flow-youtube-chat';
-
 const changelogs = [
   {
     file: 'CHANGELOG_JP.md',
@@ -30,20 +27,31 @@ const readPackageFile = (file: string): string => readFileSync(
   'utf8',
 );
 
-const versionOf = (source: string): string => {
-  const parsed: unknown = JSON.parse(source);
+const packageJson: unknown = JSON.parse(readPackageFile('package.json'));
 
-  if (
-    typeof parsed !== 'object' || parsed === null
-    || !('version' in parsed) || typeof parsed.version !== 'string'
-  ) {
-    throw new Error('package.json carries no version');
+const stringAt = (...keys: readonly string[]): string => {
+  const value = keys.reduce<unknown>(
+    (x, key) => (typeof x === 'object' && x !== null && key in x
+      ? Reflect.get(x, key)
+      : undefined),
+    packageJson,
+  );
+
+  if (typeof value !== 'string') {
+    throw new Error(`package.json carries no ${keys.join('.')} string`);
   }
 
-  return parsed.version;
+  return value;
 };
 
-const version = versionOf(readPackageFile('package.json'));
+const version = stringAt('version');
+
+// npm's canonical repository url is a git remote; the links want the web form.
+const repoBlob = `${
+  stringAt('repository', 'url').replace(/^git\+/u, '').replace(/\.git$/u, '')
+}/blob/main`;
+
+const packagePath = stringAt('repository', 'directory');
 
 // The Keep a Changelog release heading, without its leading marker.
 const headingOf = (file: string): string => {

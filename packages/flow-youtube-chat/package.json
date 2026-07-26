@@ -4,6 +4,11 @@
   "version": "1.24.0",
   "description": "Userscript that flows YouTube live chat over the video, danmaku-style",
   "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gepz/userscript.git",
+    "directory": "packages/flow-youtube-chat"
+  },
   "scripts": {
     "lint": "eslint . --fix",
     "preinstall": "npx only-allow pnpm",
