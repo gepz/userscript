@@ -160,9 +160,25 @@ constraint is Node's ESM resolver being stricter than a bundler:
   `tsc-alias --resolve-full-paths`; tsc copies specifiers verbatim and a
   directory import fails with `ERR_UNSUPPORTED_DIR_IMPORT`.
 
-Not yet done: the packages are still typeless, so every run reparses the
-configs as ESM and warns `MODULE_TYPELESS_PACKAGE_JSON`. Declaring
-`"type": "module"` would silence it and allow `import.meta.dirname` in place
-of the cwd default, but it also changes how the `require` condition of each
-package's `exports` map resolves for CommonJS consumers, so it wants its own
-change.
+The packages stay typeless, so every run reparses the configs as ESM and
+warns `MODULE_TYPELESS_PACKAGE_JSON`. Accept the warning: declaring
+`"type": "module"` silences it but breaks the shipped bundle, and the
+failure is silent.
+
+`ui/lib` is emitted JavaScript that webpack bundles. Marking `ui` as ESM
+makes webpack apply ESM interop to it, and ESM interop binds a default
+import of a CommonJS module to `module.exports` itself — the same rule that
+makes `webpack-userscript` need its named export above. `validate-color`
+(CommonJS, no ESM entry) exports an object carrying `__esModule` and a
+`default` function, so `setEditColor`'s `validateColor(value)` compiled
+without complaint into a call on an object. Neither `import d from` nor
+`ns.default` reaches the inner function — webpack maps both to
+`module.exports` — and the sibling named export `validateHTMLColor` is a
+stricter function that rejects colour names like `red`. Marking only
+`webpack-config` as ESM doesn't work either: TypeScript then refuses its
+CommonJS-typed importers.
+
+So the cost of silencing the warning is a behaviour change in the settings
+panel's colour validation, and the tell is a bundle that builds clean and
+throws at runtime. Compare `dist/main/index.user.js` byte for byte before
+and after anything that touches module resolution.
