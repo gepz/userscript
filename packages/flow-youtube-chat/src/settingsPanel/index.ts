@@ -88,6 +88,11 @@ export default (
         height: '364px',
         display: 'flex',
         padding: '6px',
+        // Reserve the classic-scrollbar width up front: without it, a tab
+        // whose columns overflow vertically gets a y scrollbar that
+        // shrinks the content box below the columns' total width, adding
+        // an x scrollbar. settingsPanelSize budgets for this gutter.
+        scrollbarGutter: 'stable',
       },
     })((s, n) => updateAt('mainTab')(n)(c)(s))(pipe(
       [
