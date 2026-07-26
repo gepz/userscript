@@ -109,3 +109,23 @@ the regex, run via `node`), so the current pin hides the bug; a `.cjs` bin
 would resurrect it. `&&` sidesteps the whole thing (the shell resolves `pnpm`
 from PATH — the corepack symlink, `+x` with a shebang) and drops a dead dep.
 All uses were sequential; no `run-p` existed.
+
+## Sticker art is read from the renderer's Polymer data (2026-07)
+
+`src/stickerUrl` reads `element.data.sticker.thumbnails` off the
+`yt-live-chat-paid-sticker-renderer` custom element rather than its
+`#sticker img`, the only place the product touches a Polymer property
+instead of the DOM. The DOM is not an option: that `img` holds a 1x1
+placeholder GIF until a lazy load that measurably does not happen in
+time. Captured evidence (`src/parseChat/fixtures/README.md` explains the
+capture tooling): all four `paidSticker` samples show the placeholder
+both at insert and in the settled twin up to 10s later, while the
+*avatar* in the same renderer loads inside that window; whole-DOM
+snapshots taken 30s after attach had the real `lh3.googleusercontent.com`
+URL in only three of six stickers. `yt-img-shadow#sticker[loaded]`
+tracks the real src exactly and is the signal to watch if this is ever
+revisited. There is deliberately no DOM fallback: a fallback that fires
+only when the property read fails would be exercised approximately never
+and would rot untested — a Schema decode that stops matching means the
+shape changed and should fail loudly as a missing sticker, not silently
+degrade to an image that is usually a placeholder anyway.

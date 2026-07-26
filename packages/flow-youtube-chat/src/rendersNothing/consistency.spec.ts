@@ -37,6 +37,7 @@ const chatData = (overrides: Partial<ChatData>): ChatData => ({
   messageElement: O.none(),
   message: O.none(),
   messageText: O.none(),
+  stickerUrl: O.none(),
   paymentInfo: O.none(),
   textColor: O.none(),
   paidColor: O.none(),
@@ -193,6 +194,21 @@ const dataCases: readonly {
     data: chatData({
       ...message(),
       authorName: O.some('viewer'),
+    }),
+  },
+  {
+    name: 'sticker with payment',
+    data: chatData({
+      stickerUrl: O.some('https://example.invalid/sticker.png'),
+      paymentInfo: O.some('¥200'),
+    }),
+  },
+  {
+    // No payment info alongside it is not something YouTube produces, but
+    // it isolates the sticker as the only thing that could render.
+    name: 'sticker only',
+    data: chatData({
+      stickerUrl: O.some('https://example.invalid/sticker.png'),
     }),
   },
 ];

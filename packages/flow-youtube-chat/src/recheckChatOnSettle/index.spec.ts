@@ -23,6 +23,7 @@ const chatData = (overrides: Partial<ChatData>): ChatData => ({
   messageElement: O.none(),
   message: O.none(),
   messageText: O.some('hello'),
+  stickerUrl: O.none(),
   paymentInfo: O.none(),
   textColor: O.none(),
   paidColor: O.none(),

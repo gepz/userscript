@@ -15,6 +15,9 @@ export default interface ChatData {
   messageElement: O.Option<Element>
   message: O.Option<string>
   messageText: O.Option<string>
+  // Paid stickers only: the sticker art, which has no counterpart in the
+  // message body (see stickerUrl).
+  stickerUrl: O.Option<string>
   paymentInfo: O.Option<string>
   textColor: O.Option<string>
   paidColor: O.Option<string>

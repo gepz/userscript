@@ -22,7 +22,7 @@ const fixture = (name: string): string => readFileSync(
 
 // getComputedStyle only resolves styles for attached elements in happy-dom,
 // so the fixture is mounted before parsing.
-const parse = (name: string) => {
+const mount = (name: string): HTMLElement => {
   const host = document.createElement('div');
   document.body.append(host);
   host.innerHTML = fixture(name);
@@ -32,8 +32,10 @@ const parse = (name: string) => {
     throw new Error('Fixture has no root element');
   }
 
-  return parseChat(chat);
+  return chat;
 };
+
+const parse = (name: string) => parseChat(mount(name));
 
 describe('parseChat', () => {
   it('parses a normal text message', () => {
@@ -83,6 +85,48 @@ describe('parseChat', () => {
     expect(data.messageText).toEqual(O.none());
     expect(data.textColor).toEqual(O.some('rgb(0, 77, 64)'));
     expect(data.paidColor).toEqual(O.some('rgb(0, 121, 107)'));
+    // Captured markup has only the placeholder GIF: the art lives in the
+    // Polymer data, which no fixture can carry.
+    expect(data.stickerUrl).toEqual(O.none());
+  });
+
+  it('takes the widest sticker image from the renderer data', () => {
+    const chat = mount('paidSticker');
+
+    Reflect.set(chat, 'data', {
+      sticker: {
+        thumbnails: [
+          {
+            url: '//lh3.googleusercontent.com/FixtureSticker=s104-rwa',
+            width: 104,
+          },
+          {
+            url: '//lh3.googleusercontent.com/FixtureSticker=s208-rwa',
+            width: 208,
+          },
+        ],
+      },
+    });
+
+    expect(parseChat(chat).stickerUrl).toEqual(O.some(
+      'https://lh3.googleusercontent.com/FixtureSticker=s208-rwa',
+    ));
+  });
+
+  it('has no sticker image on a chat that is not a sticker', () => {
+    const chat = mount('paidMessage');
+
+    Reflect.set(chat, 'data', {
+      sticker: {
+        thumbnails: [
+          {
+            url: '//lh3.googleusercontent.com/FixtureSticker=s208-rwa',
+          },
+        ],
+      },
+    });
+
+    expect(parseChat(chat).stickerUrl).toEqual(O.none());
   });
 
   it('parses a membership item', () => {

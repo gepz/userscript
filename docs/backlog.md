@@ -130,14 +130,6 @@ three existing toggles fold into the matrix or stay.
 
 ### Banned lane
 
-### Sticker support
-
-Flow the sticker image itself. Paid stickers are already detected and
-partially supported: `parseChat` reads their theme colors and purchase
-amount, so the author name and amount flow with the sticker's colors —
-but a sticker renderer has no `#message`, only `#sticker`, so the image
-never reaches the screen.
-
 ### Performance tab
 
 ### Reset default settings

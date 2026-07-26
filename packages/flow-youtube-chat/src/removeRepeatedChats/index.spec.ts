@@ -36,6 +36,7 @@ const flowChat = (
       messageElement: O.some(messageElement),
       message: O.none(),
       messageText: O.some(text),
+      stickerUrl: O.none(),
       paymentInfo: O.none(),
       textColor: O.none(),
       paidColor: O.none(),

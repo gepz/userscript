@@ -6,6 +6,7 @@ import {
 } from 'effect';
 
 import ChatData from '@/ChatData';
+import stickerUrl from '@/stickerUrl';
 
 export default (
   chat: HTMLElement,
@@ -108,6 +109,9 @@ export default (
       messageElement,
       O.map((x) => x.textContent ?? ''),
     ),
+    // Only stickers carry one, and the lookup reads a Polymer property,
+    // so it stays off the path every other chat takes.
+    stickerUrl: isPaidSticker ? stickerUrl(chat) : O.none(),
     paymentInfo,
     textColor: isPaidNormal
       ? O.firstSomeOf(A.map(

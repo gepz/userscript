@@ -138,6 +138,19 @@ export default Z.fnUntraced(function* (
         } satisfies Partial<CSSStyleDeclaration>)}>${text.vnodes}</span>`),
       ),
       pipe(
+        data.stickerUrl,
+        O.filter(() => !config.textOnly),
+        // Square 1em like emoji, and for the same reason: the flow
+        // assumes every chat is one lane tall (see getChatLane), and a
+        // fixed box keeps the width measured in setChatAnimation right
+        // even though the image is still loading.
+        O.map((url) => html`<img style=${styleMap({
+          height: '1em',
+          width: '1em',
+          verticalAlign: 'text-top',
+        } satisfies Partial<CSSStyleDeclaration>)} src=${url} alt="">`),
+      ),
+      pipe(
         data.paymentInfo,
         O.map((text) => html`<span style=${styleMap({
           ...O.match(data.paidColor, {
