@@ -97,7 +97,9 @@ instants. This is the evidence base for the flow's visibility gate
 (`@/isAboveVisibleTail`) — reproduce a seek-repopulation flood with the
 capture script running and the trace shows where each renderer actually
 sat when the product would have measured it. Like the raw samples it
-contains message ids, so it stays local-only.
+contains message ids, so it stays local-only. The file rotates to a
+single `.old` twin once it exceeds the size budget in
+`@/fixtureCapture/protocol`, so it never grows without bound.
 
 ## Raw whole-DOM snapshots
 
@@ -109,7 +111,9 @@ root. Use it to inspect unknown renderers' internals, the chat shell the
 model. It contains real user content (names, avatars, messages) — that is
 the point, and why it must stay local: never commit or share one as-is;
 derive a redacted fixture from it instead if something needs to be pinned
-by a test. Reload the page for a fresh snapshot; delete old files freely.
+by a test. Reload the page for a fresh snapshot; the server keeps only
+the newest few (budget in `@/fixtureCapture/protocol`) and deletes the
+rest.
 
 The `sample-<kind>-<n>.html` files live there too: every fixture has raw
 originals to audit the sanitizer against, and every unknown renderer has

@@ -3,7 +3,9 @@ import {
   existsSync,
   mkdirSync,
   readdirSync,
+  renameSync,
   rmSync,
+  statSync,
   writeFileSync,
 } from 'node:fs';
 import {
@@ -22,12 +24,16 @@ import {
   slots,
 } from '../Slot/index.ts';
 import {
+  bodyLimit,
   cooldownMs,
   maxSamples,
+  maxSnapshots,
   port,
   sampleName,
   settledName,
+  snapshotBodyLimit,
   tagPattern,
+  traceRotateBytes,
 } from '../protocol/index.ts';
 /* eslint-enable import-x/extensions, import-x/no-useless-path-segments */
 
@@ -208,7 +214,16 @@ const handleTrace = (body: string, response: ServerResponse): void => {
     recursive: true,
   });
 
-  appendFileSync(traceFile(), `${JSON.stringify({
+  // Rotate before appending (budget in ../protocol): the .old twin is
+  // replaced, so the trace never holds more than two generations.
+  const file = traceFile();
+
+  if (existsSync(file) && statSync(file).size >= traceRotateBytes) {
+    renameSync(file, `${file}.old`);
+    process.stdout.write(`geometry trace rotated to ${file}.old\n`);
+  }
+
+  appendFileSync(file, `${JSON.stringify({
     time: new Date().toISOString(),
     ...parsed,
   })}\n`);
@@ -244,6 +259,17 @@ const handleSnapshot = (body: string, response: ServerResponse): void => {
 
   writeFileSync(file, `${sourceComment(parsed['url'])}${parsed['html']}\n`);
   process.stdout.write(`raw snapshot written: ${file}\n`);
+
+  // Retention (budget in ../protocol): timestamped names sort
+  // chronologically, so everything before the newest maxSnapshots goes.
+  readdirSync(snapshotDir)
+    .filter((name) => /^snapshot-.*\.html$/.test(name))
+    .sort()
+    .slice(0, -maxSnapshots)
+    .forEach((name) => {
+      rmSync(path.join(snapshotDir, name));
+    });
+
   respond(response, 200, {
     written: path.basename(file),
   });
@@ -269,7 +295,10 @@ createServer((request, response) => {
     : undefined;
 
   if (handler) {
-    const sizeLimit = request.url === '/snapshot' ? 30_000_000 : 2_000_000;
+    const sizeLimit = request.url === '/snapshot'
+      ? snapshotBodyLimit
+      : bodyLimit;
+
     const chunks: Buffer[] = [];
     let size = 0;
 

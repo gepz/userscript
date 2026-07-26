@@ -21,6 +21,18 @@ export const cooldownMs = 5000;
 // is also what makes any kind safe to embed in a filename.
 export const tagPattern = /^[a-z][a-z0-9-]{0,99}$/;
 
+// Size budget, in one place so no capture output grows without bound.
+// Per-request body caps: a renderer fragment or trace batch is small, a
+// whole-DOM snapshot is not.
+export const bodyLimit = 2_000_000;
+export const snapshotBodyLimit = 30_000_000;
+
+// Disk caps. The trace rotates to a single `.old` twin when it exceeds
+// this, so recent evidence survives and disk usage stays under twice the
+// cap; snapshots keep only the newest few files, one per page load.
+export const traceRotateBytes = 20_000_000;
+export const maxSnapshots = 5;
+
 // Raw sample files under capture-snapshots/, numbered 1..maxSamples.
 export const sampleName = (
   kind: string,
