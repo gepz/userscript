@@ -1,5 +1,22 @@
 # @userscript/flow-youtube-chat
 
+## 1.24.0
+
+### Minor Changes
+
+- ae0dad9: Flow the sticker image of paid stickers, sized like an emoji next to the
+  amount. The `textOnly` setting suppresses it the same way it suppresses
+  emoji.
+
+### Patch Changes
+
+- dbd03e6: Reserve scrollbar gutter in the settings tabs and budget the panel width
+  for it, so a tab that overflows vertically no longer grows a horizontal
+  scrollbar; together with the @userscript/ui textarea fix this removes the
+  Chat Filter tab's vertical scrollbar on Firefox.
+- Updated dependencies [61f7336]
+  - @userscript/ui@1.1.6
+
 ## 1.23.0
 
 ### Minor Changes

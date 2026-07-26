@@ -1,5 +1,13 @@
 # @userscript/ui
 
+## 1.1.6
+
+### Patch Changes
+
+- 61f7336: Pin textarea font-size and line-height in textAreaRow so a rows count
+  yields the same height in every browser; Firefox's larger default
+  monospace font made the filter textareas overflow their panel.
+
 ## 1.1.5
 
 ### Patch Changes

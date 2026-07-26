@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.24.0] - 2026-07-27
+
+### Added
+
+- Paid stickers now flow with their sticker image next to the amount.
+  "Text only" hides it, as it does emojis.
+
+### Fixed
+
+- The settings panel no longer grows a horizontal scrollbar on Chrome.
+- The Chat Filter text boxes no longer overflow the panel on Firefox.
+
 ## [1.23.0] - 2026-07-24
 
 ### Added
