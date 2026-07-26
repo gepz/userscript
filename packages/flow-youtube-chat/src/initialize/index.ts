@@ -41,10 +41,12 @@ import logWithMeta from '@/logWithMeta';
 import makeChatScreen from '@/makeChatScreen';
 import removeOldChats from '@/removeOldChats';
 import scriptIdentifier from '@/scriptIdentifier';
+import scrollbarThickness from '@/scrollbarThickness';
 import setSettingFromConfig from '@/setSettingFromConfig';
 import settingStateInit from '@/settingStateInit';
 import settingUpdateApps from '@/settingUpdateApps';
 import settingsComponent from '@/settingsComponent';
+import settingsPanelSize from '@/settingsPanelSize';
 import makeRefs from '@/stream/makeRefs';
 import toggleChatButton from '@/toggleChatButton';
 import toggleSettingsPanelComponent from '@/toggleSettingsPanelComponent';
@@ -117,9 +119,11 @@ export default pipe(
     };
   }),
   Z.flatMap((ctx) => Z.gen(function* () {
-    const stateInit = settingStateInit(ctx.mainState.config.value);
+    const panelSize = settingsPanelSize(yield * scrollbarThickness);
+    const stateInit = settingStateInit(panelSize)(ctx.mainState.config.value);
     return {
       ...ctx,
+      panelSize,
       apps: {
         toggleChatButtonApp: yield * wrapApp(
           toggleChatButton(ctx.mainState.config.setConfig),

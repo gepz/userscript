@@ -3,9 +3,13 @@ import {
   pipe,
 } from 'effect';
 
-import settingsPanelSize from '@/settingsPanelSize';
+import {
+  SettingsPanelSize,
+} from '@/settingsPanelSize';
 
 export default (
+  panelSize: SettingsPanelSize,
+) => (
   toggleSettingsElement: HTMLElement,
 ) => (
   nextSettingsRect: (r: DOMRectReadOnly) => Z.Effect<void>,
@@ -16,16 +20,16 @@ export default (
   Z.filterOrFail((x) => x.offsetParent !== null),
   Z.map((x) => x.getBoundingClientRect()),
   Z.map((x) => new DOMRectReadOnly(
-    Math.max(0, x.right + window.scrollX - settingsPanelSize.width),
-    Math.max(0, x.y + window.scrollY - settingsPanelSize.height),
-    settingsPanelSize.width,
-    Math.min(x.y + window.scrollY, settingsPanelSize.height),
+    Math.max(0, x.right + window.scrollX - panelSize.width),
+    Math.max(0, x.y + window.scrollY - panelSize.height),
+    panelSize.width,
+    Math.min(x.y + window.scrollY, panelSize.height),
   )),
   Z.orElseSucceed(() => new DOMRectReadOnly(
-    -settingsPanelSize.width,
-    -settingsPanelSize.height,
-    settingsPanelSize.width,
-    settingsPanelSize.height,
+    -panelSize.width,
+    -panelSize.height,
+    panelSize.width,
+    panelSize.height,
   )),
   Z.filterOrFail((x) => x.x !== last.x
     || x.y !== last.y

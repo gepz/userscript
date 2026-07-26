@@ -46,7 +46,9 @@ import onChatFieldMutate from '@/onChatFieldMutate';
 import onPlayerResize from '@/onPlayerResize';
 import removeOldChats from '@/removeOldChats';
 import setChatPlayState from '@/setChatPlayState';
-import settingsPanelSize from '@/settingsPanelSize';
+import {
+  SettingsPanelSize,
+} from '@/settingsPanelSize';
 import observePair from '@/stream/observePair';
 import throttleLatest from '@/stream/throttleLatest';
 import videoToggleStream from '@/stream/videoToggleStream';
@@ -72,6 +74,7 @@ export default Z.fnUntraced(function* (ctx: {
     toggleSettingsPanelApp: WrappedApp<SettingState>
   }
   chatScreen: HTMLDivElement
+  panelSize: SettingsPanelSize
 }) {
   const live = makePageState(livePageYt);
   const css = yield * mainCss;
@@ -83,15 +86,17 @@ export default Z.fnUntraced(function* (ctx: {
   const settingsRect = yield * SubscriptionRef.make(new DOMRectReadOnly(
     0,
     0,
-    settingsPanelSize.width,
-    settingsPanelSize.height,
+    ctx.panelSize.width,
+    ctx.panelSize.height,
   ));
 
   const tapUpdateSettingsRect = <T, E, R>(
     stream: Stream.Stream<T, E, R>,
   ): Stream.Stream<T, E, R> => Stream.tap(stream, () => pipe(
     SubscriptionRef.get(settingsRect),
-    Z.flatMap(updateSettingsRect(ctx.apps.toggleSettingsPanelApp.node)(
+    Z.flatMap(updateSettingsRect(ctx.panelSize)(
+      ctx.apps.toggleSettingsPanelApp.node,
+    )(
       (rect) => SubscriptionRef.set(settingsRect, rect),
     )),
   ));

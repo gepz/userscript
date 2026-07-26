@@ -15,11 +15,15 @@ import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
 import isEditable from '@/isEditable';
 // import Compound from '@/settingUI/editableExpression/Compound';
-import settingsPanelSize from '@/settingsPanelSize';
+import {
+  SettingsPanelSize,
+} from '@/settingsPanelSize';
 
 // import fromJsepExp from '@/settingUI/editableExpression/fromJsepExp';
 
-export default (config: UserConfig): SettingState => pipe(
+export default (
+  panelSize: SettingsPanelSize,
+) => (config: UserConfig): SettingState => pipe(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   R.mapEntries(config, (v, k) => [
     k,
@@ -50,8 +54,8 @@ export default (config: UserConfig): SettingState => pipe(
     panelRect: new DOMRectReadOnly(
       0,
       0,
-      settingsPanelSize.width,
-      settingsPanelSize.height,
+      panelSize.width,
+      panelSize.height,
     ),
   }),
 );
