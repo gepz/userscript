@@ -30,7 +30,10 @@ stripping — see `docs/decisions.md`). Those configs merge fragments from
   covers files webpack never loads and dependency `.d.ts` files.
 
 Lib packages build with plain `tsc --project tsconfig.lib.json` followed by
-`tsc-alias` (which rewrites `@/` path aliases inside the emitted files). The
+`tsc-alias` (which rewrites `@/` path aliases inside the emitted files);
+`webpack-config` also passes `--resolve-full-paths`, because Node loads its
+`lib/` directly and its ESM resolver rejects the extensionless specifiers
+tsc copies through — see `docs/decisions.md`. The
 resulting `lib/` is committed, because sibling packages resolve the
 `workspace:` symlink straight into it. Do not try to move declaration emit
 into fork-ts-checker's `write-dts` mode: it has no post-emit hook, so

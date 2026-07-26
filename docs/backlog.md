@@ -11,6 +11,20 @@ versions before starting, this list ages.
 2.0.22 final, typings papered over by `hyperappDomCompat.d.ts`.
 Long-term: migrate off or vendor.
 
+## Cleanup
+
+### Delete the unused CSS build pipeline
+
+Nothing imports a `.css` file in either userscript, so the `test: /\.css$/`
+rule in `webpack-config`'s `styleLoaderConfig` matches no module.
+flow-youtube-chat's styles are a template string in `src/mainCss`, appended
+as a `<style>` element. The chain would not survive being used either: both
+`postcss.config.js` files name `tailwindcss` as a plugin and neither package
+has it installed, so the first `.css` import fails the build. Removable:
+`styleLoaderConfig` and the two `webpack.config.base.ts` merges of it, the
+`style-loader`, `css-loader`, `postcss-loader`, `autoprefixer` and `postcss`
+devDependencies, and both `postcss.config.js`.
+
 ## flow-youtube-chat bugs
 
 ### Max chat amount removes chats prematurely
@@ -67,24 +81,15 @@ Blocked on plugin ecosystem (`eslint-config-airbnb-extended`,
 
 ## Build pipeline (waiting on webpack experiments to stabilize)
 
-Both arrived in the webpack 5.98→5.108 range (checked 2026-07); re-verify
-experiment status before starting.
-
-### Replace `style-loader` + `css-loader` with native CSS
-
-`experiments.css`, `exportType: "style"` injects via `HTMLStyleElement`
-since 5.106. `postcss-loader` stays — it runs Tailwind and autoprefixer,
-which native CSS does not cover. Shrinks `styleLoaderConfig` to one
-loader plus a generator option.
-
 ### Replace `ts-loader` with native type-stripping
 
-`experiments.typescript`, since 5.108; uses Node's type erasure.
-Stripping handles erasable syntax only; live code is enum-free since
-`src/LogAnnotationKeys` was deleted in the 2026-07 logging rewrite, so
-the remaining `enum`s (`src/type/UI`, `src/type/Primitive`) sit in the
-build-excluded filter-editor WIP and only block this if that WIP ships
-(its `const`-object refactor is worth doing regardless — TypeScript's
+`experiments.typescript`, since webpack 5.108 (checked 2026-07; re-verify
+experiment status before starting). It uses the same type erasure the
+webpack configs themselves already run on, so the constraints are the ones
+`docs/decisions.md` lists. Stripping handles erasable syntax only; the two
+remaining `enum`s (`src/type/UI`, `src/type/Primitive`, re-verified 2026-07)
+sit in the build-excluded filter-editor WIP and only block this if that WIP
+ships (its `const`-object refactor is worth doing regardless — TypeScript's
 `erasableSyntaxOnly` direction). fork-ts-checker remains the type gate
 either way; stripping does no checking.
 
