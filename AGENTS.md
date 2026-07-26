@@ -57,6 +57,9 @@ restructuring builds, configs, or dependencies.
   Then rebuild so `dist/main/index.user.js` carries the new `@version`; the
   Greasyfork upload itself is manual. Nothing auto-rebuilds — `dist/` is
   gitignored — so a dependency bump reaches users only through this step.
+  `pnpm release-note` prints the JP/EN changelog links to paste into the
+  Greasyfork upload, and fails when either changelog lacks a dated entry for
+  the version in `package.json`.
 
 ## Coding conventions
 
