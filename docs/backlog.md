@@ -11,20 +11,6 @@ versions before starting, this list ages.
 2.0.22 final, typings papered over by `hyperappDomCompat.d.ts`.
 Long-term: migrate off or vendor.
 
-## Cleanup
-
-### Delete the unused CSS build pipeline
-
-Nothing imports a `.css` file in either userscript, so the `test: /\.css$/`
-rule in `webpack-config`'s `styleLoaderConfig` matches no module.
-flow-youtube-chat's styles are a template string in `src/mainCss`, appended
-as a `<style>` element. The chain would not survive being used either: both
-`postcss.config.js` files name `tailwindcss` as a plugin and neither package
-has it installed, so the first `.css` import fails the build. Removable:
-`styleLoaderConfig` and the two `webpack.config.base.ts` merges of it, the
-`style-loader`, `css-loader`, `postcss-loader`, `autoprefixer` and `postcss`
-devDependencies, and both `postcss.config.js`.
-
 ## flow-youtube-chat bugs
 
 ### Max chat amount removes chats prematurely

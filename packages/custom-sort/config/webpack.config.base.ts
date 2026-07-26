@@ -1,4 +1,3 @@
-import styleLoaderConfig from '@userscript/webpack-config/styleLoaderConfig';
 import tsbaseConfig from '@userscript/webpack-config/tsbaseConfig';
 import type {
   Configuration,
@@ -9,7 +8,6 @@ import {
 
 export default merge<Configuration>(
   tsbaseConfig(),
-  styleLoaderConfig,
   {
     stats: {
       errorDetails: true,
