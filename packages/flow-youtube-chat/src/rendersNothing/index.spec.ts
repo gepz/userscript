@@ -8,25 +8,8 @@ import {
   it,
 } from 'vitest';
 
-import ChatData from '@/ChatData';
+import chatDataFixture from '@/chatDataFixture';
 import rendersNothing from '@/rendersNothing';
-
-const chatData = (overrides: Partial<ChatData>): ChatData => ({
-  chatType: 'normal',
-  chatID: O.none(),
-  authorType: 'normal',
-  authorID: O.none(),
-  authorName: O.none(),
-  timestamp: O.none(),
-  messageElement: O.none(),
-  message: O.none(),
-  messageText: O.none(),
-  stickerUrl: O.none(),
-  paymentInfo: O.none(),
-  textColor: O.none(),
-  paidColor: O.none(),
-  ...overrides,
-});
 
 const config = (overrides?: Partial<{
   textOnly: boolean
@@ -48,20 +31,20 @@ const emojiOnlyMessage = (): HTMLElement => {
 
 describe('rendersNothing', () => {
   it('keeps a plain text message', () => {
-    expect(rendersNothing(chatData({
+    expect(rendersNothing(chatDataFixture({
       messageText: O.some('hello'),
     }), config())).toBe(false);
   });
 
   it('keeps an emoji-only message while emojis render', () => {
-    expect(rendersNothing(chatData({
+    expect(rendersNothing(chatDataFixture({
       messageElement: O.some(emojiOnlyMessage()),
       messageText: O.some(''),
     }), config())).toBe(false);
   });
 
   it('drops an emoji-only message under textOnly', () => {
-    expect(rendersNothing(chatData({
+    expect(rendersNothing(chatDataFixture({
       messageElement: O.some(emojiOnlyMessage()),
       messageText: O.some(''),
     }), config({
@@ -70,17 +53,17 @@ describe('rendersNothing', () => {
   });
 
   it('drops a whitespace-only message', () => {
-    expect(rendersNothing(chatData({
+    expect(rendersNothing(chatDataFixture({
       messageText: O.some('  '),
     }), config())).toBe(true);
   });
 
   it('drops a fully empty chat', () => {
-    expect(rendersNothing(chatData({}), config())).toBe(true);
+    expect(rendersNothing(chatDataFixture({}), config())).toBe(true);
   });
 
   it('keeps an empty message when payment info shows', () => {
-    expect(rendersNothing(chatData({
+    expect(rendersNothing(chatDataFixture({
       messageText: O.some(''),
       paymentInfo: O.some('$5.00'),
     }), config({
@@ -90,7 +73,7 @@ describe('rendersNothing', () => {
   });
 
   it('drops a chat whose only payment info is blank', () => {
-    expect(rendersNothing(chatData({
+    expect(rendersNothing(chatDataFixture({
       messageText: O.some(''),
       paymentInfo: O.some(' '),
     }), config({
@@ -99,7 +82,7 @@ describe('rendersNothing', () => {
   });
 
   it('keeps an empty message from a moderator whose name shows', () => {
-    const data = chatData({
+    const data = chatDataFixture({
       authorType: 'moderator',
       authorName: O.some('Mod'),
       messageText: O.some(''),
@@ -112,7 +95,7 @@ describe('rendersNothing', () => {
   });
 
   it('keeps a payer name with blank payment text when the author shows', () => {
-    expect(rendersNothing(chatData({
+    expect(rendersNothing(chatDataFixture({
       authorName: O.some('Payer'),
       paymentInfo: O.some(' '),
       messageText: O.some(''),

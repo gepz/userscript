@@ -7,34 +7,17 @@ import {
   it,
 } from 'vitest';
 
-import ChatData from '@/ChatData';
+import chatDataFixture from '@/chatDataFixture';
 import isDuplicateChat from '@/isDuplicateChat';
-
-const chatData = (overrides: Partial<ChatData>): ChatData => ({
-  chatType: 'normal',
-  chatID: O.none(),
-  authorType: 'normal',
-  authorID: O.none(),
-  authorName: O.none(),
-  timestamp: O.none(),
-  messageElement: O.none(),
-  message: O.none(),
-  messageText: O.none(),
-  stickerUrl: O.none(),
-  paymentInfo: O.none(),
-  textColor: O.none(),
-  paidColor: O.none(),
-  ...overrides,
-});
 
 describe('isDuplicateChat', () => {
   it('matches on equal renderer ids regardless of other fields', () => {
     expect(isDuplicateChat(
-      chatData({
+      chatDataFixture({
         chatID: O.some('msg-1'),
         messageText: O.some('gg'),
       }),
-      chatData({
+      chatDataFixture({
         chatID: O.some('msg-1'),
         messageText: O.some('rendered differently'),
       }),
@@ -49,11 +32,11 @@ describe('isDuplicateChat', () => {
     };
 
     expect(isDuplicateChat(
-      chatData({
+      chatDataFixture({
         ...lookAlike,
         chatID: O.some('msg-1'),
       }),
-      chatData({
+      chatDataFixture({
         ...lookAlike,
         chatID: O.some('msg-2'),
       }),
@@ -62,10 +45,10 @@ describe('isDuplicateChat', () => {
 
   it('does not match an identified candidate against id-less state', () => {
     expect(isDuplicateChat(
-      chatData({
+      chatDataFixture({
         chatID: O.some('msg-1'),
       }),
-      chatData({}),
+      chatDataFixture({}),
     )).toBe(false);
   });
 
@@ -76,10 +59,14 @@ describe('isDuplicateChat', () => {
       timestamp: O.some('1:23 PM'),
     };
 
-    expect(isDuplicateChat(chatData(fields), chatData(fields))).toBe(true);
     expect(isDuplicateChat(
-      chatData(fields),
-      chatData({
+      chatDataFixture(fields),
+      chatDataFixture(fields),
+    )).toBe(true);
+
+    expect(isDuplicateChat(
+      chatDataFixture(fields),
+      chatDataFixture({
         ...fields,
         authorID: O.some('OtherToken'),
       }),
@@ -95,7 +82,7 @@ describe('isDuplicateChat', () => {
       timestamp: O.some('1:23 PM'),
     };
 
-    expect(isDuplicateChat(chatData(photoless), chatData(photoless)))
+    expect(isDuplicateChat(chatDataFixture(photoless), chatDataFixture(photoless)))
       .toBe(true);
   });
 });

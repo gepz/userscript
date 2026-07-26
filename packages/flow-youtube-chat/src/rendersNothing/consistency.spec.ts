@@ -18,6 +18,7 @@ import ChatData from '@/ChatData';
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
 import UserConfig from '@/UserConfig';
+import chatDataFixture from '@/chatDataFixture';
 import chatNode from '@/chatNode';
 import rendersNothing from '@/rendersNothing';
 
@@ -26,23 +27,6 @@ import rendersNothing from '@/rendersNothing';
 // actual rendered output is visibly empty (no text, no images). A
 // visibility-rule change in chatNode that is not mirrored in the
 // predicate fails here instead of drifting silently.
-
-const chatData = (overrides: Partial<ChatData>): ChatData => ({
-  chatType: 'normal',
-  chatID: O.none(),
-  authorType: 'normal',
-  authorID: O.none(),
-  authorName: O.none(),
-  timestamp: O.none(),
-  messageElement: O.none(),
-  message: O.none(),
-  messageText: O.none(),
-  stickerUrl: O.none(),
-  paymentInfo: O.none(),
-  textColor: O.none(),
-  paidColor: O.none(),
-  ...overrides,
-});
 
 const emoji = (): HTMLImageElement => {
   const img = document.createElement('img');
@@ -126,56 +110,56 @@ const dataCases: readonly {
 }[] = [
   {
     name: 'plain text',
-    data: chatData(message('gg')),
+    data: chatDataFixture(message('gg')),
   },
   {
     name: 'whitespace-only text',
-    data: chatData(message('  ')),
+    data: chatDataFixture(message('  ')),
   },
   {
     name: 'emoji only',
-    data: chatData(message(emoji())),
+    data: chatDataFixture(message(emoji())),
   },
   {
     name: 'text and emoji',
-    data: chatData(message('gg', emoji())),
+    data: chatDataFixture(message('gg', emoji())),
   },
   {
     name: 'whitespace text and emoji',
-    data: chatData(message('  ', emoji())),
+    data: chatDataFixture(message('  ', emoji())),
   },
   {
     name: 'empty message element',
-    data: chatData(message()),
+    data: chatDataFixture(message()),
   },
   {
     name: 'no message element',
-    data: chatData({}),
+    data: chatDataFixture({}),
   },
   {
     name: 'paid with text',
-    data: chatData({
+    data: chatDataFixture({
       ...message('Thanks!'),
       paymentInfo: O.some('$5.00'),
     }),
   },
   {
     name: 'paid with empty message',
-    data: chatData({
+    data: chatDataFixture({
       ...message(),
       paymentInfo: O.some('$5.00'),
     }),
   },
   {
     name: 'blank payment with empty message',
-    data: chatData({
+    data: chatDataFixture({
       ...message(),
       paymentInfo: O.some('  '),
     }),
   },
   {
     name: 'moderator with name, empty message',
-    data: chatData({
+    data: chatDataFixture({
       ...message(),
       authorType: 'moderator',
       authorName: O.some('mod'),
@@ -183,7 +167,7 @@ const dataCases: readonly {
   },
   {
     name: 'payer with name, blank payment',
-    data: chatData({
+    data: chatDataFixture({
       ...message(),
       authorName: O.some('payer'),
       paymentInfo: O.some('  '),
@@ -191,14 +175,14 @@ const dataCases: readonly {
   },
   {
     name: 'plain author with name, empty message',
-    data: chatData({
+    data: chatDataFixture({
       ...message(),
       authorName: O.some('viewer'),
     }),
   },
   {
     name: 'sticker with payment',
-    data: chatData({
+    data: chatDataFixture({
       stickerUrl: O.some('https://example.invalid/sticker.png'),
       paymentInfo: O.some('¥200'),
     }),
@@ -207,7 +191,7 @@ const dataCases: readonly {
     // No payment info alongside it is not something YouTube produces, but
     // it isolates the sticker as the only thing that could render.
     name: 'sticker only',
-    data: chatData({
+    data: chatDataFixture({
       stickerUrl: O.some('https://example.invalid/sticker.png'),
     }),
   },

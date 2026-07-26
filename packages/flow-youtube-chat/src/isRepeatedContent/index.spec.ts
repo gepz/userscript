@@ -8,25 +8,8 @@ import {
   it,
 } from 'vitest';
 
-import ChatData from '@/ChatData';
+import chatDataFixture from '@/chatDataFixture';
 import isRepeatedContent from '@/isRepeatedContent';
-
-const chatData = (overrides: Partial<ChatData>): ChatData => ({
-  chatType: 'normal',
-  chatID: O.none(),
-  authorType: 'normal',
-  authorID: O.none(),
-  authorName: O.none(),
-  timestamp: O.none(),
-  messageElement: O.none(),
-  message: O.none(),
-  messageText: O.none(),
-  stickerUrl: O.none(),
-  paymentInfo: O.none(),
-  textColor: O.none(),
-  paidColor: O.none(),
-  ...overrides,
-});
 
 const emoji = (id: string): HTMLImageElement => {
   const img = document.createElement('img');
@@ -56,12 +39,12 @@ const message = (
 describe('isRepeatedContent', () => {
   it('matches equal message texts from different messages', () => {
     expect(isRepeatedContent(
-      chatData({
+      chatDataFixture({
         chatID: O.some('msg-2'),
         authorID: O.some('author-b'),
         ...message('草'),
       }),
-      chatData({
+      chatDataFixture({
         chatID: O.some('msg-1'),
         authorID: O.some('author-a'),
         ...message('草'),
@@ -71,15 +54,15 @@ describe('isRepeatedContent', () => {
 
   it('ignores surrounding whitespace', () => {
     expect(isRepeatedContent(
-      chatData(message(' 草 ')),
-      chatData(message('草')),
+      chatDataFixture(message(' 草 ')),
+      chatDataFixture(message('草')),
     )).toBe(true);
   });
 
   it('distinguishes different texts', () => {
     expect(isRepeatedContent(
-      chatData(message('草')),
-      chatData(message('ww')),
+      chatDataFixture(message('草')),
+      chatDataFixture(message('ww')),
     )).toBe(false);
   });
 
@@ -87,8 +70,8 @@ describe('isRepeatedContent', () => {
     const id = 'UCNomdKfjGPeJCo3bXaHHPGw/h7LuZtSBIvWo_9EPzJ--8As';
 
     expect(isRepeatedContent(
-      chatData(message(emoji(id), emoji(id), emoji(id))),
-      chatData(message(emoji(id), emoji(id), emoji(id))),
+      chatDataFixture(message(emoji(id), emoji(id), emoji(id))),
+      chatDataFixture(message(emoji(id), emoji(id), emoji(id))),
     )).toBe(true);
   });
 
@@ -96,31 +79,31 @@ describe('isRepeatedContent', () => {
     const id = 'UCNomdKfjGPeJCo3bXaHHPGw/h7LuZtSBIvWo_9EPzJ--8As';
 
     expect(isRepeatedContent(
-      chatData(message(emoji(id), emoji(id))),
-      chatData(message(emoji(id), emoji(id), emoji(id))),
+      chatDataFixture(message(emoji(id), emoji(id))),
+      chatDataFixture(message(emoji(id), emoji(id), emoji(id))),
     )).toBe(false);
   });
 
   it('distinguishes an emoji from its alt text', () => {
     expect(isRepeatedContent(
-      chatData(message('きちゃ')),
-      chatData(message(emoji('channel/id'))),
+      chatDataFixture(message('きちゃ')),
+      chatDataFixture(message(emoji('channel/id'))),
     )).toBe(false);
   });
 
   it('matches mixed text-and-emoji messages', () => {
     expect(isRepeatedContent(
-      chatData(message('草', emoji('channel/id'))),
-      chatData(message('草', emoji('channel/id'))),
+      chatDataFixture(message('草', emoji('channel/id'))),
+      chatDataFixture(message('草', emoji('channel/id'))),
     )).toBe(true);
   });
 
   it('falls back to message text without an element', () => {
     expect(isRepeatedContent(
-      chatData({
+      chatDataFixture({
         messageText: O.some('草'),
       }),
-      chatData({
+      chatDataFixture({
         messageText: O.some('草'),
       }),
     )).toBe(true);
@@ -128,32 +111,32 @@ describe('isRepeatedContent', () => {
 
   it('never matches blank messages against each other', () => {
     expect(isRepeatedContent(
-      chatData(message('  ')),
-      chatData(message('  ')),
+      chatDataFixture(message('  ')),
+      chatDataFixture(message('  ')),
     )).toBe(false);
   });
 
   it('never matches absent messages against each other', () => {
     expect(isRepeatedContent(
-      chatData({}),
-      chatData({}),
+      chatDataFixture({}),
+      chatDataFixture({}),
     )).toBe(false);
   });
 
   it('never counts a paid candidate as a repeat', () => {
     expect(isRepeatedContent(
-      chatData({
+      chatDataFixture({
         ...message('Thanks!'),
         paymentInfo: O.some('$5.00'),
       }),
-      chatData(message('Thanks!')),
+      chatDataFixture(message('Thanks!')),
     )).toBe(false);
   });
 
   it('counts a free candidate repeating a paid chat', () => {
     expect(isRepeatedContent(
-      chatData(message('Thanks!')),
-      chatData({
+      chatDataFixture(message('Thanks!')),
+      chatDataFixture({
         ...message('Thanks!'),
         paymentInfo: O.some('$5.00'),
       }),

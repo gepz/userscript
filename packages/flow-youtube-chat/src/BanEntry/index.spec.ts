@@ -12,48 +12,31 @@ import {
   entryParts,
   isBannedAuthor,
 } from '@/BanEntry';
-import ChatData from '@/ChatData';
-
-const chatData = (overrides: Partial<ChatData>): ChatData => ({
-  chatType: 'normal',
-  chatID: O.none(),
-  authorType: 'normal',
-  authorID: O.none(),
-  authorName: O.none(),
-  timestamp: O.none(),
-  messageElement: O.none(),
-  message: O.none(),
-  messageText: O.none(),
-  stickerUrl: O.none(),
-  paymentInfo: O.none(),
-  textColor: O.none(),
-  paidColor: O.none(),
-  ...overrides,
-});
+import chatDataFixture from '@/chatDataFixture';
 
 describe('banEntryFor', () => {
   it('joins handle and token, handle first', () => {
-    expect(banEntryFor(chatData({
+    expect(banEntryFor(chatDataFixture({
       authorID: O.some('Token1'),
       authorName: O.some('@alice'),
     }))).toEqual(O.some('@alice Token1'));
   });
 
   it('degrades to the single available identity', () => {
-    expect(banEntryFor(chatData({
+    expect(banEntryFor(chatDataFixture({
       authorID: O.some('Token1'),
     }))).toEqual(O.some('Token1'));
 
-    expect(banEntryFor(chatData({
+    expect(banEntryFor(chatDataFixture({
       authorName: O.some('@alice'),
     }))).toEqual(O.some('@alice'));
 
-    expect(banEntryFor(chatData({}))).toEqual(O.none());
+    expect(banEntryFor(chatDataFixture({}))).toEqual(O.none());
   });
 
   it('offers no entry for a gift redemption', () => {
     // The redemption's author is the gift's recipient, not a speaker.
-    expect(banEntryFor(chatData({
+    expect(banEntryFor(chatDataFixture({
       chatType: 'giftRedemption',
       authorID: O.some('Token1'),
       authorName: O.some('@alice'),
@@ -62,11 +45,11 @@ describe('banEntryFor', () => {
 });
 
 describe('isBannedAuthor', () => {
-  const idlessAlice = chatData({
+  const idlessAlice = chatDataFixture({
     authorName: O.some('@alice'),
   });
 
-  const fullAlice = chatData({
+  const fullAlice = chatDataFixture({
     authorID: O.some('Token1'),
     authorName: O.some('@alice'),
   });
@@ -85,14 +68,14 @@ describe('isBannedAuthor', () => {
     const rows = ['@alice Token1'];
 
     expect(isBannedAuthor(rows)(idlessAlice)).toBe(true);
-    expect(isBannedAuthor(rows)(chatData({
+    expect(isBannedAuthor(rows)(chatDataFixture({
       // Avatar change rewrote the token-bearing markup? The handle part
       // still matches; and vice versa if handles stop being displayed.
       authorID: O.some('Token1'),
       authorName: O.some('@renamed'),
     }))).toBe(true);
 
-    expect(isBannedAuthor(rows)(chatData({
+    expect(isBannedAuthor(rows)(chatDataFixture({
       authorID: O.some('Token2'),
       authorName: O.some('@bob'),
     }))).toBe(false);

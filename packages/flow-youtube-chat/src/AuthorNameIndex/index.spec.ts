@@ -13,25 +13,9 @@ import AuthorNameIndex, {
   recordAuthor,
 } from '@/AuthorNameIndex';
 import ChatData from '@/ChatData';
+import chatDataFixture from '@/chatDataFixture';
 
-const chatData = (overrides: Partial<ChatData>): ChatData => ({
-  chatType: 'normal',
-  chatID: O.none(),
-  authorType: 'normal',
-  authorID: O.none(),
-  authorName: O.none(),
-  timestamp: O.none(),
-  messageElement: O.none(),
-  message: O.none(),
-  messageText: O.none(),
-  stickerUrl: O.none(),
-  paymentInfo: O.none(),
-  textColor: O.none(),
-  paidColor: O.none(),
-  ...overrides,
-});
-
-const author = (name: string, id: string): ChatData => chatData({
+const author = (name: string, id: string): ChatData => chatDataFixture({
   authorID: O.some(id),
   authorName: O.some(name),
 });
@@ -45,10 +29,10 @@ describe('recordAuthor', () => {
       author('Alice', 'id-1'),
       author('Alice', 'id-2'),
       author('Bob', 'id-3'),
-      chatData({
+      chatDataFixture({
         authorName: O.some('Nameless Id'),
       }),
-      chatData({
+      chatDataFixture({
         authorID: O.some('id-4'),
       }),
     );
@@ -67,7 +51,7 @@ describe('recordAuthor', () => {
 
 describe('isBannedByName', () => {
   const banned = isBannedByName(['id-1']);
-  const idlessAlice = chatData({
+  const idlessAlice = chatDataFixture({
     authorName: O.some('Alice'),
   });
 

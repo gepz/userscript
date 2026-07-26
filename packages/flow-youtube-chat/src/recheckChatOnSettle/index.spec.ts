@@ -9,24 +9,17 @@ import {
 } from 'vitest';
 
 import ChatData from '@/ChatData';
+import chatDataFixture from '@/chatDataFixture';
 import {
   parseRelevantChanged,
 } from '@/recheckChatOnSettle';
 
-const chatData = (overrides: Partial<ChatData>): ChatData => ({
-  chatType: 'normal',
+// A chat that already parsed cleanly, so each case varies one field
+// against a baseline that would not itself trip parseRelevantChanged.
+const chatData = (overrides: Partial<ChatData>): ChatData => chatDataFixture({
   chatID: O.some('FixtureChatID'),
-  authorType: 'normal',
-  authorID: O.none(),
-  authorName: O.none(),
   timestamp: O.some('1:23 PM'),
-  messageElement: O.none(),
-  message: O.none(),
   messageText: O.some('hello'),
-  stickerUrl: O.none(),
-  paymentInfo: O.none(),
-  textColor: O.none(),
-  paidColor: O.none(),
   ...overrides,
 });
 

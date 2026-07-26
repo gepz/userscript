@@ -10,6 +10,7 @@ import {
 
 import ChatData from '@/ChatData';
 import UserConfig from '@/UserConfig';
+import chatDataFixture from '@/chatDataFixture';
 import defaultFilter from '@/defaultFilter';
 import evaluateExpression from '@/filter/evaluateExpression';
 import filterContext from '@/filter/filterContext';
@@ -129,25 +130,8 @@ describe('defaultFilter end to end', () => {
     bannedUsers: ['BadActor'],
   };
 
-  const chatData = (overrides: Partial<ChatData>): ChatData => ({
-    chatType: 'normal',
-    chatID: O.none(),
-    authorType: 'normal',
-    authorID: O.none(),
-    authorName: O.none(),
-    timestamp: O.none(),
-    messageElement: O.none(),
-    message: O.none(),
-    messageText: O.none(),
-    stickerUrl: O.none(),
-    paymentInfo: O.none(),
-    textColor: O.none(),
-    paidColor: O.none(),
-    ...overrides,
-  });
-
   const filtered = (overrides: Partial<ChatData>): unknown => (
-    evaluateExpression(filterContext(chatData(overrides)))(
+    evaluateExpression(filterContext(chatDataFixture(overrides)))(
       defaultFilter(config),
     ));
 

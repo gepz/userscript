@@ -13,6 +13,7 @@ import {
 
 import ChatData from '@/ChatData';
 import FlowChat from '@/FlowChat';
+import chatDataFixture from '@/chatDataFixture';
 import removeRepeatedChats from '@/removeRepeatedChats';
 
 const flowChat = (
@@ -26,22 +27,11 @@ const flowChat = (
   document.body.append(element);
 
   return {
-    data: {
-      chatType: 'normal',
-      chatID: O.none(),
-      authorType: 'normal',
-      authorID: O.none(),
-      authorName: O.none(),
-      timestamp: O.none(),
+    data: chatDataFixture({
       messageElement: O.some(messageElement),
-      message: O.none(),
       messageText: O.some(text),
-      stickerUrl: O.none(),
-      paymentInfo: O.none(),
-      textColor: O.none(),
-      paidColor: O.none(),
       ...overrides,
-    },
+    }),
     element,
     lane: 0,
     animationState: E.left('NotStarted'),
