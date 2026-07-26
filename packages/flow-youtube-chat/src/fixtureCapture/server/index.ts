@@ -107,6 +107,13 @@ const isRecord = (
   x: unknown,
 ): x is Record<string, unknown> => typeof x === 'object' && x !== null;
 
+// Provenance line for local-only files (raw samples, settled twins,
+// snapshots): which stream the capture came from. Committed fixtures never
+// get one — a watch URL is traceable, and fixtures must not be.
+const sourceComment = (
+  url: unknown,
+): string => (typeof url === 'string' ? `<!-- source ${url} -->\n` : '');
+
 const handleCapture = (body: string, response: ServerResponse): void => {
   const parsed: unknown = JSON.parse(body);
 
@@ -114,11 +121,13 @@ const handleCapture = (body: string, response: ServerResponse): void => {
     || typeof parsed['kind'] !== 'string'
     || typeof parsed['raw'] !== 'string'
     || ('settled' in parsed && typeof parsed['settled'] !== 'string')
+    || ('url' in parsed && typeof parsed['url'] !== 'string')
     || !(slotSet.has(parsed['kind'])
       ? typeof parsed['sanitized'] === 'string'
       : tagPattern.test(parsed['kind']))) {
     respond(response, 400, {
-      error: 'expected {kind, raw, settled?}, plus sanitized for slot kinds',
+      error: 'expected {kind, raw, settled?, url?}, plus sanitized for slot'
+        + ' kinds',
     });
 
     return;
@@ -138,7 +147,7 @@ const handleCapture = (body: string, response: ServerResponse): void => {
 
     writeFileSync(
       path.join(snapshotDir, sampleName(kind, held + 1)),
-      `${parsed['raw']}\n`,
+      `${sourceComment(parsed['url'])}${parsed['raw']}\n`,
     );
 
     // The settled twin records what the element became once its
@@ -152,7 +161,9 @@ const handleCapture = (body: string, response: ServerResponse): void => {
     });
 
     if (typeof parsed['settled'] === 'string') {
-      writeFileSync(settledPath, `${parsed['settled']}\n`);
+      writeFileSync(settledPath, `${sourceComment(parsed['url'])}${
+        parsed['settled']}\n`);
+
       process.stdout.write(`${kind} ${held + 1}: mutated after insert${
         parsed['detached'] === true ? ', left the document' : ''}\n`);
     }
@@ -214,9 +225,11 @@ const handleTrace = (body: string, response: ServerResponse): void => {
 const handleSnapshot = (body: string, response: ServerResponse): void => {
   const parsed: unknown = JSON.parse(body);
 
-  if (!isRecord(parsed) || typeof parsed['html'] !== 'string') {
+  if (!isRecord(parsed)
+    || typeof parsed['html'] !== 'string'
+    || ('url' in parsed && typeof parsed['url'] !== 'string')) {
     respond(response, 400, {
-      error: 'expected {html}',
+      error: 'expected {html, url?}',
     });
 
     return;
@@ -229,7 +242,7 @@ const handleSnapshot = (body: string, response: ServerResponse): void => {
   const file = path.join(snapshotDir, `snapshot-${
     new Date().toISOString().replace(/[:.]/g, '-')}.html`);
 
-  writeFileSync(file, `${parsed['html']}\n`);
+  writeFileSync(file, `${sourceComment(parsed['url'])}${parsed['html']}\n`);
   process.stdout.write(`raw snapshot written: ${file}\n`);
   respond(response, 200, {
     written: path.basename(file),

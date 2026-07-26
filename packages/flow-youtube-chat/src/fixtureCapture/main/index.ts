@@ -134,6 +134,7 @@ const submit = (
     sanitized: string | undefined
     settled: string | undefined
     detached: boolean
+    url: string
   },
 ): void => {
   GM.xmlHttpRequest({
@@ -152,6 +153,7 @@ const submit = (
       sanitized: payload.sanitized,
       settled: payload.settled,
       detached: payload.detached ? true : undefined,
+      url: payload.url,
     }),
     onload: (response) => {
       pending.delete(kind);
@@ -208,6 +210,9 @@ const maybeCapture = (element: HTMLElement): void => {
   // against it once the element stops changing.
   const raw = element.outerHTML;
   const sanitized = O.isSome(slot) ? sanitize(slot.value, element) : undefined;
+  // Read now, not at submit: the settle window is long enough for an SPA
+  // navigation to move location off the stream this chat belongs to.
+  const url = window.location.href;
 
   onElementSettled(element, settleQuietMs, settleMaxMs, () => {
     const settled = element.outerHTML;
@@ -217,6 +222,7 @@ const maybeCapture = (element: HTMLElement): void => {
       sanitized,
       settled: settled === raw ? undefined : settled,
       detached: !element.isConnected,
+      url,
     });
   });
 };
@@ -293,6 +299,7 @@ const traceBatch = (added: readonly HTMLElement[]): void => {
   }
 
   const start = performance.now();
+  const url = window.location.href;
   const samples: TraceSample[] = [measureBatch(added, start)];
 
   requestAnimationFrame(() => {
@@ -317,6 +324,7 @@ const traceBatch = (added: readonly HTMLElement[]): void => {
       data: JSON.stringify({
         batchSize: added.length,
         samples,
+        url,
       }),
     });
   }, traceSubmitMs);
@@ -357,6 +365,7 @@ const takeSnapshot = (): void => {
     },
     data: JSON.stringify({
       html: app.outerHTML,
+      url: window.location.href,
     }),
     onload: (response) => {
       if (response.status === 200) {

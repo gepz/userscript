@@ -114,3 +114,9 @@ by a test. Reload the page for a fresh snapshot; delete old files freely.
 The `sample-<kind>-<n>.html` files live there too: every fixture has raw
 originals to audit the sanitizer against, and every unknown renderer has
 real markup to inspect.
+
+Every local-only file records its provenance: samples, settled twins and
+snapshots start with a `<!-- source <url> -->` line, and trace entries
+carry a `url` field, naming the stream the capture came from. Committed
+fixtures deliberately never carry one — a watch URL identifies the
+streamer, and fixtures must stay untraceable.
