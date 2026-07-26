@@ -1,7 +1,7 @@
 import path from 'path';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import baseConfig from '../baseConfig';
-import tsLoaderConfig from '../tsLoaderConfig';
+import baseConfig from '../baseConfig/index.js';
+import tsLoaderConfig from '../tsLoaderConfig/index.js';
 import { merge, } from 'webpack-merge';
 export default (rootDir) => merge(baseConfig(rootDir), tsLoaderConfig('tsconfig.build.json'), {
     resolve: {
