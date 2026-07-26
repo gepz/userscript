@@ -31,6 +31,12 @@ export default <T>(
     resize: 'none',
     boxSizing: 'border-box',
     width: '100%',
+    // Pin the metrics the rows attribute multiplies: browsers disagree on
+    // the default textarea font size (Firefox resolves monospace larger
+    // than Chrome), which otherwise makes the same rows count overflow a
+    // fixed-height panel on some of them.
+    fontSize: '13px',
+    lineHeight: '1.2',
     borderColor: Ed.hasError(value) ? '#f55' : null,
   },
   value: pipe(
