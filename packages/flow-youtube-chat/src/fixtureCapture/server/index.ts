@@ -191,20 +191,21 @@ const handleCapture = (body: string, response: ServerResponse): void => {
   });
 };
 
-// Geometry evidence for the product's isAboveVisibleTail gate: one JSON
-// line per chat-list insert batch (scroller metrics plus each added
-// chat's box over several instants). Contains message ids, so it stays in
-// the local-only snapshot directory with the raw samples.
+// Generic diagnostics channel: each event becomes one time-stamped JSON
+// line, discriminated by its `kind`. The only current producer is the
+// capture client's chat-list geometry sampling (kind 'geometry', evidence
+// for the product's isAboveVisibleTail gate); future live-page
+// investigations can post new kinds without a new endpoint. Events can
+// contain message ids, so the file stays in the local-only snapshot
+// directory with the raw samples.
 const traceFile = (): string => path.join(snapshotDir, 'trace.jsonl');
 
 const handleTrace = (body: string, response: ServerResponse): void => {
   const parsed: unknown = JSON.parse(body);
 
-  if (!isRecord(parsed)
-    || typeof parsed['batchSize'] !== 'number'
-    || !Array.isArray(parsed['samples'])) {
+  if (!isRecord(parsed) || typeof parsed['kind'] !== 'string') {
     respond(response, 400, {
-      error: 'expected {batchSize, samples}',
+      error: 'expected {kind, ...event}',
     });
 
     return;
@@ -230,7 +231,9 @@ const handleTrace = (body: string, response: ServerResponse): void => {
 
   // Single-message batches are the live baseline and would spam the log;
   // a multi-insert batch is the repopulation signature worth flagging.
-  if (parsed['batchSize'] >= 4) {
+  if (parsed['kind'] === 'geometry'
+    && typeof parsed['batchSize'] === 'number'
+    && parsed['batchSize'] >= 4) {
     process.stdout.write(`geometry trace: batch of ${parsed['batchSize']}\n`);
   }
 

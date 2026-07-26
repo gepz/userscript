@@ -88,18 +88,24 @@ same sampling pipeline as slots; they differ only in having no sanitizer,
 so they produce raw samples but no committed fixture. Decide from the
 samples whether the tag becomes a new slot or joins the ignored list.
 
-## Geometry trace
+## Event trace
 
-The capture script also logs one JSON line per chat-list insert batch to
-`capture-snapshots/trace.jsonl`: the scroller's scroll metrics and every
-added chat's box, measured at insert, the next frame, and a few later
-instants. This is the evidence base for the flow's visibility gate
-(`@/isAboveVisibleTail`) — reproduce a seek-repopulation flood with the
-capture script running and the trace shows where each renderer actually
-sat when the product would have measured it. Like the raw samples it
-contains message ids, so it stays local-only. The file rotates to a
-single `.old` twin once it exceeds the size budget in
-`@/fixtureCapture/protocol`, so it never grows without bound.
+The server's `/trace` endpoint is a generic diagnostics channel: any
+posted event becomes one time-stamped JSON line in
+`capture-snapshots/trace.jsonl`, discriminated by its `kind` field, so a
+future live-page investigation can log new evidence without new plumbing.
+Like the raw samples the events can contain message ids, so the file
+stays local-only; it rotates to a single `.old` twin once it exceeds the
+size budget in `@/fixtureCapture/protocol`, so it never grows without
+bound.
+
+The one current producer is the capture script's geometry sampling (kind
+`geometry`): one event per chat-list insert batch, holding the scroller's
+scroll metrics and every added chat's box, measured at insert, the next
+frame, and a few later instants. This is the evidence base for the flow's
+visibility gate (`@/isAboveVisibleTail`) — reproduce a seek-repopulation
+flood with the capture script running and the trace shows where each
+renderer actually sat when the product would have measured it.
 
 ## Raw whole-DOM snapshots
 

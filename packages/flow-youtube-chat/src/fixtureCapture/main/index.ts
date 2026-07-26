@@ -230,15 +230,17 @@ const maybeCapture = (element: HTMLElement): void => {
 let observedField: HTMLElement | undefined;
 let observedTicker: HTMLElement | undefined;
 
-// Geometry trace: evidence for the product's isAboveVisibleTail verdicts.
-// Each chat-list insert batch reports the scroller's scroll metrics and
-// every added chat's box at insert, the next frame, and a few later
-// instants, so seek-repopulation flooding can be diagnosed from real
-// numbers instead of assumptions about when the list restores its scroll.
-const traceLaterMs = [120, 400, 1200];
-const traceSubmitMs = 1300;
+// Geometry sampling: evidence for the product's isAboveVisibleTail
+// verdicts. Each chat-list insert batch reports the scroller's scroll
+// metrics and every added chat's box at insert, the next frame, and a few
+// later instants, so seek-repopulation flooding can be diagnosed from
+// real numbers instead of assumptions about when the list restores its
+// scroll. Submitted to the server's generic /trace event channel as kind
+// 'geometry'.
+const geometryLaterMs = [120, 400, 1200];
+const geometrySubmitMs = 1300;
 
-interface TraceSample {
+interface GeometrySample {
   at: number
   scroller: {
     top: number
@@ -259,7 +261,7 @@ interface TraceSample {
 const measureBatch = (
   added: readonly HTMLElement[],
   start: number,
-): TraceSample => {
+): GeometrySample => {
   const scroller = added.find((chat) => chat.isConnected)
     ?.closest('#item-scroller') ?? null;
 
@@ -293,20 +295,20 @@ const measureBatch = (
   };
 };
 
-const traceBatch = (added: readonly HTMLElement[]): void => {
+const recordBatchGeometry = (added: readonly HTMLElement[]): void => {
   if (added.length === 0) {
     return;
   }
 
   const start = performance.now();
   const url = window.location.href;
-  const samples: TraceSample[] = [measureBatch(added, start)];
+  const samples: GeometrySample[] = [measureBatch(added, start)];
 
   requestAnimationFrame(() => {
     samples.push(measureBatch(added, start));
   });
 
-  traceLaterMs.forEach((ms) => {
+  geometryLaterMs.forEach((ms) => {
     setTimeout(() => {
       samples.push(measureBatch(added, start));
     }, ms);
@@ -322,16 +324,17 @@ const traceBatch = (added: readonly HTMLElement[]): void => {
         'Content-Type': 'application/json',
       },
       data: JSON.stringify({
+        kind: 'geometry',
         batchSize: added.length,
         samples,
         url,
       }),
     });
-  }, traceSubmitMs);
+  }, geometrySubmitMs);
 };
 
 const observer = new MutationObserver((records) => {
-  traceBatch(records
+  recordBatchGeometry(records
     .filter((record) => record.target === observedField)
     .flatMap((record) => Array.from(record.addedNodes))
     .filter((node) => node.nodeType === Node.ELEMENT_NODE)
