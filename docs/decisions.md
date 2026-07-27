@@ -37,10 +37,13 @@ checker (no emit) against `tsconfig.build.json`; lib output stays with
 ## Ambient `@types` are listed, not discovered (2026-07)
 
 TypeScript 5.x, given no `types` array, sweeps every `@types/*` package it
-can reach and makes it globally visible. TypeScript 6 stops: a package that
-nothing imports is simply absent. On 6.0.3 that costs flow-youtube-chat 40
-errors and custom-sort 9 — `GM`, `process`, the `node:*` specifiers, even
-`stream` inside `astring`'s own declarations — all from the one change.
+can reach and makes it globally visible. TypeScript 6 defaults the option to
+`[]` instead: a package that nothing imports is simply absent, which is
+where its 20-50% check-time win comes from. Adopting 6 without this cost
+flow-youtube-chat 40 errors and custom-sort 9 — `GM`, `process`, the
+`node:*` specifiers, even `stream` inside `astring`'s own declarations — all
+from the one change. `"types": ["*"]` restores the old sweep; don't, it
+gives back the speed for nothing.
 
 So each GM-using package carries a `tsconfig.types.json` naming what it
 actually needs, and every program over its `src/` extends that file. The
@@ -50,16 +53,20 @@ chain would be silently dropped by any project that sets its own.
 
 `baseUrl` went at the same time. 6 deprecates it (TS5101) and 7 removes it
 (TS5102); the `paths` entries anchor themselves with `${configDir}` and
-never needed it. Note that the escape hatch 6 suggests, `ignoreDeprecations:
-"6.0"`, cannot be pre-landed — 5.9.3 rejects that value outright (TS5103).
-Deleting the option works on both compilers; the deprecation notice does
-not.
+never needed it. Deleting the option is what 6 wants; the escape hatch it
+suggests, `ignoreDeprecations: "6.0"`, is deliberately unused here, because
+a suppressed deprecation is a removal waiting to land in 7.
 
-Both changes are no-ops under the pinned 5.9.3: all build, src and spec
-programs check clean on both compilers, the five `lib/` outputs rebuild
-byte-identical (`tsc-alias` reads `baseUrl`, so this was worth confirming),
-and both userscript bundles are byte-identical. See `docs/backlog.md` for
-what still stands between here and actually moving the pin.
+The rest of 6's removals never applied: the tree targets es2021, emits
+`es2020`/`Node16`/`NodeNext` modules, resolves via `bundler`, and had no
+`outFile` or legacy `assert {}` attributes. `esModuleInterop` being forced
+true is inert because ESM emit never reaches for the interop helpers —
+confirmed rather than assumed, by the bundle comparison below.
+
+Going 5.9.3 to 6.0.3 left the five `lib/` outputs and both userscript
+bundles byte-identical (`tsc-alias` reads `baseUrl`, so that was worth
+confirming), with the suite and lint clean. Keep that comparison in the
+loop for 7: it is a different compiler, not a newer one.
 
 ## Registry history: Verdaccio era is over (2022-08)
 
