@@ -141,8 +141,15 @@ once the import can succeed, and dropping it removes `ts-node` and
 Making the import succeed is what the config files' odd shapes are for. Each
 constraint is Node's ESM resolver being stricter than a bundler:
 
-- Sibling configs are imported by their real `.ts` path
-  (`./webpack.config.base.ts`), because nothing guesses extensions.
+- Every `config/` script is `.mts`, which is ESM by extension whatever the
+  package says. That is the whole reason `tsconfig.package.json` can run on
+  `NodeNext`: TypeScript decides a `.ts` file's format from the nearest
+  `package.json`, so in a typeless package it would call these CommonJS and
+  reject both `import.meta` (TS1470) and import attributes (TS2823/TS2856).
+  `.mts` also spares Node the syntax-detection reparse behind its
+  `MODULE_TYPELESS_PACKAGE_JSON` warning.
+- Sibling configs are imported by their real `.mts` path
+  (`./webpack.config.base.mts`), because nothing guesses extensions.
   `allowImportingTsExtensions` in `tsconfig.package.json` is what lets
   TypeScript accept that, and `import-x/extensions` is relaxed for non-`src`
   TS in `@userscript/eslint-config`'s `tsWebpackConfig`.
@@ -150,7 +157,8 @@ constraint is Node's ESM resolver being stricter than a bundler:
   the import statement, and `webpack` has no runtime `Configuration` export.
 - No `__dirname`: these files are ESM. `baseConfig`, `tsbaseConfig`,
   `jsbaseConfig` and `devConfig` default `rootDir` to `process.cwd()`, which
-  pnpm sets to the package directory.
+  pnpm sets to the package directory — shorter than walking `import.meta`
+  back out of `config/` in each caller.
 - `webpack-userscript` is imported by its `UserscriptPlugin` named export.
   Node's interop hands back `module.exports` and ignores the `__esModule`
   default marker, so the default import is the module object, not the class.
@@ -160,25 +168,25 @@ constraint is Node's ESM resolver being stricter than a bundler:
   `tsc-alias --resolve-full-paths`; tsc copies specifiers verbatim and a
   directory import fails with `ERR_UNSUPPORTED_DIR_IMPORT`.
 
-The packages stay typeless, so every run reparses the configs as ESM and
-warns `MODULE_TYPELESS_PACKAGE_JSON`. Accept the warning: declaring
-`"type": "module"` silences it but breaks the shipped bundle, and the
-failure is silent.
+`@userscript/webpack-config` and `@userscript/cdn-from-dependency` do declare
+`"type": "module"`. Node loads their `lib/*.js` directly when a config
+imports them, and a typeless package would make it detect the format and warn
+`MODULE_TYPELESS_PACKAGE_JSON` per package scope. It is safe for exactly these
+two because webpack never bundles them; both are config-only.
 
-`ui/lib` is emitted JavaScript that webpack bundles. Marking `ui` as ESM
-makes webpack apply ESM interop to it, and ESM interop binds a default
-import of a CommonJS module to `module.exports` itself — the same rule that
-makes `webpack-userscript` need its named export above. `validate-color`
-(CommonJS, no ESM entry) exports an object carrying `__esModule` and a
-`default` function, so `setEditColor`'s `validateColor(value)` compiled
-without complaint into a call on an object. Neither `import d from` nor
-`ns.default` reaches the inner function — webpack maps both to
-`module.exports` — and the sibling named export `validateHTMLColor` is a
-stricter function that rejects colour names like `red`. Marking only
-`webpack-config` as ESM doesn't work either: TypeScript then refuses its
-CommonJS-typed importers.
+Every package webpack bundles stays typeless, and must. `ui/lib` is emitted
+JavaScript that webpack bundles. Marking `ui` as ESM makes webpack apply ESM
+interop to it, and ESM interop binds a default import of a CommonJS module to
+`module.exports` itself — the same rule that makes `webpack-userscript` need
+its named export above. `validate-color` (CommonJS, no ESM entry) exports an
+object carrying `__esModule` and a `default` function, so `setEditColor`'s
+`validateColor(value)` compiled without complaint into a call on an object.
+Neither `import d from` nor `ns.default` reaches the inner function — webpack
+maps both to `module.exports` — and the sibling named export
+`validateHTMLColor` is a stricter function that rejects colour names like
+`red`.
 
-So the cost of silencing the warning is a behaviour change in the settings
-panel's colour validation, and the tell is a bundle that builds clean and
-throws at runtime. Compare `dist/main/index.user.js` byte for byte before
+So the cost of getting the package type wrong is a behaviour change in the
+settings panel's colour validation, and the tell is a bundle that builds clean
+and throws at runtime. Compare `dist/main/index.user.js` byte for byte before
 and after anything that touches module resolution.

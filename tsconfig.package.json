@@ -1,13 +1,15 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "module": "Node16",
-    "moduleResolution": "Node16",
-    // Webpack configs import their siblings by their real .ts path, because
-    // Node's type stripping runs them straight from source and its ESM
-    // resolver does not guess extensions.
+    // Node runs the config/ files from source through its type stripping, so
+    // this program has to model them the way Node sees them: .mts is ESM
+    // whatever the package says, and nodenext is the resolver that agrees.
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    // Configs import their siblings by their real .mts path, because Node's
+    // ESM resolver does not guess extensions.
     "allowImportingTsExtensions": true,
     "noEmit": true,
   },
-  "include": ["${configDir}/**/*.ts"],
+  "include": ["${configDir}/**/*.ts", "${configDir}/**/*.mts"],
 }

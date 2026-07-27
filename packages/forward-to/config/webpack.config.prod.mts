@@ -9,11 +9,11 @@ import {
   merge,
 } from 'webpack-merge';
 
-import webpackConfigBase from './webpack.config.base.ts';
+import webpackConfigBase from './webpack.config.base.mts';
 
 export default merge<Configuration>(
   webpackConfigBase,
-  umdLibConfig('ui'),
+  umdLibConfig('forwardTo'),
   {
     plugins: [
       new BundleAnalyzerPlugin({

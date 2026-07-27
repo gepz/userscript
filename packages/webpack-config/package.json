@@ -6,6 +6,7 @@
   "keywords": [],
   "license": "AGPL-3.0-or-later",
   "author": "",
+  "type": "module",
   "exports": {
     "./*": {
       "import": "./lib/*/index.js",

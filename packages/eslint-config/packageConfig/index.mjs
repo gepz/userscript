@@ -4,7 +4,9 @@ import baseConfig from '../baseConfig/index.mjs';
 import tsConfig from '../tsConfig/index.mjs';
 import tsWebpackConfig from '../tsWebpackConfig/index.mjs';
 
-const TS_FILES = ['**/*.ts', '**/*.tsx'];
+// .mts is how the config/ scripts declare themselves ESM without their package
+// doing so; docs/decisions.md explains why the package cannot.
+const TS_FILES = ['**/*.ts', '**/*.tsx', '**/*.mts'];
 
 const scopedToTs = (configs) => configs.map((config) => ({
   ...config,
@@ -17,7 +19,7 @@ const scopedToTs = (configs) => configs.map((config) => ({
 export default ({
   dirname,
   ignores = [],
-  webpackConfig = './config/webpack.config.dev.ts',
+  webpackConfig = './config/webpack.config.dev.mts',
   srcProject = 'tsconfig.build.json',
   configProject = 'tsconfig.json',
   append = [],

@@ -18,7 +18,7 @@ import livePageYt from '@/livePageYt';
 import onElementSettled from '@/onElementSettled';
 
 // Dev-only capture userscript entry (dist/capture, built by
-// config/webpack.config.capture.ts, never shipped). Feeds live renderer
+// config/webpack.config.capture.mts, never shipped). Feeds live renderer
 // markup to the ingest server (@/fixtureCapture/server); shared constants
 // in @/fixtureCapture/protocol; the workflow is documented in
 // src/parseChat/fixtures/README.md.

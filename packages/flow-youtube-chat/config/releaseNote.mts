@@ -20,8 +20,6 @@ const changelogs = [
 ] as const;
 
 // The package directory, which pnpm makes the cwd of every script it runs.
-// Deriving it from import.meta instead would type this file as ESM, and every
-// other config/ file is typed as CommonJS.
 const readPackageFile = (file: string): string => readFileSync(
   path.join(process.cwd(), file),
   'utf8',

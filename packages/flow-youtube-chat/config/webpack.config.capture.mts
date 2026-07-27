@@ -5,13 +5,13 @@ import type {
 import {
   merge,
 } from 'webpack-merge';
-// Named export, not the default -- see userscriptPlugin.ts.
+// Named export, not the default -- see userscriptPlugin.mts.
 import {
   RunAt,
   UserscriptPlugin,
 } from 'webpack-userscript';
 
-import webpackConfigBase from './webpack.config.base.ts';
+import webpackConfigBase from './webpack.config.base.mts';
 
 // Dev-only fixture-capture userscript (src/fixtureCapture/main). Unminified
 // on purpose: it never ships, and readable output beats size here. The

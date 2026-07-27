@@ -6,8 +6,8 @@ import {
   merge,
 } from 'webpack-merge';
 
-import userscriptPlugin from './userscriptPlugin.ts';
-import webpackConfigBase from './webpack.config.base.ts';
+import userscriptPlugin from './userscriptPlugin.mts';
+import webpackConfigBase from './webpack.config.base.mts';
 
 export default merge<Configuration>(
   webpackConfigBase,

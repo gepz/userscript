@@ -25,10 +25,10 @@
   "scripts": {
     "lint": "eslint . --fix",
     "preinstall": "npx only-allow pnpm",
-    "dev": "webpack serve --config ./config/webpack.config.dev.ts",
+    "dev": "webpack serve --config ./config/webpack.config.dev.mts",
     "build": "pnpm run build-lib && pnpm run build-umd",
     "build-lib": "tsc --project tsconfig.lib.json && tsc-alias -p tsconfig.lib.json",
-    "build-umd": "webpack --config ./config/webpack.config.prod.ts",
+    "build-umd": "webpack --config ./config/webpack.config.prod.mts",
     "start": "pnpm dev"
   },
   "dependencies": {

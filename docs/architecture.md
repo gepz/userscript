@@ -18,8 +18,9 @@ infrastructure they build on. Everything is consumed in-repo through
 ## Build pipeline
 
 Userscript packages bundle with webpack driven by TypeScript config files
-(`config/webpack.config.*.ts`, run straight from source by Node's type
-stripping — see `docs/decisions.md`). Those configs merge fragments from
+(`config/webpack.config.*.mts`, run straight from source by Node's type
+stripping — see `docs/decisions.md` for why they are `.mts` and not `.ts`).
+Those configs merge fragments from
 `@userscript/webpack-config`:
 
 - `tsLoaderConfig` — ts-loader with `transpileOnly: true`; the loader only
