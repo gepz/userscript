@@ -1,0 +1,12 @@
+// Ambient @types this package depends on, listed instead of left to the
+// compiler's automatic discovery — TypeScript 6 stops including @types
+// packages it wasn't told about; docs/decisions.md explains the trap.
+//
+// Every program over src/ extends this, because a `types` array replaces
+// rather than merges with the one it inherits.
+{
+  "compilerOptions": {
+    // node is for the capture server, which runs outside the browser.
+    "types": ["greasemonkey", "node"],
+  },
+}

@@ -2,7 +2,8 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "${configDir}/src",
-    "baseUrl": "${configDir}",
+    // No baseUrl: TypeScript 6 deprecates it and 7 removes it. The paths
+    // above anchor themselves with ${configDir}, so nothing needs it.
     "paths": {
       "@/*": ["${configDir}/src/*"]
     },

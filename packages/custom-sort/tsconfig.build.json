@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.bundle.json",
+  "extends": ["../../tsconfig.bundle.json", "./tsconfig.types.json"],
   "compilerOptions": {
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": false,

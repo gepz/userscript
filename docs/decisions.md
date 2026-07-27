@@ -34,6 +34,33 @@ checker (no emit) against `tsconfig.build.json`; lib output stays with
 `tsc && tsc-alias`. Bundles were verified byte-identical before/after the
 `transpileOnly` switch.
 
+## Ambient `@types` are listed, not discovered (2026-07)
+
+TypeScript 5.x, given no `types` array, sweeps every `@types/*` package it
+can reach and makes it globally visible. TypeScript 6 stops: a package that
+nothing imports is simply absent. On 6.0.3 that costs flow-youtube-chat 40
+errors and custom-sort 9 — `GM`, `process`, the `node:*` specifiers, even
+`stream` inside `astring`'s own declarations — all from the one change.
+
+So each GM-using package carries a `tsconfig.types.json` naming what it
+actually needs, and every program over its `src/` extends that file. The
+per-program repetition is unavoidable: a `types` array *replaces* the one it
+inherits rather than merging, so a single declaration high in the `extends`
+chain would be silently dropped by any project that sets its own.
+
+`baseUrl` went at the same time. 6 deprecates it (TS5101) and 7 removes it
+(TS5102); the `paths` entries anchor themselves with `${configDir}` and
+never needed it. Note that the escape hatch 6 suggests, `ignoreDeprecations:
+"6.0"`, cannot be pre-landed — 5.9.3 rejects that value outright (TS5103).
+Deleting the option works on both compilers; the deprecation notice does
+not.
+
+Both changes are no-ops under the pinned 5.9.3: all build, src and spec
+programs check clean on both compilers, the five `lib/` outputs rebuild
+byte-identical (`tsc-alias` reads `baseUrl`, so this was worth confirming),
+and both userscript bundles are byte-identical. See `docs/backlog.md` for
+what still stands between here and actually moving the pin.
+
 ## Registry history: Verdaccio era is over (2022-08)
 
 The repo began on npm workspaces with plain semver ranges for sibling deps,

@@ -5,7 +5,7 @@
 // gitignored). The excluded WIP directories mirror tsconfig.exclude.json;
 // keep in sync.
 {
-  "extends": "../../tsconfig.bundle.json",
+  "extends": ["../../tsconfig.bundle.json", "./tsconfig.types.json"],
   "compilerOptions": {
     "composite": true,
     "noEmit": true,

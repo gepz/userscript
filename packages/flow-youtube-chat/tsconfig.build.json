@@ -1,5 +1,9 @@
 {
-  "extends": ["../../tsconfig.bundle.json", "./tsconfig.exclude.json"],
+  "extends": [
+    "../../tsconfig.bundle.json",
+    "./tsconfig.exclude.json",
+    "./tsconfig.types.json",
+  ],
   // The capture server (src/fixtureCapture/server) runs under node's type
   // stripping and therefore imports its shared modules with explicit .ts
   // extensions, which needs allowImportingTsExtensions — and that in turn

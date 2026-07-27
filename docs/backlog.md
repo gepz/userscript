@@ -54,9 +54,25 @@ The `FiberRef`→`Context.Reference` logger rewrite was pulled forward into
 v3 (2026-07, `docs/effect-v3-adoption.md`); only the logger-callback
 shape change and `References.MinimumLogLevel` remain there.
 
-### TypeScript 6.x
+### TypeScript 6.x / 7.x
 
-Once typescript-eslint supports it.
+typescript-eslint no longer blocks 6 — 8.62.1 already peers
+`>=4.8.4 <6.1.0`. That same ceiling is what now blocks **7**, which is the
+`latest` tag; no typescript-eslint release admits it, canary included.
+
+The source-level migration is done (explicit `types` arrays, `baseUrl`
+dropped — see `docs/decisions.md`), and every `tsconfig.build.json`,
+`tsconfig.src.json` and `tsconfig.spec.json` checks clean under 6.0.3.
+What remains before bumping the pin off `^5.9.3`:
+
+- Rebuild both userscripts under 6.x and diff the bundles byte-for-byte;
+  nothing has exercised ts-loader, fork-ts-checker or tsc-alias on a 6.x
+  compiler yet.
+- Run the vitest suite; only its type program has been checked.
+
+For 7 additionally: `baseUrl` is gone rather than deprecated (already
+handled), and the Go-based compiler is a far bigger behavioral step —
+treat it as its own project, not a version bump.
 
 ### eslint 10
 
