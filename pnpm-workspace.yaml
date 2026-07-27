@@ -6,5 +6,9 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - webpack@5.108.4
   - type-fest@5.8.0
+overrides:
+  # GHSA-r28c-9q8g-f849. Only vite (under vitest) pulls postcss in, and its
+  # ^8.5.16 floor admits the fix; drop this once that floor moves past it.
+  postcss: '^8.5.18'
 patchedDependencies:
   jsep@1.4.0: patches/jsep@1.4.0.patch
