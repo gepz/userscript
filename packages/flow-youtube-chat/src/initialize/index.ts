@@ -37,6 +37,7 @@ import configKeys from '@/configKeys';
 import configWriteFunnel from '@/configWriteFunnel';
 import defaultFilter from '@/defaultFilter';
 import defaultGMConfig from '@/defaultGMConfig';
+import laneOverlay from '@/laneOverlay';
 import logWithMeta from '@/logWithMeta';
 import makeChatScreen from '@/makeChatScreen';
 import removeOldChats from '@/removeOldChats';
@@ -121,9 +122,11 @@ export default pipe(
   Z.flatMap((ctx) => Z.gen(function* () {
     const panelSize = settingsPanelSize(yield * scrollbarThickness);
     const stateInit = settingStateInit(panelSize)(ctx.mainState.config.value);
+    const chatScreen = yield * makeChatScreen;
     return {
       ...ctx,
       panelSize,
+      chatScreen,
       apps: {
         toggleChatButtonApp: yield * wrapApp(
           toggleChatButton(ctx.mainState.config.setConfig),
@@ -135,6 +138,7 @@ export default pipe(
             act: {
               clearFlowChats: removeOldChats(ctx.mainState.flowChats)(0),
             },
+            laneOverlay: laneOverlay(chatScreen, ctx.mainState.config.value),
           }),
           stateInit,
         ),
@@ -175,7 +179,6 @@ export default pipe(
       ...ctx,
       reinitQueue,
       reinitialize,
-      chatScreen: yield * makeChatScreen,
     });
 
     yield * pipe(

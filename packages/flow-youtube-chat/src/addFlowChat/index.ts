@@ -35,9 +35,9 @@ export default Z.fnUntraced(function* (
       y: 0,
     } satisfies FlowChat),
     Z.flatMap((x: FlowChat) => getChatLane(x, O.none(), 0)(mainState)),
-    Z.map(({
+    Z.map(O.exists(({
       interval,
-    }) => !intervalTooSmall(interval)(mainState.config.value)),
+    }) => !intervalTooSmall(interval)(mainState.config.value))),
   )) {
     yield * pipe(
       SynchronizedRef.get(mainState.flowChats),

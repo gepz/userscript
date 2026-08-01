@@ -1,5 +1,7 @@
 import * as Ed from '@userscript/ui/Editable';
 import {
+  Array as A,
+  Option as O,
   pipe,
 } from 'effect';
 
@@ -15,6 +17,28 @@ const setState: Partial<{
     v: SettingState[K],
   ) => (c: AppCommander) => (s: SettingState) => SettingDispatchable
 }> = {
+  // Shrinking the lane count also drops now-out-of-range excluded lanes
+  // from the config — permanently; growing the count back does not
+  // restore them. Only committed values trim (an Editable still carrying
+  // edit text is a keystroke in progress — the "2" while typing "20"
+  // must not wipe lanes 2 and up); until then out-of-range lanes just
+  // sit inert, since placement ignores them.
+  laneCount: (v) => (c) => (s) => pipe(
+    O.isNone(Ed.text(v))
+      ? A.filter(s.excludedLanes, (x) => x < Ed.value(v))
+      : s.excludedLanes,
+    (excludedLanes): SettingDispatchable => [
+      {
+        ...s,
+        laneCount: v,
+        excludedLanes,
+      },
+      configEffect('laneCount', Ed.value(v))(c),
+      ...(excludedLanes.length === s.excludedLanes.length
+        ? []
+        : [configEffect('excludedLanes', excludedLanes)(c)]),
+    ],
+  ),
   flowY1: setRange('flowY1')('flowY2')((a) => (b) => Math.max(b, a + 0.05)),
   flowY2: setRange('flowY2')('flowY1')((a) => (b) => Math.min(b, a - 0.05)),
   flowX1: setRange('flowX1')('flowX2')((a) => (b) => Math.max(b, a + 0.05)),

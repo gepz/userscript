@@ -129,8 +129,6 @@ three existing toggles fold into the matrix or stay.
 
 ### Auto reload
 
-### Banned lane
-
 ### Performance tab
 
 ### Reset default settings

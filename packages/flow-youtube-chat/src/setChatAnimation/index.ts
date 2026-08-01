@@ -68,18 +68,27 @@ export default (
     ctx.oldChatIndex,
     ctx.progress,
   )(mainState).pipe(
-    Z.flatMap(({
-      lane, interval,
-    }) => (intervalTooSmall(interval)(mainState.config.value)
-      ? ctx.newChat.animationState.pipe(
-        Z.tap((x) => Z.sync(() => x.finish())),
-        Z.map((): FlowChat => ({
-          ...ctx.newChat,
-          animationState: E.left('Ended'),
-        })),
-        Z.orElse(() => Z.succeed<FlowChat>(ctx.newChat)),
-      )
-      : setNewChatAnimation(ctx.newChat)(lane)(ctx.progress)(mainState))),
+    Z.flatMap((placement) => pipe(
+      placement,
+      // None: every row is banned, nowhere legal to place. Dropped the
+      // same way as a too-small interval.
+      O.filter(({
+        interval,
+      }) => !intervalTooSmall(interval)(mainState.config.value)),
+      O.match({
+        onNone: () => ctx.newChat.animationState.pipe(
+          Z.tap((x) => Z.sync(() => x.finish())),
+          Z.map((): FlowChat => ({
+            ...ctx.newChat,
+            animationState: E.left('Ended'),
+          })),
+          Z.orElse(() => Z.succeed<FlowChat>(ctx.newChat)),
+        ),
+        onSome: ({
+          lane,
+        }) => setNewChatAnimation(ctx.newChat)(lane)(ctx.progress)(mainState),
+      }),
+    )),
     Z.map((x) => ({
       oldChatIndex: ctx.oldChatIndex,
       newChat: x,

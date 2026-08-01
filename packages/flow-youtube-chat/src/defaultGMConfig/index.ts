@@ -3,6 +3,7 @@ import {
 } from 'astring';
 import {
   Array as A,
+  Number as N,
   Predicate as P,
   Schema as S,
   String as Str,
@@ -69,6 +70,23 @@ const defaultGMConfig: GMConfig = pipe(
     flowSpeed: sc<number>('SPEED', 18),
     maxChatLength: sc<number>('MAX', 100),
     laneCount: sc<number>('LANE_DIV', 12),
+    // The decoder normalizes to sorted, deduped, non-negative integers;
+    // allowedSegments relies on exactly that shape. Lanes at or beyond
+    // laneCount are dropped on laneCount shrink (see setState.laneCount),
+    // not here, so a stored stray survives only until the next write.
+    excludedLanes: ic<string, readonly number[]>(
+      'EXCLUDED_LANES',
+      [],
+      S.String,
+      (x) => pipe(
+        Str.split(x, ','),
+        A.filterMap(N.parse),
+        A.filter((n) => Number.isInteger(n) && n >= 0),
+        A.sort(N.Order),
+        A.dedupeAdjacent,
+      ),
+      (x) => x.join(','),
+    ),
     bannedWords: ic('NG_WORDS', ...stringsArgs),
     bannedWordRegexes: ic('NG_REG_WORDS', ...stringsArgs),
     bannedUsers: ic('NG_USERS', ...stringsArgs),

@@ -134,6 +134,7 @@ export default (
               changed('maxChatCount'),
               Stream.tap(removeOldChats(mainState.flowChats)),
             ),
+            changed('excludedLanes'),
             changed('noOverlap'),
             changed('timingFunction'),
           ], {

@@ -1,10 +1,7 @@
-// import {
-//   Option as O,
-// } from 'effect';
-
 // import * as expEval from 'expression-eval';
 import * as Ed from '@userscript/ui/Editable';
 import {
+  Option as O,
   Record as R,
   pipe,
 } from 'effect';
@@ -51,6 +48,8 @@ export default (
       /^steps\((\d+),.+/,
     )?.[1] ?? '150', 10)),
     eventLog: log.empty(),
+    laneHover: O.none(),
+    lanePaintTarget: O.none(),
     panelRect: new DOMRectReadOnly(
       0,
       0,

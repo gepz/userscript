@@ -16,6 +16,7 @@ import buttonNode from '@/settingUI/buttonNode';
 import checkboxNode from '@/settingUI/checkboxNode';
 import colorNode from '@/settingUI/colorNode';
 import intNode from '@/settingUI/intNode';
+import laneToggleNode from '@/settingUI/laneToggleNode';
 import mapSettingNodes from '@/settingUI/mapSettingNodes';
 import numberNode from '@/settingUI/numberNode';
 import selectFontNode from '@/settingUI/selectFontNode';
@@ -51,6 +52,7 @@ const flowChatPanel: (
         intNode('maxChatCount', 5, 200, 5),
         intNode('maxChatLength', 5, 200, 5),
         intNode('laneCount', 1, 25, 1),
+        laneToggleNode,
       ],
       mapSettingNodes((x) => h('div', {
         style: panelBoxStyle(212),

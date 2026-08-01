@@ -18,6 +18,7 @@ export default interface GMConfig {
   flowSpeed: GMConfigItem<number>
   maxChatLength: GMConfigItem<number>
   laneCount: GMConfigItem<number>
+  excludedLanes: GMConfigItem<readonly number[]>
   bannedWords: GMConfigItem<readonly string[]>
   bannedWordRegexes: GMConfigItem<readonly string[]>
   bannedUsers: GMConfigItem<readonly string[]>
