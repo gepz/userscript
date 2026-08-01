@@ -30,31 +30,32 @@ const laneAt = (s: SettingState) => (e: PointerEvent): number => pipe(
   )),
 );
 
-// One painted cell: excluded set updated through the regular config
-// path, plus the overlay flash that keeps the player preview up briefly
-// after the pointer leaves (the only visibility a device without hover
-// gets).
+// One paint stroke over `lanes` (pointerLane is the cell under the
+// pointer): excluded set updated through the regular config path, plus
+// the overlay flash that keeps the player preview up briefly after the
+// pointer leaves (the only visibility a device without hover gets).
 const paint = (c: AppCommander) => (
   s: SettingState,
-  lane: number,
+  lanes: readonly number[],
+  pointerLane: number,
   target: boolean,
 ): SettingDispatchable => pipe(
   target
     ? pipe(
-      A.append(s.excludedLanes, lane),
+      A.union(s.excludedLanes, lanes),
       A.sort(N.Order),
     )
-    : A.filter(s.excludedLanes, (x) => x !== lane),
+    : A.filter(s.excludedLanes, (x) => !A.contains(lanes, x)),
   (excludedLanes) => pipe(
     updateAt('excludedLanes')(excludedLanes)(c)({
       ...s,
-      laneHover: O.some(lane),
+      laneHover: O.some(pointerLane),
       lanePaintTarget: O.some(target),
     }),
     ([updated, ...effects]): SettingDispatchable => [
       updated,
       ...effects,
-      () => runLogged(c.laneOverlay.flash(excludedLanes, O.some(lane))),
+      () => runLogged(c.laneOverlay.flash(excludedLanes, O.some(pointerLane))),
     ],
   ),
 );
@@ -82,10 +83,23 @@ const moveAction = (c: AppCommander) => (
   laneAt(s)(e),
   (lane) => pipe(
     s.lanePaintTarget,
-    O.filter((target) => A.contains(s.excludedLanes, lane) !== target),
+    // A fast drag can jump several cells between pointermove events, so
+    // a stroke covers the whole run since the last seen lane.
+    O.map((target) => ({
+      target,
+      lanes: pipe(
+        O.getOrElse(s.laneHover, () => lane),
+        (from) => A.range(Math.min(from, lane), Math.max(from, lane)),
+      ),
+    })),
+    O.filter(({
+      lanes, target,
+    }) => A.some(lanes, (x) => A.contains(s.excludedLanes, x) !== target)),
     O.match({
       onNone: () => hoverAction(c)(s, e),
-      onSome: (target) => paint(c)(s, lane, target),
+      onSome: ({
+        lanes, target,
+      }) => paint(c)(s, lanes, lane, target),
     }),
   ),
 );
@@ -103,7 +117,7 @@ const downAction = (c: AppCommander) => (
 
   const lane = laneAt(s)(e);
 
-  return paint(c)(s, lane, !A.contains(s.excludedLanes, lane));
+  return paint(c)(s, [lane], lane, !A.contains(s.excludedLanes, lane));
 };
 
 const endPaint = (s: SettingState): SettingDispatchable => [
@@ -145,7 +159,10 @@ export default (c: AppCommander) => (
         touchAction: 'none',
         userSelect: 'none',
       },
-      onpointerenter: hoverAction(c),
+      // Through moveAction, not hoverAction: re-entering mid-drag must
+      // not reset the stroke anchor (laneHover) without painting up to
+      // the entry cell first.
+      onpointerenter: moveAction(c),
       onpointermove: moveAction(c),
       onpointerdown: downAction(c),
       onpointerup: endPaint,
