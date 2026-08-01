@@ -11,4 +11,5 @@ overrides:
   # ^8.5.16 floor admits the fix; drop this once that floor moves past it.
   postcss: '^8.5.18'
 patchedDependencies:
+  hyperapp@2.0.22: patches/hyperapp@2.0.22.patch
   jsep@1.4.0: patches/jsep@1.4.0.patch

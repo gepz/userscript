@@ -8,7 +8,7 @@ versions before starting, this list ages.
 
 ### hyperapp is dormant upstream
 
-2.0.22 final, typings papered over by `hyperappDomCompat.d.ts`.
+2.0.22 final, typings fixed by `patches/hyperapp@2.0.22.patch`.
 Long-term: migrate off or vendor.
 
 ## flow-youtube-chat bugs

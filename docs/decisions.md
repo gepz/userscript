@@ -4,20 +4,26 @@ Why things that look odd are the way they are. Add an entry whenever a change
 encodes reasoning that the code alone can't show; delete entries when they
 stop being true.
 
-## hyperapp needs a DOM-interface stub (2026-07)
+## hyperapp's typings are pnpm-patched (2026-08; stub era 2026-07)
 
 hyperapp 2.0.22 (the final release of a dormant project) ships typings that
 subtract `DocumentAndElementEventHandlers` from `HTMLElement`. TypeScript 5.0
 removed that interface from `lib.dom` (its members moved onto
 `HTMLElement`/`GlobalEventHandlers`), so any whole-program check fails inside
-hyperapp's `index.d.ts`. Each hyperapp-consuming package carries
-`src/hyperappDomCompat.d.ts`, an empty ambient stand-in.
+hyperapp's `index.d.ts`. The fix is `patches/hyperapp@2.0.22.patch`: it drops
+the dead interface from the `Props` subtraction, which loses nothing because
+`GlobalEventHandlers` — where those members now live — is subtracted right
+beside it. Upstream is dormant, so the patch will never conflict with a bump.
 
-Earlier workaround, now removed: `ui` replaced the compiler's entire DOM lib
-via `"@typescript/lib-dom": "npm:@types/web@^0.0.86"`, which froze its DOM
-types at early 2023. Don't reintroduce it; the stub is strictly narrower. The
-error stayed invisible in other packages for two years because nothing ran a
-whole-program check (see the fork-ts-checker entry).
+Earlier workarounds, both removed. First `ui` replaced the compiler's entire
+DOM lib via `"@typescript/lib-dom": "npm:@types/web@^0.0.86"`, freezing its
+DOM types at early 2023; then each consuming package carried an empty ambient
+`DocumentAndElementEventHandlers` stub (`src/hyperappDomCompat.d.ts`), which
+worked but injected a fake global interface into every consumer's whole
+program and had to be re-remembered per package. Don't reintroduce either;
+the patch fixes the one wrong line at its source. The error stayed invisible
+for two years because nothing ran a whole-program check (see the
+fork-ts-checker entry).
 
 ## fork-ts-checker: checker yes, emitter no (2026-07; first tried 2023-08)
 

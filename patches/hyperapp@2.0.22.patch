@@ -1,0 +1,12 @@
+diff --git a/index.d.ts b/index.d.ts
+index 0e2e1104f110294286c90aa323c2deffcd6e6705..84b37c67aa1aad4f3b3259da93181f49675d935c 100644
+--- a/index.d.ts
++++ b/index.d.ts
+@@ -151,7 +151,6 @@ declare module "hyperapp" {
+     Readonly<
+       Partial<
+         Omit<HTMLElement, keyof (
+-          DocumentAndElementEventHandlers &
+           ElementCSSInlineStyle &
+           GlobalEventHandlers
+         )> &
