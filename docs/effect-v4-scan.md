@@ -20,8 +20,8 @@ APIs may still change). Affected packages: `flow-youtube-chat` and `ui`
   why deciding its fate (backlog) is a migration prerequisite.
 - **`FiberRef` family removed (`migration/fiberref.md`).** `FiberRef`,
   `FiberRefs`, `FiberRefsPatch` are replaced by `Context.Reference` /
-  built-in `References.*`. The logging stack pre-migrated in 2026-07
-  (`docs/effect-v3-adoption.md`): `LogMeta` is already a
+  built-in `References.*`. The logging stack pre-migrated in 2026-07:
+  `LogMeta` is already a
   `Context.Reference`, `logWithMeta` provides it as a service, and
   `runLogged`'s `ManagedRuntime` replaced the `provideLog` threading. Left
   for v4: `metaLogger` still reads the logger callback's

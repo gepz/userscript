@@ -51,8 +51,8 @@ not during beta. Pain points pre-scanned in `docs/effect-v4-scan.md`
 `Either`→`Result`, and `@effect/typeclass` having no v4 counterpart —
 which makes deciding the filter-editor WIP's fate (above) a prerequisite.
 The `FiberRef`→`Context.Reference` logger rewrite was pulled forward into
-v3 (2026-07, `docs/effect-v3-adoption.md`); only the logger-callback
-shape change and `References.MinimumLogLevel` remain there.
+v3 (2026-07); only the logger-callback shape change and
+`References.MinimumLogLevel` remain there.
 
 ### TypeScript 7.x
 

@@ -63,26 +63,14 @@ never needed it. Deleting the option is what 6 wants; the escape hatch it
 suggests, `ignoreDeprecations: "6.0"`, is deliberately unused here, because
 a suppressed deprecation is a removal waiting to land in 7.
 
-The rest of 6's removals never applied: the tree targets es2021, emits
-`es2020`/`Node16`/`NodeNext` modules, resolves via `bundler`, and had no
-`outFile` or legacy `assert {}` attributes. `esModuleInterop` being forced
-true is inert because ESM emit never reaches for the interop helpers —
-confirmed rather than assumed, by the bundle comparison below.
+6 also forces `esModuleInterop` true, which is inert here: ESM emit never
+reaches for the interop helpers — confirmed rather than assumed, by the
+bundle comparison below.
 
 Going 5.9.3 to 6.0.3 left the five `lib/` outputs and both userscript
 bundles byte-identical (`tsc-alias` reads `baseUrl`, so that was worth
 confirming), with the suite and lint clean. Keep that comparison in the
 loop for 7: it is a different compiler, not a newer one.
-
-## Registry history: Verdaccio era is over (2022-08)
-
-The repo began on npm workspaces with plain semver ranges for sibling deps,
-which sometimes resolved to a registry — hence a local Verdaccio and a
-publish-before-consume workflow. The 2022-08 switch to pnpm plus the
-`workspace:` protocol made intra-repo resolution purely symlink-based; pnpm
-errors rather than falling back to a registry. No Verdaccio configuration
-remains, and none is needed unless a *different* repo must consume these
-packages.
 
 ## eslint 9 migration choices (2026-07)
 
@@ -106,6 +94,21 @@ packages.
   v5 ships no typings at all and DefinitelyTyped has none for it. If its
   types ever mismatch webpack's, check for duplicate webpack instances in the
   lockfile first (`pnpm dedupe` fixed exactly that once).
+
+## External analysis tooling: evaluated and declined (2026-07)
+
+- SonarQube Community Build (self-hosted): its rules largely duplicate the
+  existing eslint + whole-program tsc gate, and its differentiators
+  (branch/PR analysis, dashboards) are paid-tier or team-scale. If Sonar's
+  rules are ever wanted, add `eslint-plugin-sonarjs` to the existing lint
+  step — no server; if the want is dashboards, use SonarCloud, not
+  self-hosted CE. Revisit only if the project stops being solo-scale.
+- TypeScript code-intelligence for coding agents: the official Claude Code
+  LSP plugin and the community MCP LSP bridges all wrap the same
+  `typescript-language-server`, so neither path locks in any capability.
+  If adding one, prefer the official plugin (single client, least setup;
+  the MCP bridges were dormant middleware as of 2026-07), and verify it
+  actually registers — it had registration bugs mid-2026.
 
 ## micro-memoize is bundled, not CDN-required (2026-07)
 
@@ -134,6 +137,33 @@ rebuild both broke without it); and thrown exceptions are defects, which
 has no effect dependency, rxjs arrives free via CDN `@require`, and its
 Subjects are push-native mithril event glue. The `@userscript/forward-to`
 package therefore survives until custom-sort moves.
+
+## Effect v3 APIs checked and declined (2026-07)
+
+Findings from the v3 API adoption pass (verified against 3.21.4) that were
+deliberately not taken; each has a reason beyond inertia:
+
+- `Logger.withLeveledConsole` cannot replace `metaLogger`: it calls the
+  console method with a single argument, so it can express neither
+  meta-as-second-console-argument (which keeps the object inspectable in
+  the browser console) nor the suppression of sub-Warning entries lacking
+  meta. Only its idea — route through the `Console` service's `unsafe`
+  side — was adopted.
+- `stream/throttleLatest` has no v3 replacement: `Stream.throttle` is
+  token-bucket shaping and `Stream.debounce` has different semantics;
+  neither matches rxjs `throttleTime({leading, trailing})`. v4's native
+  throttle is the tracked candidate (`docs/effect-v4-scan.md`).
+- `simpleConfig` stays schema-free: it trusts the `GM.getValue(key,
+  default)` overload's return type, which lies if storage holds a
+  wrong-typed value, but validating would need a schema switched on
+  `typeof defaultValue` behind a cast. Adopt only if wrong-typed simple
+  values ever actually bite. The other trust boundaries — `Log.importLog`,
+  `indirectConfig`, the `lang` key — are schema-validated.
+- Traced `Effect.fn` stops at `removeOldChats`: the per-chat functions
+  (`getChatLane`, `chatNode`, `setNewChatAnimation`, `setChatPlayState`,
+  `onChatFieldMutate`'s callback) stay untraced because a span per chat is
+  not free on hot paths. Revisit only if failure attribution proves
+  insufficient in practice.
 
 ## Multi-step `build` scripts chain with `&&`, not a task runner (2026-07)
 
