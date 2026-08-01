@@ -613,9 +613,6 @@ importers:
       type-fest:
         specifier: ^5.8.0
         version: 5.8.0
-      validate-color:
-        specifier: ^2.2.4
-        version: 2.2.4
     devDependencies:
       '@eslint/compat':
         specifier: ^2.1.0
@@ -4416,9 +4413,6 @@ packages:
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
-
-  validate-color@2.2.4:
-    resolution: {integrity: sha512-Znolz+b6CwW6eBXYld7MFM3O7funcdyRfjKC/X9hqYV/0VcC5LB/L45mff7m3dIn9wdGdNOAQ/fybNuD5P/HDw==}
 
   validator@13.15.35:
     resolution: {integrity: sha512-TQ5pAGhd5whStmqWvYF4OjQROlmv9SMFVt37qoCBdqRffuuklWYQlCNnEs2ZaIBD1kZRNnikiZOS1eqgkar0iw==}
@@ -8851,8 +8845,6 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.0
-
-  validate-color@2.2.4: {}
 
   validator@13.15.35: {}
 

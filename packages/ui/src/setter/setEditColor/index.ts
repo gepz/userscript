@@ -5,7 +5,6 @@ import {
 import {
   constant,
 } from 'effect/Function';
-import validateColor from 'validate-color';
 
 import Editable, * as Ed from '@/Editable';
 import EditSetter from '@/setter/EditSetter';
@@ -15,10 +14,10 @@ const setEditColor: EditSetter<Editable<string>> = (
 ) => (
   value,
 ) => (editing
-  ? (validateColor(value)
+  ? (CSS.supports('color', value)
     ? constant(Ed.fromValueText(value)(value))
     : Ed.setText(value))
-  : (validateColor(value)
+  : (CSS.supports('color', value)
     ? constant(Ed.of(value))
     : Tu.mapSecond(constant(O.some([value, O.some('')])))));
 

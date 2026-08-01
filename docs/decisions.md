@@ -218,15 +218,14 @@ Every package webpack bundles stays typeless, and must. `ui/lib` is emitted
 JavaScript that webpack bundles. Marking `ui` as ESM makes webpack apply ESM
 interop to it, and ESM interop binds a default import of a CommonJS module to
 `module.exports` itself — the same rule that makes `webpack-userscript` need
-its named export above. `validate-color` (CommonJS, no ESM entry) exports an
-object carrying `__esModule` and a `default` function, so `setEditColor`'s
-`validateColor(value)` compiled without complaint into a call on an object.
-Neither `import d from` nor `ns.default` reaches the inner function — webpack
-maps both to `module.exports` — and the sibling named export
-`validateHTMLColor` is a stricter function that rejects colour names like
-`red`.
+its named export above. The dependency that proved it (since removed —
+`setEditColor` now asks the platform via `CSS.supports('color', value)`) was
+`validate-color`: CommonJS with no ESM entry, exporting an object carrying
+`__esModule` and a `default` function, so `validateColor(value)` compiled
+without complaint into a call on an object. Neither `import d from` nor
+`ns.default` reached the inner function — webpack maps both to
+`module.exports`.
 
-So the cost of getting the package type wrong is a behaviour change in the
-settings panel's colour validation, and the tell is a bundle that builds clean
-and throws at runtime. Compare `dist/main/index.user.js` byte for byte before
-and after anything that touches module resolution.
+So the cost of getting the package type wrong is a bundle that builds clean
+and throws (or misbehaves) at runtime. Compare `dist/main/index.user.js` byte
+for byte before and after anything that touches module resolution.
