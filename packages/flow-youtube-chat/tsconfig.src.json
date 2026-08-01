@@ -4,11 +4,17 @@
     "./tsconfig.exclude.json",
     "./tsconfig.types.json",
   ],
-  // For the capture server's explicit .ts-extension imports; see the note
-  // in tsconfig.build.json. noEmit satisfies the option's requirement and
-  // is accurate: this project exists for editor assignment, nothing emits.
+  // allowImportingTsExtensions is for the capture server's explicit
+  // .ts-extension imports; see the note in tsconfig.build.json. It demands
+  // noEmit or emitDeclarationOnly, and this project says the latter only
+  // because tsconfig.json references it and referenced projects may not
+  // disable emit (TS6310) — see "Editor-reference projects" in
+  // docs/decisions.md. Nothing ever runs this project's emit;
+  // declarationDir contains an accidental `tsc -p` run in one gitignored
+  // directory.
   "compilerOptions": {
     "allowImportingTsExtensions": true,
-    "noEmit": true,
+    "emitDeclarationOnly": true,
+    "declarationDir": "./.tsout",
   },
 }

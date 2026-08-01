@@ -72,6 +72,25 @@ bundles byte-identical (`tsc-alias` reads `baseUrl`, so that was worth
 confirming), with the suite and lint clean. Keep that comparison in the
 loop for 7: it is a different compiler, not a newer one.
 
+## Editor-reference projects: emitDeclarationOnly, not noEmit (2026-08)
+
+flow-youtube-chat's `tsconfig.src.json` and `tsconfig.spec.json` exist so
+editors assign files to the right program (`docs/architecture.md`,
+"tsconfig layering"); nothing ever runs their emit. They still declare
+`emitDeclarationOnly` rather than the more accurate `noEmit`, because
+`tsconfig.json` references them and a referenced project may not disable
+emit (TS6310 — tsserver flags it on `tsconfig.json` even though no
+build-mode workflow exists here; project references serve only editor
+assignment). Verified on 6.0.3: CLI `--noEmit` composes with config
+`emitDeclarationOnly`, so `tsc -p tsconfig.spec.json --noEmit` stays the
+check command and still emits nothing; `declarationDir` points at the
+gitignored `.tsout/` purely so an accidental plain `tsc -p` run lands in
+one directory instead of scattering `.d.ts` beside sources. The
+structurally sanctioned alternative — a solution-style `tsconfig.json`
+with `"files": []`, which skips reference validation — would strand the
+`config/` scripts and WIP sources that the everything-view program exists
+to cover.
+
 ## eslint 9 migration choices (2026-07)
 
 - `eslint-config-airbnb` and `eslint-config-airbnb-typescript` are

@@ -24,6 +24,7 @@ dist-ssr
 *.sw?
 
 *.tsbuildinfo
+.tsout/
 build/
 
 # Raw live-chat DOM snapshots from the fixture-capture tool: real user

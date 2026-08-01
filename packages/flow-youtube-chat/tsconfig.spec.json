@@ -8,7 +8,10 @@
   "extends": ["../../tsconfig.bundle.json", "./tsconfig.types.json"],
   "compilerOptions": {
     "composite": true,
-    "noEmit": true,
+    // emitDeclarationOnly rather than noEmit because this project is
+    // referenced from tsconfig.json; see tsconfig.src.json.
+    "emitDeclarationOnly": true,
+    "declarationDir": "./.tsout",
     // For the capture server's explicit .ts-extension imports; see the
     // note in tsconfig.build.json.
     "allowImportingTsExtensions": true,
