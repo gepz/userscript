@@ -1,7 +1,7 @@
 {
   "name": "@userscript/webpack-config",
   "private": true,
-  "version": "1.0.6",
+  "version": "2.0.0",
   "description": "Shared webpack config fragments: ts-loader, fork-ts-checker, dev server, umd output",
   "keywords": [],
   "license": "AGPL-3.0-or-later",
@@ -30,7 +30,8 @@
     "webpack-dev-server": "^6.0.0",
     "webpack-merge": "^6.0.1"
   },
-  "devDependencies": {    "tsc-alias": "^1.9.0",
+  "devDependencies": {
+    "tsc-alias": "^1.9.0",
     "typescript": "^6.0.3"
   },
   "peerDependencies": {

@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.25.0] - 2026-08-02
+
+### Added
+
+- Excluded lanes: a row of toggle buttons in the flow-chat settings
+  marks lanes chats never flow through (click or drag to paint);
+  hovering or toggling the row previews the lanes on the player.
+
+### Fixed
+
+- With "Chats won't overlap" off, chats no longer flow outside the flow
+  area (above it when no lane is free, below it after the number of
+  lanes is reduced).
+
 ## [1.24.0] - 2026-07-27
 
 ### Added

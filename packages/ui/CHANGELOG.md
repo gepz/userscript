@@ -1,5 +1,13 @@
 # @userscript/ui
 
+## 1.1.7
+
+### Patch Changes
+
+- 78e6ea8: Validate colours in `setEditColor` with the browser's own parser
+  (`CSS.supports('color', value)`) instead of the `validate-color` package,
+  which is dropped as a dependency.
+
 ## 1.1.6
 
 ### Patch Changes
