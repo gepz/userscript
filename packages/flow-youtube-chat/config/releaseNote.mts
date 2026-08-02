@@ -54,7 +54,7 @@ const packagePath = stringAt('repository', 'directory');
 // The Keep a Changelog release heading, without its leading marker.
 const headingOf = (file: string): string => {
   const heading = new RegExp(
-    `^## \\[${version.replaceAll('.', '\\.')}\\] - \\d{4}-\\d{2}-\\d{2}$`,
+    `^## \\[${RegExp.escape(version)}\\] - \\d{4}-\\d{2}-\\d{2}$`,
     'mu',
   ).exec(readPackageFile(file))?.[0];
 
