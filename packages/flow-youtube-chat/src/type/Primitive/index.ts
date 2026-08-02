@@ -1,7 +1,7 @@
 const Primitive = {
-  number: 0,
-  boolean: 1,
-  string: 2,
+  number: 'number',
+  boolean: 'boolean',
+  string: 'string',
 } as const;
 
 type Primitive = (typeof Primitive)[keyof typeof Primitive];
