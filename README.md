@@ -40,4 +40,5 @@ and commit it.
 - [`AGENTS.md`](AGENTS.md) — working conventions (humans and coding agents)
 - [`docs/architecture.md`](docs/architecture.md) — how the pieces fit
 - [`docs/decisions.md`](docs/decisions.md) — why non-obvious things are so
+- [`docs/releasing.md`](docs/releasing.md) — versioning and the Greasyfork release process
 - [`docs/backlog.md`](docs/backlog.md) — known pending work
