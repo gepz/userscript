@@ -1,20 +1,10 @@
-// import {
-//   pipe,
-// } from 'effect/Function';
-// import {
-//   Option as O,
-// } from 'effect';
-
-// import * as expEval from 'expression-eval';
-
 import Editable, * as Ed from '@userscript/ui/Editable';
 
+import {
+  isEditableKey,
+} from '@/EditableConfig';
 import SettingState from '@/SettingState';
 import UserConfig from '@/UserConfig';
-import isEditable from '@/isEditable';
-// import Compound from '@/settingUI/editableExpression/Compound';
-
-// import fromJsepExp from '@/settingUI/editableExpression/fromJsepExp';
 
 export default <T extends keyof UserConfig & keyof SettingState>(
   key: T,
@@ -24,21 +14,10 @@ export default <T extends keyof UserConfig & keyof SettingState>(
   state: SettingState,
 ): SettingState => ({
   ...state,
-  [key]: isEditable(key)(value)
+  [key]: isEditableKey(key)
     ? Ed.setValue(value)(
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       state[key] as Editable<UserConfig[T]>,
     )
-    : key === 'filterExp'
-      ? undefined
-    // ? pipe(
-    //   // eslint-disable-next-line @stylistic/max-len
-    //   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    //   fromJsepExp(value as expEval.parse.Expression),
-    //   O.getOrElse((): Compound => ({
-    //     type: 'Compound',
-    //     body: [],
-    //   })),
-    // )
-      : value,
+    : value,
 });

@@ -27,7 +27,6 @@ import chatFlowPanel from '@/settingUI/chatFlowPanel';
 import feedbackPanel from '@/settingUI/feedbackPanel';
 // eslint-disable-next-line consistent-default-export-name/default-import-match-filename
 import filterPanel from '@/settingUI/filterPanelOld';
-// import filterPanel from '@/settingUI/filterPanel';
 import getState from '@/settingUI/getState';
 import updateAt from '@/settingUI/updateAt';
 import updateInput from '@/settingUI/updateInput';

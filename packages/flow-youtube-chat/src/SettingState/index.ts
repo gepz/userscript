@@ -3,10 +3,10 @@ import {
   Option as O,
 } from 'effect';
 
+import EditableConfig from '@/EditableConfig';
 import Log from '@/Log';
-import MappedConfigState from '@/MappedConfigState';
 
-export default interface SettingState extends MappedConfigState {
+export default interface SettingState extends EditableConfig {
   showPanel: boolean
   mainTab: number
   logTab: number

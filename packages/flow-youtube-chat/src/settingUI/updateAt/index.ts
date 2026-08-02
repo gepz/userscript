@@ -1,16 +1,11 @@
-import Editable, * as Ed from '@userscript/ui/Editable';
+import * as Ed from '@userscript/ui/Editable';
 import {
   pipe,
 } from 'effect';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import UserConfig from '@/UserConfig';
 import UserConfigSetter from '@/UserConfigSetter';
-import isEditable from '@/isEditable';
-// import Expression from '@/settingUI/editableExpression/Expression';
-// eslint-disable-next-line @stylistic/max-len
-// import editableExpressionToJsep from '@/settingUI/editableExpression/editableExpressionToJsep';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import SettingKey from '@/settingUI/SettingKey';
 import SettingProps from '@/settingUI/SettingProps';
@@ -40,23 +35,15 @@ export default <K extends SettingKey<unknown>>(k: K) => (
           ...s,
           [k]: v,
         },
-        ...((k in c.setConfig && k !== 'filterExp')
+        ...(k in c.setConfig
           ? [
             configEffect(
 
               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
               k as keyof UserConfigSetter,
-              Array.isArray(v)
-              && v.length === 2
-              && isEditable(k)(v[0])
-                ? Ed.value(
-                  // eslint-disable-next-line @stylistic/max-len
-                  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                  v as unknown as Editable<UserConfig[keyof UserConfig]>,
-                )
-              //  : k === 'filterExp' ? editableExpressionToJsep(v as Expression)
+
               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                : v as never,
+              (Ed.isEditable(v) ? Ed.value(v) : v) as never,
             )(c),
           ]
           : []),

@@ -35,6 +35,15 @@ rescope to first-order type checking in direct-style TypeScript, or delete
 the WIP. Design scratch notes live in
 `packages/flow-youtube-chat/filter_logic.md`.
 
+The shipped state code no longer carries scaffolding for this WIP
+(removed 2026-08): `SettingState.filterExp` now holds the raw
+`jsep.Expression` straight from config instead of `undefined`, `updateAt`
+no longer skips config writes for `filterExp`, and `@userscript/ui`'s
+`Editable` became a tagged record rather than a tuple. Reviving the
+editor means representing its expression state on top of that
+(`settingsPanel` swaps `filterPanelOld` for `filterPanel`, and the
+excluded dirs must migrate to the tagged `Editable`).
+
 ## Dependency majors (deferred deliberately)
 
 ### webpack-bundle-analyzer 5
