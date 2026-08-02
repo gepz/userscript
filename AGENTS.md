@@ -63,8 +63,8 @@ restructuring builds, configs, or dependencies.
 
 ## Coding conventions
 
-- **Don't name a class `XxxService`** unless explicitly instructed to. Reach for a name
-  that says what the type *is* or *does*.
+- **Name a type for what it *is* or *does*.** In particular, don't name a class
+  `XxxService` unless explicitly instructed to.
 - **No emojis in comments.**
 - **Comment the non-obvious.** Spend comments on unexpected usage constraints, side
   effects, and the *why* behind a decision — not on restating what the code already says.
