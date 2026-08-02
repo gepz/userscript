@@ -1,6 +1,6 @@
 import textAreaNode from '@/appNode/textAreaNode';
 import {
-  setEditRegexes,
+  setEditStrings,
 } from '@/setter';
 
-export default textAreaNode(setEditRegexes);
+export default textAreaNode(setEditStrings);

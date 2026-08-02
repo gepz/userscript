@@ -1,4 +1,4 @@
 import textAreaNode from '../../appNode/textAreaNode';
-import { setEditRegexes, } from '../../setter';
-export default textAreaNode(setEditRegexes);
+import { setEditStrings, } from '../../setter';
+export default textAreaNode(setEditStrings);
 //# sourceMappingURL=index.js.map
