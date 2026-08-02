@@ -38,7 +38,7 @@ export default {
     'スパチャの作成者を表示する',
     '显示超级留言作者',
   ],
-  createChats: ['Create flowing chats', 'チャットを流す', '创建弹幕'],
+  createChats: ['Flow chats', 'チャットを流す', '启用弹幕'],
   textOnly: ['Text only(ignore emojis)', '文字のみ(絵文字を無視する)', '仅文本（忽略表情符号）'],
   error: ['Error', 'エラー', '错误'],
   video: ['Video', '画面', '视频'],
@@ -50,9 +50,9 @@ export default {
   chatFlow: ['Chat Flow', 'チャットの流れ方', '弹幕流动'],
   clearFlowChats: ['Clear Flowing Chats', '流れるチャットをクリアする', '清除弹幕'],
   flowNewChatIf: [
-    'A new chat will appear if all of the followings are met:',
-    '新しいチャットは以下のすべてを満たす場合に流れます：',
-    '如果满足以下所有条件，新弹幕会出现：',
+    'New chats flow only if:',
+    '新しいチャットを流す条件：',
+    '新弹幕出现的条件：',
   ],
   noOverlap: ["└Chats won't overlap", '└他のチャットと重ならない', '└弹幕不会重叠'],
   noRepeatedContent: [

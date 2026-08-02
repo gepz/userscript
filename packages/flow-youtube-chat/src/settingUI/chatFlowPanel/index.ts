@@ -5,15 +5,13 @@ import {
 } from 'effect/Function';
 import {
   h,
-  text,
   VNode,
 } from 'hyperapp';
 
 import AppCommander from '@/AppCommander';
 import SettingState from '@/SettingState';
-import getText from '@/getText';
 import buttonNode from '@/settingUI/buttonNode';
-import checkboxNode from '@/settingUI/checkboxNode';
+import flowConditionsNode from '@/settingUI/flowConditionsNode';
 import intNode from '@/settingUI/intNode';
 import laneToggleNode from '@/settingUI/laneToggleNode';
 import mapSettingNodes from '@/settingUI/mapSettingNodes';
@@ -32,10 +30,7 @@ const chatFlowPanel: (
         intNode('maxChatCount', 5, 200, 5),
         intNode('maxChatLength', 5, 200, 5),
         stepTimingNode,
-        checkboxNode('createChats'),
-        () => (s: SettingState) => text(getText('flowNewChatIf')(s)),
-        checkboxNode('noOverlap'),
-        checkboxNode('noRepeatedContent'),
+        flowConditionsNode,
         // ...pipe(
         //   state.displayMatrix,
         //   A.map(A.map((y) => h<SettingState>('span', {
