@@ -53,7 +53,7 @@ export default (
       style: textRowStyle,
       maxlength: 20,
       value: font,
-      ...editAction('font', setEditString),
+      ...editAction('font', setEditString)(c),
     }),
   ]),
 );
