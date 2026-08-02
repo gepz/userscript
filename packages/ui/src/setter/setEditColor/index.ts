@@ -1,8 +1,4 @@
 import {
-  Option as O,
-  Tuple as Tu,
-} from 'effect';
-import {
   constant,
 } from 'effect/Function';
 
@@ -19,6 +15,6 @@ const setEditColor: EditSetter<Editable<string>> = (
     : Ed.setText(value))
   : (CSS.supports('color', value)
     ? constant(Ed.of(value))
-    : Tu.mapSecond(constant(O.some([value, O.some('')])))));
+    : Ed.setTextError(value)('')));
 
 export default setEditColor;

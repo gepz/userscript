@@ -3,7 +3,6 @@ import {
   Option as O,
   Predicate as P,
   String as Str,
-  Tuple as Tu,
 } from 'effect';
 import {
   pipe,
@@ -46,9 +45,7 @@ const setEditRegexes: EditSetter<Editable<readonly string[]>> = (
       ? Ed.setText(value)
       : pipe(
         ctx.errors,
-        O.map((x) => Tu.mapSecond(() => O.some<
-          readonly [string, O.Option<string>]
-        >([value, O.some(x)]))),
+        O.map((x) => Ed.setTextError(value)(x)),
         O.getOrElse(() => () => Ed.of(ctx.regexes)),
       )
   ),

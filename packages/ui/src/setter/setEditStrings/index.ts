@@ -1,6 +1,5 @@
 import {
   Array as A,
-  Option as O,
   Predicate as P,
   String as Str,
 } from 'effect';
@@ -22,7 +21,7 @@ const setEditStrings: EditSetter<Editable<readonly string[]>> = (
   A.filter(P.not(Str.isEmpty)),
   (x) => constant(
     editing
-      ? [x, O.some([value, O.none()])]
+      ? Ed.fromValueText(x)(value)
       : Ed.of(x),
   ),
 );

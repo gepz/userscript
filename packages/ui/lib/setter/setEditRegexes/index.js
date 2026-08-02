@@ -1,4 +1,4 @@
-import { Array as A, Option as O, Predicate as P, String as Str, Tuple as Tu, } from 'effect';
+import { Array as A, Option as O, Predicate as P, String as Str, } from 'effect';
 import { pipe, } from 'effect/Function';
 import * as Ed from '../../Editable';
 const setEditRegexes = (editing) => (value) => pipe(value, Str.split(/\r\n|\n/), A.filter(P.not(Str.isEmpty)), (regexes) => ({
@@ -16,6 +16,6 @@ const setEditRegexes = (editing) => (value) => pipe(value, Str.split(/\r\n|\n/),
     }), A.getSomes, A.reduce('', (b, a) => `${b}\n${a}`), O.liftPredicate(Str.isNonEmpty)),
 }), (ctx) => (editing
     ? Ed.setText(value)
-    : pipe(ctx.errors, O.map((x) => Tu.mapSecond(() => O.some([value, O.some(x)]))), O.getOrElse(() => () => Ed.of(ctx.regexes)))));
+    : pipe(ctx.errors, O.map((x) => Ed.setTextError(value)(x)), O.getOrElse(() => () => Ed.of(ctx.regexes)))));
 export default setEditRegexes;
 //# sourceMappingURL=index.js.map

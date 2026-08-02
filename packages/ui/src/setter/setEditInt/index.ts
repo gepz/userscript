@@ -1,10 +1,5 @@
 import {
-  Option as O,
-  Tuple as Tu,
-} from 'effect';
-import {
   pipe,
-  constant,
 } from 'effect/Function';
 
 import Editable, * as Ed from '@/Editable';
@@ -29,7 +24,7 @@ const setEditInt: EditSetter<Editable<number>> = (
     : (x) => (Number.isNaN(x)
       ? pipe(
         state,
-        Tu.mapSecond(constant(O.some([value, O.some('')]))),
+        Ed.setTextError(value)(''),
       )
       : Ed.of(x)),
 );
