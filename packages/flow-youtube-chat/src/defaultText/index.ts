@@ -45,6 +45,7 @@ export default {
   chatField: ['Chat Window', 'チャット欄', '聊天窗口'],
   useStepTiming: ['Move chat in steps', 'チャットを段階的に動かす', '按步骤移动弹幕'],
   timingStepCount: ['└Step Count', '└段階数', '└步骤数'],
+  chatAppearance: ['Appearance', '見た目', '外观'],
   chatFilter: ['Chat Filter', 'チャットフィルター', '聊天过滤器'],
   flowChat: ['Flow Chat', 'チャット流れ', '聊天弹幕'],
   clearFlowChats: ['Clear Flowing Chats', '流れるチャットをクリアする', '清除弹幕'],

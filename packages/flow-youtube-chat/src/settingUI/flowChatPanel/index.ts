@@ -14,14 +14,11 @@ import SettingState from '@/SettingState';
 import getText from '@/getText';
 import buttonNode from '@/settingUI/buttonNode';
 import checkboxNode from '@/settingUI/checkboxNode';
-import colorNode from '@/settingUI/colorNode';
 import intNode from '@/settingUI/intNode';
 import laneToggleNode from '@/settingUI/laneToggleNode';
 import mapSettingNodes from '@/settingUI/mapSettingNodes';
 import numberNode from '@/settingUI/numberNode';
-import selectFontNode from '@/settingUI/selectFontNode';
 import stepTimingNode from '@/settingUI/stepTimingNode';
-import textColorNode from '@/settingUI/textColorNode';
 
 const flowChatPanel: (
   c: AppCommander,
@@ -31,45 +28,11 @@ const flowChatPanel: (
   [
     pipe(
       [
-        selectFontNode,
-        textColorNode('color'),
-        textColorNode('ownerColor'),
-        textColorNode('moderatorColor'),
-        textColorNode('memberColor'),
-        colorNode('shadowColor'),
-      ],
-      mapSettingNodes((x) => h('div', {
-        style: panelBoxStyle(212),
-      }, x)),
-    ),
-    pipe(
-      [
-        numberNode('chatOpacity', 0, 1, 0.05),
-        numberNode('fontSize', 0.3, 2, 0.05),
-        numberNode('fontWeight', 10, 1e3, 10),
-        numberNode('shadowFontWeight', 0, 3, 0.1),
         numberNode('flowSpeed', 1, 50, 1),
         intNode('maxChatCount', 5, 200, 5),
         intNode('maxChatLength', 5, 200, 5),
-        intNode('laneCount', 1, 25, 1),
-        laneToggleNode,
-      ],
-      mapSettingNodes((x) => h('div', {
-        style: panelBoxStyle(212),
-      }, x)),
-    ),
-    pipe(
-      [
-        numberNode('flowY1', 0, 0.95, 0.01),
-        numberNode('flowY2', 0.05, 1, 0.01),
-        numberNode('flowX1', 0, 0.95, 0.01),
-        numberNode('flowX2', 0.05, 1, 0.01),
-        numberNode('minSpacing', 0, 2.5, 0.1),
         stepTimingNode,
         checkboxNode('createChats'),
-        checkboxNode('displayModName'),
-        checkboxNode('displaySuperChatAuthor'),
-        checkboxNode('textOnly'),
         () => (s: SettingState) => text(getText('flowNewChatIf')(s)),
         checkboxNode('noOverlap'),
         checkboxNode('noRepeatedContent'),
@@ -89,6 +52,20 @@ const flowChatPanel: (
         //   }, x)),
         // ),
         buttonNode('clearFlowChats'),
+      ],
+      mapSettingNodes((x) => h('div', {
+        style: panelBoxStyle(212),
+      }, x)),
+    ),
+    pipe(
+      [
+        intNode('laneCount', 1, 25, 1),
+        laneToggleNode,
+        numberNode('flowY1', 0, 0.95, 0.01),
+        numberNode('flowY2', 0.05, 1, 0.01),
+        numberNode('flowX1', 0, 0.95, 0.01),
+        numberNode('flowX2', 0.05, 1, 0.01),
+        numberNode('minSpacing', 0, 2.5, 0.1),
       ],
       mapSettingNodes((x) => h('div', {
         style: panelBoxStyle(212),
