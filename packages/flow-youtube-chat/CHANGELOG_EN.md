@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.26.2] - 2026-08-03
+
+### Fixed
+
+- Typing a font name into the Font box in Chat Appearance works again.
+- Invalid regular expressions in Banned Words(Regex) now show an error
+  instead of being saved silently.
+- Banned Words and Banned Users no longer reject entries that happen to
+  look like invalid regular expressions (such as `(`).
+
 ## [1.26.1] - 2026-08-03
 
 ### Fixed

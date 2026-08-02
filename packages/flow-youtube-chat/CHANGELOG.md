@@ -1,5 +1,21 @@
 # @userscript/flow-youtube-chat
 
+## 1.26.2
+
+### Patch Changes
+
+- bd7e55b: The custom font text input in Chat Appearance works again: its event
+  handlers were never attached (an unapplied curried call), so typed font
+  names were silently ignored.
+- 926333b: The plain and regex textarea nodes had their setters swapped: the Banned
+  Words(Regex) box accepted and saved invalid regexes without complaint,
+  while the plain Banned Words/Users boxes pointlessly validated entries as
+  regexes. Invalid regexes are now rejected in the regex box with the error
+  shown, and plain boxes accept any text.
+- Updated dependencies [9fcd983]
+- Updated dependencies [926333b]
+  - @userscript/ui@1.2.0
+
 ## 1.26.1
 
 ### Patch Changes

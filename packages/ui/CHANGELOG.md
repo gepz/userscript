@@ -1,5 +1,24 @@
 # @userscript/ui
 
+## 1.2.0
+
+### Minor Changes
+
+- 9fcd983: `Editable<T>` is now a tagged record (`{ tag: 'Editable', value, edit }`)
+  instead of a bare `[value, edit]` tuple, so runtime code can tell an
+  Editable apart from plain user data with the new `isEditable` guard rather
+  than guessing from array shape. A `setTextError` helper replaces the direct
+  tuple surgery consumers previously needed to set a draft text with an
+  error.
+
+### Patch Changes
+
+- 926333b: The plain and regex textarea nodes had their setters swapped: the Banned
+  Words(Regex) box accepted and saved invalid regexes without complaint,
+  while the plain Banned Words/Users boxes pointlessly validated entries as
+  regexes. Invalid regexes are now rejected in the regex box with the error
+  shown, and plain boxes accept any text.
+
 ## 1.1.7
 
 ### Patch Changes
