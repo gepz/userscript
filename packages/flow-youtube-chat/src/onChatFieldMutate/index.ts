@@ -33,9 +33,14 @@ export default (
   mainState: MainState,
 ) => (records: MutationRecord[]): Z.Effect<unknown> => pipe(
   Z.succeed(records),
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  Z.map(A.flatMap((e) => (Array.from(e.addedNodes) as HTMLElement[]))),
-  Z.map(A.filter((x) => x.children.length > 0)),
+  Z.map(A.flatMap((e) => Array.from(e.addedNodes))),
+  // nodeType, not instanceof: the chat nodes usually belong to the
+  // #chatframe iframe's realm, where instanceof against this window's
+  // HTMLElement is always false. Non-element nodes (text, comments) have no
+  // .children, so they must be dropped before the children check.
+  Z.map(A.filter((x): x is HTMLElement => x.nodeType === Node.ELEMENT_NODE
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    && (x as HTMLElement).children.length > 0)),
   Z.map(A.reverse),
   Z.flatMap(Z.forEach(Z.fnUntraced(function* (chat: HTMLElement) {
     yield * Z.logDebug('Chat detected');

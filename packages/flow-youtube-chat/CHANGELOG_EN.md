@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## Unreleased:
+
+### Fixed
+
+- Fixed an error that could stop chats from flowing for a few seconds
+  when YouTube changes the chat list in an unusual way.
+
 ## [1.26.0] - 2026-08-03
 
 ### Changed
