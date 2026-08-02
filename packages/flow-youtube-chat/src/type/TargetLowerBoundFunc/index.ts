@@ -10,6 +10,8 @@ type TargetLowerBoundFunc<T extends Type> = (
   target: TypeWithMap<T>
 ) => (
   source: TypeWithMap
-) => E.Either<string, GenericMap>;
+  // effect's Either puts the success channel first: GenericMap is the
+  // inferred lower bound on success, string the assignability error.
+) => E.Either<GenericMap, string>;
 
 export default TargetLowerBoundFunc;
