@@ -82,12 +82,10 @@ Blocked on plugin ecosystem (`eslint-config-airbnb-extended`,
 `experiments.typescript`, since webpack 5.108 (checked 2026-07; re-verify
 experiment status before starting). It uses the same type erasure the
 webpack configs themselves already run on, so the constraints are the ones
-`docs/decisions.md` lists. Stripping handles erasable syntax only; the two
-remaining `enum`s (`src/type/UI`, `src/type/Primitive`, re-verified 2026-07)
-sit in the build-excluded filter-editor WIP and only block this if that WIP
-ships (its `const`-object refactor is worth doing regardless — TypeScript's
-`erasableSyntaxOnly` direction). fork-ts-checker remains the type gate
-either way; stripping does no checking.
+`docs/decisions.md` lists. Stripping handles erasable syntax only, which the
+whole workspace now satisfies — `erasableSyntaxOnly` is enforced from
+`tsconfig.base.json` (the last two `enum`s became `const` objects, 2026-08).
+fork-ts-checker remains the type gate either way; stripping does no checking.
 
 ## flow-youtube-chat wishlist
 
