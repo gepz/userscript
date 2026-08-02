@@ -8,12 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
-- The Flow Chat settings tab is now two tabs: Chat Flow (speed, timing,
-  chat limits, flow conditions, lanes, flow area) and Chat Appearance
-  (font, colors, opacity, sizes, name/emoji display).
-- The flow conditions now sit under the "Flow chats" toggle (renamed
-  from "Create flowing chats"), dimming while it is off; they stay
-  editable.
+- The Flow Chat settings tab is now two tabs: Chat Flow and Chat
+  Appearance.
+- The flow conditions moved under the "Flow chats" toggle (renamed from
+  "Create flowing chats") and dim while it is off.
 
 ## [1.25.0] - 2026-08-02
 
