@@ -12,5 +12,4 @@ export default <T extends keyof UserConfig>(
   v: UserConfig[T],
 ): (c: AppCommander) => Effect<SettingState> => (
   c,
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-) => () => runLogged(c.setConfig[k](v as never));
+) => () => runLogged(c.setConfig[k](v));

@@ -116,10 +116,7 @@ const evaluateExpression = (
       throw new Error('Filter expression tried to call a non-function');
     }
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return (fn as (...args: readonly unknown[]) => unknown)(
-      ...exp.arguments.map(evaluate),
-    );
+    return fn(...exp.arguments.map(evaluate));
   }
 
   case 'UnaryExpression': {

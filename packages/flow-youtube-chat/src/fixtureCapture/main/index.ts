@@ -441,16 +441,17 @@ const observer = new MutationObserver((records) => {
   recordBatchGeometry(records
     .filter((record) => record.target === observedField)
     .flatMap((record) => Array.from(record.addedNodes))
-    .filter((node) => node.nodeType === Node.ELEMENT_NODE)
     // Chat nodes live in the iframe realm, so instanceof cannot narrow.
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    .map((node) => node as HTMLElement));
+    .filter((node): node is HTMLElement => (
+      node.nodeType === Node.ELEMENT_NODE
+    )));
 
   records.forEach((record) => {
     Array.from(record.addedNodes)
-      .filter((node) => node.nodeType === Node.ELEMENT_NODE)
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      .forEach((node) => maybeCapture(node as HTMLElement));
+      .filter((node): node is HTMLElement => (
+        node.nodeType === Node.ELEMENT_NODE
+      ))
+      .forEach((node) => maybeCapture(node));
   });
 });
 

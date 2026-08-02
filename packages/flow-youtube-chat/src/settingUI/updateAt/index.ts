@@ -26,7 +26,7 @@ export default <K extends SettingKey<unknown>>(k: K) => (
     : k in setState
       ? (
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        (setState[k as never] as (
+        (setState[k] as (
           v: unknown,
         ) => (c: AppCommander) => (s: SettingState) => SettingDispatchable)
       )(v)
