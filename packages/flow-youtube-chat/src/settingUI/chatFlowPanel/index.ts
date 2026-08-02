@@ -20,7 +20,7 @@ import mapSettingNodes from '@/settingUI/mapSettingNodes';
 import numberNode from '@/settingUI/numberNode';
 import stepTimingNode from '@/settingUI/stepTimingNode';
 
-const flowChatPanel: (
+const chatFlowPanel: (
   c: AppCommander,
 ) => (
   s: SettingState,
@@ -75,4 +75,4 @@ const flowChatPanel: (
   mapSettingNodes(identity),
 );
 
-export default flowChatPanel;
+export default chatFlowPanel;

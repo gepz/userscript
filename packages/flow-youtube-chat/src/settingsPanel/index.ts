@@ -23,11 +23,11 @@ import languageLabels from '@/languageLabels';
 import languages from '@/languages';
 import chatAppearancePanel from '@/settingUI/chatAppearancePanel';
 import chatFieldPanel from '@/settingUI/chatFieldPanel';
+import chatFlowPanel from '@/settingUI/chatFlowPanel';
 import feedbackPanel from '@/settingUI/feedbackPanel';
 // eslint-disable-next-line consistent-default-export-name/default-import-match-filename
 import filterPanel from '@/settingUI/filterPanelOld';
 // import filterPanel from '@/settingUI/filterPanel';
-import flowChatPanel from '@/settingUI/flowChatPanel';
 import getState from '@/settingUI/getState';
 import updateAt from '@/settingUI/updateAt';
 import updateInput from '@/settingUI/updateInput';
@@ -97,7 +97,7 @@ export default (
       },
     })((s, n) => updateAt('mainTab')(n)(c)(s))(pipe(
       [
-        'flowChat',
+        'chatFlow',
         'chatAppearance',
         'chatFilter',
         'chatField',
@@ -107,7 +107,7 @@ export default (
       A.map(apply(state)),
     ))(pipe(
       [
-        flowChatPanel,
+        chatFlowPanel,
         chatAppearancePanel,
         filterPanel,
         chatFieldPanel,
