@@ -54,10 +54,20 @@ export const isEditableKey = (k: string): k is EditableConfigKey => (
   editableKeySet.has(k)
 );
 
-type EditableConfig = {
-  readonly [P in keyof UserConfig]: P extends EditableConfigKey
-    ? Editable<UserConfig[P]>
-    : UserConfig[P];
+// The Editable-wrapped half of the config state. Kept as a named mapped
+// type so generic keys index it directly: a K constrained to
+// EditableConfigKey yields the correlated Editable<UserConfig[K]>
+// (docs/correlated-unions.md).
+export type EditableConfigValues = {
+  readonly [P in EditableConfigKey]: Editable<UserConfig[P]>;
+};
+
+// An intersection of two per-domain mapped types, not one conditional
+// mapped type: indexing with a generic key constrained to either domain
+// then yields the correlated member type instead of a distributed union.
+type EditableConfig = EditableConfigValues & {
+  readonly [P in Exclude<keyof UserConfig, EditableConfigKey>]:
+  UserConfig[P];
 };
 
 export default EditableConfig;
