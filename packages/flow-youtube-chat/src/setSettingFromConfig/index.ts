@@ -1,6 +1,7 @@
-import Editable, * as Ed from '@userscript/ui/Editable';
+import * as Ed from '@userscript/ui/Editable';
 
 import {
+  EditableConfigValues,
   isEditableKey,
 } from '@/EditableConfig';
 import SettingState from '@/SettingState';
@@ -12,12 +13,17 @@ export default <T extends keyof UserConfig & keyof SettingState>(
   value: UserConfig[T],
 ) => (
   state: SettingState,
-): SettingState => ({
-  ...state,
-  [key]: isEditableKey(key)
-    ? Ed.setValue(value)(
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      state[key] as Editable<UserConfig[T]>,
-    )
-    : value,
-});
+): SettingState => {
+  // Read through the EditableConfigValues view: isEditableKey narrows
+  // the generic key, and indexing the mapped type with it yields the
+  // correlated Editable<UserConfig[T & EditableConfigKey]>
+  // (docs/correlated-unions.md).
+  const editables: EditableConfigValues = state;
+
+  return {
+    ...state,
+    [key]: isEditableKey(key)
+      ? Ed.setValue(value)(editables[key])
+      : value,
+  };
+};
