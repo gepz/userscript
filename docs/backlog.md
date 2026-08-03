@@ -18,6 +18,14 @@ Long-term: migrate off or vendor.
 Max chat amount sometimes misbehaves, removing chats before they
 should go.
 
+## flow-youtube-chat refactors
+
+### Remove the correlated-union casts
+
+Started 2026-08. The `as never` family in the per-key config machinery;
+mechanism, site inventory, and the four-phase plan live in
+`docs/correlated-unions.md` — keep status there, not here.
+
 ## Design decisions pending
 
 ### Decide the fate of the typed filter-expression editor WIP
