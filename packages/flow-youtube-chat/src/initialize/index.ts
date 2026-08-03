@@ -89,8 +89,7 @@ export default pipe(
         )),
         Z.zipRight(Z.promise(() => pipe(
           defaultGMConfig[key],
-          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-          (x) => GM.setValue(x.gmKey, x.toGm(val as never)),
+          (x) => GM.setValue(x.gmKey, x.toGm(val)),
         ))),
       ),
       defaultFilterExp: () => defaultFilter(configValue),
