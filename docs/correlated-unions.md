@@ -6,8 +6,8 @@ carry only the local constraint plus a pointer here. Update the inventory
 and phase checklists as work lands; delete this file when the last phase
 closes and fold anything still worth knowing into `docs/decisions.md`.
 
-**Status: all four phases implemented 2026-08; the only open item is the
-browser pass over the settings panel (Phase 3 checklist).**
+**Status: all four phases implemented and browser-verified 2026-08;
+nothing open — fold and delete when convenient.**
 
 ## The mechanism
 
@@ -215,11 +215,13 @@ Findings that unlocked the phase:
   and argument share the written type `SettingProps[K]`, so the calls
   check by identity.
 
-- [ ] Exercise the panel per the package's `verify` skill
+- [x] Exercise the panel per the package's `verify` skill
       (`packages/flow-youtube-chat/.claude/skills/verify/SKILL.md`) —
-      pending; vitest suite (147 tests) passes and the bundle diff is a
-      faithful restructure of the dispatch, but the panel has not been
-      driven in a browser.
+      done 2026-08-03: every dispatch path driven headlessly (computed
+      `useStepTiming`, plain `textOnly`/`toggleCreateComments`, editable
+      `flowSpeed`/banned lists incl. invalid-input rejection and
+      `filterExp` rebuild), plus the `ConfigEntry` broadcast verified
+      across two pages (`bannedWords`, `fieldScale`); zero page errors.
 
 ### Phase 4 — `setSettingFromConfig` (done 2026-08, cast removed)
 

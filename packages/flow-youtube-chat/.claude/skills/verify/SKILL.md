@@ -48,6 +48,11 @@ in `~/.cache/ms-playwright/`.
 - Rows are label-span + error-span + inputs; address inputs by XPath from
   the label, e.g.
   `//span[text()="Speed"]/following::input[@inputmode="decimal"][1]`.
+- Checkboxes are nested *inside* their `<label>` — the `following::` axis
+  skips descendants and silently hits the next row's checkbox; use
+  `//label[contains(text(),"...")]//input[@type="checkbox"]`.
+- Only the active tab's rows are in the DOM — click the tab before
+  locating anything on it.
 - Commit = `fill()` then `blur()` (fires change). Invalid input shows as
   `borderColor: rgb(255, 85, 85)`; row error text is the label's
   `following-sibling::span[1]`.
