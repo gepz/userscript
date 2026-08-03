@@ -28,14 +28,15 @@ import {
 import {
   emptyAuthorNames,
 } from '@/AuthorNameIndex';
+import ConfigEntry from '@/ConfigEntry';
 import ConfigRefs from '@/ConfigRefs';
 import {
   makePageState,
 } from '@/LivePageState';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
-import UserConfig from '@/UserConfig';
 import UserConfigSetter from '@/UserConfigSetter';
+import applyConfigEntry from '@/applyConfigEntry';
 import configDiff from '@/configDiff';
 import configStream from '@/configStream';
 import listeningBroadcastConfigKeys from '@/listeningBroadcastConfigKeys';
@@ -63,9 +64,7 @@ export default Z.fnUntraced(function* (ctx: {
   setChangedConfig: UserConfigSetter
   configRefs: ConfigRefs
   mainState: MainState
-  channel: BroadcastChannel<{ [K in keyof UserConfig]: [K, UserConfig[K]] }[
-    keyof UserConfig
-  ]>
+  channel: BroadcastChannel<ConfigEntry>
   reinitQueue: Queue.Queue<void>
   reinitialize: Z.Effect<void>
   apps: {
@@ -211,14 +210,13 @@ export default Z.fnUntraced(function* (ctx: {
   // fresh.
   const branches = (): Stream.Stream<unknown>[] => [
     pipe(
-      Stream.fromEventListener<{ [K in keyof UserConfig]: [K, UserConfig[K]] }[
-        keyof UserConfig
-      ]>(ctx.channel, 'message'),
-      Stream.mapEffect(([key, val]) => pipe(
-        listeningBroadcastConfigKeys.includes(key),
+      Stream.fromEventListener<ConfigEntry>(ctx.channel, 'message'),
+      // The entry is passed whole: splitting it into key and value here
+      // would decorrelate them — see docs/correlated-unions.md.
+      Stream.mapEffect((entry) => pipe(
+        listeningBroadcastConfigKeys.includes(entry[0]),
         (x) => (x
-          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-          ? ctx.setChangedConfig[key](val as never)
+          ? applyConfigEntry(ctx.setChangedConfig)(entry)
           : Z.sync(() => { })),
       )),
     ),

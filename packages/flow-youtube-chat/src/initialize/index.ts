@@ -23,10 +23,13 @@ import packageJson from '@/../package.json';
 import {
   emptyAuthorNames,
 } from '@/AuthorNameIndex';
+import ConfigEntry, {
+  makeEntry,
+} from '@/ConfigEntry';
 import FlowChat from '@/FlowChat';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
-import UserConfig, {
+import {
   makeConfig,
 } from '@/UserConfig';
 import {
@@ -61,8 +64,7 @@ export default pipe(
       Z.flatMap(Z.forEach((x) => Z.sync(() => x(dispatchable)))),
     );
 
-    const channel = new BroadcastChannel<
-      { [K in keyof UserConfig]: [K, UserConfig[K]] }[keyof UserConfig]>(
+    const channel = new BroadcastChannel<ConfigEntry>(
       scriptIdentifier,
     );
 
@@ -81,12 +83,7 @@ export default pipe(
         setSettingFromConfig(key)(val),
       ),
       broadcastAndPersist: (key) => (val) => pipe(
-        Z.promise(() => channel.postMessage(
-          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-          [key, val] as {
-            [K2 in keyof UserConfig]: [K2, UserConfig[K2]]
-          }[keyof UserConfig],
-        )),
+        Z.promise(() => channel.postMessage(makeEntry(key, val))),
         Z.zipRight(Z.promise(() => pipe(
           defaultGMConfig[key],
           (x) => GM.setValue(x.gmKey, x.toGm(val)),
