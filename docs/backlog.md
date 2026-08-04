@@ -13,53 +13,24 @@ Long-term: migrate off or vendor.
 
 ## flow-youtube-chat bugs
 
-### Max chat amount removes chats prematurely
+### setChatAnimation replaces flowChats entries by stale index
 
-Root-caused and fixed 2026-08; **pending a quick browser re-check** of
-the second fix (watch fixtureCapture's `flowEviction` trace plus the
-on-screen count — mid-flight removals while visibly below the cap were
-the symptom). Two distinct defects produced it:
+`setChatAnimation` captures `oldChatIndex` from a mid-pipeline read and
+`A.replace`s it in a later update; a concurrent `flowChats` write in
+between makes the stale index clobber the wrong entry (lost update, no
+crash). The fix is the same single-atomic-update treatment `addFlowChat`
+and `dropFlowChat` already use, but it entangles the error-channel
+protocol (`NoSuchElementException` as "already stored"), so redesign
+both together.
 
-- **Non-atomic eviction (race).** Fixed, and browser-verified via the
-  position-based `flowEviction` watcher (2026-08-04: every eviction at
-  exactly the cap). `addFlowChat` selects and removes its recycle
-  target inside one `SynchronizedRef.modifyEffect` (the old
-  get → scan → re-read → `unsafeGet` window let concurrent `flowChats`
-  writers shift the list: wrong chat cancelled, double recycles, or an
-  `unsafeGet` defect that `resilient` answered with a full reinit), and
-  `removeOldChats` is an atomic `updateEffect` trimming by partition,
-  keeping survivors in insertion order and cancelling removed chats'
-  animations.
-- **Claim-before-placement ordering (deterministic, the everyday
-  cause).** An at-cap arrival evicted the earliest flying chat to claim
-  its slot *before* `setChatAnimation` decided placement; under
-  congestion the newcomer was then dropped — one visible chat killed
-  for a chat that never appeared — or worse, stored as an unrecyclable
-  `'NotStarted'` zombie squatting on a cap slot (mass-produced by seek
-  repopulation bursts). Diagnosed from a live console autopsy
-  (2026-08-05: 10/20 slots held by laneless zombies). Fixed by
-  reordering: only `'Ended'` chats are claimable, eviction happens
-  atomically after the newcomer actually flows, and a congestion-drop
-  discards the newcomer outright.
+### Paused chats make at-cap eviction maximally visible
 
-Seek note: the old "seek wipes the screen" symptom was this ordering
-bug firing en masse (the replay tail all failed placement against
-saturated lanes, each failure killing a flyer); with the reordering it
-no longer manifests on busy streams (live check 2026-08-05). Gating
-whole bulk-insert batches as backfill (>= 4 inserts) remains an option
-only if replayed old chatter flowing after a seek ever proves
-misleading — cosmetic, not correctness.
-
-Residuals, deliberately left:
-
-- `setChatAnimation` still captures `oldChatIndex` from a mid-pipeline
-  read and `A.replace`s it in a later update; a stale index clobbers
-  the wrong entry (lost update, no crash). The same atomicity treatment
-  applies, but it entangles the error-channel protocol
-  (`NoSuchElementException` as "already stored"), so fix both together.
-- Policy question: paused chats never reach `'Ended'` (animations are
-  frozen), so at the cap each arrival evicts a frozen, fully visible
-  chat — the intended rule in its most visible case.
+Policy question, undecided: while the video is paused every animation is
+frozen, so no chat ever reaches `'Ended'` — each newly *placed* arrival
+at the cap then evicts a frozen, fully visible chat. This is the
+evict-the-earliest rule operating in its most noticeable case; decide
+whether pause should also pause eviction (or arrivals) before tuning
+anything.
 
 ### Lane overlay renders under the flowing chats
 
