@@ -89,8 +89,11 @@ Blocked on plugin ecosystem (`eslint-config-airbnb-extended`,
 
 ### Replace `ts-loader` with native type-stripping
 
-`experiments.typescript`, since webpack 5.108 (checked 2026-07; re-verify
-experiment status before starting). It uses the same type erasure the
+`experiments.typescript`, since webpack 5.107 and still experimental
+(checked 2026-08; re-verify before starting). Since 5.109 it defaults to
+`'auto'`: active only when Node provides `module.stripTypeScriptTypes`
+(>= 22.6) *and* no loader rule matches `.ts` — so dropping the ts-loader
+rule is part of the migration, not a follow-up. It uses the same type erasure the
 webpack configs themselves already run on, so the constraints are the ones
 `docs/decisions.md` lists. Stripping handles erasable syntax only, which the
 whole workspace now satisfies — `erasableSyntaxOnly` is enforced from
