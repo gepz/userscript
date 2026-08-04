@@ -14,6 +14,7 @@ import {
 } from '@/fixtureCapture/protocol';
 import sanitize from '@/fixtureCapture/sanitize';
 import slotFor from '@/fixtureCapture/slotFor';
+import flowDuration from '@/flowDuration';
 import livePageYt from '@/livePageYt';
 import onElementSettled from '@/onElementSettled';
 
@@ -336,40 +337,88 @@ const recordBatchGeometry = (added: readonly HTMLElement[]): void => {
 // Flow evictions (kind 'flowEviction' on the /trace channel): evidence
 // for the backlog's max-chat-amount premature-removal bug. The product
 // takes a flowing chat off screen early in exactly two ways —
-// @/addFlowChat cancels a recycled span's animation, @/removeOldChats
-// detaches the span mid-flight — so both surface black-box on the
-// product's .fyc_chat spans (top document, not the chat iframe) as an
-// animation canceled, or an element disconnected, at fractional
-// progress. Natural finishes never report. liveCount is the on-screen
-// span count at the eviction, to compare against the configured max:
-// evictions while visibly below it are the bug's signature.
+// @/addFlowChat recycles a span into a fresh flight, @/removeOldChats
+// detaches the span mid-flight. Detection is purely positional
+// (getBoundingClientRect between 250ms sweeps): the Web Animations
+// objects behind the product's animations are Xray-opaque in the
+// Firefox userscript sandbox (getAnimations() hands back wrappers whose
+// effect methods throw, verified 2026-08), so the animation API cannot
+// be watched from here. A span that detaches, or jumps rightward into a
+// new flight, while its last position was still inside the container
+// was evicted early; natural finishes exit at the left edge and never
+// report. liveCount is the on-screen span count at the eviction, to
+// compare against the configured max: evictions while visibly below it
+// are the bug's signature.
 const flowSweepMs = 250;
 
 interface WatchedFlow {
-  span: HTMLElement
-  animation: Animation
-  durationMs: number
-  // currentTime survives sampling but is nulled by cancel, so the sweep
-  // keeps the last reading for the cancel report to use.
-  lastTimeMs: number
+  lastLeft: number
+  lastRight: number
+  // The container is remembered per sweep so a detach report can still
+  // place the span after parentElement is gone.
+  lastContainerLeft: number
+  lastContainerWidth: number
+  lastText: string
 }
 
-const watchedFlows = new Map<Animation, WatchedFlow>();
+const watchedFlows = new Map<HTMLElement, WatchedFlow>();
+
+// Sweep self-diagnosis (kind 'flowSweepStats', every ~10s): pinpoints
+// which link of the eviction watch is dead when reports stay silent —
+// spans on screen, entries watched, removals seen (recycles/detaches),
+// and whether the slack filter ate them (suppressed) or the sweep body
+// died (lastError).
+const sweepStats = {
+  sweeps: 0,
+  recycles: 0,
+  detaches: 0,
+  reports: 0,
+  suppressed: 0,
+  // Last exception the sweep body threw, if any: a sweep that dies on the
+  // first span would otherwise go silent while the interval keeps firing.
+  lastError: '',
+};
+
+const statsEverySweeps = 40;
+
+const postSweepStats = (spans: number): void => {
+  GM.xmlHttpRequest({
+    method: 'POST',
+    url: `${serverBase}/trace`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: JSON.stringify({
+      kind: 'flowSweepStats',
+      spans,
+      watched: watchedFlows.size,
+      ...sweepStats,
+      url: window.location.href,
+    }),
+  });
+};
 
 const reportFlowEviction = (
   watched: WatchedFlow,
-  reason: 'canceled' | 'detached',
-  progressMs: number,
+  reason: 'recycled' | 'detached',
 ): void => {
-  const flightProgress = watched.durationMs > 0
-    ? progressMs / watched.durationMs
-    : 1;
+  const spanWidth = watched.lastRight - watched.lastLeft;
+  const remainingPx = watched.lastRight - watched.lastContainerLeft;
 
-  // A finished chat's span is legitimately recycled or cleaned up; only a
-  // chat that still had flight time left was evicted early.
-  if (flightProgress >= 1) {
+  // A finished chat legitimately gets recycled or cleaned up after
+  // exiting at the container's left edge. lastRight is up to one sweep
+  // stale, so allow the distance a span can travel in that window
+  // (doubled, plus jitter) before calling a removal premature.
+  const slackPx = ((watched.lastContainerWidth + spanWidth)
+    * (flowSweepMs / flowDuration) * 2) + 8;
+
+  if (remainingPx <= slackPx) {
+    sweepStats.suppressed += 1;
+
     return;
   }
+
+  sweepStats.reports += 1;
 
   GM.xmlHttpRequest({
     method: 'POST',
@@ -380,61 +429,80 @@ const reportFlowEviction = (
     data: JSON.stringify({
       kind: 'flowEviction',
       reason,
-      progress: Math.round(flightProgress * 100) / 100,
-      elapsedMs: Math.round(progressMs),
-      durationMs: Math.round(watched.durationMs),
-      playState: watched.animation.playState,
+      remainingPx: Math.round(remainingPx),
+      spanWidth: Math.round(spanWidth),
+      containerWidth: Math.round(watched.lastContainerWidth),
       liveCount: document.querySelectorAll('.fyc_chat').length,
       // Real message text, matching what was visibly cut short; fine in
       // the local-only trace, never in anything committed.
-      text: watched.span.textContent?.slice(0, 40) ?? '',
+      text: watched.lastText.slice(0, 40),
       url: window.location.href,
     }),
   });
 };
 
 const sweepFlowEvictions = (): void => {
-  document.querySelectorAll<HTMLElement>('.fyc_chat').forEach((span) => {
-    // One entry per Animation, not per span: a recycled span gets a fresh
-    // animation, which must be tracked as a new flight.
-    const animation = span.getAnimations()[0];
+  const spans = document.querySelectorAll<HTMLElement>('.fyc_chat');
 
-    if (animation && !watchedFlows.has(animation)) {
-      const watched: WatchedFlow = {
-        span,
-        animation,
-        durationMs: Number(animation.effect?.getTiming().duration ?? 0),
-        lastTimeMs: Number(animation.currentTime ?? 0),
-      };
+  try {
+    // All spans share the product's one overlay container; one rect read
+    // serves the whole sweep.
+    const container = spans.item(0)?.parentElement?.getBoundingClientRect();
 
-      watchedFlows.set(animation, watched);
+    spans.forEach((span) => {
+      if (!container) {
+        return;
+      }
 
-      animation.addEventListener('cancel', () => {
-        if (watchedFlows.delete(animation)) {
-          reportFlowEviction(watched, 'canceled', watched.lastTimeMs);
-        }
-      });
+      const rect = span.getBoundingClientRect();
+      const watched = watchedFlows.get(span);
 
-      animation.addEventListener('finish', () => {
-        watchedFlows.delete(animation);
-      });
-    }
-  });
+      if (!watched) {
+        watchedFlows.set(span, {
+          lastLeft: rect.left,
+          lastRight: rect.right,
+          lastContainerLeft: container.left,
+          lastContainerWidth: container.width,
+          lastText: span.textContent ?? '',
+        });
 
-  watchedFlows.forEach((watched, animation) => {
-    if (!watched.span.isConnected && animation.playState !== 'finished') {
-      watchedFlows.delete(animation);
-      reportFlowEviction(
-        watched,
-        'detached',
-        Number(animation.currentTime ?? watched.lastTimeMs),
-      );
-    } else {
-      watched.lastTimeMs = Number(
-        animation.currentTime ?? watched.lastTimeMs,
-      );
-    }
-  });
+        return;
+      }
+
+      // Flight motion is monotonically leftward; a substantial rightward
+      // jump means the span was recycled into a new flight. (Resizes
+      // re-animate preserving progress, so they stay under the
+      // threshold.)
+      if (rect.left > watched.lastLeft + (container.width * 0.25)) {
+        sweepStats.recycles += 1;
+        reportFlowEviction(watched, 'recycled');
+      }
+
+      watched.lastLeft = rect.left;
+      watched.lastRight = rect.right;
+      watched.lastContainerLeft = container.left;
+      watched.lastContainerWidth = container.width;
+      watched.lastText = span.textContent ?? '';
+    });
+
+    watchedFlows.forEach((watched, span) => {
+      if (!span.isConnected) {
+        watchedFlows.delete(span);
+        sweepStats.detaches += 1;
+        reportFlowEviction(watched, 'detached');
+      }
+    });
+  } catch (error) {
+    sweepStats.lastError = String(error);
+  }
+
+  sweepStats.sweeps += 1;
+
+  // The first sweep reports immediately: a stats event right after a page
+  // load is the installed-build liveness signal.
+  if (sweepStats.sweeps === 1 || sweepStats.sweeps % statsEverySweeps === 0) {
+    postSweepStats(spans.length);
+  }
 };
 
 const observer = new MutationObserver((records) => {
