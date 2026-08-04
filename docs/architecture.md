@@ -15,6 +15,41 @@ infrastructure they build on. Everything is consumed in-repo through
 | `eslint-config` | Shared eslint 9 flat-config hub (plain `.mjs`, no build) |
 | `forward-to`, `tap-non-null`, `cdn-from-dependency` | Small utility libs; ship compiled `lib/` |
 
+## flow-youtube-chat runtime lifecycle
+
+The userscript runs inside YouTube's SPA, which offers no lifecycle hooks
+and replaces its custom-element DOM at arbitrary times (navigation, chat
+re-renders, player swaps). The overlay therefore treats "where are my
+anchor elements" as state to re-derive continuously, and `allStream` is
+the single composition root where that lifecycle is wired: `initialize`
+builds the config machinery and the hyperapp UIs, then just
+`Stream.runDrain`s what `allStream` returns. Domain behavior lives in
+small per-concern modules (`onChatFieldMutate`, `videoToggleStream`,
+`configStream`, ...); `allStream` only wires them, so subscription
+scoping and teardown stay visible in one file instead of being scattered.
+
+The stream nests three layers, each replacing everything below it when
+it fires (`switch: true`):
+
+- **Reinitialize** — a `reinitQueue` signal (URL change, error recovery)
+  cancels and rebuilds the whole graph.
+- **Poll** — a 700 ms schedule re-reads every `LivePageState` anchor;
+  a tick where any element appeared or disappeared re-runs `setup`
+  (observer attach, UI mounts) and swaps in fresh branch streams.
+  Polling rather than events, because YouTube exposes no reliable
+  signal for its re-renders. Consequence: `setup` and the branches are
+  re-executed per tick and must read the element caches at run time —
+  `setup` is `Z.suspend`ed and `branches` is a function for exactly
+  that reason (see the comments at those sites).
+- **Branches** — the merged per-concern streams (broadcast config
+  entries, config-ref changes, DOM/resize observers, video play state,
+  URL changes, settings rect), merged unbounded.
+
+The whole pipeline is wrapped in `resilient`, a recursive
+`catchAllCause` (log, sleep 5 s, reinitialize) — the counterpart of
+rxjs `retry({delay})` — because a defect in any one branch must not
+kill the overlay for the rest of the page's lifetime.
+
 ## Build pipeline
 
 Userscript packages bundle with webpack driven by TypeScript config files
