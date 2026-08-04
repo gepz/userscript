@@ -13,16 +13,6 @@ Long-term: migrate off or vendor.
 
 ## flow-youtube-chat bugs
 
-### setChatAnimation replaces flowChats entries by stale index
-
-`setChatAnimation` captures `oldChatIndex` from a mid-pipeline read and
-`A.replace`s it in a later update; a concurrent `flowChats` write in
-between makes the stale index clobber the wrong entry (lost update, no
-crash). The fix is the same single-atomic-update treatment `addFlowChat`
-and `dropFlowChat` already use, but it entangles the error-channel
-protocol (`NoSuchElementException` as "already stored"), so redesign
-both together.
-
 ### Paused chats make at-cap eviction maximally visible
 
 Policy question, undecided: while the video is paused every animation is
@@ -31,15 +21,6 @@ at the cap then evicts a frozen, fully visible chat. This is the
 evict-the-earliest rule operating in its most noticeable case; decide
 whether pause should also pause eviction (or arrivals) before tuning
 anything.
-
-### Lane overlay renders under the flowing chats
-
-Found 2026-08, not yet fixed: `laneOverlay` sets `zIndex: '10'` with a
-comment claiming the flow chats carry no z-index of their own, but
-`mainCss` gives `.fyc_chat` `z-index: 30` in the same stacking context,
-so the overlay paints under every chat — the opposite of the comment's
-intent. Fix the value (shared constant with `.fyc_chat`) and the comment
-together.
 
 ## flow-youtube-chat refactors
 
