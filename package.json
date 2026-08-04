@@ -6,6 +6,9 @@
     "prepare": "husky",
     "test": "echo \"No test\""
   },
+  "lint-staged": {
+    "*": "secretlint"
+  },
   "engines": {
     "node": ">=24",
     "pnpm": ">=11"
@@ -14,7 +17,10 @@
     "@changesets/cli": "^2.31.0",
     "@commitlint/cli": "^21.2.0",
     "@commitlint/config-conventional": "^21.2.0",
+    "@secretlint/secretlint-rule-preset-recommend": "^13.0.4",
     "husky": "^9.1.7",
+    "lint-staged": "^17.3.0",
+    "secretlint": "^13.0.4",
     "typescript": "6.0.3"
   },
   "packageManager": "pnpm@11.11.0+sha512.4463f65fd80ed80d69bc1d4bf163ee94f605c7380fc318bb5b2ebe15f8cd12d49c51a4d59e951b401e764d3b6ca751cbf51bc50ed7001a6bcb4935e684c34882"
