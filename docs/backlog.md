@@ -15,24 +15,40 @@ Long-term: migrate off or vendor.
 
 ### Max chat amount removes chats prematurely
 
-Max chat amount sometimes misbehaves, removing chats before they
-should go.
+Root-caused and fixed 2026-08; **pending a quick browser re-check** of
+the second fix (watch fixtureCapture's `flowEviction` trace plus the
+on-screen count — mid-flight removals while visibly below the cap were
+the symptom). Two distinct defects produced it:
 
-Evicting the *earliest* chat when the cap would be exceeded is
-intended; the defects were in the machinery around that policy. Fix
-landed 2026-08, **pending browser verification** — fixtureCapture's
-`flowEviction` trace events are the signature to watch: evictions while
-visibly below the cap were the bug's fingerprint. What changed:
-`addFlowChat` now selects and removes its recycle/evict target inside
-one `SynchronizedRef.modifyEffect` (previously the non-atomic
-get → scan → re-read → `unsafeGet` → remove window let concurrent
-`flowChats` writers shift the list: wrong chat cancelled, double
-recycles orphaning elements, or an `unsafeGet` defect that `resilient`
-answered with a full reinit wiping every chat), and `removeOldChats`
-became an atomic `updateEffect` that trims by partition — prefers
-non-animating chats, keeps the survivors in insertion order (which
-`getChatLane`'s "inserted before me" reads and the evict-earliest
-fallback rely on) — and cancels removed chats' animations.
+- **Non-atomic eviction (race).** Fixed, and browser-verified via the
+  position-based `flowEviction` watcher (2026-08-04: every eviction at
+  exactly the cap). `addFlowChat` selects and removes its recycle
+  target inside one `SynchronizedRef.modifyEffect` (the old
+  get → scan → re-read → `unsafeGet` window let concurrent `flowChats`
+  writers shift the list: wrong chat cancelled, double recycles, or an
+  `unsafeGet` defect that `resilient` answered with a full reinit), and
+  `removeOldChats` is an atomic `updateEffect` trimming by partition,
+  keeping survivors in insertion order and cancelling removed chats'
+  animations.
+- **Claim-before-placement ordering (deterministic, the everyday
+  cause).** An at-cap arrival evicted the earliest flying chat to claim
+  its slot *before* `setChatAnimation` decided placement; under
+  congestion the newcomer was then dropped — one visible chat killed
+  for a chat that never appeared — or worse, stored as an unrecyclable
+  `'NotStarted'` zombie squatting on a cap slot (mass-produced by seek
+  repopulation bursts). Diagnosed from a live console autopsy
+  (2026-08-05: 10/20 slots held by laneless zombies). Fixed by
+  reordering: only `'Ended'` chats are claimable, eviction happens
+  atomically after the newcomer actually flows, and a congestion-drop
+  discards the newcomer outright.
+
+Seek note: the old "seek wipes the screen" symptom was this ordering
+bug firing en masse (the replay tail all failed placement against
+saturated lanes, each failure killing a flyer); with the reordering it
+no longer manifests on busy streams (live check 2026-08-05). Gating
+whole bulk-insert batches as backfill (>= 4 inserts) remains an option
+only if replayed old chatter flowing after a seek ever proves
+misleading — cosmetic, not correctness.
 
 Residuals, deliberately left:
 
