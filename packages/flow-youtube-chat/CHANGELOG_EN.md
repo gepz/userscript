@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.26.3] - 2026-08-05
+
+### Fixed
+
+- Chats no longer disappear mid-flow before the Max number of chats is
+  reached; a chat is now removed only when a new chat actually starts
+  flowing. Most noticeable on busy streams and right after seeking.
+- The excluded-lanes preview now appears above the flowing chats
+  instead of under them.
+- Rare cases where the wrong chat could be updated or removed during
+  busy chat.
+
 ## [1.26.2] - 2026-08-03
 
 ### Fixed

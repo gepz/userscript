@@ -1,5 +1,28 @@
 # @userscript/flow-youtube-chat
 
+## 1.26.3
+
+### Patch Changes
+
+- de9c006: Chats no longer vanish early around the max-chat-amount cap: the
+  recycle/evict step now picks and removes its target atomically (a
+  concurrent write could previously cancel the wrong chat, or crash into a
+  re-initialization that cleared every chat on screen), and trimming after
+  a max-chat-amount change keeps the remaining chats in order and cancels
+  the removed chats' animations.
+- 4b83240: At the max-chat cap, a new chat that finds no room to flow (congested
+  lanes) no longer removes a flowing chat: eviction now happens only after
+  the newcomer is actually placed, and a dropped newcomer is discarded
+  instead of invisibly occupying a slot.
+- 06459b9: The excluded-lanes preview overlay now renders above the flowing chats
+  instead of underneath them.
+- f80c4cd: Re-placing chats after a resize or setting change can no longer
+  overwrite the wrong chat when the list shifts mid-update (a lost-update
+  race), and a chat evicted during its own re-placement no longer leaves a
+  stray animation behind.
+- Updated dependencies [799fcd2]
+  - @userscript/ui@1.3.0
+
 ## 1.26.2
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @userscript/ui
 
+## 1.3.0
+
+### Minor Changes
+
+- 799fcd2: Pruned dead surface: the unused `setString`/`setStrings` setters and the
+  preact-based `node/checkboxRow2` are gone (dropping the `preact`,
+  `@effect/typeclass`, and `ts-toolbelt` dependencies).
+
 ## 1.2.0
 
 ### Minor Changes
