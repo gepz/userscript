@@ -43,12 +43,14 @@ export default Z.fnUntraced(function* (
       interval,
     }) => !intervalTooSmall(interval)(mainState.config.value))),
   )) {
-    // Selecting the recycle/evict target and removing it is one atomic
-    // update: the other branch streams also write flowChats, so a scan done
-    // outside the update could act on a stale index — cancelling the wrong
-    // chat, or dying in A.unsafeGet (a defect the resilient wrapper answers
-    // with a full reinitialize). Mirrors dropFlowChat in
-    // @/recheckChatOnSettle.
+    // Claiming the donor and removing it is one atomic update: the other
+    // branch streams also write flowChats, so a scan done outside the
+    // update could act on a stale index — reusing the wrong chat, or dying
+    // in A.unsafeGet (a defect the resilient wrapper answers with a full
+    // reinitialize). Mirrors dropFlowChat in @/recheckChatOnSettle.
+    // Only a finished chat is claimable; eviction happens further down,
+    // after placement succeeds, so a newcomer that setChatAnimation drops
+    // for congestion never costs a flying chat.
     const recycled = yield * SynchronizedRef.modifyEffect(
       mainState.flowChats,
       (chats): Z.Effect<Recycled> => pipe(
@@ -56,12 +58,6 @@ export default Z.fnUntraced(function* (
           onLeft: (x) => x === 'Ended',
           onRight: () => false,
         })),
-        // Nothing recyclable while at the cap: flowing one more would
-        // exceed maxChatCount, so the earliest chat is evicted by design,
-        // even mid-flight.
-        O.orElse(() => (chats.length >= mainState.config.value.maxChatCount
-          ? O.some(0)
-          : O.none())),
         O.match({
           onNone: () => Z.succeed<Recycled>([O.none(), chats]),
           onSome: (index) => Z.gen(function* () {
@@ -101,10 +97,44 @@ export default Z.fnUntraced(function* (
             Z.sync(() => flowChat.element.remove()),
             Z.zipLeft(Z.logDebug('Flow chat element removed')),
           ),
-          onSuccess: (x) => SynchronizedRef.update(
-            mainState.flowChats,
-            A.append(x.newChat),
-          ),
+          // A newcomer setChatAnimation dropped for congestion (no legal
+          // lane, or interval too small) comes back still 'NotStarted':
+          // discard it instead of storing it — an unrecyclable list entry
+          // would squat on a cap slot, and eviction below must only ever
+          // pay for a chat that actually flows.
+          onSuccess: (x) => (E.isLeft(x.newChat.animationState)
+            ? pipe(
+              Z.sync(() => x.newChat.element.remove()),
+              Z.zipLeft(Z.logDebug('Flow chat dropped: nowhere to place')),
+            )
+            : SynchronizedRef.updateEffect(
+              mainState.flowChats,
+              (chats) => {
+                const appended = A.append(chats, x.newChat);
+                const excess = appended.length
+                  - mainState.config.value.maxChatCount;
+
+                if (excess <= 0) {
+                  return Z.succeed(appended);
+                }
+
+                // The newcomer flows, so exceeding maxChatCount evicts the
+                // earliest chats by design, even mid-flight.
+                return pipe(
+                  Z.forEach(A.take(appended, excess), (chat) => pipe(
+                    Z.logDebug('EvictChat'),
+                    Z.zipRight(chat.animationState.pipe(
+                      Z.tap((animation) => Z.sync(() => animation.cancel())),
+                      Z.ignore,
+                    )),
+                    Z.zipRight(Z.sync(() => {
+                      chat.element.remove();
+                    })),
+                  )),
+                  Z.map(() => A.drop(appended, excess)),
+                );
+              },
+            )),
         }),
       )),
     );
