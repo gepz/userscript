@@ -20,9 +20,12 @@ import setterFromKeysAndMap from '@/setterFromKeysAndMap';
  * for the banned-list keys, rebuild filterExp through the full setConfig
  * path (broadcast + persist).
  *
- * - `setConfigPlain`: write + side effects, no dedup, local only.
+ * - `setConfigPlain`: write + side effects, no dedup. Does not broadcast or
+ *   persist the written key itself — but a banned-list write broadcasts and
+ *   persists the rebuilt filterExp whenever the rebuild changes it.
  * - `setChangedConfig`: dedup, then plain. For values received over
- *   BroadcastChannel, so broadcasts cannot loop.
+ *   BroadcastChannel; the dedup (not locality — see above) is what keeps
+ *   broadcasts from looping.
  * - `setConfig`: dedup, then plain, then broadcast + persist. For local
  *   (UI-originated) writes.
  */

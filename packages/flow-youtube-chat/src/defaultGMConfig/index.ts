@@ -15,6 +15,7 @@ import {
 import jsep from 'jsep';
 
 import GMConfig from '@/GMConfig';
+import defaultFilter from '@/defaultFilter';
 import fycKey from '@/fycKey';
 import indirectConfig from '@/indirectConfig';
 import languages from '@/languages';
@@ -113,27 +114,11 @@ const defaultGMConfig: GMConfig = pipe(
     ...x,
     filterExp: ic<string, jsep.Expression>(
       'filterExp',
-      jsep(`
-  or([
-  A.some(
-    flip(flow([inText, A.some]))(${JSON.stringify(x.bannedWords.defaultValue)})
-  )(A.getSomes([
-    messageText,
-    paymentInfo
-  ])),
-  A.some(
-    flip(flow([matchedByText, A.some]))(${
-    JSON.stringify(x.bannedWordRegexes.defaultValue)
-    })
-  )(A.getSomes([
-    messageText,
-    paymentInfo
-  ])),
-  O.exists(
-    flip(flow([eqText, A.some]))(${JSON.stringify(x.bannedUsers.defaultValue)})
-  )(authorID)
-  ])
-        `),
+      defaultFilter({
+        bannedWords: x.bannedWords.defaultValue,
+        bannedWordRegexes: x.bannedWordRegexes.defaultValue,
+        bannedUsers: x.bannedUsers.defaultValue,
+      }),
       S.String,
       jsep,
       generate,

@@ -10,7 +10,6 @@ type Refs<T> = {
 
 /**
  * One SubscriptionRef per record key, seeded with the key's current value.
- * Replaces the per-key Subject maps (`ConfigSubject`): unlike a Subject,
  * `.changes` on each ref emits the current value first.
  */
 /* eslint-disable @typescript-eslint/consistent-type-assertions --

@@ -4,17 +4,19 @@ import {
 } from 'effect';
 
 import Log, * as log from '@/Log';
-import maxEventLogBlockCount from '@/maxEventLogBlockCount';
-import preserveEventLogBlockCount from '@/preserveEventLogBlockCount';
+
+const maxEntries = 10000;
+const maxBlockCount = Math.floor(maxEntries / log.blockSize);
+const preserveRatio = 0.2;
+// removeBlock takes a whole block count, so floor the fractional product.
+const preserveBlockCount = Math.floor(maxBlockCount * preserveRatio);
 
 export default (
   text: string,
   level: LogLevel.LogLevel['label'],
 ) => (x: Log): Log => pipe(
-  x.compressedBlocks.length === maxEventLogBlockCount
-    ? log.removeBlock(
-      Math.floor(preserveEventLogBlockCount),
-    )(x)
+  x.compressedBlocks.length === maxBlockCount
+    ? log.removeBlock(preserveBlockCount)(x)
     : x,
   log.append(text, level),
 );

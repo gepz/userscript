@@ -31,9 +31,9 @@ export default (
   chatScreen: HTMLElement,
   live: LivePageState,
 ): Stream.Stream<unknown> => {
-  // SubscriptionRef.changes emits the current value first; dropping it gives
-  // the plain Subject semantics most keys had, while keys that used
-  // startWith(current) take .changes directly.
+  // SubscriptionRef.changes emits the current value first; `changed` drops
+  // that echo so a branch only reacts to writes. Branches that must also run
+  // once at startup (e.g. fieldScale, flowX1) take `.changes` directly.
   const changed = <K extends keyof UserConfig>(
     key: K,
   ): Stream.Stream<UserConfig[K]> => Stream.drop(refs[key].changes, 1);

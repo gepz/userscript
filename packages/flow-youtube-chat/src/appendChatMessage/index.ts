@@ -13,8 +13,9 @@ import {
 // renderers give the chip its #author-name-chip id — or failing that
 // (gift announcements have no chip) at the end of the header's text
 // column. Both are always on screen. Safe even inside a message body the
-// flow reads: chatNode's parseMessage renders only image and text nodes,
-// so a button never reaches the flowing copy.
+// flow reads: chatNode's parseMessage renders a non-image element as its
+// textContent, and the button contains only an svg, so it contributes an
+// empty string to the flowing copy.
 export default flip((
   chat: HTMLElement,
 ): (

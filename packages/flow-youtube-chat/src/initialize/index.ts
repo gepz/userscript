@@ -97,7 +97,6 @@ export default pipe(
     return {
       updateSettingState,
       channel,
-      configValue,
       configRefs,
       setChangedConfig,
       mainState: {
@@ -150,14 +149,11 @@ export default pipe(
     ctx.apps.toggleSettingsPanelApp,
     ctx.apps.toggleChatButtonApp,
   ], (x) => x.dispatch))),
-  Z.tap((ctx) => pipe(
-    Z.succeed([
-      `Version: ${packageJson.version}`,
-      `User Agent: ${window.navigator.userAgent}`,
-      `GMConfig: ${JSON.stringify(ctx.mainState.config, undefined, '\t')}`,
-    ]),
-    Z.flatMap(Z.forEach((x) => Z.logDebug(x))),
-  )),
+  Z.tap((ctx) => Z.forEach([
+    `Version: ${packageJson.version}`,
+    `User Agent: ${window.navigator.userAgent}`,
+    `Config: ${JSON.stringify(ctx.mainState.config.value, undefined, '\t')}`,
+  ], (x) => Z.logDebug(x))),
   Z.zipLeft(pipe(
     Z.logDebug('10s...'),
     Z.schedule(Schedule.fixed(D.seconds(10))),

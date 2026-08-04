@@ -217,7 +217,7 @@ export default Z.fnUntraced(function* (ctx: {
         listeningBroadcastConfigKeys.includes(entry[0]),
         (x) => (x
           ? applyConfigEntry(ctx.setChangedConfig)(entry)
-          : Z.sync(() => { })),
+          : Z.void),
       )),
     ),
     pipe(

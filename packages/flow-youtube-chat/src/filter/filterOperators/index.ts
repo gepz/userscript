@@ -1,10 +1,7 @@
 import {
-  MonoidEvery,
-  MonoidSome,
-} from '@effect/typeclass/data/Boolean';
-import {
   Option as O,
   Array as A,
+  Boolean as B,
   Predicate as P,
   String as Str,
 } from 'effect';
@@ -12,9 +9,10 @@ import {
   flip,
   pipe,
 } from 'effect/Function';
-import {
-  Tail,
-} from 'ts-toolbelt/out/List/Tail';
+
+type PipeFns = Parameters<typeof pipe> extends [unknown, ...infer R]
+  ? R
+  : never;
 
 const inText = (text: string) => (
   x: string,
@@ -30,9 +28,9 @@ const matchedByText = (text: string) => (
 
 const filterOperators = {
   flip,
-  flow: (fns: Tail<Parameters<typeof pipe>>) => (x: unknown) => pipe(x, ...fns),
-  and: MonoidEvery.combineAll,
-  or: MonoidSome.combineAll,
+  flow: (fns: PipeFns) => (x: unknown) => pipe(x, ...fns),
+  and: B.every,
+  or: B.some,
   A: {
     some: A.some,
     getSomes: A.getSomes,
@@ -40,8 +38,6 @@ const filterOperators = {
   O: {
     exists: O.exists,
   },
-  // allPreds: concatAll(P.getMonoidAll()),
-  // anyPreds: concatAll(P.getMonoidAny()),
   inText,
   eqText,
   matchedByText,
