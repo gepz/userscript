@@ -19,7 +19,6 @@ export default merge<Configuration>(
   {
     externals: [
       {
-        // sweetalert2: 'Swal',
         astring: 'astring',
         jsep: 'jsep',
         'hash-it': 'window[\'hash-it\']',

@@ -320,9 +320,6 @@ importers:
       microdiff:
         specifier: ^1.5.0
         version: 1.5.0
-      sweetalert2:
-        specifier: ^11.26.25
-        version: 11.26.25
       ts-toolbelt:
         specifier: ^9.6.0
         version: 9.6.0
@@ -596,21 +593,12 @@ importers:
 
   packages/ui:
     dependencies:
-      '@effect/typeclass':
-        specifier: ^0.40.0
-        version: 0.40.0(effect@3.21.4)
       effect:
         specifier: ^3.21.4
         version: 3.21.4
       hyperapp:
         specifier: ^2.0.22
         version: 2.0.22(patch_hash=1e187f9317d503a5be3d0a6eb2ad2e2403eea8c828ca4bc0e8e18dacc2d4ba79)
-      preact:
-        specifier: ^10.29.4
-        version: 10.29.4
-      ts-toolbelt:
-        specifier: ^9.6.0
-        version: 9.6.0
       type-fest:
         specifier: ^5.8.0
         version: 5.8.0
@@ -3767,9 +3755,6 @@ packages:
   powershell-utils@0.1.0:
     resolution: {integrity: sha512-dM0jVuXJPsDN6DvRpea484tCUaMiXWjuCn++HGTqUWzGDjv5tZkEZldAJ/UMlqRYGFrD/etByo4/xOuC/snX2A==}
     engines: {node: '>=20'}
-
-  preact@10.29.4:
-    resolution: {integrity: sha512-GMpwh9+NJ8tSmqwIaVyFRQkiKfBEzQ+k7r7tle4W+kaJ+7wJiB9hFz9BixAomMtenPPSBfM4bZhXozGxhf0uFQ==}
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -8096,8 +8081,6 @@ snapshots:
       source-map-js: 1.2.1
 
   powershell-utils@0.1.0: {}
-
-  preact@10.29.4: {}
 
   prelude-ls@1.2.1: {}
 

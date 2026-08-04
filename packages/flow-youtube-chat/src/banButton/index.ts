@@ -8,7 +8,6 @@ import {
 import UserConfigGetter from '@/UserConfigGetter';
 import UserConfigSetter from '@/UserConfigSetter';
 import runLogged from '@/runLogged';
-// import defaultToast from '@/defaultToast';
 
 const template = runLogged(pipe(
   Z.succeed(document.createElement('button')),
@@ -86,13 +85,7 @@ export default (
     A.dedupeWith(x, Str.Equivalence),
     A.append(entry),
   )),
-  Z.flatMap((x) => pipe(
-    setConfig.bannedUsers(x),
-    // Z.zipRight(Z.sync(() => defaultToast.fire({
-    //   title: `Added Banned User: ${id}`,
-    //   icon: 'success',
-    // }))),
-  )),
+  Z.flatMap((x) => setConfig.bannedUsers(x)),
   Z.ignore,
   Z.zipRight(Z.sync(() => {
     chat.style.display = 'none';

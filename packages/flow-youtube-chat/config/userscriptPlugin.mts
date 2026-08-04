@@ -39,9 +39,6 @@ export default (devMode: boolean): UserscriptPlugin => new UserscriptPlugin({
       ? {}
       : {
         require: [
-        // (x = cdnSegment('sweetalert2')) => `${x.begin}cdn.jsdelivr.net/npm/${
-        //   x.nameVer}/dist/${x.name}.js`,
-        // x.nameVer}/dist/${x.name}${x.end}`,
           (x = cdnSegment('astring')) => `${x.begin}cdn.jsdelivr.net/npm/${
             x.nameVer}/dist/${x.name}${x.end}`,
           (x = cdnSegment('jsep')) => `${x.begin}cdn.jsdelivr.net/npm/${
