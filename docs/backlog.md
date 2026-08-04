@@ -18,6 +18,42 @@ Long-term: migrate off or vendor.
 Max chat amount sometimes misbehaves, removing chats before they
 should go.
 
+Evicting the *earliest* chat when the cap would be exceeded is
+intended; the defects were in the machinery around that policy. Fix
+landed 2026-08, **pending browser verification** — fixtureCapture's
+`flowEviction` trace events are the signature to watch: evictions while
+visibly below the cap were the bug's fingerprint. What changed:
+`addFlowChat` now selects and removes its recycle/evict target inside
+one `SynchronizedRef.modifyEffect` (previously the non-atomic
+get → scan → re-read → `unsafeGet` → remove window let concurrent
+`flowChats` writers shift the list: wrong chat cancelled, double
+recycles orphaning elements, or an `unsafeGet` defect that `resilient`
+answered with a full reinit wiping every chat), and `removeOldChats`
+became an atomic `updateEffect` that trims by partition — prefers
+non-animating chats, keeps the survivors in insertion order (which
+`getChatLane`'s "inserted before me" reads and the evict-earliest
+fallback rely on) — and cancels removed chats' animations.
+
+Residuals, deliberately left:
+
+- `setChatAnimation` still captures `oldChatIndex` from a mid-pipeline
+  read and `A.replace`s it in a later update; a stale index clobbers
+  the wrong entry (lost update, no crash). The same atomicity treatment
+  applies, but it entangles the error-channel protocol
+  (`NoSuchElementException` as "already stored"), so fix both together.
+- Policy question: paused chats never reach `'Ended'` (animations are
+  frozen), so at the cap each arrival evicts a frozen, fully visible
+  chat — the intended rule in its most visible case.
+
+### Lane overlay renders under the flowing chats
+
+Found 2026-08, not yet fixed: `laneOverlay` sets `zIndex: '10'` with a
+comment claiming the flow chats carry no z-index of their own, but
+`mainCss` gives `.fyc_chat` `z-index: 30` in the same stacking context,
+so the overlay paints under every chat — the opposite of the comment's
+intent. Fix the value (shared constant with `.fyc_chat`) and the comment
+together.
+
 ## flow-youtube-chat refactors
 
 ### Remove the correlated-union casts
