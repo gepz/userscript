@@ -1,7 +1,7 @@
 # Backlog
 
 Work worth doing, roughly ordered — repo-level items first, then the
-flow-youtube-chat bugs and wishlist. Remove items when done; re-verify
+flow-youtube-chat work and wishlist. Remove items when done; re-verify
 versions before starting, this list ages.
 
 ## Security / correctness
@@ -10,17 +10,6 @@ versions before starting, this list ages.
 
 2.0.22 final, typings fixed by `patches/hyperapp@2.0.22.patch`.
 Long-term: migrate off or vendor.
-
-## flow-youtube-chat bugs
-
-### Paused chats make at-cap eviction maximally visible
-
-Policy question, undecided: while the video is paused every animation is
-frozen, so no chat ever reaches `'Ended'` — each newly *placed* arrival
-at the cap then evicts a frozen, fully visible chat. This is the
-evict-the-earliest rule operating in its most noticeable case; decide
-whether pause should also pause eviction (or arrivals) before tuning
-anything.
 
 ## flow-youtube-chat refactors
 
