@@ -32,11 +32,8 @@
     "start": "pnpm dev"
   },
   "dependencies": {
-    "@effect/typeclass": "^0.40.0",
     "effect": "^3.21.4",
     "hyperapp": "^2.0.22",
-    "preact": "^10.29.4",
-    "ts-toolbelt": "^9.6.0",
     "type-fest": "^5.8.0"
   },
   "devDependencies": {
