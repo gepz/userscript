@@ -5,6 +5,7 @@ import {
 } from 'effect';
 
 import UserConfig from '@/UserConfig';
+import flowChatZIndex from '@/flowChatZIndex';
 
 export interface LaneOverlay {
   show: (
@@ -42,9 +43,9 @@ export default (
     {
       position: 'absolute',
       inset: '0',
-      // Above the flow chats, which append after this element and carry
-      // no z-index of their own.
-      zIndex: '10',
+      // Above the flow chats: the spans are siblings in this same
+      // stacking context and carry z-index flowChatZIndex.
+      zIndex: `${flowChatZIndex + 1}`,
       pointerEvents: 'none',
       opacity: '0',
       transition: 'opacity 0.4s',

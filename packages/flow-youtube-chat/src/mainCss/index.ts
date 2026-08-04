@@ -3,12 +3,14 @@ import {
   pipe,
 } from 'effect';
 
+import flowChatZIndex from '@/flowChatZIndex';
+
 export default pipe(
   Z.sync(() => document.createElement('style')),
   Z.tap((x) => Z.sync(() => {
     x.textContent = `.fyc_chat {
   line-height: 1;
-  z-index: 30;
+  z-index: ${flowChatZIndex};
   position: absolute;
   user-select: none;
   white-space: nowrap;
