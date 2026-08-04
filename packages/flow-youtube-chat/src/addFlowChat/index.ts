@@ -92,25 +92,25 @@ export default Z.fnUntraced(function* (
         Z.succeed(mainState),
         Z.tap(renderChat(flowChat)),
         Z.flatMap(setChatAnimation(flowChat)),
-        Z.matchEffect({
-          onFailure: () => pipe(
-            Z.sync(() => flowChat.element.remove()),
-            Z.zipLeft(Z.logDebug('Flow chat element removed')),
-          ),
-          // A newcomer setChatAnimation dropped for congestion (no legal
-          // lane, or interval too small) comes back still 'NotStarted':
-          // discard it instead of storing it — an unrecyclable list entry
-          // would squat on a cap slot, and eviction below must only ever
-          // pay for a chat that actually flows.
-          onSuccess: (x) => (E.isLeft(x.newChat.animationState)
+        // A fresh chat always comes back Some (it is never stored by
+        // setChatAnimation); None is its stored-in-place arm for existing
+        // chats.
+        Z.flatMap(O.match({
+          onNone: () => Z.void,
+          // A newcomer dropped for congestion (no legal lane, or interval
+          // too small) comes back still 'NotStarted': discard it instead
+          // of storing it — an unrecyclable list entry would squat on a
+          // cap slot, and eviction below must only ever pay for a chat
+          // that actually flows.
+          onSome: (newChat) => (E.isLeft(newChat.animationState)
             ? pipe(
-              Z.sync(() => x.newChat.element.remove()),
+              Z.sync(() => newChat.element.remove()),
               Z.zipLeft(Z.logDebug('Flow chat dropped: nowhere to place')),
             )
             : SynchronizedRef.updateEffect(
               mainState.flowChats,
               (chats) => {
-                const appended = A.append(chats, x.newChat);
+                const appended = A.append(chats, newChat);
                 const excess = appended.length
                   - mainState.config.value.maxChatCount;
 
@@ -135,7 +135,7 @@ export default Z.fnUntraced(function* (
                 );
               },
             )),
-        }),
+        })),
       )),
     );
   }
