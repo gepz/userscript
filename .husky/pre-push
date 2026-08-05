@@ -1,0 +1,11 @@
+# Mirror CI's Lint step. Lint scripts run eslint --fix, so a clean exit can
+# still have rewritten files; comparing the working-tree diff before and after
+# turns any rewrite into a failure. CI uses a bare `git diff --exit-code` for
+# this, which would misfire here on unrelated uncommitted changes.
+diff_before=$(git diff | git hash-object --stdin)
+pnpm -r run lint
+diff_after=$(git diff | git hash-object --stdin)
+if [ "$diff_before" != "$diff_after" ]; then
+  echo 'eslint --fix rewrote files; review and commit the fixes before pushing' >&2
+  exit 1
+fi
