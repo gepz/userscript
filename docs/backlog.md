@@ -80,10 +80,14 @@ config review substitutes for that on a reimplemented emitter.
 
 ### eslint 10
 
-Blocked on plugin ecosystem (`eslint-config-airbnb-extended`,
-`eslint-plugin-canonical`, the compat-shimmed
-`eslint-plugin-consistent-default-export-name`,
-`eslint-plugin-import-newlines` v2 for eslint 10 support).
+Blocked only on `eslint-config-airbnb-extended` gaining eslint 10 support
+(3.2.0, 2026-08, still peers `eslint ^9`; actively maintained). When it
+lands, in the same move: bump `eslint-plugin-import-newlines` to v2 (peers
+`eslint >=10`), and wrap `eslint-plugin-canonical` in `fixupPluginRules` in
+`baseConfig` — its `filename-match-exported` rule calls
+`context.getFilename()`, removed in v10. The compat-shimmed
+`eslint-plugin-consistent-default-export-name` and the rest of the config's
+plugins already support v10 (checked 2026-08).
 
 ## Build pipeline (waiting on webpack experiments to stabilize)
 
