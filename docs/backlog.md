@@ -123,16 +123,18 @@ runtime + Stream actually in use, where only the Effect v4 migration
 
 A settings grid controlling, per chat type, which components of a chat
 to flow — never implemented, commented out since the first commit.
-Remnants: the `displayMatrix` config item stub in `GMConfig`, its
-default value and compact string codec in `defaultGMConfig`, and render
-code for a 3-column grid of on/off cells in `settingUI/flowChatPanel`.
-The row/column semantics were never written down; the shape (four rows,
-up to three columns) suggests chat-type rows (normal, moderator,
-superchat, membership) × component columns (avatar, author name,
-message), generalizing the one-off `displayModName`,
-`displaySuperChatAuthor`, and `textOnly` toggles. Treat the commented
-code as a sketch: decide the semantics fresh, and decide whether the
-three existing toggles fold into the matrix or stay.
+Remnants: the `displayMatrix` field stub in `UserConfig` (from which
+`GMConfig` is derived), its default value and compact string codec at
+the bottom of `defaultGMConfig`, and render code for a 3-column grid of
+on/off cells in `settingUI/chatFlowPanel`. The row/column semantics
+were never written down; the shape (four rows, up to three columns)
+suggests chat-type rows (normal, moderator, superchat, membership) ×
+component columns (avatar, author name, message), generalizing the
+one-off `displayModName`, `displaySuperChatAuthor`, and `textOnly`
+toggles — which live in `settingUI/chatAppearancePanel`, a different
+tab than the one the sketch renders in. Treat the commented code as a
+sketch: decide the semantics fresh, decide whether the three existing
+toggles fold into the matrix or stay, and pick which tab hosts it.
 
 ### Auto block user
 
