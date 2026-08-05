@@ -1,6 +1,3 @@
-import {
-  readFileSync,
-} from 'node:fs';
 import path from 'path';
 import type {
   Configuration,
@@ -14,14 +11,13 @@ import {
   UserscriptPlugin,
 } from 'webpack-userscript';
 
-import webpackConfigBase from './webpack.config.base.mts';
+// Node's ESM loader hands back only a default export for JSON, and only
+// with the type attribute.
+import packageJson from '../package.json' with {
+  type: 'json'
+};
 
-const packageVersion = (JSON.parse(readFileSync(
-  new URL('../package.json', import.meta.url),
-  'utf8',
-)) as {
-  version: string,
-}).version;
+import webpackConfigBase from './webpack.config.base.mts';
 
 // Dev-only fixture-capture userscript (src/fixtureCapture/main). Unminified
 // on purpose: it never ships, and readable output beats size here. The
@@ -43,7 +39,7 @@ export default merge<Configuration>(
           // Per-build version: managers skip same-version installs, so a
           // rebuilt dev script would silently never replace the running
           // copy without this.
-          version: `${packageVersion}.${Math.floor(Date.now() / 1000)}`,
+          version: `${packageJson.version}.${Math.floor(Date.now() / 1000)}`,
           namespace: 'FlowYoutubeChatScript',
           'run-at': RunAt.DocumentEnd,
           grant: ['GM.xmlHttpRequest'],
