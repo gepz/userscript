@@ -3,6 +3,9 @@ packages:
 allowBuilds:
   '@swc/core': true
   unrs-resolver: true
+minimumReleaseAge: 10080
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
 minimumReleaseAgeExclude:
   - webpack@5.108.4
   - type-fest@5.8.0
