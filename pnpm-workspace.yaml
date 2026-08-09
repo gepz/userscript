@@ -10,6 +10,9 @@ overrides:
   # GHSA-r28c-9q8g-f849. Only vite (under vitest) pulls postcss in, and its
   # ^8.5.16 floor admits the fix; drop this once that floor moves past it.
   postcss: '^8.5.18'
+  # nanoid size-0 infinite-loop advisory. Only postcss pulls nanoid in, and
+  # its ^3.3.16 floor admits the fix; drop this once that floor moves past it.
+  nanoid: '^3.3.17'
   # brace-expansion 1.x DoS advisory. Only minimatch@3 (eslint toolchain) pulls
   # the 1.x line in, and its ^1.1.7 floor admits the fix; drop this once that
   # floor moves past it.
