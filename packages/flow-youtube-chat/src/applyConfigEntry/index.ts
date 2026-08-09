@@ -7,7 +7,7 @@ import UserConfig from '@/UserConfig';
 import UserConfigSetter from '@/UserConfigSetter';
 
 // Generic in K so the [key, value] correlation survives the setter lookup
-// (docs/correlated-unions.md). The entry must stay one value here:
+// (docs/decisions.md). The entry must stay one value here:
 // destructuring it into a separate key and value decouples them into
 // independent unions and the setter call stops checking.
 export default (

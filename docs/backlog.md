@@ -11,14 +11,6 @@ versions before starting, this list ages.
 2.0.22 final, typings fixed by `patches/hyperapp@2.0.22.patch`.
 Long-term: migrate off or vendor.
 
-## flow-youtube-chat refactors
-
-### Remove the correlated-union casts
-
-Started 2026-08. The `as never` family in the per-key config machinery;
-mechanism, site inventory, and the four-phase plan live in
-`docs/correlated-unions.md` — keep status there, not here.
-
 ## Design decisions pending
 
 ### Decide the fate of the typed filter-expression editor WIP

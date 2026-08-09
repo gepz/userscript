@@ -212,7 +212,7 @@ export default Z.fnUntraced(function* (ctx: {
     pipe(
       Stream.fromEventListener<ConfigEntry>(ctx.channel, 'message'),
       // The entry is passed whole: splitting it into key and value here
-      // would decorrelate them — see docs/correlated-unions.md.
+      // would decorrelate them — see docs/decisions.md.
       Stream.mapEffect((entry) => pipe(
         listeningBroadcastConfigKeys.includes(entry[0]),
         (x) => (x

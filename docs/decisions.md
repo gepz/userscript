@@ -91,6 +91,67 @@ with `"files": []`, which skips reference validation — would strand the
 `config/` scripts and WIP sources that the everything-view program exists
 to cover.
 
+## Per-key config machinery: correlated generics, no `as never` (2026-08)
+
+flow-youtube-chat indexes records by `keyof UserConfig` (setters, dispatch
+tables, GM codecs). TypeScript loses the key-value correlation the moment
+the two travel separately: a destructured pair becomes two independent
+unions, indexing a record of functions with a union key yields a union of
+functions, and calling that requires an argument acceptable to every
+member — parameters are contravariant, so for disjoint value types the
+callable parameter collapses to `never`. The package once carried a family
+of `as never` casts at exactly those argument positions; all were removed
+in 2026-08 by restructuring every site into the distributive-object-type
+pattern (microsoft/TypeScript#47109, shipped in TS 4.6): write the
+operation once, generic in `K`, with key, value, and handler all
+referencing the same type parameter, and never let the union-of-functions
+form. The casts were real holes, not pedantry — three seeded bugs (wrong
+value forwarded, stringified value to a number handler, key passed where
+the value belongs) compiled clean in the cast shapes and are rejected as
+TS2345 in the current ones. Runtime is unaffected; the restructure added
+only a few module-level helpers, verified by bundle diff.
+
+Load-bearing rules for keeping it cast-free (probed on tsc 6.0.3, strict +
+`exactOptionalPropertyTypes`):
+
+- A pair travels as one value (`entry[0]`/`entry[1]` — see `ConfigEntry`
+  and `applyConfigEntry`); destructuring into separately-typed consts
+  decorrelates it.
+- Correlation only survives indexing a *syntactic mapped type*. Interfaces
+  flatten their members into distributed unions — which is why
+  `EditableConfig` is an intersection of two per-domain mapped types
+  rather than one conditional mapped type, and why `UserConfig` must stay
+  a type alias (interfaces also get no implicit index signature, which
+  `stream/makeRefs`'s `Record<string, unknown>` constraint needs).
+- `UserConfig` is the hand-written root map; `GMConfig` derives forward
+  (`{ [K in keyof UserConfig]: GMConfigItem<UserConfig[K]> }`), never the
+  reverse — correlation cannot survive a conditional type backward.
+  Deliberately not a Schema-first root: the bundle-size lead in
+  `docs/backlog.md` wants the Effect Schema stack out of the bundle.
+- `in`-narrowing cannot narrow a generic key, so subset dispatch goes
+  through a generic lookup into a `Partial` mapped table that returns the
+  correlated handler or `undefined` (`settingUI/SettingHandler`).
+- Widening a generic `ConfigEntry<K>` to the full-union `ConfigEntry` at a
+  non-generic boundary does not check — a generic indexed access never
+  distributes onto the union target — so `makeEntry` keeps one
+  construction-class assertion: a checked `ConfigEntry<K>` annotation
+  followed by a sound upcast.
+- Construction-class assertions remain by design: TS cannot build a
+  heterogeneous mapped record through
+  `Object.fromEntries`/`R.map`/`fromIterableWith` without one assertion
+  (`makeEntry`, the `settingUI/setConfig` table assembly,
+  `fromUserConfig`, `setterFromKeysAndMap`, `stream/makeRefs`,
+  `makeGetter`, `makePageState`, `makeConfig`). One documented assertion
+  each, at the table's construction — don't let them migrate back into
+  use sites.
+
+The regression guard is eslint's `assertionStyle: 'never'` plus
+`--report-unused-disable-directives`; outside spec fixtures the package
+has zero `as never`. Background: microsoft/TypeScript#30581 (correlated
+unions — no first-class support as of TS 6), the TS 4.6 release notes on
+indexed access inference improvements, and Total TypeScript's "When `as
+never` Is The Only Thing That Works".
+
 ## eslint 9 migration choices (2026-07)
 
 - `eslint-config-airbnb` and `eslint-config-airbnb-typescript` are

@@ -22,7 +22,7 @@ import configEffect from '@/settingUI/configEffect';
 // Handlers for the config-backed setting keys: write the state field,
 // then persist through the commander. Declared per key class so the
 // key-value correlation is checked generically — the Editable unwrap is
-// what distinguishes the classes (docs/correlated-unions.md).
+// what distinguishes the classes (docs/decisions.md).
 const editableHandler = <K extends EditableConfigKey>(k: K) => (
   v: EditableConfigValues[K],
 ) => (c: AppCommander) => (s: SettingState): SettingDispatchable => [

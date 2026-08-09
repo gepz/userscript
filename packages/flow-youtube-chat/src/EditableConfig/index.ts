@@ -57,7 +57,7 @@ export const isEditableKey = (k: string): k is EditableConfigKey => (
 // The Editable-wrapped half of the config state. Kept as a named mapped
 // type so generic keys index it directly: a K constrained to
 // EditableConfigKey yields the correlated Editable<UserConfig[K]>
-// (docs/correlated-unions.md).
+// (docs/decisions.md).
 export type EditableConfigValues = {
   readonly [P in EditableConfigKey]: Editable<UserConfig[P]>;
 };

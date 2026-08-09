@@ -15,7 +15,7 @@ const computedGetters: SettingGetterTable = computed;
 
 // SettingState read through this partial view: a generic index into the
 // mapped type yields the correlated SettingProps[K] | undefined
-// (docs/correlated-unions.md).
+// (docs/decisions.md).
 type StateView = { readonly [K in SettingKey<unknown>]?: SettingProps[K] };
 
 const lookupGetter = <K extends SettingKey<unknown>>(

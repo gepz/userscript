@@ -9,7 +9,7 @@ import languages from '@/languages';
 
 // The hand-written root map. Per-key structures (GMConfig, setters,
 // dispatch tables) derive forward from this type so that generic-key
-// indexing stays correlated — see docs/correlated-unions.md.
+// indexing stays correlated — see docs/decisions.md.
 // Deliberately a type alias, not an interface: aliases get the implicit
 // index signature that Record-constrained generics (stream/makeRefs) need.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

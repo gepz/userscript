@@ -1,7 +1,7 @@
 import type UserConfig from '@/UserConfig';
 
 // Distributive object type over the UserConfig root map
-// (docs/correlated-unions.md): ConfigEntry<K> is the matched [key, value]
+// (docs/decisions.md): ConfigEntry<K> is the matched [key, value]
 // pair for K, and the default instantiation is the union of every pair —
 // the message type of the config BroadcastChannel.
 type ConfigEntry<K extends keyof UserConfig = keyof UserConfig> = {
@@ -15,7 +15,7 @@ export default ConfigEntry;
 // verifies the [key, value] pairing; the return upcast is sound — a
 // single-key entry is one member of the full union — but beyond the
 // checker, which never distributes a generic indexed access onto the
-// union target (docs/correlated-unions.md).
+// union target (docs/decisions.md).
 export const makeEntry = <K extends keyof UserConfig>(
   key: K,
   val: UserConfig[K],

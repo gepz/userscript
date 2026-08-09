@@ -16,7 +16,7 @@ export type SettingHandlerTable = {
 
 // Generic index into the partial mapped table: yields the correlated
 // handler or undefined, replacing `in`-narrowing, which cannot narrow a
-// generic key (docs/correlated-unions.md).
+// generic key (docs/decisions.md).
 export const lookupHandler = <K extends SettingKey<unknown>>(
   table: SettingHandlerTable,
   k: K,

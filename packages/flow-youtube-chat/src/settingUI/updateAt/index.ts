@@ -11,7 +11,7 @@ import setState from '@/settingUI/setState';
 
 // Dispatch in precedence order: computed-property setters, per-key state
 // setters, config-backed writes, then a plain state write. Table lookups
-// return the correlated handler (docs/correlated-unions.md).
+// return the correlated handler (docs/decisions.md).
 export default <K extends SettingKey<unknown>>(k: K) => (
   v: SettingProps[K],
 ) => {
