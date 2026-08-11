@@ -14,7 +14,8 @@ Published on Greasy Fork; user-facing changelogs live in
 - Flowing chat overlay with configurable appearance (font, size, speed,
   opacity, shadow) via an in-page settings panel
 - Chat filtering, including banned words/users (a typed filter-expression
-  rework is in progress — see [`docs/backlog.md`](../../docs/backlog.md))
+  editor exists as an unfinished WIP whose fate is undecided — see
+  [`docs/backlog.md`](../../docs/backlog.md))
 - Chat-field simplification and other per-setting tweaks, with settings
   synced across tabs
 

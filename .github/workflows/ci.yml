@@ -25,26 +25,23 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Lint scripts run eslint --fix, so a clean pass can still rewrite
-      # files; the diff check turns any rewrite into a failure instead of
-      # letting auto-fixable violations pass silently.
+      # The diff gate turns eslint --fix rewrites into failures — see
+      # docs/architecture.md, "Verification".
       - name: Lint
         run: |
           pnpm -r run lint
           git diff --exit-code || { echo '::error::eslint --fix changed files; run pnpm -r run lint locally and commit'; exit 1; }
 
-      # Type checking rides the builds: build-lib is a full tsc program and
-      # the webpack builds run fork-ts-checker over tsconfig.build.json.
-      # pnpm orders packages topologically, so libs build before consumers.
+      # Also the bulk of the type checking (docs/architecture.md,
+      # "Verification"). pnpm orders packages topologically, so libs build
+      # before consumers.
       - name: Build
         run: pnpm -r run build
 
-      # fork-ts-checker does not report errors located inside dependency
-      # declaration files (bare tsc does; micro-memoize 5's broken d.mts
-      # slipped through the Build step once). The userscripts' only
-      # whole-program check is the webpack one, so give them a real tsc
-      # run. Lib packages already get theirs from build-lib in the Build
-      # step, so running every typecheck script here would only repeat it.
+      # Userscripts only: bare tsc reports the dependency-declaration
+      # errors fork-ts-checker misses, and lib packages already got a real
+      # tsc run from build-lib in the Build step — see docs/architecture.md,
+      # "Verification".
       - name: Typecheck userscripts with bare tsc
         run: |
           pnpm --filter @userscript/flow-youtube-chat run typecheck
@@ -55,7 +52,8 @@ jobs:
       - name: Test
         run: pnpm -r run test
 
-      # Sibling packages consume the committed lib/ output via workspace
-      # symlinks, so a stale lib/ means consumers silently use old code.
+      # Build regenerated lib/; drift from the committed copy means
+      # siblings were consuming stale code — see docs/architecture.md,
+      # "Verification".
       - name: Committed lib/ output is current
         run: git diff --exit-code || { echo '::error::committed lib/ output is stale; run build-lib and commit the result'; exit 1; }

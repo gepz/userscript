@@ -109,7 +109,9 @@ dependency 5 KB), and the four CDN `@require` externals already cover
 every dependency that ships a usable browser global — `effect` has no
 UMD build, so it cannot move there. Leads, largest first: the Schema
 stack (~58 KB: Schema + SchemaAST + ParseResult) is only used for
-config validation and could be replaced by hand-rolled checks; `stm`
+config validation and could be replaced by hand-rolled checks — but
+re-measure after the Effect v4 migration first, whose Schema rewrite
+reportedly shrank it from ~70 KB to ~20 KB; `stm`
 (13.5 KB) and `Micro` (12.9 KB) look unused and may be shakeable via
 `effect/*` subpath imports instead of the barrel; the rest is the
 runtime + Stream actually in use, where only the Effect v4 migration

@@ -24,24 +24,20 @@ restructuring builds, configs, or dependencies.
   `forward-to`, `cdn-from-dependency`, `tap-non-null`), run its `build-lib`
   and commit the regenerated `lib/` — otherwise siblings silently consume
   stale code.
-- **Type checking rides the webpack build, plus a `typecheck` script.**
-  `fork-ts-checker-webpack-plugin` (wired in `@userscript/webpack-config`)
-  checks the whole `tsconfig.build.json` program on every `dev`/`build`. For a
-  check without building, run `pnpm typecheck` in the package (bare
-  `tsc --noEmit` over the same program). Bare tsc is stricter:
-  fork-ts-checker does not report errors located inside dependency
-  declaration files, so after dependency bumps run bare tsc too (CI does).
-  Don't gate on the package-root `tsconfig.json` — it also pulls in config
-  files and work-in-progress sources that are excluded from real builds.
-- **Verification ladder.** Commit is cheap (secretlint + commitlint only);
-  push runs lint + typecheck + test scoped to the packages the push
-  changes (plus dependents); CI on GitHub is the full authoritative run
-  and the only place builds and the stale-`lib/` gate happen. Details in
-  `docs/architecture.md`, "Verification". `pnpm verify` at the root runs
-  the workspace-wide equivalent of the push gate on demand.
+- **Verification.** The mechanism's home is `docs/architecture.md`,
+  "Verification". The working rules: `dev`/`build` type-check continuously
+  (fork-ts-checker); `pnpm typecheck` in a package is the same program
+  under bare tsc, which also reports errors inside dependency declaration
+  files — so run it after dependency bumps. Commit hooks are cheap
+  (secretlint + commitlint); push verifies only what changed; CI is the
+  authoritative full run, and `pnpm verify` at the root is its cheap-gate
+  equivalent on demand. Don't gate on the package-root `tsconfig.json` —
+  it also pulls in config files and work-in-progress sources that are
+  excluded from real builds.
 - **Lint.** eslint 9 flat config; the shared config is the
   `@userscript/eslint-config` package (see its `packageConfig` factory). Run
-  `npx eslint .` inside a package. Generated output (`lib/`, `dist/`) is
+  `pnpm lint` inside a package (`eslint . --fix`), or `npx eslint .` for a
+  check that won't rewrite files. Generated output (`lib/`, `dist/`) is
   ignored by config, not by being clean.
 - **Versioning.** changesets, changelog-only (no publish, no tags); the full
   model and release process live in `docs/releasing.md`. The per-commit rule:

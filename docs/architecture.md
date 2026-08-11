@@ -62,8 +62,10 @@ Those configs merge fragments from
   transpiles.
 - `tsbaseConfig` — adds `ForkTsCheckerWebpackPlugin`, which type-checks the
   whole `tsconfig.build.json` program in a parallel process on every dev and
-  prod build. This is the repo's only routine whole-program type gate; it
-  covers files webpack never loads and dependency `.d.ts` files.
+  prod build — the routine type gate while developing. It covers files
+  webpack never loads, but it does not report errors located inside
+  dependency declaration files; the `typecheck` scripts close that gap
+  (see "Verification").
 
 Lib packages build with plain `tsc --project tsconfig.lib.json` followed by
 `tsc-alias` (which rewrites `@/` path aliases inside the emitted files);
@@ -143,6 +145,7 @@ Three rungs run them, each scoped to what it can cheaply guarantee:
   Type checking mostly rides the builds (tsc for `build-lib`,
   fork-ts-checker for the webpack bundles); the bare `typecheck` step
   exists for the two userscripts only, because fork-ts-checker does not
-  report errors located inside dependency declaration files and the
-  userscripts have no other whole-program tsc pass — lib packages get
-  theirs from `build-lib`.
+  report errors located inside dependency declaration files
+  (micro-memoize 5's broken `d.mts` once slipped through the Build step)
+  and the userscripts have no other whole-program tsc pass — lib
+  packages get theirs from `build-lib`.

@@ -1,10 +1,11 @@
 # Effect v4 migration pre-scan (2026-07)
 
-Scanned against effect-smol `main` (v4 beta) — its `MIGRATION.md` plus the
-`migration/*.md` topic docs, and the v4 module sources for the APIs this
-repo uses. v4 is beta; re-verify each item when migrating (the guide says
-APIs may still change). Affected packages: `flow-youtube-chat` and `ui`
-(`custom-sort` has no effect dependency).
+Scanned against the v4 beta (then the effect-smol repo; since 2026-07 it
+is `main` on `Effect-TS/effect`, with v3 on the `v3` branch) — its
+`MIGRATION.md` plus the `migration/*.md` topic docs, and the v4 module
+sources for the APIs this repo uses. v4 is beta; re-verify each item when
+migrating (the guide says APIs may still change). Affected packages:
+`flow-youtube-chat` and `ui` (`custom-sort` has no effect dependency).
 
 ## Semantic changes (real work)
 
@@ -34,13 +35,12 @@ APIs may still change). Affected packages: `flow-youtube-chat` and `ui`
   `allStream`'s resilient wrapper, `initialize`'s terminal handler, and
   `runLogged` — the migration doc doesn't say whether pretty/squash
   survive; verify and adapt.
-- **`@effect/typeclass` has no v4 counterpart** (not in the effect-smol
-  workspace; v4 core offers `Combiner`/`Reducer` instead). Live consumer:
-  `flow-youtube-chat/src/filter/filterOperators` (Semigroup) — port or
-  inline. The other 7 consumers are the excluded typed-expression-editor
-  WIP (`src/type/*`, `src/typedExpression/*`): decide that WIP's fate
+- **`@effect/typeclass` has no v4 counterpart** (v4 core offers
+  `Combiner`/`Reducer` instead). Every consumer is in the excluded
+  typed-expression-editor WIP (`src/type/*`, `src/typedExpression/*`;
+  live code is typeclass-free as of 2026-08): decide that WIP's fate
   (backlog item) before migrating, or the migration inherits ~3.2k lines
-  of dead porting work.
+  of dead porting work. Deleting the WIP drops the dependency outright.
 
 ## Mechanical renames (compiler-guided, low risk)
 
@@ -63,8 +63,8 @@ APIs may still change). Affected packages: `flow-youtube-chat` and `ui`
   `throttleTime({leading, trailing})` semantics and can replace our
   `stream/throttleLatest` (its spec suite is the arbiter).
 - `SubscriptionRef` (incl. `.changes`), `SynchronizedRef`, `PubSub`,
-  `Take`, `Schedule`, `Struct.entries`, `TestClock` (now
-  `effect/testing`), and `@effect/vitest` lives in the same workspace.
+  `Take`, `Struct.entries`, `TestClock` (now `effect/testing`), and
+  `@effect/vitest` lives in the same workspace.
 - `Optic` is core in v4 (replaces frozen `@fp-ts/optic`, only used by the
   WIP editor via `Op.Optional` behind local helpers).
 - Single-version ecosystem: the `@fp-ts/optic` peer-floor warning class
@@ -72,6 +72,10 @@ APIs may still change). Affected packages: `flow-youtube-chat` and `ui`
 
 ## Watch items
 
+- The 2026-07 beta overhauled Schedule (redundant APIs removed, simpler
+  internal representation). Our only uses are `Schedule.fixed` feeding
+  `Z.schedule`/`Stream.fromSchedule` (`initialize`, `allStream`) — core
+  shapes, but re-verify them instead of assuming survival.
 - Fork fibers now default to different lifecycle handling (fiber
   keep-alive doc is Node-process oriented; likely irrelevant in the
   browser, but re-check the forked `Stream.runDrain` daemon and the 10 s
@@ -81,6 +85,7 @@ APIs may still change). Affected packages: `flow-youtube-chat` and `ui`
 - Defect-vs-failure semantics of the resilient reinit loop (recursive
   `catchCause`) should be re-probed like the v3 probes that shaped it.
 
-Discord threads are mirrored as `From Discord:` issues on
-`Effect-TS/effect-smol` and the raw threads are indexed on
-answeroverflow.com — search both when something above is undocumented.
+Discord threads are mirrored as `From Discord:` issues on the Effect repo
+(filed against `effect-smol` before the 2026-07 repo merge) and the raw
+threads are indexed on answeroverflow.com — search both when something
+above is undocumented.
