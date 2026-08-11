@@ -6,8 +6,8 @@ interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;
 }
 
-// See baseConfig for why rootDir defaults to the cwd.
-export default (rootDir: string = process.cwd()): Configuration => ({
+// See baseConfig for why rootDir must be explicit.
+export default (rootDir: string): Configuration => ({
   mode: 'development',
   devServer: {
     static: {

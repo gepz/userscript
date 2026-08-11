@@ -45,7 +45,7 @@
     "@userscript/webpack-config": "workspace:^2.0.0",
     "eslint": "^9.39.4",
     "eslint-config-airbnb-extended": "^3.2.0",
-    "eslint-import-resolver-webpack": "^0.13.11",
+    "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-canonical": "^5.1.3",
     "eslint-plugin-consistent-default-export-name": "^0.0.15",
     "eslint-plugin-import-newlines": "^1.4.1",

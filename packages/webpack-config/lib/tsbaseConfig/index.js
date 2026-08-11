@@ -3,7 +3,7 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import baseConfig from '../baseConfig/index.js';
 import tsLoaderConfig from '../tsLoaderConfig/index.js';
 import { merge, } from 'webpack-merge';
-export default (rootDir = process.cwd()) => merge(baseConfig(rootDir), tsLoaderConfig('tsconfig.build.json'), {
+export default (rootDir) => merge(baseConfig(rootDir), tsLoaderConfig('tsconfig.build.json'), {
     resolve: {
         extensions: ['.tsx', '.ts'],
     },

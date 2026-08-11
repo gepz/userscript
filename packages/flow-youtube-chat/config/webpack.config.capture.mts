@@ -27,7 +27,7 @@ export default merge<Configuration>(
   webpackConfigBase,
   {
     entry: {
-      capture: path.join(process.cwd(), 'src/fixtureCapture/main/index.ts'),
+      capture: path.join(import.meta.dirname, '../src/fixtureCapture/main/index.ts'),
     },
     optimization: {
       minimize: false,

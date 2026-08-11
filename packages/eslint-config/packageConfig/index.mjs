@@ -1,3 +1,9 @@
+import {
+  createTypeScriptImportResolver,
+} from 'eslint-import-resolver-typescript';
+import {
+  createNodeResolver,
+} from 'eslint-plugin-import-x';
 import path from 'node:path';
 
 import baseConfig from '../baseConfig/index.mjs';
@@ -19,7 +25,6 @@ const scopedToTs = (configs) => configs.map((config) => ({
 export default ({
   dirname,
   ignores = [],
-  webpackConfig = './config/webpack.config.dev.mts',
   srcProject = 'tsconfig.build.json',
   configProject = 'tsconfig.json',
   append = [],
@@ -36,18 +41,28 @@ export default ({
     ],
   },
   ...scopedToTs(baseConfig),
+  ...scopedToTs(tsConfig),
   {
     files: TS_FILES,
     settings: {
-      'import-x/resolver': {
-        node: {},
-        webpack: {
-          config: path.join(dirname, webpackConfig),
-        },
-      },
+      // Re-declares airbnb-extended's import-x/resolver-next (settings merge
+      // per key, so the whole array must be restated) to pin the TypeScript
+      // resolver to this package's project. Left unpinned, it discovers the
+      // tsconfig from the linting process's cwd — correct under `pnpm lint`,
+      // but an editor's eslint server runs from the workspace root, where
+      // discovery misses the package tsconfig and every @/ import reports
+      // import-x/no-unresolved.
+      'import-x/resolver-next': [
+        createNodeResolver({
+          extensions: ['.ts', '.cts', '.mts', '.d.ts', '.json'],
+        }),
+        createTypeScriptImportResolver({
+          alwaysTryTypes: true,
+          project: path.join(dirname, srcProject),
+        }),
+      ],
     },
   },
-  ...scopedToTs(tsConfig),
   {
     files: TS_FILES,
     languageOptions: {

@@ -1,6 +1,6 @@
 import path from 'path';
-// See baseConfig for why rootDir defaults to the cwd.
-export default (rootDir = process.cwd()) => ({
+// See baseConfig for why rootDir must be explicit.
+export default (rootDir) => ({
     mode: 'development',
     devServer: {
         static: {

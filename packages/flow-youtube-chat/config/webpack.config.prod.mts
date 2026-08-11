@@ -45,7 +45,7 @@ export default merge<Configuration>(
               ecma: 2020,
               semicolons: true,
               preamble: fs.readFileSync(
-                path.join(process.cwd(), 'config/userscript_header.js'),
+                path.join(import.meta.dirname, 'userscript_header.js'),
               ).toString(),
             },
             compress: {

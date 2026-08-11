@@ -1,8 +1,9 @@
 import path from 'path';
-// rootDir is the package directory, which pnpm makes the cwd of every script it
-// runs. Defaulting it spares every calling config an import.meta.dirname walk
-// back out of config/.
-export default (rootDir = process.cwd()) => ({
+// rootDir is the package directory, passed explicitly (call sites derive it
+// from import.meta.dirname). A process.cwd() default would silently
+// mis-point the @ alias whenever a config is loaded by a process not
+// started in the package directory, as editor tooling does.
+export default (rootDir) => ({
     mode: 'production',
     resolve: {
         extensions: ['.jsx', '.js'],
