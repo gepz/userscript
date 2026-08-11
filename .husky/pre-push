@@ -1,11 +1,53 @@
-# Mirror CI's Lint step. Lint scripts run eslint --fix, so a clean exit can
-# still have rewritten files; comparing the working-tree diff before and after
-# turns any rewrite into a failure. CI uses a bare `git diff --exit-code` for
-# this, which would misfire here on unrelated uncommitted changes.
+# Mirror CI's cheap gates (lint, typecheck, test) on a push-sized scope:
+# only packages changed since the remote head, plus their dependents. The
+# expensive gates (builds, stale-lib diff) stay CI-only — see
+# docs/architecture.md, "Verification".
+
+# stdin: "<local ref> <local sha> <remote ref> <remote sha>" per pushed ref.
+# An all-zero remote sha means the ref is new; then origin/main is the best
+# available base.
+base=
+while read -r _local_ref _local_sha _remote_ref remote_sha; do
+  case $remote_sha in
+    *[!0]*) ;;
+    *) continue ;;
+  esac
+  if git cat-file -e "$remote_sha" 2>/dev/null; then
+    base=$remote_sha
+  fi
+done
+if [ -z "$base" ]; then
+  base=$(git rev-parse -q --verify origin/main 2>/dev/null) || base=
+fi
+
+# Root-level changes (lockfile, workspace config, shared tsconfigs, patches)
+# affect every package; docs and metadata affect none. Unknown base: assume
+# everything.
+if [ -z "$base" ]; then
+  scope=--recursive
+elif git diff --name-only "$base" HEAD -- . \
+    ':(exclude)packages' ':(exclude)docs' ':(exclude)*.md' \
+    ':(exclude).changeset' ':(exclude).github' ':(exclude).claude' \
+    | grep -q .; then
+  scope=--recursive
+else
+  scope="--filter=...[$base]"
+fi
+
+# Lint scripts run eslint --fix, so a clean exit can still have rewritten
+# files; comparing the working-tree diff before and after turns any rewrite
+# into a failure. CI uses a bare `git diff --exit-code` for this, which
+# would misfire here on unrelated uncommitted changes.
+# --if-present: a selection may contain only packages without a given
+# script (e.g. eslint-config alone), which pnpm otherwise treats as an
+# error.
 diff_before=$(git diff | git hash-object --stdin)
-pnpm -r run lint
+pnpm "$scope" run --if-present lint
 diff_after=$(git diff | git hash-object --stdin)
 if [ "$diff_before" != "$diff_after" ]; then
   echo 'eslint --fix rewrote files; review and commit the fixes before pushing' >&2
   exit 1
 fi
+
+pnpm "$scope" run --if-present typecheck
+pnpm "$scope" run --if-present test

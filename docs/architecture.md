@@ -113,16 +113,36 @@ bumps. No publish, no tags. Version numbers have no resolution effect inside
 the workspace (pnpm symlinks regardless); they exist for the changelogs and
 for the userscript `@version` headers (Greasy Fork update detection).
 
-## CI
+## Verification
 
-One GitHub Actions job (`.github/workflows/ci.yml`) on pushes to `main` and
-on PRs: `pnpm install --frozen-lockfile`, `pnpm -r run lint`, `pnpm -r run
-build`, with `git diff --exit-code` gates after lint and build. The diff
-gates are load-bearing: lint scripts run `eslint --fix`, so drift means an
-auto-fixable violation; and builds regenerate the committed `lib/` output,
-so drift means a sibling package was consuming stale code. Type checking
-mostly rides the builds (tsc for `build-lib`, fork-ts-checker for the
-webpack bundles), with one addition: a bare
-`tsc -p tsconfig.build.json --noEmit` step for the two userscripts, because
-fork-ts-checker does not report errors located inside dependency declaration
-files and the userscripts have no other whole-program tsc pass.
+One vocabulary everywhere: per-package `lint`, `typecheck` (bare
+`tsc --noEmit` over the build program), and `test` scripts, with root
+scripts fanning each out workspace-wide (`pnpm verify` runs all three).
+Three rungs run them, each scoped to what it can cheaply guarantee:
+
+- **While developing** — `pnpm dev`/`build` type-check continuously via
+  fork-ts-checker; this is the primary discovery loop, not the hooks.
+- **Hooks** — commit is deliberately cheap: secretlint (lint-staged) and
+  commitlint, nothing else. Push (`.husky/pre-push`) mirrors CI's cheap
+  gates — lint, typecheck, test — but only for packages changed since the
+  remote head plus their dependents (`pnpm --filter '...[<sha>]'`), so a
+  docs-only push runs nothing and a lib change also checks its consumers.
+  Root-level changes outside `packages/` (lockfile, shared tsconfigs,
+  patches) drop the filter and run everything; docs, changesets, and
+  `.github` are excluded from that trigger. A push can still skip the
+  hook (`--no-verify`) or predate a dependency of a branch — CI assumes
+  nothing ran locally.
+- **CI** (`.github/workflows/ci.yml`, pushes to `main` and PRs) — the
+  authoritative full run, and the only rung that builds:
+  `pnpm install --frozen-lockfile`, workspace-wide lint, `pnpm -r run
+  build`, the two userscripts' `typecheck`, and `pnpm -r run test`, with
+  `git diff --exit-code` gates after lint and build. The diff gates are
+  load-bearing: lint scripts run `eslint --fix`, so drift means an
+  auto-fixable violation; and builds regenerate the committed `lib/`
+  output, so drift means a sibling package was consuming stale code.
+  Type checking mostly rides the builds (tsc for `build-lib`,
+  fork-ts-checker for the webpack bundles); the bare `typecheck` step
+  exists for the two userscripts only, because fork-ts-checker does not
+  report errors located inside dependency declaration files and the
+  userscripts have no other whole-program tsc pass — lib packages get
+  theirs from `build-lib`.

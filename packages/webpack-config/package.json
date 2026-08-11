@@ -18,6 +18,7 @@
     }
   },
   "scripts": {
+    "typecheck": "tsc -p tsconfig.lib.json --noEmit",
     "preinstall": "npx only-allow pnpm",
     "build": "pnpm run build-lib",
     "build-lib": "tsc --project tsconfig.lib.json && tsc-alias -p tsconfig.lib.json --resolve-full-paths",

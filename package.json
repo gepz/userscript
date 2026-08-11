@@ -4,7 +4,10 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky",
-    "test": "echo \"No test\""
+    "lint": "pnpm -r run lint",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "verify": "pnpm run lint && pnpm run typecheck && pnpm run test"
   },
   "lint-staged": {
     "*": "secretlint"

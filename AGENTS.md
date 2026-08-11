@@ -24,15 +24,21 @@ restructuring builds, configs, or dependencies.
   `forward-to`, `cdn-from-dependency`, `tap-non-null`), run its `build-lib`
   and commit the regenerated `lib/` — otherwise siblings silently consume
   stale code.
-- **Type checking rides the webpack build.** There are no typecheck scripts;
+- **Type checking rides the webpack build, plus a `typecheck` script.**
   `fork-ts-checker-webpack-plugin` (wired in `@userscript/webpack-config`)
   checks the whole `tsconfig.build.json` program on every `dev`/`build`. For a
-  check without building, run
-  `npx tsc -p tsconfig.build.json --noEmit` in the package. Bare tsc is
-  stricter: fork-ts-checker does not report errors located inside dependency
-  declaration files, so after dependency bumps run bare tsc too (CI does). Don't gate on the
-  package-root `tsconfig.json` — it also pulls in config files and
-  work-in-progress sources that are excluded from real builds.
+  check without building, run `pnpm typecheck` in the package (bare
+  `tsc --noEmit` over the same program). Bare tsc is stricter:
+  fork-ts-checker does not report errors located inside dependency
+  declaration files, so after dependency bumps run bare tsc too (CI does).
+  Don't gate on the package-root `tsconfig.json` — it also pulls in config
+  files and work-in-progress sources that are excluded from real builds.
+- **Verification ladder.** Commit is cheap (secretlint + commitlint only);
+  push runs lint + typecheck + test scoped to the packages the push
+  changes (plus dependents); CI on GitHub is the full authoritative run
+  and the only place builds and the stale-`lib/` gate happen. Details in
+  `docs/architecture.md`, "Verification". `pnpm verify` at the root runs
+  the workspace-wide equivalent of the push gate on demand.
 - **Lint.** eslint 9 flat config; the shared config is the
   `@userscript/eslint-config` package (see its `packageConfig` factory). Run
   `npx eslint .` inside a package. Generated output (`lib/`, `dist/`) is

@@ -42,16 +42,18 @@ jobs:
       # fork-ts-checker does not report errors located inside dependency
       # declaration files (bare tsc does; micro-memoize 5's broken d.mts
       # slipped through the Build step once). The userscripts' only
-      # whole-program check is the webpack one, so give them a real tsc run.
+      # whole-program check is the webpack one, so give them a real tsc
+      # run. Lib packages already get theirs from build-lib in the Build
+      # step, so running every typecheck script here would only repeat it.
       - name: Typecheck userscripts with bare tsc
         run: |
-          pnpm --filter @userscript/flow-youtube-chat exec tsc -p tsconfig.build.json --noEmit
-          pnpm --filter @userscript/custom-sort exec tsc -p tsconfig.build.json --noEmit
+          pnpm --filter @userscript/flow-youtube-chat run typecheck
+          pnpm --filter @userscript/custom-sort run typecheck
 
-      # Only flow-youtube-chat has a vitest suite so far; -r would also run
-      # the placeholder "test" scripts in other packages.
+      # Runs in every package that defines a test script (currently only
+      # flow-youtube-chat's vitest suite); new suites join automatically.
       - name: Test
-        run: pnpm --filter @userscript/flow-youtube-chat run test
+        run: pnpm -r run test
 
       # Sibling packages consume the committed lib/ output via workspace
       # symlinks, so a stale lib/ means consumers silently use old code.

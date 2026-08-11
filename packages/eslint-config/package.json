@@ -7,8 +7,7 @@
   "license": "AGPL-3.0-or-later",
   "author": "",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "preinstall": "npx only-allow pnpm"
   },
   "peerDependencies": {
     "@eslint/compat": "^2.1.0",
