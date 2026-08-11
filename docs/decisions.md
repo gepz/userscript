@@ -175,6 +175,29 @@ never` Is The Only Thing That Works".
   types ever mismatch webpack's, check for duplicate webpack instances in the
   lockfile first (`pnpm dedupe` fixed exactly that once).
 
+## pnpm supply-chain policy: v11 defaults, deliberately unconfigured (2026-08)
+
+`pnpm-workspace.yaml` intentionally sets no `minimumReleaseAge`,
+`blockExoticSubdeps`, or `trustPolicy`. pnpm 11 already defaults the
+first two on (`minimumReleaseAge: 1440` — one day, which covers the
+measured detection window of the headline npm incidents —
+`blockExoticSubdeps: true`, `strictDepBuilds: true`). Writing
+`minimumReleaseAge` explicitly would also flip `minimumReleaseAgeStrict`
+on, turning in-window versions into hard resolution failures; the
+implicit default runs loose. Raising to 10080 (7 days) was considered
+and declined: it delays every routine bump and every fresh security
+patch for margin against slow-burn worm waves this unpublished,
+no-auto-deploy workspace doesn't especially need. Note `overrides` do
+NOT bypass the age gate (since 11.3 the lockfile verification pass
+re-checks every entry); a young security patch needs an exact-version
+`minimumReleaseAgeExclude` entry — `pnpm audit --fix` writes both
+together, and quote scoped entries (`- "@scope/pkg@1.2.3"` — bare `@`
+is invalid YAML). `trustPolicy: no-downgrade` is real hardening but
+declined for now: `pnpm dedupe` fails under it (pnpm#10329) and
+legitimate publisher CI changes false-positive. Context: an automated
+"OrbisAI Security" marketing PR (#5, closed unmerged 2026-08) proposed
+all three settings — two were no-ops against these defaults.
+
 ## External analysis tooling: evaluated and declined (2026-07)
 
 - SonarQube Community Build (self-hosted): its rules largely duplicate the
