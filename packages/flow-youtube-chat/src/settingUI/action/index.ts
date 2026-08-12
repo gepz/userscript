@@ -25,7 +25,10 @@ export default ({
     Z.flatMap(Z.fromNullable),
     Z.flatMap((x) => E.match(log.importLog(x), {
       onLeft: Z.fail,
-      onRight: (eventLog) => Z.succeed({
+      // Annotated so declaration emit writes the named type: the
+      // inferred spread type spells out filterExp's jsep.Expression,
+      // which tsc cannot name in a d.ts (TS4082).
+      onRight: (eventLog) => Z.succeed<SettingState>({
         ...s,
         eventLog,
       }),
