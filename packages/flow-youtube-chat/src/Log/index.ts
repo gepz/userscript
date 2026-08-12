@@ -43,21 +43,21 @@ interface LogExport {
   blocks: A.NonEmptyReadonlyArray<LogExportBlock>
 }
 
-// The literals must stay assignable to LogLevel.LogLevel['label']; tsc
-// checks that where decoded entries flow into LogBlock.
+const logLevelLabels = [
+  'ALL',
+  'FATAL',
+  'ERROR',
+  'WARN',
+  'INFO',
+  'DEBUG',
+  'TRACE',
+  'OFF',
+] as const satisfies readonly LogLevel.LogLevel['label'][];
+
 const logBlockJson = S.parseJson(S.Array(S.Struct({
   id: S.Number,
   text: S.String,
-  level: S.Literal(
-    'ALL',
-    'FATAL',
-    'ERROR',
-    'WARN',
-    'INFO',
-    'DEBUG',
-    'TRACE',
-    'OFF',
-  ),
+  level: S.Literal(...logLevelLabels),
 })));
 
 // Accepts unknown because lz-string decompression yields null on garbage.
