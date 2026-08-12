@@ -3,20 +3,25 @@ import path from 'node:path';
 import packageConfig from '@userscript/eslint-config/packageConfig';
 import compat from 'eslint-plugin-compat';
 
+import ts from 'typescript';
+
+// src directories excluded from every TS project cannot be type-aware
+// linted, so they are ignored — derived from tsconfig.exclude.json
+// rather than mirrored by hand. Read through TypeScript's own config
+// reader because the file is JSONC, which Node's JSON import rejects.
+// The list's non-src entries need no ignore here: generated output is
+// ignored by packageConfig and spec files are linted against the spec
+// program below.
+const excludedSrcDirs = ts.readConfigFile(
+  path.join(import.meta.dirname, 'tsconfig.exclude.json'),
+  ts.sys.readFile,
+).config.exclude
+  .filter((entry) => entry.startsWith('./src/'))
+  .map((entry) => `${entry.slice(2)}/`);
+
 export default packageConfig({
   dirname: import.meta.dirname,
-  // The src directories below mirror tsconfig.exclude.json: they are excluded
-  // from every TS project, so type-aware linting cannot parse them. Keep the
-  // two lists in sync; when a directory rejoins the build, unignore it here.
-  ignores: [
-    'src/filter/filterContextType/',
-    'src/restrictedExpression/',
-    'src/settingUI/EditableExpression/',
-    'src/settingUI/filter/',
-    'src/settingUI/filterPanel/',
-    'src/type/',
-    'src/typedExpression/',
-  ],
+  ignores: excludedSrcDirs,
   append: [
     {
       ...compat.configs['flat/recommended'],
