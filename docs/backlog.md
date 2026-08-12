@@ -140,19 +140,23 @@ runtime + Stream actually in use, where only the Effect v4 migration
 ### Display matrix
 
 A settings grid controlling, per chat type, which components of a chat
-to flow — never implemented, commented out since the first commit.
-Remnants: the `displayMatrix` field stub in `UserConfig` (from which
-`GMConfig` is derived), its default value and compact string codec at
-the bottom of `defaultGMConfig`, and render code for a 3-column grid of
-on/off cells in `settingUI/chatFlowPanel`. The row/column semantics
-were never written down; the shape (four rows, up to three columns)
-suggests chat-type rows (normal, moderator, superchat, membership) ×
-component columns (avatar, author name, message), generalizing the
-one-off `displayModName`, `displaySuperChatAuthor`, and `textOnly`
-toggles — which live in `settingUI/chatAppearancePanel`, a different
-tab than the one the sketch renders in. Treat the commented code as a
-sketch: decide the semantics fresh, decide whether the three existing
-toggles fold into the matrix or stay, and pick which tab hosts it.
+to flow — never implemented; a commented-out sketch rode along from the
+first commit until its removal in commit 9ed9ad6 (2026-08). The sketch
+(recoverable from that commit) was a `displayMatrix` field stub in
+`UserConfig`, a default value and compact string codec (rows joined by
+commas, cells as 0/1 characters) at the bottom of `defaultGMConfig`,
+and render code for a 3-column grid of on/off cells in
+`settingUI/chatFlowPanel`. The row/column semantics were never written
+down; the shape (four rows, up to three columns, sketched default
+`[[on,on,on],[off,on],[off,on],[off,on]]` — first row fully on, later
+rows leading with an off cell) suggests chat-type rows (normal,
+moderator, superchat, membership) × component columns (avatar, author
+name, message), generalizing the one-off `displayModName`,
+`displaySuperChatAuthor`, and `textOnly` toggles — which live in
+`settingUI/chatAppearancePanel`, a different tab than the one the
+sketch renders in. Treat it as a sketch: decide the semantics fresh,
+decide whether the three existing toggles fold into the matrix or
+stay, and pick which tab hosts it.
 
 ### Auto block user
 
