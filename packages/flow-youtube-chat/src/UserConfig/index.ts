@@ -51,7 +51,6 @@ type UserConfig = {
   shadowColor: string
   logEvents: boolean
   filterExp: jsep.Expression
-  // displayMatrix: readonly (readonly boolean[])[],
 };
 
 export default UserConfig;

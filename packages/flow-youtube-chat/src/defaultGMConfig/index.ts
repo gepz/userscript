@@ -127,24 +127,3 @@ const defaultGMConfig: GMConfig = pipe(
 );
 
 export default defaultGMConfig;
-
-// displayMatrix: ic(
-//   'displayMatrix',
-//   [
-//     [true, true, true],
-//     [false, true],
-//     [false, true],
-//     [false, true],
-//   ],
-//   flow(
-//     S.split(','),
-//     A.map(flow(
-//       S.split(''),
-//       A.map((x) => x === '1'),
-//     )),
-//   ),
-//   flow(
-//     A.map(A.join('')),
-//     A.join(','),
-//   ),
-// ),

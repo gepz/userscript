@@ -57,86 +57,8 @@ export const fromParamAndReturn = (paramType: Type) => (
   returnType,
 });
 
-/*
-{0 un} simple {0 un2, 1 un2} (1)
-{0 un} simple {0 un2} (simple), {0 un2, 1 simple}
-
-{0 un} un {0 un2, 1 simple} (1)
-none                   X
-
-{0 un, 1 un} simple {0 un2, 1 un2} (1)
-{0 un, 1 un} simple {0 un2} (simple), {0 un2, 1 simple}
-
-{0 un2, 1 simple} simple {0 un3} (1)
-{0 un2, 1 simple} simple {0 un3} (simple), {0 un2, 1 simple}
-
-{0 un2, 1 simple} record {0 un3} (1)
-none                X
-
-{0 un2, 1 simple} un3 {0 un3} (1)
-none                X
-
-{0 un2, 1 un2} simple {0 un3} (1)
-{0 un2, 1 un2} simple {0 un3} (un2), {0 un3, 1 un2}
-
-{0 un} simple {0 un2} (1)
-{0 un} simple {0 un2} (simple), {0 un2, 1 simple}
-
-{0 un, 1 un} simple {0 un2} (1)
-{0 un, 1 un} simple {0 un2} (simple), {0 un2, 1 simple}
-*/
-
-// export const assignGeneric = (
-//   f: AssignGenericFunction<Type>,
-// ): AssignGenericFunction<FunctionType> => (
-//   typeMap,
-// ) => (
-//   expected,
-// ) => (
-//   synthed,
-// ) => pipe(
-//   synthed.value,
-//   (s) => (s.paramType.tag === 'generic' ? pipe(
-//     s.paramType.value,
-//     (generic) => generic in s.typeMap ? pipe(
-//       {
-//         generic,
-//         typeMap: omit([`${generic}`])(s.typeMap),
-//         paramType: expected.value.paramType,
-//       },
-//       I.bind('returnType', (x) => f({
-//             ...merge(typeMap)(x.typeMap),
-//             [generic]: x.paramType,
-//           })(expected.value.returnType)(s.returnType)),
-
-//     ) : generic in typeMap ? pipe(
-//       {
-//         generic,
-//         typeMap: s.typeMap,
-//         paramType: expected.value.paramType,
-//       },
-//       I.bind('returnType', (x) => f(typeMap)(
-//         expected.value.returnType
-//         )(s.returnType)),
-
-//     )
-//     // ? s.paramType.value in s.typeMap ? pipe(
-//     //   s.paramType.value,
-//     //   (x) => ({
-//     //     paramGeneric: x,
-//     //     typeMap: omit([`${x}`])(s.typeMap),
-//     //     paramType: expected.value.paramType,
-//     //   })
-//     //   I.bind('returnType', (x) => f({
-//     //     ...typeMap,
-//     //     [x.paramGeneric]: x.paramType,
-//     //   })(expected.value.returnType)(s.returnType)),
-//     // ) : pipe(
-//     //   f(merge(typeMap)(s.typeMap))(s.paramType),
-//     // ) : pipe(
-//     //   f(merge(typeMap)(s.typeMap))(s.paramType),
-//     // )),
-// );
+// Generic-assignment design scratchwork lives in filter_logic.md (see the
+// filter-editor entry in docs/backlog.md).
 
 const tt: <T extends undefined>(x: T) => T = (x: unknown): undefined => undefiend;
 

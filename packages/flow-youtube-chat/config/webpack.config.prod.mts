@@ -1,9 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
-// import {
-//   BundleAnalyzerPlugin,
-// } from 'webpack-bundle-analyzer';
 import type {
   Configuration,
 } from 'webpack';
@@ -17,23 +14,17 @@ import webpackConfigBase from './webpack.config.base.mts';
 export default merge<Configuration>(
   webpackConfigBase,
   {
+    // micro-memoize is deliberately absent — see "micro-memoize is bundled,
+    // not CDN-required" in docs/decisions.md.
     externals: [
       {
         astring: 'astring',
         jsep: 'jsep',
         'hash-it': 'window[\'hash-it\']',
-        // micro-memoize is bundled: its v5 UMD build expects fast-equals and
-        // fast-stringify as globals under names their own UMD builds don't
-        // register, so it cannot work as a CDN require.
         'lz-string': 'LZString',
       },
     ],
-    plugins: [
-      // new BundleAnalyzerPlugin({
-      //   analyzerMode: 'static',
-      // }),
-      userscriptPlugin(false),
-    ],
+    plugins: [userscriptPlugin(false)],
     optimization: {
       usedExports: true,
       minimizer: [
@@ -54,7 +45,6 @@ export default merge<Configuration>(
               sequences: false,
               toplevel: true,
               passes: 3,
-              // unused: false,
             },
           },
         }),

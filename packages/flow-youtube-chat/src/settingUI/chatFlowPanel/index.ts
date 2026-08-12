@@ -31,21 +31,6 @@ const chatFlowPanel: (
         intNode('maxChatLength', 5, 200, 5),
         stepTimingNode,
         flowConditionsNode,
-        // ...pipe(
-        //   state.displayMatrix,
-        //   A.map(A.map((y) => h<SettingState>('span', {
-        //     style: {
-        //       background: y ? '#000' : '#333',
-        //       color: y ? '#fff' : '#999',
-        //     },
-        //   }, text(y)))),
-        //   A.map((x) => h('div', {
-        //     style: {
-        //       display: 'grid',
-        //       gridTemplateColumns: '1fr 1fr 1fr',
-        //     },
-        //   }, x)),
-        // ),
         buttonNode('clearFlowChats'),
       ],
       mapSettingNodes((x) => h('div', {
