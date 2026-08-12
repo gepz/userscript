@@ -60,10 +60,17 @@ export const error = <T>(
   O.flatMap((e) => e.error),
 );
 
-export const setValue = <T>(v: T) => (e: Editable<T>): Editable<T> => ({
+// Functor map over the committed value; the draft state rides along
+// untouched. Not for commit paths — committing a parsed draft goes
+// through `of`, which deliberately drops the edit state.
+export const map = <A, B>(
+  f: (a: A) => B,
+) => (e: Editable<A>): Editable<B> => ({
   ...e,
-  value: v,
+  value: f(e.value),
 });
+
+export const setValue = <T>(v: T): (e: Editable<T>) => Editable<T> => map(constant(v));
 
 export const setText = (t: string) => <T>(e: Editable<T>): Editable<T> => ({
   ...e,
