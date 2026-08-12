@@ -3,6 +3,8 @@ import {
   pipe,
 } from 'effect';
 
+import type ExcludedLanes from '@/ExcludedLanes';
+
 export interface LaneSegment {
   readonly start: number
   readonly end: number
@@ -14,14 +16,11 @@ export interface LaneSegment {
  * intersect them, so chat placement runs once per segment and never
  * across one. Lanes at or beyond laneCount are ignored, which keeps an
  * excluded set saved under a larger laneCount harmless until a write
- * trims it.
- *
- * Relies on excludedLanes being sorted, deduped, non-negative integers —
- * the excludedLanes decoder in defaultGMConfig normalizes storage to
- * exactly that shape.
+ * trims it. The walk relies on the sorted, deduped shape ExcludedLanes
+ * carries by construction.
  */
 export default (
-  excludedLanes: readonly number[],
+  excludedLanes: ExcludedLanes,
   laneCount: number,
 ): readonly LaneSegment[] => pipe(
   excludedLanes,

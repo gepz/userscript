@@ -14,6 +14,10 @@ import {
 } from 'effect/Function';
 import jsep from 'jsep';
 
+import type ExcludedLanes from '@/ExcludedLanes';
+import {
+  makeExcludedLanes,
+} from '@/ExcludedLanes';
 import GMConfig from '@/GMConfig';
 import defaultFilter from '@/defaultFilter';
 import fycKey from '@/fycKey';
@@ -71,20 +75,17 @@ const defaultGMConfig: GMConfig = pipe(
     flowSpeed: sc<number>('SPEED', 18),
     maxChatLength: sc<number>('MAX', 100),
     laneCount: sc<number>('LANE_DIV', 12),
-    // The decoder normalizes to sorted, deduped, non-negative integers;
-    // allowedSegments relies on exactly that shape. Lanes at or beyond
-    // laneCount are dropped on laneCount shrink (see setState.laneCount),
-    // not here, so a stored stray survives only until the next write.
-    excludedLanes: ic<string, readonly number[]>(
+    // Lanes at or beyond laneCount are dropped on laneCount shrink (see
+    // setState.laneCount), not here, so a stored stray survives only
+    // until the next write.
+    excludedLanes: ic<string, ExcludedLanes>(
       'EXCLUDED_LANES',
-      [],
+      makeExcludedLanes([]),
       S.String,
       (x) => pipe(
         Str.split(x, ','),
         A.filterMap(N.parse),
-        A.filter((n) => Number.isInteger(n) && n >= 0),
-        A.sort(N.Order),
-        A.dedupeAdjacent,
+        makeExcludedLanes,
       ),
       (x) => x.join(','),
     ),

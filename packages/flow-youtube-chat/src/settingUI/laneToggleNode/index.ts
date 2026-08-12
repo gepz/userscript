@@ -12,6 +12,9 @@ import {
 } from 'hyperapp';
 
 import AppCommander from '@/AppCommander';
+import {
+  makeExcludedLanes,
+} from '@/ExcludedLanes';
 import SettingState from '@/SettingState';
 import getText from '@/getText';
 import runLogged from '@/runLogged';
@@ -38,12 +41,9 @@ const paint = (c: AppCommander) => (
   pointerLane: number,
   target: boolean,
 ): SettingDispatchable => pipe(
-  target
-    ? pipe(
-      A.union(s.excludedLanes, lanes),
-      A.sort(N.Order),
-    )
-    : A.filter(s.excludedLanes, (x) => !A.contains(lanes, x)),
+  makeExcludedLanes(target
+    ? A.union(s.excludedLanes, lanes)
+    : A.filter(s.excludedLanes, (x) => !A.contains(lanes, x))),
   (excludedLanes) => pipe(
     updateAt('excludedLanes')(excludedLanes)(c)({
       ...s,

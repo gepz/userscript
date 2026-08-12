@@ -6,6 +6,9 @@ import {
 } from 'effect';
 
 import AppCommander from '@/AppCommander';
+import {
+  makeExcludedLanes,
+} from '@/ExcludedLanes';
 import SettingState from '@/SettingState';
 import SettingDispatchable from '@/settingUI/SettingDispatchable';
 import configEffect from '@/settingUI/configEffect';
@@ -22,7 +25,7 @@ const setState: Partial<{
   // a mid-keystroke "2" of "20" cannot wipe lanes 2 and up.
   laneCount: (v) => (c) => (s) => pipe(
     O.isNone(Ed.text(v))
-      ? A.filter(s.excludedLanes, (x) => x < Ed.value(v))
+      ? makeExcludedLanes(A.filter(s.excludedLanes, (x) => x < Ed.value(v)))
       : s.excludedLanes,
     (excludedLanes): SettingDispatchable => [
       {

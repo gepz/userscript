@@ -4,6 +4,7 @@ import {
 } from 'effect';
 import type jsep from 'jsep';
 
+import type ExcludedLanes from '@/ExcludedLanes';
 import type GMConfig from '@/GMConfig';
 import languages from '@/languages';
 
@@ -28,7 +29,7 @@ type UserConfig = {
   flowSpeed: number
   maxChatLength: number
   laneCount: number
-  excludedLanes: readonly number[]
+  excludedLanes: ExcludedLanes
   bannedWords: readonly string[]
   bannedWordRegexes: readonly string[]
   bannedUsers: readonly string[]

@@ -9,6 +9,9 @@ import {
   vi,
 } from 'vitest';
 
+import {
+  makeExcludedLanes,
+} from '@/ExcludedLanes';
 import defaultGMConfig from '@/defaultGMConfig';
 
 const item = defaultGMConfig.excludedLanes;
@@ -27,13 +30,13 @@ afterEach(() => {
 
 describe('excludedLanes codec', () => {
   it('round-trips an excluded set', async () => {
-    const excluded = [0, 5, 11];
+    const excluded = makeExcludedLanes([0, 5, 11]);
 
     expect(await decode(item.toGm(excluded))).toEqual(excluded);
   });
 
   it('round-trips the empty set', async () => {
-    expect(await decode(item.toGm([]))).toEqual([]);
+    expect(await decode(item.toGm(makeExcludedLanes([])))).toEqual([]);
   });
 
   it('normalizes to sorted deduped lanes', async () => {
