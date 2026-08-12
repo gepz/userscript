@@ -5,7 +5,7 @@ const setEditInt = (editing) => (value) => (state) => pipe(value, Number.parseIn
         ? pipe(state, Ed.setText(value))
         : Ed.fromValueText(x)(value))
     : (x) => (Number.isNaN(x)
-        ? pipe(state, Ed.setTextError(value)(''))
+        ? pipe(state, Ed.setTextInvalid(value))
         : Ed.of(x)));
 export default setEditInt;
 //# sourceMappingURL=index.js.map

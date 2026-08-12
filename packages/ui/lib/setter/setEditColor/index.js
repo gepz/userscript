@@ -6,6 +6,6 @@ const setEditColor = (editing) => (value) => (editing
         : Ed.setText(value))
     : (CSS.supports('color', value)
         ? constant(Ed.of(value))
-        : Ed.setTextError(value)('')));
+        : Ed.setTextInvalid(value)));
 export default setEditColor;
 //# sourceMappingURL=index.js.map

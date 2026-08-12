@@ -5,7 +5,7 @@ const setEditNumber = (editing) => (value) => (state) => pipe(value, Number.pars
         ? pipe(state, Ed.setText(value))
         : Ed.fromValueText(x)(value))
     : (x) => (Number.isNaN(x)
-        ? pipe(state, Ed.setTextError(value)(''))
+        ? pipe(state, Ed.setTextInvalid(value))
         : Ed.of(x)));
 export default setEditNumber;
 //# sourceMappingURL=index.js.map

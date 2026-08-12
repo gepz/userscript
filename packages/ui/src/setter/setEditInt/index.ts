@@ -24,7 +24,7 @@ const setEditInt: EditSetter<Editable<number>> = (
     : (x) => (Number.isNaN(x)
       ? pipe(
         state,
-        Ed.setTextError(value)(''),
+        Ed.setTextInvalid(value),
       )
       : Ed.of(x)),
 );

@@ -15,6 +15,6 @@ const setEditColor: EditSetter<Editable<string>> = (
     : Ed.setText(value))
   : (CSS.supports('color', value)
     ? constant(Ed.of(value))
-    : Ed.setTextError(value)('')));
+    : Ed.setTextInvalid(value)));
 
 export default setEditColor;
