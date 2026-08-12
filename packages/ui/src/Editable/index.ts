@@ -6,6 +6,11 @@ import {
   pipe,
 } from 'effect/Function';
 
+// An invalid draft's payload: an optional message with detail beyond
+// the field's own generic error text, which an invalid draft need not
+// have (see setTextInvalid).
+export type DraftError = O.Option<string>;
+
 // A value bound to a text input: the committed value plus the user's
 // in-progress draft text and its validation state. Tagged so runtime
 // code can tell an Editable apart from plain user data without
@@ -13,12 +18,10 @@ import {
 interface Editable<T> {
   readonly tag: 'Editable'
   readonly value: T
-  // error's outer Option marks the draft invalid; its inner Option is a
-  // message with detail beyond the field's own generic error text, which
-  // an invalid draft need not have (see errorText and setTextInvalid).
   readonly edit: O.Option<{
     readonly text: string
-    readonly error: O.Option<O.Option<string>>
+    // Present iff the draft is invalid.
+    readonly error: O.Option<DraftError>
   }>
 }
 
@@ -55,14 +58,13 @@ export const text = <T>(x: Editable<T>): O.Option<string> => pipe(
 
 export const error = <T>(
   x: Editable<T>,
-): O.Option<O.Option<string>> => pipe(
+): O.Option<DraftError> => pipe(
   x.edit,
   O.flatMap((e) => e.error),
 );
 
-// Functor map over the committed value; the draft state rides along
-// untouched. Not for commit paths — committing a parsed draft goes
-// through `of`, which deliberately drops the edit state.
+// Not for commit paths — committing a parsed draft goes through `of`,
+// which deliberately drops the edit state.
 export const map = <A, B>(
   f: (a: A) => B,
 ) => (e: Editable<A>): Editable<B> => ({
@@ -81,7 +83,7 @@ export const setText = (t: string) => <T>(e: Editable<T>): Editable<T> => ({
     })),
     O.orElse(constant(O.some({
       text: t,
-      error: O.none<O.Option<string>>(),
+      error: O.none<DraftError>(),
     }))),
   ),
 });

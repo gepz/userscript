@@ -20,9 +20,8 @@ export const fromValueText = (v) => (t) => ({
 export const value = (x) => x.value;
 export const text = (x) => pipe(x.edit, O.map((e) => e.text));
 export const error = (x) => pipe(x.edit, O.flatMap((e) => e.error));
-// Functor map over the committed value; the draft state rides along
-// untouched. Not for commit paths — committing a parsed draft goes
-// through `of`, which deliberately drops the edit state.
+// Not for commit paths — committing a parsed draft goes through `of`,
+// which deliberately drops the edit state.
 export const map = (f) => (e) => ({
     ...e,
     value: f(e.value),
