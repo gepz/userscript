@@ -7,8 +7,7 @@ export default (configFile) => ({
                     loader: 'ts-loader',
                     options: {
                         configFile,
-                        // Type checking is done by fork-ts-checker in tsbaseConfig;
-                        // the loader only transpiles.
+                        // Type checking is done by fork-ts-checker in tsbaseConfig.
                         transpileOnly: true,
                     },
                 },

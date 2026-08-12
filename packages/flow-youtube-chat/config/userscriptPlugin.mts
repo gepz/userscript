@@ -1,14 +1,11 @@
 import cdnFromDependency from '@userscript/cdn-from-dependency';
-// The named export, not the default: webpack-userscript is CommonJS, and
-// Node's ESM interop hands back module.exports itself rather than
-// honouring the __esModule default marker.
+// Named export, not the default — see the webpack-configs section of
+// docs/decisions.md.
 import {
   RunAt,
   UserscriptPlugin,
 } from 'webpack-userscript';
 
-// Node's ESM loader hands back only a default export for JSON, and only
-// with the type attribute.
 import packageJson from '../package.json' with {
   type: 'json'
 };

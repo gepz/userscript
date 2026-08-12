@@ -73,11 +73,10 @@ const binaryOperations: Readonly<
 };
 /* eslint-enable @typescript-eslint/consistent-type-assertions, eqeqeq */
 
-// Interprets a jsep AST against a fixed scope (see filterContext). Replaces
-// expression-eval's evaluator; deliberately narrower than full JS: no
-// prototype-chain access, no `this`, no bitwise operators, and identifiers
-// must exist in the scope. Bad nodes throw rather than evaluating to
-// something surprising.
+// Interprets a jsep AST against a fixed scope (see filterContext).
+// Deliberately narrower than full JS: no prototype-chain access, no
+// `this`, no bitwise operators, and identifiers must exist in the
+// scope. Bad nodes throw rather than evaluating to something surprising.
 const evaluateExpression = (
   context: Readonly<Record<string, unknown>>,
 ) => (

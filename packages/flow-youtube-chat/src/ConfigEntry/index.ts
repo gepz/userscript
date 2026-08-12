@@ -10,12 +10,9 @@ type ConfigEntry<K extends keyof UserConfig = keyof UserConfig> = {
 
 export default ConfigEntry;
 
-// The one checked construction point for entries headed to a
-// union-typed boundary (channel.postMessage). The local annotation
-// verifies the [key, value] pairing; the return upcast is sound — a
-// single-key entry is one member of the full union — but beyond the
-// checker, which never distributes a generic indexed access onto the
-// union target (docs/decisions.md).
+// The one checked construction point for entries headed to the
+// union-typed channel boundary; the widening upcast is sound but beyond
+// the checker — see "Per-key config machinery" in docs/decisions.md.
 export const makeEntry = <K extends keyof UserConfig>(
   key: K,
   val: UserConfig[K],

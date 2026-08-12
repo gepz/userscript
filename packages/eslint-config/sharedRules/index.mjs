@@ -1,6 +1,5 @@
-// Rules shared by the JS and TS fragments. Formatting rules use the
-// @stylistic namespace; the legacy core copies are deprecated in eslint 9
-// and removed in eslint 10.
+// Formatting rules use the @stylistic namespace; the legacy core copies
+// are deprecated in eslint 9 and removed in eslint 10.
 export default {
   '@stylistic/padding-line-between-statements': [
     'error',
@@ -144,6 +143,6 @@ export default {
     },
   ],
   // Detects renamed default imports by guessing the source's export name;
-  // misfires on webpack config chains and did not exist before import-x.
+  // misfires on webpack config chains.
   'import-x/no-rename-default': 'off',
 };

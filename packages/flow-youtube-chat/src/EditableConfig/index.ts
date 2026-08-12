@@ -14,8 +14,7 @@ type TextRepresentableKey = {
 
 // The config fields bound to free-text inputs in the settings panel, and
 // therefore held in state as Editable (committed value plus draft text)
-// instead of plain values. Single source of truth: the EditableConfig
-// type, isEditableKey, and fromUserConfig all derive from this list.
+// instead of plain values.
 // Deliberately absent despite having text-representable values:
 // lang (edited via a picker) and timingFunction (edited through the
 // derived timingStepCount field on SettingState).
@@ -54,17 +53,14 @@ export const isEditableKey = (k: string): k is EditableConfigKey => (
   editableKeySet.has(k)
 );
 
-// The Editable-wrapped half of the config state. Kept as a named mapped
-// type so generic keys index it directly: a K constrained to
-// EditableConfigKey yields the correlated Editable<UserConfig[K]>
-// (docs/decisions.md).
+// The Editable-wrapped half of the config state. Named so generic keys
+// index it directly ("Per-key config machinery", docs/decisions.md).
 export type EditableConfigValues = {
   readonly [P in EditableConfigKey]: Editable<UserConfig[P]>;
 };
 
 // An intersection of two per-domain mapped types, not one conditional
-// mapped type: indexing with a generic key constrained to either domain
-// then yields the correlated member type instead of a distributed union.
+// mapped type — see "Per-key config machinery" in docs/decisions.md.
 type EditableConfig = EditableConfigValues & {
   readonly [P in Exclude<keyof UserConfig, EditableConfigKey>]:
   UserConfig[P];

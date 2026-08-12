@@ -303,6 +303,18 @@ and would rot untested — a Schema decode that stops matching means the
 shape changed and should fail loudly as a missing sticker, not silently
 degrade to an image that is usually a placeholder anyway.
 
+## Chat nodes are cross-realm: instanceof needs the node's window (2026-08)
+
+YouTube's chat DOM lives in the `#chatframe` iframe, so the nodes
+flow-youtube-chat handles belong to that iframe's realm. `instanceof`
+against the top window's constructors (`Text`, `HTMLImageElement`, …)
+fails for them — the iframe has its own constructor identities. Sites
+that must narrow a chat node therefore either check `nodeType` or reach
+the node's own realm first via `node.ownerDocument.defaultView` (the
+`eleWin` pattern in `chatNode`); `fixtureCapture/sanitize` walks nodes
+the same way. Comments at those sites carry only the local choice plus a
+pointer here.
+
 ## Webpack configs run on Node's type stripping, not ts-node (2026-07)
 
 webpack-cli 7 loads a `.ts` config by `import()`ing it and only falls back to
@@ -329,9 +341,11 @@ constraint is Node's ESM resolver being stricter than a bundler:
 - Type-only imports say `import type`. Stripping blanks annotations but keeps
   the import statement, and `webpack` has no runtime `Configuration` export.
 - No `__dirname`: these files are ESM. `baseConfig`, `tsbaseConfig`,
-  `jsbaseConfig` and `devConfig` default `rootDir` to `process.cwd()`, which
-  pnpm sets to the package directory — shorter than walking `import.meta`
-  back out of `config/` in each caller.
+  `jsbaseConfig` and `devConfig` take `rootDir` as a required argument;
+  callers pass `import.meta.dirname` (walked out of `config/` where needed).
+  A `process.cwd()` default was tried and dropped: it silently mis-points
+  the `@` alias whenever a config is evaluated by a process not started in
+  the package directory, as editor tooling does.
 - `webpack-userscript` is imported by its `UserscriptPlugin` named export.
   Node's interop hands back `module.exports` and ignores the `__esModule`
   default marker, so the default import is the module object, not the class.

@@ -205,9 +205,7 @@ export default Z.fnUntraced(function* (ctx: {
     ])),
   ));
 
-  // Branch streams are (re)constructed on every emitted poll tick, so
-  // element caches read at construction time (e.g. live.video.ele) are
-  // fresh.
+  // Rebuilt on every emitted poll tick — see the note on `setup` above.
   const branches = (): Stream.Stream<unknown>[] => [
     pipe(
       Stream.fromEventListener<ConfigEntry>(ctx.channel, 'message'),

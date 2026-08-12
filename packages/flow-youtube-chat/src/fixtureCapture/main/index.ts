@@ -231,13 +231,9 @@ const maybeCapture = (element: HTMLElement): void => {
 let observedField: HTMLElement | undefined;
 let observedTicker: HTMLElement | undefined;
 
-// Geometry sampling: evidence for the product's isAboveVisibleTail
-// verdicts. Each chat-list insert batch reports the scroller's scroll
-// metrics and every added chat's box at insert, the next frame, and a few
-// later instants, so seek-repopulation flooding can be diagnosed from
-// real numbers instead of assumptions about when the list restores its
-// scroll. Submitted to the server's generic /trace event channel as kind
-// 'geometry'.
+// Geometry sampling (kind 'geometry' on /trace): evidence for
+// isAboveVisibleTail verdicts — see the premature-eviction entry in
+// docs/backlog.md for the investigation this feeds.
 const geometryLaterMs = [120, 400, 1200];
 const geometrySubmitMs = 1300;
 
@@ -334,21 +330,10 @@ const recordBatchGeometry = (added: readonly HTMLElement[]): void => {
   }, geometrySubmitMs);
 };
 
-// Flow evictions (kind 'flowEviction' on the /trace channel): evidence
-// for the backlog's max-chat-amount premature-removal bug. The product
-// takes a flowing chat off screen early in exactly two ways —
-// @/addFlowChat recycles a span into a fresh flight, @/removeOldChats
-// detaches the span mid-flight. Detection is purely positional
-// (getBoundingClientRect between 250ms sweeps): the Web Animations
-// objects behind the product's animations are Xray-opaque in the
-// Firefox userscript sandbox (getAnimations() hands back wrappers whose
-// effect methods throw, verified 2026-08), so the animation API cannot
-// be watched from here. A span that detaches, or jumps rightward into a
-// new flight, while its last position was still inside the container
-// was evicted early; natural finishes exit at the left edge and never
-// report. liveCount is the on-screen span count at the eviction, to
-// compare against the configured max: evictions while visibly below it
-// are the bug's signature.
+// Flow evictions (kind 'flowEviction' on /trace): detection is
+// positional between sweeps because the sandbox's Web Animations
+// wrappers are unusable — semantics and rationale live in the
+// premature-eviction entry in docs/backlog.md.
 const flowSweepMs = 250;
 
 interface WatchedFlow {
@@ -509,7 +494,7 @@ const observer = new MutationObserver((records) => {
   recordBatchGeometry(records
     .filter((record) => record.target === observedField)
     .flatMap((record) => Array.from(record.addedNodes))
-    // Chat nodes live in the iframe realm, so instanceof cannot narrow.
+    // nodeType, not instanceof (cross-realm chat nodes — docs/decisions.md).
     .filter((node): node is HTMLElement => (
       node.nodeType === Node.ELEMENT_NODE
     )));

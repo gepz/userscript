@@ -11,6 +11,26 @@ versions before starting, this list ages.
 2.0.22 final, typings fixed by `patches/hyperapp@2.0.22.patch`.
 Long-term: migrate off or vendor.
 
+### maxChatCount evicts flowing chats prematurely (under investigation)
+
+Flowing chats sometimes leave the screen mid-flight while the on-screen
+count is visibly below the configured max — that undercount is the bug's
+signature. The only two mechanisms that end a flight early are
+`addFlowChat` (recycles a span into a fresh flight) and `removeOldChats`
+(detaches a span mid-flight). `fixtureCapture/main` gathers evidence as
+`flowEviction` events on the capture server's `/trace` channel; detection
+is purely positional (`getBoundingClientRect` between 250 ms sweeps)
+because the Web Animations objects behind the flights are Xray-opaque in
+the Firefox userscript sandbox — `getAnimations()` hands back wrappers
+whose effect methods throw (verified 2026-08). A span that detaches, or
+jumps rightward into a new flight, while its last position was still
+inside the container was evicted early; natural finishes exit at the left
+edge and never report. Each event carries `liveCount`, the on-screen span
+count at eviction, for comparison against the configured max. The sibling
+`geometry` trace on the same channel samples scroller and chat boxes at
+insert and a few later instants, so seek-repopulation flooding behind
+`isAboveVisibleTail` verdicts can be diagnosed from real numbers.
+
 ## Design decisions pending
 
 ### Decide the fate of the typed filter-expression editor WIP

@@ -17,12 +17,9 @@ const setState: Partial<{
     v: SettingState[K],
   ) => (c: AppCommander) => (s: SettingState) => SettingDispatchable
 }> = {
-  // Shrinking the lane count also drops now-out-of-range excluded lanes
-  // from the config — permanently; growing the count back does not
-  // restore them. Only committed values trim (an Editable still carrying
-  // edit text is a keystroke in progress — the "2" while typing "20"
-  // must not wipe lanes 2 and up); until then out-of-range lanes just
-  // sit inert, since placement ignores them.
+  // Trimming out-of-range excluded lanes is permanent: growing the
+  // count back does not restore them. Only committed Editables trim, so
+  // a mid-keystroke "2" of "20" cannot wipe lanes 2 and up.
   laneCount: (v) => (c) => (s) => pipe(
     O.isNone(Ed.text(v))
       ? A.filter(s.excludedLanes, (x) => x < Ed.value(v))

@@ -14,20 +14,11 @@ import UserConfigSetter from '@/UserConfigSetter';
 import setterFromKeysAndMap from '@/setterFromKeysAndMap';
 
 /**
- * The single write path for config values. Every write mutates the shared
- * `configValue` object, then emits on the key's SubscriptionRef, then runs
- * the write side effects: dispatch the value into the setting panels and,
- * for the banned-list keys, rebuild filterExp through the full setConfig
- * path (broadcast + persist).
- *
- * - `setConfigPlain`: write + side effects, no dedup. Does not broadcast or
- *   persist the written key itself — but a banned-list write broadcasts and
- *   persists the rebuilt filterExp whenever the rebuild changes it.
- * - `setChangedConfig`: dedup, then plain. For values received over
- *   BroadcastChannel; the dedup (not locality — see above) is what keeps
- *   broadcasts from looping.
- * - `setConfig`: dedup, then plain, then broadcast + persist. For local
- *   (UI-originated) writes.
+ * The single write path for config values. A banned-list write also
+ * rebuilds filterExp through the full setConfig path (broadcast +
+ * persist) whenever the rebuild changes it. The dedup in
+ * `setChangedConfig` and `setConfig` — not any locality check — is what
+ * keeps BroadcastChannel writes from looping.
  */
 export default ({
   configValue,

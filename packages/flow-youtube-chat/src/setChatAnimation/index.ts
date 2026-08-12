@@ -36,11 +36,10 @@ const getWidth = memoize(
  * back to the caller to store or discard; None means there is nothing
  * for the caller to do: the chat was an already-finished one (left
  * as-is), or an existing entry replaced in place. The in-place replace
- * locates the entry by identity inside one atomic update — an index
- * taken before the update could go stale against the concurrent
- * `flowChats` writers (see the claim step in @/addFlowChat) and clobber
- * the wrong entry. A chat evicted while its re-placement was computing
- * is gone: the freshly created flight is cancelled, not stored.
+ * locates the entry by identity inside one atomic update — see the
+ * claim step in @/addFlowChat. A chat evicted while its re-placement
+ * was computing is gone: the freshly created flight is cancelled, not
+ * stored.
  */
 export default (
   chat: FlowChat,

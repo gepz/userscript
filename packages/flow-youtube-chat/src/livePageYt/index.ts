@@ -65,8 +65,8 @@ export default ({
   chatTicker: pipe(
     chatApp,
     Z.flatMap((app) => Z.fromNullable(
-      // YouTube renamed the container from #items to #ticker-items; the old
-      // form is kept while the rename may still be rolling out.
+      // YouTube serves either container form; both selectors are
+      // matched.
       app.querySelector<HTMLElement>(
         '#ticker-items.yt-live-chat-ticker-renderer,'
         + ' #items.yt-live-chat-ticker-renderer',

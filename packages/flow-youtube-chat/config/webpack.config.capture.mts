@@ -5,24 +5,22 @@ import type {
 import {
   merge,
 } from 'webpack-merge';
-// Named export, not the default -- see userscriptPlugin.mts.
+// Named export, not the default -- see the webpack-configs section of
+// docs/decisions.md.
 import {
   RunAt,
   UserscriptPlugin,
 } from 'webpack-userscript';
 
-// Node's ESM loader hands back only a default export for JSON, and only
-// with the type attribute.
 import packageJson from '../package.json' with {
   type: 'json'
 };
 
 import webpackConfigBase from './webpack.config.base.mts';
 
-// Dev-only fixture-capture userscript (src/fixtureCapture/main). Unminified
-// on purpose: it never ships, and readable output beats size here. The
-// object entry replaces (not extends) the base string entry: webpack-merge
-// only concatenates same-typed values.
+// Unminified on purpose: it never ships, and readable output beats size
+// here. The object entry replaces (not extends) the base string entry:
+// webpack-merge only concatenates same-typed values.
 export default merge<Configuration>(
   webpackConfigBase,
   {

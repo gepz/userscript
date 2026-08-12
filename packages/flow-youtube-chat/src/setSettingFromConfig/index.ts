@@ -14,10 +14,8 @@ export default <T extends keyof UserConfig & keyof SettingState>(
 ) => (
   state: SettingState,
 ): SettingState => {
-  // Read through the EditableConfigValues view: isEditableKey narrows
-  // the generic key, and indexing the mapped type with it yields the
-  // correlated Editable<UserConfig[T & EditableConfigKey]>
-  // (docs/decisions.md).
+  // Widened to the EditableConfigValues view so the key stays
+  // correlated ("Per-key config machinery", docs/decisions.md).
   const editables: EditableConfigValues = state;
 
   return {

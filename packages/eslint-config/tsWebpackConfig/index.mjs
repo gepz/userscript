@@ -8,9 +8,8 @@ export default [
           devDependencies: true,
         },
       ],
-      // Node runs these files straight from source through its type
-      // stripping, and its ESM resolver never guesses an extension, so a
-      // sibling is imported by the .mts path it actually has on disk.
+      // Siblings must be imported by their real .ts/.mts path — see the
+      // webpack-configs section of docs/decisions.md.
       'import-x/extensions': [
         'error',
         'ignorePackages',

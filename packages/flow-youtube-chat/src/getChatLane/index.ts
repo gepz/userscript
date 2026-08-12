@@ -73,8 +73,7 @@ export default (
     })),
   );
 
-  // Excluded lanes partition the lane axis; placement runs per segment
-  // and never intersects an excluded lane, regardless of noOverlap.
+  // Applies regardless of noOverlap — see allowedSegments.
   const segments = allowedSegments(config.excludedLanes, config.laneCount);
 
   // Intervals measure clearance in lanes, capped at 1 (a full gap);

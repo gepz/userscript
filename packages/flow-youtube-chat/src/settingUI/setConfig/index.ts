@@ -19,10 +19,9 @@ import {
 } from '@/settingUI/SettingHandler';
 import configEffect from '@/settingUI/configEffect';
 
-// Handlers for the config-backed setting keys: write the state field,
-// then persist through the commander. Declared per key class so the
-// key-value correlation is checked generically — the Editable unwrap is
-// what distinguishes the classes (docs/decisions.md).
+// Declared per key class so the key-value correlation is checked
+// generically — the Editable unwrap is what distinguishes the classes
+// (docs/decisions.md).
 const editableHandler = <K extends EditableConfigKey>(k: K) => (
   v: EditableConfigValues[K],
 ) => (c: AppCommander) => (s: SettingState): SettingDispatchable => [
@@ -45,9 +44,7 @@ const plainHandler = <K extends Exclude<keyof UserConfig, EditableConfigKey>>(
   configEffect(k, v)(c),
 ];
 
-// The handlers are checked above; assembling them into the heterogeneous
-// table goes through one assertion (fromIterableWith erases per-key
-// types).
+// Construction-class assertion — docs/decisions.md names this site.
 const setConfig: SettingHandlerTable = pipe(
   configKeys,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

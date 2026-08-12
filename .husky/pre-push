@@ -20,12 +20,9 @@ if [ -z "$base" ]; then
   base=$(git rev-parse -q --verify origin/main 2>/dev/null) || base=
 fi
 
-# Root-level changes (lockfile, workspace config, shared tsconfigs, patches)
-# affect every package; docs, metadata, and the hooks themselves affect
-# none. Unknown base: assume everything. The '!root' exclusion keeps the
-# root package out of every selection — its fan-out scripts would otherwise
-# re-run the whole workspace whenever a root-directory file (even a doc)
-# changes.
+# The '!root' exclusion keeps the root package out of every selection —
+# its fan-out scripts would otherwise re-run the whole workspace whenever
+# a root-directory file (even a doc) changes.
 if [ -z "$base" ]; then
   set -- '--filter=!root'
 elif git diff --name-only "$base" HEAD -- . \
@@ -38,13 +35,9 @@ else
   set -- "--filter=...[$base]" '--filter=!root'
 fi
 
-# Lint scripts run eslint --fix, so a clean exit can still have rewritten
-# files; comparing the working-tree diff before and after turns any rewrite
-# into a failure. CI uses a bare `git diff --exit-code` for this, which
-# would misfire here on unrelated uncommitted changes.
-# --if-present: a selection may contain only packages without a given
-# script (e.g. eslint-config alone), which pnpm otherwise treats as an
-# error.
+# Hashing the working-tree diff before and after turns any eslint --fix
+# rewrite into a failure even on a clean exit.
+# --if-present: a selection may contain only packages without a script.
 diff_before=$(git diff | git hash-object --stdin)
 pnpm "$@" run --if-present lint
 diff_after=$(git diff | git hash-object --stdin)

@@ -5,17 +5,11 @@ import {
 import ChatData from '@/ChatData';
 import UserConfig from '@/UserConfig';
 
-// Whether chatNode would render this chat as a blank span — nothing from
-// any of its parts: the author line (shown only for a moderator with
-// displayModName, or a payer with displaySuperChatAuthor), the payment
-// info, the message body, whose images count only when textOnly is off
-// (textContent already excludes them), and a paid sticker's art, which
-// textOnly suppresses the same way. The flow gates
-// skip such chats: the typical case is an emoji-only message under
-// textOnly, which would otherwise flow invisibly while still taking a
-// lane and a maxChatCount slot. Keep in sync with chatNode:
-// consistency.spec.ts here checks this predicate against chatNode's
-// rendered output across a data-by-config grid.
+// Whether chatNode would render this chat as a blank span. The flow
+// gates skip such chats — typically an emoji-only message under
+// textOnly — which would otherwise flow invisibly while still taking a
+// lane and a maxChatCount slot. consistency.spec.ts here enforces
+// agreement with chatNode's rendered output.
 export default (
   data: ChatData,
   config: Pick<

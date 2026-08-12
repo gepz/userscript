@@ -47,8 +47,8 @@ const stripComments = (node: Node): void => {
  * canonical fixture value. Contract details live in
  * src/parseChat/fixtures/README.md.
  *
- * Works on cross-realm elements (the chat iframe), so it never uses
- * instanceof and creates nodes through the element's own document.
+ * Works on cross-realm chat nodes (docs/decisions.md): no instanceof,
+ * and nodes are created through the element's own document.
  */
 export default (slot: Slot, chat: HTMLElement): string => {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

@@ -34,10 +34,9 @@ export default (
 ) => (records: MutationRecord[]): Z.Effect<unknown> => pipe(
   Z.succeed(records),
   Z.map(A.flatMap((e) => Array.from(e.addedNodes))),
-  // nodeType, not instanceof: the chat nodes usually belong to the
-  // #chatframe iframe's realm, where instanceof against this window's
-  // HTMLElement is always false. Non-element nodes (text, comments) have no
-  // .children, so they must be dropped before the children check.
+  // nodeType, not instanceof (cross-realm chat nodes — docs/decisions.md).
+  // Non-element nodes (text, comments) have no .children, so they must be
+  // dropped before the children check.
   Z.map(A.filter((x): x is HTMLElement => x.nodeType === Node.ELEMENT_NODE
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     && (x as HTMLElement).children.length > 0)),

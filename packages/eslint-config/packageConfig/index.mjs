@@ -19,9 +19,7 @@ const scopedToTs = (configs) => configs.map((config) => ({
   files: TS_FILES,
 }));
 
-// Standard config for a workspace package: TS-only linting, type-aware
-// rules bound to srcProject, with TS files outside src (webpack config
-// scripts) parsed against configProject instead.
+// The standard flat config for a workspace package.
 export default ({
   dirname,
   ignores = [],
@@ -33,7 +31,6 @@ export default ({
     ignores: [
       'lib/',
       'dist/',
-      // Only TS is linted, matching the pre-flat-config `--ext .ts` setup.
       '**/*.js',
       '**/*.cjs',
       '**/*.mjs',

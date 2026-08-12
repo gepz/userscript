@@ -8,10 +8,6 @@ type Refs<T> = {
   [K in keyof T]: SubscriptionRef.SubscriptionRef<T[K]>
 };
 
-/**
- * One SubscriptionRef per record key, seeded with the key's current value.
- * `.changes` on each ref emits the current value first.
- */
 /* eslint-disable @typescript-eslint/consistent-type-assertions --
    R.map collapses the per-key value types to their union; the cast restores
    the precise mapped type. */

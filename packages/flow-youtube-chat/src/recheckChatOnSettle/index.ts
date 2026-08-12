@@ -165,12 +165,8 @@ const applySettled = (
 /**
  * One settled-state recheck for a chat that already went through
  * onChatFieldMutate: wait for the element's post-insert mutations to go
- * quiet, re-parse, and — only if any parsed field changed — re-make every
- * decision that consumed it: author-index recording, the ban checks
- * (hiding the element and withdrawing its flowing copy), updating and
- * re-rendering the flowing chat or flowing it late if the insert-time
- * pass wrongly declined, and late ban-button attachment. Never un-hides
- * a chat the insert-time pass hid.
+ * quiet, re-parse, and re-make the consuming decisions only if a parsed
+ * field changed. Never un-hides a chat the insert-time pass hid.
  */
 export default (
   chat: HTMLElement,

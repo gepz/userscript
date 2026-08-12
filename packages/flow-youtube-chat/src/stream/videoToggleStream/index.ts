@@ -10,8 +10,7 @@ const toggleEvents: readonly (readonly [string, boolean])[] = [
 ];
 
 /**
- * Maps the video element's play-state events to booleans: `playing` to true,
- * `waiting` and `pause` to false. Listeners are attached per stream run.
+ * Listeners are attached per stream run.
  */
 export default (video: EventTarget): Stream.Stream<boolean> => Stream.mergeAll(
   A.map(toggleEvents, ([type, playing]) => Stream.map(

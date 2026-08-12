@@ -5,17 +5,10 @@ import {
   flip,
 } from 'effect/Function';
 
-// Anchors the ban button inside a chat renderer. Plain messages carry it
-// at the end of the message body; renderers built around a card or
-// header (superchats, paid stickers, membership items, gift
-// announcements) have no reliably visible body, so there it rides inside
-// the author-name chip — matched as an element, since only the paid
-// renderers give the chip its #author-name-chip id — or failing that
-// (gift announcements have no chip) at the end of the header's text
-// column. Both are always on screen. Safe even inside a message body the
-// flow reads: chatNode's parseMessage renders a non-image element as its
-// textContent, and the button contains only an svg, so it contributes an
-// empty string to the flowing copy.
+// Anchors the ban button inside a chat renderer. Safe even inside a
+// message body the flow reads: chatNode's parseMessage renders a
+// non-image element as its textContent, and the button contains only an
+// svg, so it contributes an empty string to the flowing copy.
 export default flip((
   chat: HTMLElement,
 ): (

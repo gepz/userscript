@@ -61,7 +61,9 @@ export default (
     const parseSuffixed = (str: string) => Number.parseFloat(str) * (
       str.includes('k') ? 1000 : 1);
 
-    // Use type assertion becuase cross browing context
+    // Asserted rather than instanceof-narrowed: the node can belong to
+    // another browsing context, whose Text is a different constructor
+    // identity, so instanceof Text would reject it.
     return parseSuffixed(
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       (element.nextSibling as Text).wholeText.replace(/,/g, ''),

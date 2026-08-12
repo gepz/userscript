@@ -9,7 +9,7 @@ import ChatData from '@/ChatData';
 // id (alt text as fallback, so a same-looking emoji still matches),
 // wrapped so it cannot collide with literal text; anything else — text
 // nodes, but also the appended fyc_button — contributes its textContent.
-// The chat lives in the iframe realm, so instanceof needs its window.
+// instanceof via the node's own window (cross-realm — docs/decisions.md).
 const nodeKey = (node: Node): string => (
   node instanceof (node.ownerDocument?.defaultView ?? window).HTMLImageElement
     ? ` ${node.getAttribute('data-emoji-id')

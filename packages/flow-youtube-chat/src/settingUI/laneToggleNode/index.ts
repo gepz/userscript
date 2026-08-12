@@ -30,10 +30,8 @@ const laneAt = (s: SettingState) => (e: PointerEvent): number => pipe(
   )),
 );
 
-// One paint stroke over `lanes` (pointerLane is the cell under the
-// pointer): excluded set updated through the regular config path, plus
-// the overlay flash that keeps the player preview up briefly after the
-// pointer leaves (the only visibility a device without hover gets).
+// The excluded set goes through the regular config path, plus the
+// overlay flash — see laneOverlay's own doc.
 const paint = (c: AppCommander) => (
   s: SettingState,
   lanes: readonly number[],

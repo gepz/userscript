@@ -3,10 +3,7 @@ import {
 } from 'node:fs';
 import path from 'node:path';
 
-// Prints the one-line note pasted into Greasyfork when a release is uploaded.
-// The upload stays manual, so this only removes the hand-assembly of the line,
-// and fails loudly when a changelog is missing its dated entry for the version
-// being released.
+// Prints the one-line Greasyfork release note — see docs/releasing.md.
 
 const changelogs = [
   {
@@ -51,7 +48,6 @@ const repoBlob = `${
 
 const packagePath = stringAt('repository', 'directory');
 
-// The Keep a Changelog release heading, without its leading marker.
 const headingOf = (file: string): string => {
   const heading = new RegExp(
     `^## \\[${RegExp.escape(version)}\\] - \\d{4}-\\d{2}-\\d{2}$`,

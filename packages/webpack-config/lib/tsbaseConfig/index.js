@@ -10,8 +10,8 @@ export default (rootDir) => merge(baseConfig(rootDir), tsLoaderConfig('tsconfig.
     entry: path.join(rootDir, './src/index.ts'),
     plugins: [
         // Whole-program type checking in a parallel process; ts-loader runs
-        // transpile-only. Checking covers the full tsconfig program, including
-        // files webpack never loads and dependency d.ts files.
+        // transpile-only. It does not report errors inside dependency
+        // declaration files — see "Verification" in docs/architecture.md.
         new ForkTsCheckerWebpackPlugin({
             typescript: {
                 configFile: path.join(rootDir, 'tsconfig.build.json'),
