@@ -31,7 +31,12 @@ run from `packages/flow-youtube-chat`.
    new version to `CHANGELOG_EN.md` and `CHANGELOG_JP.md` (Keep a Changelog
    format, both languages). These are written for Greasyfork users — describe
    visible behavior, not internals; the generated `CHANGELOG.md` is the
-   developer-facing one.
+   developer-facing one. Keep the established register (see the pre-2026
+   entries): one sentence per item stating what a user notices, e.g. "Fix the
+   color of superchats." Cut rationale, mechanism, before/after narration, and
+   secondary behavior a user would assume anyway — a second sentence only earns
+   its place when a parenthetical list of affected message types genuinely
+   helps. Same rule in both languages.
 2. **Rebuild:** `pnpm build`, so `dist/main/index.user.js` carries the new
    `@version`. Nothing auto-rebuilds and `dist/` is gitignored, so a change —
    even a plain dependency bump — reaches users only through this step.
