@@ -10,14 +10,15 @@
 // boxes equally, so this verdict is stable at any instant of the rebuild.
 // A detached element is never visible; a missing scroller ancestor
 // (markup drift) fails open as visible, degrading to always-flow.
-export default (chat: HTMLElement): boolean => {
+// scrollerSelector comes from the site adapter (see @/Site).
+export default (chat: HTMLElement, scrollerSelector: string): boolean => {
   const list = chat.parentElement;
 
   if (!chat.isConnected || list === null) {
     return true;
   }
 
-  const scroller = chat.closest('#item-scroller');
+  const scroller = chat.closest(scrollerSelector);
 
   return scroller !== null
     && list.getBoundingClientRect().bottom

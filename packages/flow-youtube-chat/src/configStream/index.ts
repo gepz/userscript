@@ -15,6 +15,7 @@ import ChatUpdateConfig from '@/ChatUpdateConfig';
 import ConfigRefs from '@/ConfigRefs';
 import LivePageState from '@/LivePageState';
 import MainState from '@/MainState';
+import Site from '@/Site';
 import UserConfig from '@/UserConfig';
 import removeOldChats from '@/removeOldChats';
 import removeRepeatedChats from '@/removeRepeatedChats';
@@ -30,6 +31,7 @@ export default (
   refs: ConfigRefs,
   chatScreen: HTMLElement,
   live: LivePageState,
+  site: Site,
 ): Stream.Stream<unknown> => {
   // SubscriptionRef.changes emits the current value first; `changed` drops
   // that echo so a branch only reacts to writes. Branches that must also run
@@ -51,7 +53,11 @@ export default (
         live.chatField.ele,
         O.match({
           onNone: () => Z.void,
-          onSome: (field) => sweepBanButtons(field, mainState)(on),
+          onSome: (field) => sweepBanButtons(
+            field,
+            mainState,
+            site,
+          )(on),
         }),
       )),
     ),

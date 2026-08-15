@@ -35,12 +35,12 @@ import {
 } from '@/LivePageState';
 import MainState from '@/MainState';
 import SettingState from '@/SettingState';
+import Site from '@/Site';
 import UserConfigSetter from '@/UserConfigSetter';
 import applyConfigEntry from '@/applyConfigEntry';
 import configDiff from '@/configDiff';
 import configStream from '@/configStream';
 import listeningBroadcastConfigKeys from '@/listeningBroadcastConfigKeys';
-import livePageYt from '@/livePageYt';
 import logWithMeta from '@/logWithMeta';
 import mainCss from '@/mainCss';
 import onChatFieldMutate from '@/onChatFieldMutate';
@@ -74,8 +74,9 @@ export default Z.fnUntraced(function* (ctx: {
   }
   chatScreen: HTMLDivElement
   panelSize: SettingsPanelSize
+  site: Site
 }) {
-  const live = makePageState(livePageYt);
+  const live = makePageState(ctx.site.page);
   const css = yield * mainCss;
   const documentMutationPair = yield * observePair(MutationObserver);
   const chatMutationPair = yield * observePair(MutationObserver);
@@ -105,6 +106,7 @@ export default Z.fnUntraced(function* (ctx: {
     ctx.configRefs,
     ctx.chatScreen,
     live,
+    ctx.site,
   );
 
   const pollChanged = pipe(
@@ -164,7 +166,7 @@ export default Z.fnUntraced(function* (ctx: {
         // records, so they get their ban buttons from a sweep instead.
         // Idempotent, so setup re-runs on later poll ticks are
         // harmless.
-        Z.zipRight(Z.suspend(() => sweepBanButtons(x, ctx.mainState)(
+        Z.zipRight(Z.suspend(() => sweepBanButtons(x, ctx.mainState, ctx.site)(
           ctx.mainState.config.value.createBanButton,
         ))),
       )),
@@ -262,7 +264,7 @@ export default Z.fnUntraced(function* (ctx: {
     pipe(
       chatMutationPair.stream,
       Stream.mapEffect(
-        onChatFieldMutate(ctx.chatScreen, ctx.mainState),
+        onChatFieldMutate(ctx.chatScreen, ctx.mainState, ctx.site),
       ),
     ),
     pipe(

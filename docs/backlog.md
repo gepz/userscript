@@ -162,6 +162,40 @@ stay, and pick which tab hosts it.
 
 ### Per site settings
 
+The wishlist entry descends from a bare `- Per site` line in the first
+commit; the semantics were never written down. Two readings, and they are
+different projects: config profiles keyed by *host* (presupposes multi-site
+support) or keyed by *channel* (needs no genericization at all, just a way
+to identify the current channel). Decide this before building the storage.
+
+Done (2026-08): the site seam. `Site` is the adapter interface, `siteYt`
+its only implementation, `sites` the registry, and `initialize` resolves
+one by `matches` and threads it through `allStream`. See the site-seam
+section of `docs/architecture.md`. `matches` picks between adapters rather
+than gating — a page no adapter claims falls back to the registry's first
+entry with a warning, so with one adapter the resolution cannot change
+behavior, and a hand-widened `@match` against a mirror keeps working.
+
+Still YouTube-only, in rough order of how much they'd cost:
+
+- The class names `banButton` (`yt-icon-button`, `yt-icon`) and `mainCss`
+  (`--yt-spec-text-secondary`) borrow for styling. Cosmetic, degrades to
+  unstyled rather than broken; fold into `Site` when a second site lands.
+- `ChatData`'s `chatType` union (`membership`, `giftPurchase`,
+  `giftRedemption`, `engagement`) and the flow rules keyed off it in
+  `onChatFieldMutate` / `recheckChatOnSettle`. This is the real design
+  work, not the selectors: the vocabulary is user-visible through filter
+  expressions and saved config, so it cannot be renamed freely. Do not
+  generalize it speculatively — write a concrete second adapter first and
+  let it force the shape.
+- Config storage is still one flat `FYC_*` namespace. `fycKey` is the
+  single choke point; `defaultGMConfig` has three consumers, so a
+  `(prefix) => GMConfig` factory is contained. Per-site keying needs a
+  migration that adopts existing keys as the YouTube profile, and a
+  decision on which keys stay global (`lang` at least).
+  `BroadcastChannel` is same-origin, so cross-tab sync is already scoped
+  correctly.
+
 ### Auto reload
 
 ### Performance tab

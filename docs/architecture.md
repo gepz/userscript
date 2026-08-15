@@ -50,6 +50,28 @@ The whole pipeline is wrapped in `resilient`, a recursive
 rxjs `retry({delay})` — because a defect in any one branch must not
 kill the overlay for the rest of the page's lifetime.
 
+## flow-youtube-chat site seam
+
+Every read of, and edit to, a streaming site's own markup goes through one
+adapter interface, `Site`. `initialize` resolves it once at startup — the
+first entry in `sites` whose `matches` accepts the page, falling back to
+the first entry when none does, since the `@match` header is what keeps
+the script off other sites — and threads it into `allStream`, which passes
+it to the handlers that touch chat markup
+(`onChatFieldMutate`, `recheckChatOnSettle`, `sweepBanButtons`,
+`configStream`). Its `page` member is the `LivePage` the poll loop above
+derives `LivePageState` from; the rest is the parse and the three
+markup-editing spots the flow needs.
+
+Everything downstream of the parse works from `ChatData`, `UserConfig` and
+the elements `LivePage` hands it, so a second site is one more adapter plus
+its `@match` header. Two things are deliberately still outside the seam and
+YouTube-only: `ChatData`'s `chatType` vocabulary, which is user-visible
+through filter expressions, and the class names `banButton` and `mainCss`
+borrow for styling. `fixtureCapture` is YouTube capture tooling by
+definition and imports `livePageYt`/`parseChat` directly. See the "Per site
+settings" entry in `docs/backlog.md`.
+
 ## Build pipeline
 
 Userscript packages bundle with webpack driven by TypeScript config files

@@ -16,6 +16,7 @@ import {
   isBannedAuthor,
 } from '@/BanEntry';
 import MainState from '@/MainState';
+import Site from '@/Site';
 import addFlowChat from '@/addFlowChat';
 import appendChatMessage from '@/appendChatMessage';
 import banButton from '@/banButton';
@@ -23,14 +24,13 @@ import checkBannedWords from '@/checkBannedWords';
 import isAboveVisibleTail from '@/isAboveVisibleTail';
 import isDuplicateChat from '@/isDuplicateChat';
 import isRepeatedContent from '@/isRepeatedContent';
-import parseChat from '@/parseChat';
 import recheckChatOnSettle from '@/recheckChatOnSettle';
 import rendersNothing from '@/rendersNothing';
-import setChatFieldSimplifyStyle from '@/setChatFieldSimplifyStyle';
 
 export default (
   chatScrn: HTMLElement,
   mainState: MainState,
+  site: Site,
 ) => (records: MutationRecord[]): Z.Effect<unknown> => pipe(
   Z.succeed(records),
   Z.map(A.flatMap((e) => Array.from(e.addedNodes))),
@@ -43,7 +43,7 @@ export default (
   Z.map(A.reverse),
   Z.flatMap(Z.forEach(Z.fnUntraced(function* (chat: HTMLElement) {
     yield * Z.logDebug('Chat detected');
-    const data = parseChat(chat);
+    const data = site.parseChat(chat);
     // Every chat feeds the index — a banned author's own messages are what
     // associate their id with their display name.
     const authorNames = yield * SynchronizedRef.updateAndGet(
@@ -58,7 +58,10 @@ export default (
       )) {
       chat.style.display = 'none';
     } else {
-      const backfill = isAboveVisibleTail(chat);
+      const backfill = isAboveVisibleTail(
+        chat,
+        site.chatScrollerSelector,
+      );
 
       yield * Z.all([
         pipe(
@@ -87,6 +90,8 @@ export default (
         banEntryFor(data).pipe(
           O.filter(() => mainState.config.value.createBanButton),
           Z.flatMap((entry: string) => appendChatMessage(
+            site.banButtonAnchor,
+          )(
             banButton(entry)(mainState.config.getConfig)(
               mainState.config.setConfig,
             )(chat),
@@ -94,7 +99,7 @@ export default (
           Z.zipLeft(Z.logDebug('Ban button added')),
         ),
         pipe(
-          setChatFieldSimplifyStyle(chat),
+          site.simplifyChat(chat),
           Z.when(() => mainState.config.value.simplifyChatField),
           Z.zipLeft(Z.logDebug('Chat simplified')),
         ),
@@ -108,7 +113,7 @@ export default (
       // the decisions above when a re-parse disagrees. Daemon: outlives
       // this batch's fiber, bounded by the recheck's own deadline.
       yield * Z.forkDaemon(
-        recheckChatOnSettle(chat, data, backfill, chatScrn, mainState),
+        recheckChatOnSettle(chat, data, backfill, chatScrn, mainState, site),
       );
     }
   }))),

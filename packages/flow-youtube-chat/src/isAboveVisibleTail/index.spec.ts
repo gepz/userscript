@@ -14,6 +14,8 @@ const withRect = <T extends HTMLElement>(element: T, bottom: number): T => {
   return element;
 };
 
+const scrollerSelector = '#item-scroller';
+
 // #item-scroller > #item-offset > #items > chat, as in live markup.
 const mountChat = (
   listBottom: number,
@@ -45,23 +47,31 @@ const mountChat = (
 };
 
 describe('isAboveVisibleTail', () => {
+  const verdict = (
+    listBottom: number,
+    chatBottom: number,
+  ): boolean => isAboveVisibleTail(
+    mountChat(listBottom, chatBottom),
+    scrollerSelector,
+  );
+
   it('is true for a chat more than a viewport above the list end', () => {
-    expect(isAboveVisibleTail(mountChat(1000, 100))).toBe(true);
+    expect(verdict(1000, 100)).toBe(true);
   });
 
   it('is false for a chat within the last viewport of the list', () => {
-    expect(isAboveVisibleTail(mountChat(1000, 950))).toBe(false);
+    expect(verdict(1000, 950)).toBe(false);
   });
 
   it('is false at exactly one viewport from the list end', () => {
-    expect(isAboveVisibleTail(mountChat(1000, 400))).toBe(false);
+    expect(verdict(1000, 400)).toBe(false);
   });
 
   it('is unaffected by translating the whole list', () => {
     // A rebuild's transient scroll states shift every box equally; the
     // verdict must not change with them.
-    expect(isAboveVisibleTail(mountChat(-8000, -8900))).toBe(true);
-    expect(isAboveVisibleTail(mountChat(12000, 11950))).toBe(false);
+    expect(verdict(-8000, -8900)).toBe(true);
+    expect(verdict(12000, 11950)).toBe(false);
   });
 
   it('fails open without a scroller ancestor', () => {
@@ -70,7 +80,7 @@ describe('isAboveVisibleTail', () => {
 
     items.append(chat);
     document.body.append(items);
-    expect(isAboveVisibleTail(chat)).toBe(false);
+    expect(isAboveVisibleTail(chat, scrollerSelector)).toBe(false);
   });
 
   it('is true for a detached chat', () => {
@@ -78,6 +88,6 @@ describe('isAboveVisibleTail', () => {
     const chat = withRect(document.createElement('div'), 950);
 
     items.append(chat);
-    expect(isAboveVisibleTail(chat)).toBe(true);
+    expect(isAboveVisibleTail(chat, scrollerSelector)).toBe(true);
   });
 });

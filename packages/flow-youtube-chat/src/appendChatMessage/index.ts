@@ -5,18 +5,17 @@ import {
   flip,
 } from 'effect/Function';
 
-// Anchors the ban button inside a chat renderer. Safe even inside a
-// message body the flow reads: chatNode's parseMessage renders a
-// non-image element as its textContent, and the button contains only an
-// svg, so it contributes an empty string to the flowing copy.
-export default flip((
+// Anchors an element inside a chat renderer, at the spot the site's
+// banButtonAnchor picks. Safe even inside a message body the flow reads:
+// chatNode's parseMessage renders a non-image element as its textContent,
+// and the ban button contains only an svg, so it contributes an empty
+// string to the flowing copy.
+export default (
+  anchorOf: (chat: HTMLElement) => Element | null,
+) => flip((
   chat: HTMLElement,
 ): (
   getEle: Z.Effect<HTMLElement>,
 ) => Z.Effect<void> => Z.flatMap(
-  (x) => Z.sync(() => (chat.querySelector('#card, #header') === null
-    ? chat.querySelector('#content #message')
-    : chat.querySelector('yt-live-chat-author-chip')
-      ?? chat.querySelector('#header-content-primary-column')
-  )?.append(x)),
+  (x) => Z.sync(() => anchorOf(chat)?.append(x)),
 ));

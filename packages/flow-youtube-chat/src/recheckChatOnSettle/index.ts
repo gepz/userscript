@@ -17,6 +17,7 @@ import {
 } from '@/BanEntry';
 import ChatData from '@/ChatData';
 import MainState from '@/MainState';
+import Site from '@/Site';
 import addFlowChat from '@/addFlowChat';
 import appendChatMessage from '@/appendChatMessage';
 import banButton from '@/banButton';
@@ -24,7 +25,6 @@ import checkBannedWords from '@/checkBannedWords';
 import isDuplicateChat from '@/isDuplicateChat';
 import isRepeatedContent from '@/isRepeatedContent';
 import onElementSettled from '@/onElementSettled';
-import parseChat from '@/parseChat';
 import renderChat from '@/renderChat';
 import rendersNothing from '@/rendersNothing';
 import strictOptionEquivalence from '@/strictOptionEquivalence';
@@ -130,6 +130,7 @@ const applySettled = (
   insertedAsBackfill: boolean,
   chatScrn: HTMLElement,
   mainState: MainState,
+  site: Site,
 ): Z.Effect<void> => Z.gen(function* () {
   yield * Z.logDebug('Chat changed after insert, rechecking');
   const authorNames = yield * SynchronizedRef.updateAndGet(
@@ -153,7 +154,7 @@ const applySettled = (
   yield * banEntryFor(data).pipe(
     O.filter(() => mainState.config.value.createBanButton
       && chat.querySelector('.fyc_button') === null),
-    Z.flatMap((entry: string) => appendChatMessage(
+    Z.flatMap((entry: string) => appendChatMessage(site.banButtonAnchor)(
       banButton(entry)(mainState.config.getConfig)(
         mainState.config.setConfig,
       )(chat),
@@ -174,6 +175,7 @@ export default (
   insertedAsBackfill: boolean,
   chatScrn: HTMLElement,
   mainState: MainState,
+  site: Site,
 ): Z.Effect<void> => pipe(
   Z.async<void>((resume) => {
     onElementSettled(chat, quietMs, deadlineMs, () => {
@@ -181,10 +183,17 @@ export default (
     });
   }),
   Z.zipRight(Z.suspend(() => {
-    const data = parseChat(chat);
+    const data = site.parseChat(chat);
 
     return parseRelevantChanged(initial, data)
-      ? applySettled(chat, data, insertedAsBackfill, chatScrn, mainState)
+      ? applySettled(
+        chat,
+        data,
+        insertedAsBackfill,
+        chatScrn,
+        mainState,
+        site,
+      )
       : Z.void;
   })),
 );

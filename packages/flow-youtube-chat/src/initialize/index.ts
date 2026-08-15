@@ -8,6 +8,7 @@ import {
   Cause,
   Effect as Z,
   Duration as D,
+  Option as O,
   Queue,
   Ref,
   LogLevel,
@@ -51,12 +52,33 @@ import settingStateInit from '@/settingStateInit';
 import settingUpdateApps from '@/settingUpdateApps';
 import settingsComponent from '@/settingsComponent';
 import settingsPanelSize from '@/settingsPanelSize';
+import sites from '@/sites';
 import makeRefs from '@/stream/makeRefs';
 import toggleChatButton from '@/toggleChatButton';
 import toggleSettingsPanelComponent from '@/toggleSettingsPanelComponent';
 
 export default pipe(
   Z.gen(function* () {
+    // Resolved once, before anything reads the page: every site-specific
+    // read and edit downstream goes through this adapter (see @/Site).
+    const site = yield * pipe(
+      A.findFirst(sites, (x) => x.matches()),
+      O.match({
+        // Only a hand-widened @match gets here (a mirror, a proxy), and
+        // such a page is likelier to serve markup the first adapter reads
+        // than nothing the script can use — so run on it and say so,
+        // rather than refusing.
+        onNone: () => pipe(
+          Z.logWarning(
+            `No site adapter matches ${window.location.hostname};`
+            + ' falling back to the first',
+          ),
+          Z.as(A.headNonEmpty(sites)),
+        ),
+        onSome: Z.succeed,
+      }),
+    );
+
     const updateSettingState = (
       dispatchable: Dispatchable<SettingState>,
     ): Z.Effect<void> => pipe(
@@ -95,6 +117,7 @@ export default pipe(
     yield * setConfigPlain.filterExp(defaultFilter(configValue));
 
     return {
+      site,
       updateSettingState,
       channel,
       configRefs,

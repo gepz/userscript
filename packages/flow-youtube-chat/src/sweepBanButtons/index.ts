@@ -7,9 +7,9 @@ import {
   banEntryFor,
 } from '@/BanEntry';
 import MainState from '@/MainState';
+import Site from '@/Site';
 import appendChatMessage from '@/appendChatMessage';
 import banButton from '@/banButton';
-import parseChat from '@/parseChat';
 
 // Retroactive half of the "Show ban button" toggle: renderers already in
 // the chat list gain or lose their button when the setting flips; future
@@ -20,13 +20,14 @@ import parseChat from '@/parseChat';
 export default (
   field: HTMLElement,
   mainState: MainState,
+  site: Site,
 ) => (createBanButton: boolean): Z.Effect<void> => (createBanButton
   ? Z.forEach(
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     Array.from(field.children) as HTMLElement[],
-    (chat) => banEntryFor(parseChat(chat)).pipe(
+    (chat) => banEntryFor(site.parseChat(chat)).pipe(
       O.filter(() => chat.querySelector('.fyc_button') === null),
-      Z.flatMap((entry: string) => appendChatMessage(
+      Z.flatMap((entry: string) => appendChatMessage(site.banButtonAnchor)(
         banButton(entry)(mainState.config.getConfig)(
           mainState.config.setConfig,
         )(chat),
