@@ -8,6 +8,12 @@ Youtubeのチャットをニコニコ風に画面上へ流すユーザースク�
 Published on Greasy Fork; user-facing changelogs live in
 [`CHANGELOG_EN.md`](CHANGELOG_EN.md) and [`CHANGELOG_JP.md`](CHANGELOG_JP.md)
 (the changesets [`CHANGELOG.md`](CHANGELOG.md) tracks internal versions).
+[`script_info.txt`](script_info.txt) is the source of the Greasy Fork
+description — HTML fragments for the script page's info field; edit it here
+and paste, so the two don't drift. Greasy Fork turns source whitespace into
+`br`/`p` elements, so each section is one long line; the newlines that remain
+are deliberate (section spacing, and the line breaks inside the `code` word
+list).
 
 ## Features
 

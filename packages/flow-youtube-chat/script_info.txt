@@ -1,10 +1,44 @@
-Youtubeのチャットをニコニコ風に画面上へ流すスクリプトです(再アップ)
-Make Youtube live chats flow on videos in danmaku-style.
-
-元スクリプト（バージョン1.12.2）の作成者（Emubure）じゃないです。
-元スクリプトはなんとなく削除されました…
-これはバグ修正済みの再アップ。
-
-<a href="https://github.com/gepz/userscript/blob/main/packages/flow-youtube-chat/CHANGELOG_JP.md">Changelog(更新履歴)(JP)</a>
-<a href="https://github.com/gepz/userscript/blob/main/packages/flow-youtube-chat/CHANGELOG_EN.md">Changelog(更新履歴)(EN)</a>
-<a href="https://github.com/gepz/userscript/tree/main/packages/flow-youtube-chat">Source code(Github)</a>
+<details><summary>English — features, how to use, bug reports</summary><p>Make YouTube live chats flow over the video, danmaku-style.</p><p><b>Features</b></p><ul><li>Flow chat over the player</li><li>Appearance: font, size, weight, shadow, opacity, and separate colors for normal, owner, moderator and member</li><li>Flow: speed, lanes, max chats, max characters, min spacing, flow area, excluded lanes</li><li>Flow a new chat only when it won't overlap, or when the same content isn't already flowing</li><li>Filters: banned words, banned words by regex, banned users, and a ban button in the chat list</li><li>Show/hide button, settings synced across tabs</li><li>UI: 日本語 / English / 简体中文</li></ul><p><b>How to use</b></p><ol><li>Install a userscript manager (Tampermonkey, Violentmonkey) first</li><li>Open "Settings" next to the ⋮ menu in the chat panel</li><li>Toggle the overlay with the button in the player controls</li></ol><p>Runs on <code>https://www.youtube.com/</code> only (not m.youtube.com or embedded players).</p><p><b>Bug reports</b></p><p>Turn on "Enable event logging" in the Feedback tab, reproduce the bug, then copy the event log and attach it to your report.</p><p><b>About</b></p><p>The original script (v1.12.2 by Emubure) was removed; this is a bug-fixed re-upload, maintained since. I am not the original author.</p><p>A filter example is at the bottom of this page.</p></details>
+<p>Youtubeのチャットをニコニコ風に画面上へ流すスクリプトです。</p>
+<p><b>機能</b></p><ul><li>チャットを動画の上に流す</li><li>見た目：フォント、サイズ、太さ、影、不透明度、色（通常／オーナー／モデレーター／メンバー）</li><li>流れ方：速度、行数、最大表示数、最大文字数、最小間隔、流れ範囲（上下左右）、流さない行</li><li>流す条件：「他のチャットと重ならない」「同じ内容のチャットが流れていない」ときだけ流す</li><li>フィルター：NGワード、NGワード(正規表現)、NGユーザー、チャット欄のNGボタン</li><li>チャットの表示／非表示ボタン、設定はタブ間で同期</li><li>UI: 日本語 / English / 简体中文</li></ul>
+<p><b>使い方</b></p><ol><li>Tampermonkey や Violentmonkey などのユーザースクリプトマネージャーを入れてからインストール</li><li>チャット欄の「⋮」メニューの隣にある「設定」から調整</li><li>プレイヤーのボタンでチャットの表示／非表示</li></ol><p>※ <code>https://www.youtube.com/</code> でのみ動作します（m.youtube.com や埋め込みプレイヤーは対象外）。</p>
+<p><b>バグ報告</b></p><p>設定の「バグ報告と要望」タブで「イベントログを有効にする」をオンにし、再現してからログをコピーして報告に添付してください。</p>
+<p><b>このスクリプトについて</b></p><p>元スクリプト（バージョン1.12.2、作者 Emubure）が削除されたため、バグを修正して再アップしたものです。元の作者ではありません。</p>
+<p><b>フィルター設定例 / Filter example</b></p><p>英語・中国語のチャットを消したい場合の例です。正規表現はアルファベット3文字以上の連続を弾くので、英語のチャットはほぼ全部消えます。</p><p>Example for hiding English and Chinese chat. The regex matches any run of 3 or more Latin letters, so it removes practically all English chat — use it only if that is what you want.</p><p>Banned Words(Regex) / NGワード(正規表現):</p><code>([A-Za-z]\s?){3,}</code><p>Banned Words / NGワード:</p><code>谁
+请
+绕
+这
+网
+强
+给
+问
+讲
+啥
+实
+现
+该
+辈
+脸
+时
+杀
+啊
+說
+掰
+孢
+你
+?
+!
+刚刚
+剛剛
+加油
+知道
+三小
+太強
+只有
+可以
+還沒
+到了
+發現
+那麼
+怎麼</code>
+<p><a href="https://github.com/gepz/userscript/blob/main/packages/flow-youtube-chat/CHANGELOG_JP.md">Changelog(更新履歴)(JP)</a></p><p><a href="https://github.com/gepz/userscript/blob/main/packages/flow-youtube-chat/CHANGELOG_EN.md">Changelog(更新履歴)(EN)</a></p><p><a href="https://github.com/gepz/userscript/tree/main/packages/flow-youtube-chat">Source code(Github)</a></p>
